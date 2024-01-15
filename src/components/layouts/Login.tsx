@@ -5,16 +5,49 @@ import Link from "next/link";
 import Logo from "../Icons/Logo";
 import InputComponent from "../Input";
 import ButtonComponent from "../Button";
-import { TEXT } from "@/constants/text";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { EyeSlashFilledIcon } from "../Icons/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "../Icons/EyeFilledIcon";
+import { ROUTE } from "@/config/routes";
+import { TEXT } from "@/constants/text";
 
 export default function Login() {
+    //** Variables */
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
     //** States */
     const [isVisible, setIsVisible] = useState<boolean>(false);
+    const [errorLogin, setErrorLogin] = useState<string>("");
 
     //** Functions */
     const toggleVisibility = () => setIsVisible(!isVisible);
+
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+
+        const username = data.get("username");
+        const password = data.get("password");
+
+        const login = await signIn("credentials", {
+            username,
+            password,
+            redirect: false,
+            callbackUrl: searchParams.get("callbackUrl") || ROUTE.HOME,
+        });
+
+        if (!login?.ok) {
+            const { message } = JSON.parse(login?.error as string);
+            return setErrorLogin(message);
+        }
+
+        setErrorLogin("");
+        router.push(searchParams.get("callbackUrl") || ROUTE.HOME);
+        router.refresh();
+    };
 
     return (
         <div className="flex min-h-screen flex-1 flex-col justify-center p-6">
@@ -33,16 +66,18 @@ export default function Login() {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="space-y-6" action="#" method="POST">
+                <form onSubmit={onSubmit}>
                     <InputComponent
                         className="pb-5"
                         label={TEXT.USERNAME}
+                        name={"username"}
                         labelPlacement="outside"
                         placeholder={`${TEXT.ENTER_USERNAME}...`}
                         isRequired
                     />
                     <InputComponent
                         label={TEXT.PASSWORD}
+                        name={"password"}
                         labelPlacement="outside"
                         placeholder={`${TEXT.ENTER_PASSWORD}...`}
                         endContent={
@@ -61,7 +96,14 @@ export default function Login() {
                         type={isVisible ? "text" : "password"}
                         isRequired
                     />
-                    <div className="text-right text-sm">
+
+                    {errorLogin && (
+                        <p className="mt-3 font-semibold text-sm text-right text-error">
+                            {errorLogin}
+                        </p>
+                    )}
+
+                    <div className="text-right text-sm py-5">
                         <Link
                             href="#"
                             className="font-semibold text-indigo-600 hover:text-indigo-500"
@@ -70,7 +112,7 @@ export default function Login() {
                         </Link>
                     </div>
 
-                    <ButtonComponent fullWidth color="primary">
+                    <ButtonComponent fullWidth type="submit">
                         {TEXT.LOGIN}
                     </ButtonComponent>
                 </form>
