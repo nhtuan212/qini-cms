@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Logo from "../Icons/Logo";
-import InputComponent from "../Input";
-import ButtonComponent from "../Button";
+import Input from "../Input";
+import Button from "../Button";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -67,7 +67,7 @@ export default function Login() {
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form onSubmit={onSubmit}>
-                    <InputComponent
+                    <Input
                         className="pb-5"
                         label={TEXT.USERNAME}
                         name={"username"}
@@ -75,7 +75,7 @@ export default function Login() {
                         placeholder={`${TEXT.ENTER_USERNAME}...`}
                         isRequired
                     />
-                    <InputComponent
+                    <Input
                         label={TEXT.PASSWORD}
                         name={"password"}
                         labelPlacement="outside"
@@ -112,9 +112,9 @@ export default function Login() {
                         </Link>
                     </div>
 
-                    <ButtonComponent fullWidth type="submit">
+                    <Button fullWidth type="submit">
                         {TEXT.LOGIN}
-                    </ButtonComponent>
+                    </Button>
                 </form>
             </div>
         </div>

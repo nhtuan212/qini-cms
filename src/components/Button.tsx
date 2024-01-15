@@ -1,14 +1,14 @@
 import React from "react";
-import { Button, ButtonProps } from "@nextui-org/react";
+import { Button as ButtonUI, ButtonProps } from "@nextui-org/react";
 
-export default function ButtonComponent({
+export default function Button({
     color = "primary",
     radius = "sm",
     ...props
 }: ButtonProps) {
     return (
-        <Button color={color} radius={radius} {...props}>
+        <ButtonUI color={color} radius={radius} {...props}>
             {props.children}
-        </Button>
+        </ButtonUI>
     );
 }

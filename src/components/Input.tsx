@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { Input, InputProps } from "@nextui-org/react";
+import { Input as InputUI, InputProps } from "@nextui-org/react";
 
-export default function InputComponent({
+export default function Input({
     variant = "bordered",
     radius = "sm",
     ...props
 }: InputProps) {
-    return <Input variant={variant} radius={radius} {...props} />;
+    return <InputUI variant={variant} radius={radius} {...props} />;
 }
