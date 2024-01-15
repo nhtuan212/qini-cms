@@ -1,3 +1,5 @@
 {
-    "cSpell.words": ["qini", "tailwindcss"]
+    // Remove Unknown at rule @tailwind
+    "css.customData": [".vscode/css_custom_data.json"],
+    "cSpell.words": ["qini", "tailwindcss", "zustand"]
 }
