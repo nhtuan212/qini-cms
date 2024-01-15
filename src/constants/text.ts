@@ -1,10 +1,11 @@
 export const TEXT = {
     STAFF: "Nhân viên",
     REPORT: "Báo cáo",
-    SETTING: "Setting",
+    SETTING: "Cài đặt",
+    ACCOUNT: "Tài khoản",
     LOGIN_YOUR_ACCOUNT: "Login in to your account",
     LOGIN: "Login",
-    LOGOUT: "Log out",
+    LOGOUT: "Đăng xuất",
     USERNAME: "Username",
     ENTER_USERNAME: "Enter your username",
     // EMAIL: "Email",

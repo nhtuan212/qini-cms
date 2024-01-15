@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { ProfileProps } from "@/types/profileProps";
+import Header from "./Header";
 
 export default function Layouts({
     session,
@@ -19,5 +20,10 @@ export default function Layouts({
         getProfile(session);
     }, [getProfile, session]);
 
-    return <div>{children}</div>;
+    return (
+        <main>
+            <Header />
+            {children}
+        </main>
+    );
 }

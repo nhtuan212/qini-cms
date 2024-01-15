@@ -2,14 +2,28 @@
     // Remove Unknown at rule @tailwind
     "css.customData": [".vscode/css_custom_data.json"],
     "cSpell.words": [
+        "Chốt",
         "clsx",
+        "Đăng",
+        "Doanh",
+        "headlessui",
+        "heroicons",
         "Hoang",
+        "khoản",
         "NEXTAUTH",
         "nextui",
+        "Ngày",
+        "Nhân",
         "qini",
         "signin",
         "tailwindcss",
+        "Thêm",
+        "Tiền",
+        "Tổng",
         "Tuan",
+        "việc",
+        "viên",
+        "xuất",
         "zustand"
     ]
 }
