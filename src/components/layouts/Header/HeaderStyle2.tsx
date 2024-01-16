@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import Logo from "../Icons/Logo";
+import Logo from "../../Icons/Logo";
 import { usePathname } from "next/navigation";
 import {
     Navbar,
