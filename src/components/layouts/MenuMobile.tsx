@@ -1,11 +1,15 @@
 "use client";
 
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
+import Link from "next/link";
+import Button from "../Button";
+import clsx from "clsx";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useMenuStore } from "@/stores/useMenuStore";
+import { MENU } from "@/config/menu";
 
-export default function MenuMobile() {
+export default function MenuMobile({ activeRoute }: { activeRoute: string }) {
     //** Zustand */
     const { isMobileMenuOpen, openMobileMenu } = useMenuStore();
 
@@ -14,7 +18,7 @@ export default function MenuMobile() {
             <Dialog
                 as="div"
                 className="relative z-40 lg:hidden"
-                onClose={() => {}}
+                onClose={() => openMobileMenu(false)}
             >
                 <Transition.Child
                     as={Fragment}
@@ -40,8 +44,9 @@ export default function MenuMobile() {
                     >
                         <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
                             <div className="flex px-4 pb-2 pt-5">
-                                <button
-                                    type="button"
+                                <Button
+                                    isIconOnly
+                                    variant="light"
                                     className="relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
                                     onClick={() => openMobileMenu(false)}
                                 >
@@ -51,26 +56,23 @@ export default function MenuMobile() {
                                         className="h-6 w-6"
                                         aria-hidden="true"
                                     />
-                                </button>
+                                </Button>
                             </div>
 
                             <div className="space-y-6 border-gray-200 px-4 py-6">
-                                <div className="flow-root">
-                                    <a
-                                        href="#"
-                                        className="-m-2 block p-2 font-medium text-gray-900"
+                                {MENU.map(menu => (
+                                    <Link
+                                        key={menu.url}
+                                        className={clsx(
+                                            "-m-2 block p-2 font-medium text-gray-900",
+                                            activeRoute === menu.url &&
+                                                "text-primary",
+                                        )}
+                                        href={menu.url}
                                     >
-                                        Sign in
-                                    </a>
-                                </div>
-                                <div className="flow-root">
-                                    <a
-                                        href="#"
-                                        className="-m-2 block p-2 font-medium text-gray-900"
-                                    >
-                                        Create account
-                                    </a>
-                                </div>
+                                        {menu.label}
+                                    </Link>
+                                ))}
                             </div>
                         </Dialog.Panel>
                     </Transition.Child>

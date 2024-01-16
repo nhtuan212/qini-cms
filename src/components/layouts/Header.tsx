@@ -5,10 +5,10 @@ import clsx from "clsx";
 import Link from "next/link";
 import MenuMobile from "./MenuMobile";
 import Logo from "../Icons/Logo";
-import ButtonComponent from "../Button";
+import Button from "../Button";
 import ImageComponent from "../Image";
 import { usePathname } from "next/navigation";
-import { Menu, Popover, Transition } from "@headlessui/react";
+import { Menu, Transition } from "@headlessui/react";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useMenuStore } from "@/stores/useMenuStore";
@@ -33,18 +33,15 @@ export default function Header2() {
     }, [pathname]);
 
     return (
-        <div className="bg-white">
-            <MenuMobile />
+        <>
+            <MenuMobile activeRoute={activeRoute} />
 
             <header className="relative bg-white">
-                <nav
-                    aria-label="Top"
-                    className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
-                >
+                <nav aria-label="Top" className="container">
                     <div className="border-b border-gray-200">
                         <div className="flex h-16 items-center">
                             {/* Toggle mobile menu */}
-                            <ButtonComponent
+                            <Button
                                 className="relative min-w-0 rounded-md bg-white p-2 text-gray-400 lg:hidden"
                                 onClick={() => openMobileMenu(true)}
                             >
@@ -54,7 +51,7 @@ export default function Header2() {
                                     className="h-6 w-6"
                                     aria-hidden="true"
                                 />
-                            </ButtonComponent>
+                            </Button>
 
                             {/* Logo */}
                             <div className="ml-4 flex lg:ml-0">
@@ -89,7 +86,7 @@ export default function Header2() {
                             {/* Profile dropdown */}
                             <Menu as="div" className="relative ml-auto">
                                 <div>
-                                    <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                                    <Menu.Button className="relative flex rounded-full bg-primary text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                         <span className="absolute -inset-1.5" />
                                         <span className="sr-only">
                                             Open user menu
@@ -150,6 +147,6 @@ export default function Header2() {
                     </div>
                 </nav>
             </header>
-        </div>
+        </>
     );
 }

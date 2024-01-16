@@ -23,7 +23,7 @@ export default function Layouts({
     return (
         <main>
             <Header />
-            {children}
+            <section className="container py-4">{children}</section>
         </main>
     );
 }

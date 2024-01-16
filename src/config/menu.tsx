@@ -1,4 +1,3 @@
-import React from "react";
 import { ROUTE } from "./routes";
 import { TEXT } from "@/constants/text";
 

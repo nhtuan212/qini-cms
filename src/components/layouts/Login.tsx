@@ -81,9 +81,8 @@ export default function Login() {
                         labelPlacement="outside"
                         placeholder={`${TEXT.ENTER_PASSWORD}...`}
                         endContent={
-                            <button
+                            <Button
                                 className="focus:outline-none"
-                                type="button"
                                 onClick={toggleVisibility}
                             >
                                 {isVisible ? (
@@ -91,7 +90,7 @@ export default function Login() {
                                 ) : (
                                     <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
                                 )}
-                            </button>
+                            </Button>
                         }
                         type={isVisible ? "text" : "password"}
                         isRequired
