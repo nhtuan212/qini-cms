@@ -97,7 +97,7 @@ export default function Header() {
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Profile Actions" variant="flat">
                         <DropdownItem key="profile" textValue="profile">
-                            <p className="font-semibold">{`${TEXT.ACCOUNT}: ${profile?.username}`}</p>
+                            <p className="font-semibold">{profile?.username}</p>
                         </DropdownItem>
                         <DropdownItem key="settings">
                             {TEXT.SETTING}

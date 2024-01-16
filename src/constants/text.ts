@@ -2,7 +2,7 @@ export const TEXT = {
     STAFF: "Nhân viên",
     REPORT: "Báo cáo",
     SETTING: "Cài đặt",
-    ACCOUNT: "Tài khoản",
+    // ACCOUNT: "Tài khoản",
     LOGIN_YOUR_ACCOUNT: "Login in to your account",
     LOGIN: "Login",
     LOGOUT: "Đăng xuất",
