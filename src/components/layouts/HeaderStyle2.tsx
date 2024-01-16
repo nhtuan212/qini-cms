@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import Logo from "../Icons/Logo";
+import { usePathname } from "next/navigation";
 import {
     Navbar,
     NavbarBrand,
@@ -19,18 +20,15 @@ import {
     Avatar,
     DropdownMenu,
     DropdownItem,
-    // Link,
 } from "@nextui-org/react";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { ROUTE } from "@/config/routes";
 import { TEXT } from "@/constants/text";
 import { MENU } from "@/config/menu";
-import { usePathname } from "next/navigation";
 
 export default function Header() {
     //** Variables */
     const pathname = usePathname();
-    const menuItems = ["Features", "Customers", "Integrations"];
 
     //** Zustand */
     const { profile } = useProfileStore();

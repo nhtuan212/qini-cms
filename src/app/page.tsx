@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";

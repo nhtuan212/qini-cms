@@ -1,3 +1,4 @@
+import React from "react";
 import UIProvider from "@/components/UIProvider";
 import AuthProvider from "@/components/AuthProvider";
 import Layouts from "@/components/layouts";
