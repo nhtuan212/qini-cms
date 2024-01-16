@@ -7,9 +7,8 @@ import Input from "../Input";
 import Button from "../Button";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { signIn } from "next-auth/react";
-import { EyeSlashFilledIcon } from "../Icons/EyeSlashFilledIcon";
-import { EyeFilledIcon } from "../Icons/EyeFilledIcon";
 import { ROUTE } from "@/config/routes";
 import { TEXT } from "@/constants/text";
 
@@ -82,13 +81,15 @@ export default function Login() {
                         placeholder={`${TEXT.ENTER_PASSWORD}...`}
                         endContent={
                             <Button
+                                isIconOnly
+                                variant="light"
                                 className="focus:outline-none"
                                 onClick={toggleVisibility}
                             >
                                 {isVisible ? (
-                                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    <EyeSlashIcon className="w-6 text-primary pointer-events-none" />
                                 ) : (
-                                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                    <EyeIcon className="w-6 text-primary pointer-events-none" />
                                 )}
                             </Button>
                         }
