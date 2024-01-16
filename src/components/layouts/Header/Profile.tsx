@@ -1,8 +1,16 @@
+"use client";
+
 import React, { Fragment } from "react";
-import Link from "next/link";
 import ImageComponent from "@/components/Image";
-import { Menu, Transition } from "@headlessui/react";
+import Button from "@/components/Button";
+import { signOut } from "next-auth/react";
 import { useProfileStore } from "@/stores/useProfileStore";
+import {
+    ArrowRightStartOnRectangleIcon,
+    Cog8ToothIcon,
+    UserCircleIcon,
+} from "@heroicons/react/24/outline";
+import { Menu, Transition } from "@headlessui/react";
 import { TEXT } from "@/constants/text";
 
 export default function Profile() {
@@ -36,30 +44,39 @@ export default function Profile() {
             >
                 <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <Menu.Item>
-                        <Link
-                            href="#"
-                            className={
-                                "block px-4 py-2 font-semibold text-sm text-gray-700"
+                        <Button
+                            fullWidth
+                            variant="light"
+                            className={"justify-start text-gray-700"}
+                        >
+                            <UserCircleIcon className="w-6" />
+                            {profile?.username}
+                        </Button>
+                    </Menu.Item>
+                    <Menu.Item>
+                        <Button
+                            fullWidth
+                            variant="light"
+                            className={"justify-start text-gray-700"}
+                        >
+                            <Cog8ToothIcon className="w-6" />
+                            {TEXT.SETTING}
+                        </Button>
+                    </Menu.Item>
+                    <Menu.Item>
+                        <Button
+                            fullWidth
+                            variant="light"
+                            className={"justify-start text-gray-700"}
+                            onClick={async () =>
+                                await signOut().then(() => {
+                                    localStorage.clear();
+                                })
                             }
                         >
-                            {`${TEXT.ACCOUNT}: ${profile?.username}`}
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Link
-                            href="#"
-                            className={"block px-4 py-2 text-sm text-gray-700"}
-                        >
-                            {TEXT.SETTING}
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Link
-                            href="#"
-                            className={"block px-4 py-2 text-sm text-gray-700"}
-                        >
+                            <ArrowRightStartOnRectangleIcon className="w-6" />
                             {TEXT.LOGOUT}
-                        </Link>
+                        </Button>
                     </Menu.Item>
                 </Menu.Items>
             </Transition>

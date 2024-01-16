@@ -27,7 +27,7 @@ export default async function RootLayout({
     const session: ProfileProps | null = await getServerSession(authOptions);
 
     return (
-        <html lang="en">
+        <html suppressHydrationWarning lang="en">
             <body className={roboto.className}>
                 <UIProvider>
                     <AuthProvider>

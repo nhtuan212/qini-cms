@@ -2,14 +2,18 @@
 
 import React from "react";
 import { NextUIProvider } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 export default function UIProvider({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const router = useRouter();
-
-    return <NextUIProvider navigate={router.push}>{children}</NextUIProvider>;
+    return (
+        <NextUIProvider>
+            <NextThemesProvider attribute="class" defaultTheme={"light"}>
+                {children}
+            </NextThemesProvider>
+        </NextUIProvider>
+    );
 }

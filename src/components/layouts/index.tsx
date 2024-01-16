@@ -15,7 +15,7 @@ export default function Layouts({
     //** Zustand */
     const { getProfile } = useProfileStore();
 
-    //** Hooks */
+    //** Effects */
     useEffect(() => {
         getProfile(session);
     }, [getProfile, session]);
