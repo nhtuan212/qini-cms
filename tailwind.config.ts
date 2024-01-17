@@ -26,6 +26,9 @@ const config: Config = {
             },
         },
     },
+    variants: {
+        tableLayout: ["responsive", "hover", "focus"],
+    },
     darkMode: "class",
     plugins: [nextui()],
 };

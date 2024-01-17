@@ -14,7 +14,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { TEXT } from "@/constants/text";
 
 export default function Profile() {
-    //** Zustand */
+    //** Store */
     const { profile } = useProfileStore();
 
     return (

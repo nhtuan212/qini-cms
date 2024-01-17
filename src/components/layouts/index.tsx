@@ -12,7 +12,7 @@ export default function Layouts({
     session: ProfileProps;
     children: React.ReactNode;
 }) {
-    //** Zustand */
+    //** Store */
     const { getProfile } = useProfileStore();
 
     //** Effects */
