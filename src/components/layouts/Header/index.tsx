@@ -16,7 +16,7 @@ import { MENU } from "@/config/menu";
 import { ROUTE } from "@/config/routes";
 
 export default function Header2() {
-    //** Zustand */
+    //** Store */
     const { openMobileMenu } = useMenuStore();
     const { theme, setTheme } = useTheme();
 

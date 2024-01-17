@@ -30,7 +30,7 @@ export default function Header() {
     //** Variables */
     const pathname = usePathname();
 
-    //** Zustand */
+    //** Store */
     const { profile } = useProfileStore();
 
     //** States */

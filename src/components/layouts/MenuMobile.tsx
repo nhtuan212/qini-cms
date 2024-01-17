@@ -10,7 +10,7 @@ import { useMenuStore } from "@/stores/useMenuStore";
 import { MENU } from "@/config/menu";
 
 export default function MenuMobile({ activeRoute }: { activeRoute: string }) {
-    //** Zustand */
+    //** Store */
     const { isMobileMenuOpen, openMobileMenu } = useMenuStore();
 
     return (
