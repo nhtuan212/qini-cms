@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import TableHead from "./TableHead";
 import TableBody from "./TableBody";
 import { useTableStore } from "@/stores/useTableStore";
@@ -28,6 +28,15 @@ export default function Table({
         allCheckedStore(false);
         checkedStore([]);
     };
+
+    //** Effects */
+    useEffect(() => {
+        // Clear all checked when unmount
+        return () => {
+            allCheckedStore(false);
+            checkedStore([]);
+        };
+    }, [allCheckedStore, checkedStore]);
 
     return (
         <div className="rounded-md p-3 border shadow-lg">
