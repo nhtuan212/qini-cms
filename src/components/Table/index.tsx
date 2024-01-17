@@ -15,7 +15,8 @@ export default function Table({
     isCheckedList?: boolean;
 }) {
     //** Store */
-    const { checked, allCheckedStore, checkedStore } = useTableStore();
+    const { checked, allCheckedStore, checkedStore, clearTableStore } =
+        useTableStore();
 
     //** Functions */
     // isCheckedList
@@ -33,10 +34,9 @@ export default function Table({
     useEffect(() => {
         // Clear all checked when unmount
         return () => {
-            allCheckedStore(false);
-            checkedStore([]);
+            clearTableStore();
         };
-    }, [allCheckedStore, checkedStore]);
+    }, [clearTableStore]);
 
     return (
         <div className="rounded-md p-3 border shadow-lg">

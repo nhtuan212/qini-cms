@@ -5,6 +5,7 @@ interface TableState {
     isAllChecked: boolean;
     checkedStore: (value: readonly number[]) => void;
     allCheckedStore: (status: boolean) => void;
+    clearTableStore: () => void;
 }
 
 export const useTableStore = create<TableState>()(set => ({
@@ -12,4 +13,5 @@ export const useTableStore = create<TableState>()(set => ({
     isAllChecked: false,
     checkedStore: value => set(() => ({ checked: value })),
     allCheckedStore: status => set(() => ({ isAllChecked: status })),
+    clearTableStore: () => set(() => ({ checked: [], isAllChecked: false })),
 }));
