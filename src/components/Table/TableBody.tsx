@@ -67,7 +67,7 @@ export default function TableBody({
                                     key={column.id}
                                     className="px-3 py-2 text-sm rounded-md"
                                 >
-                                    <Cells user={row} columnKey={column.id} />
+                                    <Cells row={row} columnKey={column.id} />
                                 </td>
                             );
                         })}

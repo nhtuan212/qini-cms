@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/authOptions";
 import { ProfileProps } from "@/types/profileProps";
 import { Roboto } from "next/font/google";
-import "./globals.css";
+import "./globals.scss";
 
 const roboto = Roboto({
     weight: ["400", "700"],
