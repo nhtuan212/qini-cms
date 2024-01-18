@@ -65,25 +65,21 @@ export default function Login() {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form onSubmit={onSubmit}>
+                <form onSubmit={onSubmit} className="flex flex-col gap-3">
                     <Input
-                        className="pb-5"
+                        className="input-group:text-indigo-600 mt-2"
                         label={TEXT.USERNAME}
                         name={"username"}
-                        labelPlacement="outside"
                         placeholder={`${TEXT.ENTER_USERNAME}...`}
-                        isRequired
+                        required
                     />
                     <Input
                         label={TEXT.PASSWORD}
                         name={"password"}
-                        labelPlacement="outside"
                         placeholder={`${TEXT.ENTER_PASSWORD}...`}
                         endContent={
                             <Button
-                                isIconOnly
-                                variant="light"
-                                className="focus:outline-none"
+                                className="p-0 h-auto bg-transparent focus:outline-none"
                                 onClick={toggleVisibility}
                             >
                                 {isVisible ? (
@@ -94,7 +90,7 @@ export default function Login() {
                             </Button>
                         }
                         type={isVisible ? "text" : "password"}
-                        isRequired
+                        required
                     />
 
                     {errorLogin && (
@@ -103,7 +99,7 @@ export default function Login() {
                         </p>
                     )}
 
-                    <div className="text-right text-sm py-5">
+                    <div className="text-right text-sm">
                         <Link
                             href="#"
                             className="font-semibold text-indigo-600 hover:text-indigo-500"
@@ -112,7 +108,10 @@ export default function Login() {
                         </Link>
                     </div>
 
-                    <Button fullWidth type="submit">
+                    <Button
+                        className="w-full bg-primary text-white"
+                        type="submit"
+                    >
                         {TEXT.LOGIN}
                     </Button>
                 </form>

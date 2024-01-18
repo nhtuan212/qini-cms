@@ -45,13 +45,13 @@ export default function Header2() {
         <>
             <MenuMobile activeRoute={activeRoute} />
 
-            <header className="relative bg-white dark:bg-black">
+            <header className="relative bg-white dark:bg-black z-40">
                 <nav aria-label="Top" className="container">
                     <div className="border-b border-gray-200">
                         <div className="flex h-16 items-center">
                             {/* Toggle mobile menu */}
                             <Button
-                                className="relative min-w-0 rounded-md bg-white p-2 text-gray-400 lg:hidden"
+                                className="bg-white p-2 text-gray-400 lg:hidden"
                                 onClick={() => openMobileMenu(true)}
                             >
                                 <span className="absolute -inset-0.5" />

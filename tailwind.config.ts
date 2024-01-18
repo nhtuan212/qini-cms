@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import { nextui } from "@nextui-org/react";
+import plugin from "tailwindcss/plugin";
 
 const config: Config = {
     content: [
@@ -30,6 +31,19 @@ const config: Config = {
         tableLayout: ["responsive", "hover", "focus"],
     },
     darkMode: "class",
-    plugins: [nextui()],
+    plugins: [
+        nextui(),
+
+        plugin(function ({ addBase, theme, addVariant }) {
+            addBase({
+                h1: { fontSize: theme("fontSize.2xl") },
+                h2: { fontSize: theme("fontSize.xl") },
+                h3: { fontSize: theme("fontSize.lg") },
+            });
+            // Alias children element
+            addVariant("img", "& > img");
+            addVariant("input", "& > input");
+        }),
+    ],
 };
 export default config;

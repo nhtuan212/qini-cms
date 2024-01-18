@@ -50,17 +50,17 @@ export default function Pagination({
 
     return (
         <div className={clsx("flex w-full h-full", className)}>
-            <nav className="flex flex-wrap items-center max-w-fit h-fit gap-1 py-2.5">
-                {paginationNumbers.map(pageNumber => (
+            <nav className="pagination">
+                {paginationNumbers.map(pageItem => (
                     <Button
-                        key={pageNumber}
+                        key={pageItem}
                         className={clsx(
-                            "paginationItem",
-                            active === pageNumber && "paginationActive",
+                            "pagination-item",
+                            active === pageItem && "pagination-active",
                         )}
-                        onClick={() => handleChangePage(pageNumber)}
+                        onClick={() => handleChangePage(pageItem)}
                     >
-                        {pageNumber}
+                        {pageItem}
                     </Button>
                 ))}
             </nav>

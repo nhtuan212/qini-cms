@@ -17,7 +17,7 @@ export default function MenuMobile({ activeRoute }: { activeRoute: string }) {
         <Transition.Root show={isMobileMenuOpen} as={Fragment}>
             <Dialog
                 as="div"
-                className="relative z-40 lg:hidden"
+                className="relative z-50 lg:hidden"
                 onClose={() => openMobileMenu(false)}
             >
                 <Transition.Child
@@ -45,9 +45,7 @@ export default function MenuMobile({ activeRoute }: { activeRoute: string }) {
                         <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
                             <div className="flex px-4 pb-2 pt-5">
                                 <Button
-                                    isIconOnly
-                                    variant="light"
-                                    className="relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
+                                    className="bg-transparent -m-2 p-2 text-gray-400"
                                     onClick={() => openMobileMenu(false)}
                                 >
                                     <span className="absolute -inset-0.5" />

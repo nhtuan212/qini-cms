@@ -44,37 +44,27 @@ export default function Profile() {
             >
                 <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <Menu.Item>
-                        <Button
-                            fullWidth
-                            variant="light"
-                            className={"justify-start text-gray-700"}
-                        >
-                            <UserCircleIcon className="w-6" />
+                        <Button className="w-full justify-start bg-white text-gray-700">
+                            <UserCircleIcon className="w-6 mr-2" />
                             {profile?.username}
                         </Button>
                     </Menu.Item>
                     <Menu.Item>
-                        <Button
-                            fullWidth
-                            variant="light"
-                            className={"justify-start text-gray-700"}
-                        >
-                            <Cog8ToothIcon className="w-6" />
+                        <Button className="w-full justify-start bg-white text-gray-700">
+                            <Cog8ToothIcon className="w-6 mr-2" />
                             {TEXT.SETTING}
                         </Button>
                     </Menu.Item>
                     <Menu.Item>
                         <Button
-                            fullWidth
-                            variant="light"
-                            className={"justify-start text-gray-700"}
+                            className="w-full justify-start bg-white text-gray-700"
                             onClick={async () =>
                                 await signOut().then(() => {
                                     localStorage.clear();
                                 })
                             }
                         >
-                            <ArrowRightStartOnRectangleIcon className="w-6" />
+                            <ArrowRightStartOnRectangleIcon className="w-6 mr-2" />
                             {TEXT.LOGOUT}
                         </Button>
                     </Menu.Item>
