@@ -57,7 +57,7 @@ export default function Table({
                     isCheckedList={isCheckedList}
                 />
             </table>
-            {isPagination && <Pagination initialPage={1} total={11} />}
+            {isPagination && <Pagination totalPage={12} />}
         </div>
     );
 }

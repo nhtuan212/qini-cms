@@ -11,41 +11,21 @@ import {
 
 interface PaginationProps {
     className?: string;
-    initialPage?: number;
-    total: number;
+    totalPage: number;
 }
 
-export default function Pagination({
-    className,
-    initialPage = 1,
-    total,
-}: PaginationProps) {
+export default function Pagination({ className, totalPage }: PaginationProps) {
+    //** Variables */
+    const paginationNumbers = [];
+    const initialPage = 1;
+
     //** States */
     const [currentPage, setCurrentPage] = useState<number>(initialPage);
+    const [rangePage, setRangePage] = useState<number[]>([initialPage, 5]);
 
-    //** Variables */
-    const firstPage = initialPage;
-    const lastPage = total;
-
-    const paginationNumbers = [];
-    // const range = 5;
-    // const limit =
-    //     currentPage < range
-    //         ? range
-    //         : currentPage + 2 > total
-    //           ? total
-    //           : currentPage + 2;
-
-    // const prev =
-    //     currentPage < range
-    //         ? 1
-    //         : currentPage + 2 > total
-    //           ? total - range + 1
-    //           : currentPage - 2;
-
-    for (let i: number = firstPage; i <= total; i++) {
+    for (let i: number = rangePage[0]; i <= rangePage[1]; i++) {
         if (i < 1) continue;
-        if (i > total) break;
+        if (i > totalPage) break;
         paginationNumbers.push(i);
     }
 
@@ -55,22 +35,26 @@ export default function Pagination({
     };
 
     const handlePageLoadLess = () => {
-        setCurrentPage(firstPage);
+        setRangePage([rangePage[1] - 5 - 4, rangePage[1] - 5]);
+        setCurrentPage(rangePage[1] - 5);
     };
 
     const handlePageLoadMore = () => {
-        setCurrentPage(lastPage);
+        setRangePage([rangePage[1] + 1, rangePage[1] + 5]);
+        setCurrentPage(rangePage[1] + 1);
     };
 
     const handleFirstPage = () => {
-        setCurrentPage(firstPage);
+        setCurrentPage(initialPage);
+        setRangePage([initialPage, initialPage + 4]);
     };
 
     const handleLastPage = () => {
-        setCurrentPage(lastPage);
+        setRangePage([totalPage, totalPage + 4]);
+        setCurrentPage(totalPage);
     };
 
-    if (!total || total <= 1) return null;
+    if (!totalPage || totalPage <= 1) return null;
 
     return (
         <div className={clsx("flex w-full h-full", className)}>
@@ -79,12 +63,14 @@ export default function Pagination({
                     <ChevronDoubleLeftIcon className="w-4" />
                 </Button>
 
-                <Button
-                    className="items-end bg-transparent p-0"
-                    onClick={handlePageLoadLess}
-                >
-                    <EllipsisHorizontalIcon className="w-4" />
-                </Button>
+                {rangePage[0] > initialPage && (
+                    <Button
+                        className="items-end bg-transparent p-0"
+                        onClick={handlePageLoadLess}
+                    >
+                        <EllipsisHorizontalIcon className="w-4" />
+                    </Button>
+                )}
 
                 {paginationNumbers.map(pageItem => (
                     <Button
@@ -99,12 +85,14 @@ export default function Pagination({
                     </Button>
                 ))}
 
-                <Button
-                    className="items-end bg-transparent p-0"
-                    onClick={handlePageLoadMore}
-                >
-                    <EllipsisHorizontalIcon className="w-4" />
-                </Button>
+                {rangePage[1] < totalPage && (
+                    <Button
+                        className="items-end bg-transparent p-0"
+                        onClick={handlePageLoadMore}
+                    >
+                        <EllipsisHorizontalIcon className="w-4" />
+                    </Button>
+                )}
 
                 <Button className="bg-gray-200" onClick={handleLastPage}>
                     <ChevronDoubleRightIcon className="w-4" />
