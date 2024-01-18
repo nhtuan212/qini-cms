@@ -13,7 +13,7 @@ import Table from "@/components/Table";
 export default function ReportTable() {
     return (
         <>
-            <Table isCheckedList columns={columns} rows={rows} />
+            <Table isCheckedList isPagination columns={columns} rows={rows} />
             {/* <Table2
                 // hideHeader
                 columns={columns}

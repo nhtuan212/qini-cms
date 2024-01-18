@@ -8,8 +8,8 @@ import {
     TrashIcon,
 } from "@heroicons/react/24/outline";
 
-export default function Cells({ user, columnKey }: any) {
-    const cellValue = user[columnKey];
+export default function Cells({ row, columnKey }: any) {
+    const cellValue = row[columnKey];
 
     const statusColorMap: any = {
         active: "success",
@@ -21,11 +21,11 @@ export default function Cells({ user, columnKey }: any) {
         case "name":
             return (
                 <User
-                    avatarProps={{ radius: "lg", src: user.avatar }}
-                    description={user.email}
+                    avatarProps={{ radius: "lg", src: row.avatar }}
+                    description={row.email}
                     name={cellValue}
                 >
-                    {user.email}
+                    {row.email}
                 </User>
             );
         case "role":
@@ -33,7 +33,7 @@ export default function Cells({ user, columnKey }: any) {
                 <div className="flex flex-col">
                     <p className="text-bold text-sm capitalize">{cellValue}</p>
                     <p className="text-bold text-sm capitalize text-default-400">
-                        {user.team}
+                        {row.team}
                     </p>
                 </div>
             );
@@ -41,7 +41,7 @@ export default function Cells({ user, columnKey }: any) {
             return (
                 <Chip
                     className="capitalize"
-                    color={statusColorMap[user.status]}
+                    color={statusColorMap[row.status]}
                     size="sm"
                     variant="flat"
                 >

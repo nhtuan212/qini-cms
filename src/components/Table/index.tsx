@@ -4,15 +4,18 @@ import React, { useEffect } from "react";
 import TableHead from "./TableHead";
 import TableBody from "./TableBody";
 import { useTableStore } from "@/stores/useTableStore";
+import Pagination from "../Pagination";
 
 export default function Table({
     columns,
     rows,
     isCheckedList,
+    isPagination,
 }: {
     columns: any;
     rows: any;
     isCheckedList?: boolean;
+    isPagination?: boolean;
 }) {
     //** Store */
     const { checked, allCheckedStore, checkedStore, clearTableStore } =
@@ -54,6 +57,7 @@ export default function Table({
                     isCheckedList={isCheckedList}
                 />
             </table>
+            {isPagination && <Pagination initialPage={1} total={11} />}
         </div>
     );
 }

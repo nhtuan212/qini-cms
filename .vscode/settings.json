@@ -1,6 +1,6 @@
 {
     // Remove Unknown at rule @tailwind
-    "css.customData": [".vscode/css_custom_data.json"],
+    "css.customData": [".vscode/tailwind.json"],
     "cSpell.words": [
         "Chốt",
         "clsx",
