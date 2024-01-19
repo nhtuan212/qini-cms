@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Cells from "../Table2/Cells";
+import Cells from "./Cells";
 import Checkbox from "../Checkbox";
 import { useTableStore } from "@/stores/useTableStore";
 
@@ -9,11 +9,13 @@ export default function TableBody({
     rows,
     columns,
     isCheckedList,
+    emptyRows,
     checked = [],
 }: {
     rows: any;
     columns: any;
     isCheckedList?: boolean;
+    emptyRows: number;
     checked?: readonly number[];
 }) {
     //** Store */
@@ -74,6 +76,12 @@ export default function TableBody({
                     </tr>
                 );
             })}
+
+            {emptyRows > 0 && (
+                <tr style={{ height: 61 * emptyRows }}>
+                    <td colSpan={6} />
+                </tr>
+            )}
         </tbody>
     );
 }
