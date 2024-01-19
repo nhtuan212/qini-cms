@@ -8,6 +8,7 @@ import {
     ChevronRightIcon,
     EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
+import { usePaginationStore } from "@/stores/usePaginationStore";
 
 interface PaginationProps {
     className?: string;
@@ -15,13 +16,15 @@ interface PaginationProps {
 }
 
 export default function Pagination({ className, totalPage }: PaginationProps) {
+    //** Store */
+    const { currentPage, rangePage, currentPageStore, rangePageStore } =
+        usePaginationStore();
+
     //** Variables */
     const paginationNumbers = [];
     const initialPage = 1;
 
     //** States */
-    const [currentPage, setCurrentPage] = useState<number>(initialPage);
-    const [rangePage, setRangePage] = useState<number[]>([initialPage, 5]);
     const [disablePrev, setDisablePrev] = useState<boolean>(false);
     const [disableNext, setDisableNext] = useState<boolean>(false);
     const [pageStatus, setPageStatus] = useState<string>("");
@@ -36,34 +39,46 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
     useEffect(() => {
         // Set range page when page status is changed //
         if (pageStatus === "increase") {
-            setRangePage([rangePage[1] + 1, rangePage[1] + 5]);
-            setCurrentPage(rangePage[1] + 1);
+            rangePageStore([rangePage[1] + 1, rangePage[1] + 5]);
+            currentPageStore(rangePage[1] + 1);
         }
         if (pageStatus === "decrease") {
-            setRangePage([rangePage[1] - 5 - 4, rangePage[1] - 5]);
-            setCurrentPage(rangePage[1] - 5);
+            rangePageStore([rangePage[1] - 5 - 4, rangePage[1] - 5]);
+            currentPageStore(rangePage[1] - 5);
         }
         setPageStatus("");
-    }, [pageStatus, rangePage]);
+    }, [pageStatus, rangePage, currentPageStore, rangePageStore]);
 
     useEffect(() => {
         // Set current page to first page when total page is changed //
         if (currentPage > rangePage[1]) {
-            setRangePage([currentPage, currentPage + 4]);
+            return rangePageStore([currentPage, currentPage + 4]);
         }
         if (currentPage < rangePage[0] && currentPage > initialPage) {
-            setRangePage([currentPage - 4, currentPage]);
+            return rangePageStore([currentPage - 4, currentPage]);
         }
 
+        currentPage === 1 && rangePageStore([initialPage, 5]);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPage]);
+
+    useEffect(() => {
         // Disable prev button when current page is 1 //
-        if (currentPage === initialPage) return setDisablePrev(true);
+        if (currentPage === initialPage) {
+            setDisablePrev(true);
+            return setDisableNext(false);
+        }
 
         // Disable next button when current page is last page //
-        if (currentPage >= totalPage) return setDisableNext(true);
+        if (currentPage >= totalPage) {
+            setDisableNext(true);
+            return setDisablePrev(false);
+        }
 
-        setDisablePrev(false);
         setDisableNext(false);
-    }, [currentPage, disablePrev, disableNext, rangePage, totalPage]);
+        setDisableNext(false);
+    }, [currentPage, disablePrev, disableNext, totalPage]);
 
     if (!totalPage || totalPage <= 1) return null;
 
@@ -72,7 +87,7 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
             <nav className="pagination">
                 <Button
                     className="bg-gray-200"
-                    onClick={() => setCurrentPage(prev => prev - 1)}
+                    onClick={() => currentPageStore(currentPage - 1)}
                     disabled={disablePrev}
                 >
                     <ChevronLeftIcon className="w-4" />
@@ -94,7 +109,7 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
                             "pagination-item",
                             currentPage === pageItem && "pagination-active",
                         )}
-                        onClick={() => setCurrentPage(pageItem)}
+                        onClick={() => currentPageStore(pageItem)}
                     >
                         {pageItem}
                     </Button>
@@ -111,7 +126,7 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
 
                 <Button
                     className="bg-gray-200"
-                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    onClick={() => currentPageStore(currentPage + 1)}
                     disabled={disableNext}
                 >
                     <ChevronRightIcon className="w-4" />
