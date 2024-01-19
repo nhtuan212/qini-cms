@@ -11,18 +11,18 @@ export default function RowsPerPage({
 }) {
     //** Store */
     const { pageSize, pageSizeStore } = useTableStore();
-    const { currentPageStore } = usePaginationStore();
+    const { storeCurrentPage } = usePaginationStore();
 
     //** Functions */
     const handleChangePageSize = (
         event: React.ChangeEvent<HTMLSelectElement>,
     ) => {
         pageSizeStore(Number(event.currentTarget.value));
-        currentPageStore(1);
+        storeCurrentPage(1);
     };
 
     return (
-        <div className="flex justify-end items-center mb-4">
+        <div className="flex justify-end items-center mb-5">
             <label className="flex items-center text-default-400 text-small">
                 <span className="mr-2">Rows per page:</span>
                 {rowsPerPage && rowsPerPage.length > 0 ? (

@@ -17,7 +17,7 @@ interface PaginationProps {
 
 export default function Pagination({ className, totalPage }: PaginationProps) {
     //** Store */
-    const { currentPage, rangePage, currentPageStore, rangePageStore } =
+    const { currentPage, rangePage, storeCurrentPage, storeRangePage } =
         usePaginationStore();
 
     //** Variables */
@@ -39,26 +39,26 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
     useEffect(() => {
         // Set range page when page status is changed //
         if (pageStatus === "increase") {
-            rangePageStore([rangePage[1] + 1, rangePage[1] + 5]);
-            currentPageStore(rangePage[1] + 1);
+            storeRangePage([rangePage[1] + 1, rangePage[1] + 5]);
+            storeCurrentPage(rangePage[1] + 1);
         }
         if (pageStatus === "decrease") {
-            rangePageStore([rangePage[1] - 5 - 4, rangePage[1] - 5]);
-            currentPageStore(rangePage[1] - 5);
+            storeRangePage([rangePage[1] - 5 - 4, rangePage[1] - 5]);
+            storeCurrentPage(rangePage[1] - 5);
         }
         setPageStatus("");
-    }, [pageStatus, rangePage, currentPageStore, rangePageStore]);
+    }, [pageStatus, rangePage, storeCurrentPage, storeRangePage]);
 
     useEffect(() => {
         // Set current page to first page when total page is changed //
         if (currentPage > rangePage[1]) {
-            return rangePageStore([currentPage, currentPage + 4]);
+            return storeRangePage([currentPage, currentPage + 4]);
         }
         if (currentPage < rangePage[0] && currentPage > initialPage) {
-            return rangePageStore([currentPage - 4, currentPage]);
+            return storeRangePage([currentPage - 4, currentPage]);
         }
 
-        currentPage === 1 && rangePageStore([initialPage, 5]);
+        currentPage === 1 && storeRangePage([initialPage, 5]);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage]);
@@ -76,7 +76,7 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
             return setDisablePrev(false);
         }
 
-        setDisableNext(false);
+        setDisablePrev(false);
         setDisableNext(false);
     }, [currentPage, disablePrev, disableNext, totalPage]);
 
@@ -87,10 +87,10 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
             <nav className="pagination">
                 <Button
                     className="bg-gray-200"
-                    onClick={() => currentPageStore(currentPage - 1)}
+                    onClick={() => storeCurrentPage(currentPage - 1)}
                     disabled={disablePrev}
                 >
-                    <ChevronLeftIcon className="w-4" />
+                    <ChevronLeftIcon className="w-4 text-gray-800" />
                 </Button>
 
                 {rangePage[0] > initialPage && (
@@ -98,7 +98,7 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
                         className="items-end bg-transparent p-0"
                         onClick={() => setPageStatus("decrease")}
                     >
-                        <EllipsisHorizontalIcon className="w-4" />
+                        <EllipsisHorizontalIcon className="w-4 text-gray-800" />
                     </Button>
                 )}
 
@@ -109,7 +109,7 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
                             "pagination-item",
                             currentPage === pageItem && "pagination-active",
                         )}
-                        onClick={() => currentPageStore(pageItem)}
+                        onClick={() => storeCurrentPage(pageItem)}
                     >
                         {pageItem}
                     </Button>
@@ -120,16 +120,16 @@ export default function Pagination({ className, totalPage }: PaginationProps) {
                         className="items-end bg-transparent p-0"
                         onClick={() => setPageStatus("increase")}
                     >
-                        <EllipsisHorizontalIcon className="w-4" />
+                        <EllipsisHorizontalIcon className="w-4 text-gray-800" />
                     </Button>
                 )}
 
                 <Button
                     className="bg-gray-200"
-                    onClick={() => currentPageStore(currentPage + 1)}
+                    onClick={() => storeCurrentPage(currentPage + 1)}
                     disabled={disableNext}
                 >
-                    <ChevronRightIcon className="w-4" />
+                    <ChevronRightIcon className="w-4 text-gray-800" />
                 </Button>
             </nav>
         </div>

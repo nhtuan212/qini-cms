@@ -21,9 +21,9 @@ export default function Input({
         <div className={clsx("input", className)}>
             {label && <label className="text-sm">{label}</label>}
             <div className="input-group">
-                {startContent && startContent}
+                {startContent && <span className="mr-2">{startContent}</span>}
                 <input type={type} {...props} />
-                {endContent && endContent}
+                {endContent && <span className="ml-2">{endContent}</span>}
             </div>
         </div>
     );
