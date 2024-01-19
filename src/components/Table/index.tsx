@@ -7,6 +7,7 @@ import { useTableStore } from "@/stores/useTableStore";
 import Pagination from "../Pagination";
 import RowsPerPage from "./RowsPerPage";
 import { usePaginationStore } from "@/stores/usePaginationStore";
+import TopContent from "./TopContent";
 
 export default function Table({
     columns,
@@ -28,17 +29,35 @@ export default function Table({
         allCheckedStore,
         checkedStore,
         clearTableStore,
+
+        filterValue,
     } = useTableStore();
 
     const { currentPage } = usePaginationStore();
 
     //** Variables */
+    const filteredItems = useMemo(() => {
+        return rows.filter((row: any) => {
+            return Object.values(row).some((value: any) => {
+                if (typeof value === "string") {
+                    return value
+                        .toLowerCase()
+                        .includes(filterValue.toLowerCase());
+                }
+                return false;
+            });
+        });
+    }, [filterValue, rows]);
+
     const items = useMemo(() => {
         const start = (currentPage - 1) * pageSize;
         const end = start + pageSize;
 
-        return rows.slice(start, end);
-    }, [rows, currentPage, pageSize]);
+        // return isPagination ? rows.slice(start, end) : filteredItems;
+        return filteredItems.slice(start, end);
+    }, [currentPage, pageSize, filteredItems]);
+
+    // Empty rows
     const emptyRows =
         currentPage > 0 ? Math.max(0, currentPage * pageSize - rows.length) : 0;
 
@@ -64,8 +83,9 @@ export default function Table({
 
     return (
         <div className="rounded-md p-3 border shadow-lg">
+            <TopContent />
             <RowsPerPage rowsPerPage={rowsPerPage} />
-            <table className="table-auto border-collapse">
+            <table className="table-auto">
                 <TableHead
                     columns={columns}
                     rowsLength={rows.length}
@@ -81,7 +101,9 @@ export default function Table({
                 />
             </table>
             {isPagination && (
-                <Pagination totalPage={Math.ceil(rows.length / pageSize)} />
+                <Pagination
+                    totalPage={Math.ceil(filteredItems.length / pageSize)}
+                />
             )}
         </div>
     );

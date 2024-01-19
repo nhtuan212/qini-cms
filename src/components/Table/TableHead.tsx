@@ -21,7 +21,7 @@ export default function TableHead({
         <thead className="sticky top-0 z-20">
             <tr className="bg-gray-100">
                 {isCheckedList && (
-                    <th className="px-3 py-2 flex items-center">
+                    <th className="px-3 py-2 font-semibold text-tiny first:rounded-l-md last:rounded-r-md">
                         <Checkbox
                             checked={isAllChecked}
                             onChange={onCheckedAll}
@@ -30,8 +30,9 @@ export default function TableHead({
                 )}
                 {columns?.map((column: any) => (
                     <th
-                        key={column.id}
+                        key={column.key}
                         className="w-1/2 px-3 py-2 font-semibold text-tiny first:rounded-l-md last:rounded-r-md"
+                        style={{ width: column.with }}
                         align="left"
                     >
                         {column.name}

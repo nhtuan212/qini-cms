@@ -26,7 +26,9 @@ export const TEXT = {
     CHECK_IN: "Giờ vào",
     CHECK_OUT: "Giờ ra",
     REVENUE: "Doanh thu",
+    CANCEL: "Huỷ",
     SAVE: "Save",
+    ENTER_SEARCH: "Nhập từ khóa tìm kiếm ...",
 
     IMAGE: {
         ALT: "Image",

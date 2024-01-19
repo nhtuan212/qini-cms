@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Cells from "./Cells";
 import Checkbox from "../Checkbox";
 import { useTableStore } from "@/stores/useTableStore";
 
@@ -66,10 +65,11 @@ export default function TableBody({
                         {columns?.map((column: any) => {
                             return (
                                 <td
-                                    key={column.id}
+                                    key={column.key}
                                     className="px-3 py-2 text-sm rounded-md"
                                 >
-                                    <Cells row={row} columnKey={column.id} />
+                                    {typeof column.content === "function" &&
+                                        column.content(row)}
                                 </td>
                             );
                         })}

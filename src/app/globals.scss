@@ -8,7 +8,8 @@
 
 // Button
 .button {
-    @apply inline-flex justify-center items-center align-middle;
+    // Display
+    @apply relative inline-flex justify-center items-center align-middle;
 
     // Responsive sizing
     @apply min-w-6 h-6;
@@ -16,10 +17,12 @@
 
     // Responsive spacing
     @apply py-1 px-2;
-    @apply sm:py-1.5 sm:px-2.5;
+    @apply sm:py-2 sm:px-4;
 
-    @apply bg-primary text-gray-800 text-sm;
+    // Background, text and ...
+    @apply bg-primary text-white text-sm;
     @apply rounded-md cursor-pointer;
+
     @apply hover:opacity-90 active:opacity-100;
     @apply disabled:opacity-50 disabled:pointer-events-none;
 }

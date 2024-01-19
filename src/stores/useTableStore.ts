@@ -5,6 +5,10 @@ interface TableState {
     isAllChecked: boolean;
     pageSize: number;
 
+    // Filter value
+    filterValue: string;
+    storeFilterValue: (filterValue: string) => void;
+
     checkedStore: (value: readonly number[]) => void;
     allCheckedStore: (status: boolean) => void;
     pageSizeStore: (value: number) => void;
@@ -15,6 +19,9 @@ export const useTableStore = create<TableState>()(set => ({
     checked: [],
     pageSize: 5,
     isAllChecked: false,
+
+    filterValue: "",
+    storeFilterValue: filterValue => set(() => ({ filterValue })),
 
     checkedStore: value => set(() => ({ checked: value })),
     allCheckedStore: status => set(() => ({ isAllChecked: status })),
