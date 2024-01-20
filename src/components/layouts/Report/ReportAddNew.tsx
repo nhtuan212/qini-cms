@@ -1,12 +1,8 @@
-"use client";
-
 import React from "react";
-import { TEXT } from "@/constants/text";
-import Dialog from "@/components/Dialog";
+import Modal from "@/components/Modal";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import { useDialogStore } from "@/stores/useDialogStore";
-import { useProfileStore } from "@/stores/useProfileStore";
+import { useModalStore } from "@/stores/useModalStore";
 import { Select, SelectItem } from "@nextui-org/react";
 import {
     ClockIcon,
@@ -14,19 +10,23 @@ import {
     PlusIcon,
     UserCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useProfileStore } from "@/stores/useProfileStore";
 import { staffApi, timeSheet } from "@/config/apis";
+import { TEXT } from "@/constants/text";
 
-export default function AddNew() {
+export default function ReportAddNew() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { isDialogOpen, openDialog } = useDialogStore();
+    const { openModal, isModalOpen } = useModalStore();
 
     return (
-        <Dialog open={isDialogOpen} size="4xl">
-            <Dialog.Title className="text-lg font-medium leading-6 text-gray-900">
-                {TEXT.ADD_REPORT}
-            </Dialog.Title>
-            <Dialog.Content>
+        <Modal
+            isOpen={isModalOpen}
+            size="4xl"
+            onOpenChange={() => openModal(false)}
+        >
+            <Modal.Header>{TEXT.ADD_REPORT}</Modal.Header>
+            <Modal.Body>
                 <div className="flex flex-column flex-wrap gap-4 my-4">
                     <div className="w-full flex justify-between items-center">
                         <p>
@@ -88,20 +88,20 @@ export default function AddNew() {
                         />
                     </div>
                 </div>
-            </Dialog.Content>
-            <Dialog.Action>
+            </Modal.Body>
+            <Modal.Footer>
                 <div className="flex flex-row-reverse gap-2">
-                    <Button onClick={() => openDialog(false)}>
+                    <Button onClick={() => openModal(false)}>
                         {TEXT.SAVE}
                     </Button>
                     <Button
                         className="bg-white text-default-900 ring-1 ring-inset ring-gray-300"
-                        onClick={() => openDialog(false)}
+                        onClick={() => openModal(false)}
                     >
                         {TEXT.CANCEL}
                     </Button>
                 </div>
-            </Dialog.Action>
-        </Dialog>
+            </Modal.Footer>
+        </Modal>
     );
 }

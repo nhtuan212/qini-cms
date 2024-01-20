@@ -8,14 +8,14 @@ import {
 } from "@heroicons/react/24/outline";
 import { usePaginationStore } from "@/stores/usePaginationStore";
 import { useTableStore } from "@/stores/useTableStore";
+import { useModalStore } from "@/stores/useModalStore";
 import { TEXT } from "@/constants/text";
-import { useDialogStore } from "@/stores/useDialogStore";
 
 export default function TopContent() {
     //** Stores */
     const { filterValue, storeFilterValue } = useTableStore();
     const { storeCurrentPage } = usePaginationStore();
-    const { openDialog } = useDialogStore();
+    const { openModal } = useModalStore();
 
     //** Functions */
     const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +42,7 @@ export default function TopContent() {
                     value={filterValue}
                 />
                 <div className="flex gap-3">
-                    <Button onClick={() => openDialog(true)}>
+                    <Button onClick={() => openModal(true)}>
                         {TEXT.ADD_NEW}
                         <PlusIcon className="w-5 ml-2" />
                     </Button>

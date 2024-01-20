@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Dialog as DialogUI, Transition } from "@headlessui/react";
-import { useDialogStore } from "@/stores/useDialogStore";
+import { useModalStore } from "@/stores/useModalStore";
 import clsx from "clsx";
 
 const Dialog = ({
@@ -13,14 +13,14 @@ const Dialog = ({
     children: React.ReactNode;
 }) => {
     //** Stores */
-    const { openDialog } = useDialogStore();
+    const { openModal } = useModalStore();
 
     return (
         <Transition appear show={open} as={Fragment}>
             <DialogUI
                 as="div"
                 className="relative z-10"
-                onClose={() => openDialog(false)}
+                onClose={() => openModal(false)}
             >
                 <Transition.Child
                     as={Fragment}

@@ -3,8 +3,8 @@
 import React from "react";
 import Table from "@/components/Table";
 import ReportColumns from "./ReportColumns";
+import ReportAddNew from "./ReportAddNew";
 import { rows } from "@/components/Table/apis";
-import AddNew from "./AddNew";
 
 export default function ReportTable() {
     return (
@@ -16,8 +16,9 @@ export default function ReportTable() {
                 isPagination
                 rowsPerPage={[5, 10]}
             />
+
             {/* Add new content */}
-            <AddNew />
+            <ReportAddNew />
         </>
     );
 }
