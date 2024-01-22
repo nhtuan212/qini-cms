@@ -62,4 +62,9 @@
     }
 }
 
+// Error Message
+.errorMessage {
+    @apply p-1 text-tiny text-danger;
+}
+
 @tailwind utilities;

@@ -1,19 +1,6 @@
 import clsx from "clsx";
 import React, { ButtonHTMLAttributes } from "react";
 
-// export default function Button({
-//     className,
-//     children,
-//     type = "button",
-//     ...props
-// }: ButtonHTMLAttributes<HTMLButtonElement>) {
-//     return (
-//         <button className={clsx("button", className)} type={type} {...props}>
-//             {children}
-//         </button>
-//     );
-// }
-
 const Button = React.forwardRef(
     (
         {
@@ -38,3 +25,16 @@ const Button = React.forwardRef(
 );
 
 export default Button;
+
+// export default function Button({
+//     className,
+//     children,
+//     type = "button",
+//     ...props
+// }: ButtonHTMLAttributes<HTMLButtonElement>) {
+//     return (
+//         <button className={clsx("button", className)} type={type} {...props}>
+//             {children}
+//         </button>
+//     );
+// }
