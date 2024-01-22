@@ -1,8 +1,11 @@
+"use client";
+
 import React from "react";
 import clsx from "clsx";
 import Modal from "@/components/Modal";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import ErrorMessage from "@/components/ErrorMessage";
 import { useModalStore } from "@/stores/useModalStore";
 import { Select, SelectItem } from "@nextui-org/react";
 import {
@@ -16,7 +19,6 @@ import { useFieldArray, useForm, Controller } from "react-hook-form";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { staffApi, timeSheet } from "@/config/apis";
 import { TEXT } from "@/constants/text";
-import { ErrorMessage } from "@hookform/error-message";
 import { wrongTimeSheet, getHours } from "@/utils";
 
 type FormValues = {
@@ -98,16 +100,19 @@ export default function ReportAddNew() {
                                     <Controller
                                         name={`staff.${index}.name`}
                                         control={control}
-                                        rules={{ required: true }}
-                                        render={({ field: { onChange } }) => (
+                                        render={() => (
                                             <Select
                                                 className="w-full"
                                                 startContent={<UserCircleIcon className="w-6" />}
                                                 label={TEXT.STAFF}
-                                                onChange={onChange}
+                                                {...register(`staff.${index}.name`, {
+                                                    required: `${TEXT.STAFF} ${TEXT.IS_REQUIRED}`,
+                                                })}
                                                 errorMessage={
-                                                    errors?.staff?.[index]?.name &&
-                                                    `${TEXT.STAFF} ${TEXT.IS_REQUIRED}`
+                                                    <ErrorMessage
+                                                        errors={errors}
+                                                        name={`staff.${index}.name`}
+                                                    />
                                                 }
                                             >
                                                 {staffApi.map(item => (
@@ -131,8 +136,10 @@ export default function ReportAddNew() {
                                                     required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
                                                 })}
                                                 errorMessage={
-                                                    errors?.staff?.[index]?.checkIn &&
-                                                    `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`
+                                                    <ErrorMessage
+                                                        errors={errors}
+                                                        name={`staff.${index}.checkIn`}
+                                                    />
                                                 }
                                             >
                                                 {timeSheet.map(item => (
@@ -173,14 +180,6 @@ export default function ReportAddNew() {
                                                     <ErrorMessage
                                                         errors={errors}
                                                         name={`staff.${index}.checkOut`}
-                                                        render={({ messages }) =>
-                                                            messages &&
-                                                            Object.entries(messages).map(
-                                                                ([type, message]) => (
-                                                                    <p key={type}>{message}</p>
-                                                                ),
-                                                            )
-                                                        }
                                                     />
                                                 }
                                             >
@@ -192,20 +191,17 @@ export default function ReportAddNew() {
                                             </Select>
                                         )}
                                     />
-                                    {
+                                    {index > 0 && (
                                         <Button
                                             className={clsx(
                                                 "absolute -right-2 top-0",
                                                 "min-w-6 h-6 p-0 rounded-full",
                                             )}
-                                            onClick={() => {
-                                                if (index === 0) return;
-                                                remove(index);
-                                            }}
+                                            onClick={() => remove(index)}
                                         >
                                             <XMarkIcon className="w-4" />
                                         </Button>
-                                    }
+                                    )}
                                 </div>
                             );
                         })}
@@ -243,18 +239,7 @@ export default function ReportAddNew() {
                                             },
                                         })}
                                         errorMessage={
-                                            <ErrorMessage
-                                                errors={errors}
-                                                name={"revenue"}
-                                                render={({ messages }) =>
-                                                    messages &&
-                                                    Object.entries(messages).map(
-                                                        ([type, message]) => (
-                                                            <p key={type}>{message}</p>
-                                                        ),
-                                                    )
-                                                }
-                                            />
+                                            <ErrorMessage errors={errors} name={"revenue"} />
                                         }
                                     />
                                 )}
