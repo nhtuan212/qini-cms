@@ -4,11 +4,7 @@ import React from "react";
 import { NextUIProvider } from "@nextui-org/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-export default function UIProvider({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+export default function UIProvider({ children }: { children: React.ReactNode }) {
     return (
         <NextUIProvider>
             <NextThemesProvider attribute="class" defaultTheme={"light"}>

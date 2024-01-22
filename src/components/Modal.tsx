@@ -23,9 +23,7 @@ const Modal = ({ size = "md", radius = "sm", children, ...props }: Props) => {
 };
 
 const Header = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <ModalHeader className="flex flex-col gap-1">{children}</ModalHeader>
-    );
+    return <ModalHeader className="flex flex-col gap-1">{children}</ModalHeader>;
 };
 
 const Body = ({ children }: { children: React.ReactNode }) => {

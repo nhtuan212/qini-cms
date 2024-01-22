@@ -56,25 +56,13 @@ export default function Header2() {
                             >
                                 <span className="absolute -inset-0.5" />
                                 <span className="sr-only">Open menu</span>
-                                <Bars3Icon
-                                    className="h-6 w-6"
-                                    aria-hidden="true"
-                                />
+                                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                             </Button>
 
                             {/* Logo */}
-                            <Link
-                                href={ROUTE.HOME}
-                                className="flex items-center ml-4 lg:ml-0"
-                            >
-                                <Logo
-                                    width="64"
-                                    height="58"
-                                    className="w-[1.5rem] h-[1.5rem]"
-                                />
-                                <span className="ml-2">
-                                    {process.env.NEXT_PUBLIC_SITE_NAME}
-                                </span>
+                            <Link href={ROUTE.HOME} className="flex items-center ml-4 lg:ml-0">
+                                <Logo width="64" height="58" className="w-[1.5rem] h-[1.5rem]" />
+                                <span className="ml-2">{process.env.NEXT_PUBLIC_SITE_NAME}</span>
                             </Link>
 
                             {/* Desktop menus */}
@@ -85,8 +73,7 @@ export default function Header2() {
                                             key={menu.url}
                                             className={clsx(
                                                 "flex items-center text-sm font-medium hover:underline",
-                                                activeRoute === menu.url &&
-                                                    "text-primary",
+                                                activeRoute === menu.url && "text-primary",
                                             )}
                                             href={menu.url}
                                         >

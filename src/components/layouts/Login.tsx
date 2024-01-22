@@ -52,11 +52,7 @@ export default function Login() {
         <div className="flex min-h-screen flex-1 flex-col justify-center p-6">
             <div className="flex flex-col items-center sm:mx-auto sm:w-full sm:max-w-sm">
                 <Link href={ROUTE.HOME}>
-                    <Logo
-                        width="64"
-                        height="58"
-                        className="w-[3rem] h-[3rem]"
-                    />
+                    <Logo width="64" height="58" className="w-[3rem] h-[3rem]" />
                 </Link>
 
                 <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -108,10 +104,7 @@ export default function Login() {
                         </Link>
                     </div>
 
-                    <Button
-                        className="w-full bg-primary text-white"
-                        type="submit"
-                    >
+                    <Button className="w-full bg-primary text-white" type="submit">
                         {TEXT.LOGIN}
                     </Button>
                 </form>

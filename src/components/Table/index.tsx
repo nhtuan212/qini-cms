@@ -40,9 +40,7 @@ export default function Table({
         return rows.filter((row: any) => {
             return Object.values(row).some((value: any) => {
                 if (typeof value === "string") {
-                    return value
-                        .toLowerCase()
-                        .includes(filterValue.toLowerCase());
+                    return value.toLowerCase().includes(filterValue.toLowerCase());
                 }
                 return false;
             });
@@ -58,8 +56,7 @@ export default function Table({
     }, [currentPage, pageSize, filteredItems]);
 
     // Empty rows
-    const emptyRows =
-        currentPage > 0 ? Math.max(0, currentPage * pageSize - rows.length) : 0;
+    const emptyRows = currentPage > 0 ? Math.max(0, currentPage * pageSize - rows.length) : 0;
 
     //** Functions */
     // isCheckedList
@@ -100,11 +97,7 @@ export default function Table({
                     isCheckedList={isCheckedList}
                 />
             </table>
-            {isPagination && (
-                <Pagination
-                    totalPage={Math.ceil(filteredItems.length / pageSize)}
-                />
-            )}
+            {isPagination && <Pagination totalPage={Math.ceil(filteredItems.length / pageSize)} />}
         </div>
     );
 }

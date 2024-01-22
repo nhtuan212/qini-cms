@@ -58,9 +58,7 @@ export default function ReportAddNew() {
         data.staff.forEach(item => {
             const checkIn = new Date(item.checkIn);
             const checkOut = new Date(item.checkOut);
-            const timeWorked =
-                Math.abs(checkOut.valueOf() - checkIn.valueOf()) /
-                (1000 * 60 * 60);
+            const timeWorked = Math.abs(checkOut.valueOf() - checkIn.valueOf()) / (1000 * 60 * 60);
 
             staffArray.push({
                 timeWorked,
@@ -76,11 +74,7 @@ export default function ReportAddNew() {
     };
 
     return (
-        <Modal
-            isOpen={isModalOpen}
-            size="4xl"
-            onOpenChange={() => openModal(false)}
-        >
+        <Modal isOpen={isModalOpen} size="4xl" onOpenChange={() => openModal(false)}>
             <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
                 <Modal.Header>{TEXT.ADD_REPORT}</Modal.Header>
                 <Modal.Body>
@@ -88,9 +82,7 @@ export default function ReportAddNew() {
                         <div className="w-full flex justify-between items-center">
                             <p>
                                 {TEXT.WORK_SHIFT}:{" "}
-                                <b className="text-primary">
-                                    {profile.username}
-                                </b>
+                                <b className="text-primary">{profile.username}</b>
                             </p>
                             <p>
                                 {TEXT.DATE}: {new Date().toDateString()}
@@ -110,22 +102,16 @@ export default function ReportAddNew() {
                                         render={({ field: { onChange } }) => (
                                             <Select
                                                 className="w-full"
-                                                startContent={
-                                                    <UserCircleIcon className="w-6" />
-                                                }
+                                                startContent={<UserCircleIcon className="w-6" />}
                                                 label={TEXT.STAFF}
                                                 onChange={onChange}
                                                 errorMessage={
-                                                    errors?.staff?.[index]
-                                                        ?.name &&
+                                                    errors?.staff?.[index]?.name &&
                                                     `${TEXT.STAFF} ${TEXT.IS_REQUIRED}`
                                                 }
                                             >
                                                 {staffApi.map(item => (
-                                                    <SelectItem
-                                                        key={item.value}
-                                                        value={item.value}
-                                                    >
+                                                    <SelectItem key={item.value} value={item.value}>
                                                         {item.value}
                                                     </SelectItem>
                                                 ))}
@@ -139,27 +125,18 @@ export default function ReportAddNew() {
                                         render={() => (
                                             <Select
                                                 className="w-full"
-                                                startContent={
-                                                    <ClockIcon className="w-6" />
-                                                }
+                                                startContent={<ClockIcon className="w-6" />}
                                                 label={TEXT.CHECK_IN}
-                                                {...register(
-                                                    `staff.${index}.checkIn`,
-                                                    {
-                                                        required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
-                                                    },
-                                                )}
+                                                {...register(`staff.${index}.checkIn`, {
+                                                    required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
+                                                })}
                                                 errorMessage={
-                                                    errors?.staff?.[index]
-                                                        ?.checkIn &&
+                                                    errors?.staff?.[index]?.checkIn &&
                                                     `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`
                                                 }
                                             >
                                                 {timeSheet.map(item => (
-                                                    <SelectItem
-                                                        key={item.value}
-                                                        value={item.value}
-                                                    >
+                                                    <SelectItem key={item.value} value={item.value}>
                                                         {getHours(item.value)}
                                                     </SelectItem>
                                                 ))}
@@ -173,59 +150,34 @@ export default function ReportAddNew() {
                                         render={() => (
                                             <Select
                                                 className="w-full"
-                                                startContent={
-                                                    <ClockIcon className="w-6" />
-                                                }
+                                                startContent={<ClockIcon className="w-6" />}
                                                 label={TEXT.CHECK_OUT}
-                                                {...register(
-                                                    `staff.${index}.checkOut`,
-                                                    {
-                                                        required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
+                                                {...register(`staff.${index}.checkOut`, {
+                                                    required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
 
-                                                        validate: value => {
-                                                            const isWrongTimeSheet =
-                                                                wrongTimeSheet({
-                                                                    checkIn:
-                                                                        getValues(
-                                                                            `staff.${index}.checkIn`,
-                                                                        ),
-                                                                    checkOut:
-                                                                        value,
-                                                                });
+                                                    validate: value => {
+                                                        const isWrongTimeSheet = wrongTimeSheet({
+                                                            checkIn: getValues(
+                                                                `staff.${index}.checkIn`,
+                                                            ),
+                                                            checkOut: value,
+                                                        });
 
-                                                            if (
-                                                                isWrongTimeSheet
-                                                            )
-                                                                return TEXT.CHECK_OUR_SMALL_THAN_CHECK_IN;
+                                                        if (isWrongTimeSheet)
+                                                            return TEXT.CHECK_OUR_SMALL_THAN_CHECK_IN;
 
-                                                            return true;
-                                                        },
+                                                        return true;
                                                     },
-                                                )}
+                                                })}
                                                 errorMessage={
                                                     <ErrorMessage
                                                         errors={errors}
                                                         name={`staff.${index}.checkOut`}
-                                                        render={({
-                                                            messages,
-                                                        }) =>
+                                                        render={({ messages }) =>
                                                             messages &&
-                                                            Object.entries(
-                                                                messages,
-                                                            ).map(
-                                                                ([
-                                                                    type,
-                                                                    message,
-                                                                ]) => (
-                                                                    <p
-                                                                        key={
-                                                                            type
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            message
-                                                                        }
-                                                                    </p>
+                                                            Object.entries(messages).map(
+                                                                ([type, message]) => (
+                                                                    <p key={type}>{message}</p>
                                                                 ),
                                                             )
                                                         }
@@ -233,10 +185,7 @@ export default function ReportAddNew() {
                                                 }
                                             >
                                                 {timeSheet.map(item => (
-                                                    <SelectItem
-                                                        key={item.value}
-                                                        value={item.value}
-                                                    >
+                                                    <SelectItem key={item.value} value={item.value}>
                                                         {getHours(item.value)}
                                                     </SelectItem>
                                                 ))}
@@ -284,16 +233,13 @@ export default function ReportAddNew() {
                                 render={() => (
                                     <Input
                                         className="w-full"
-                                        startContent={
-                                            <CurrencyDollarIcon className="w-6" />
-                                        }
+                                        startContent={<CurrencyDollarIcon className="w-6" />}
                                         placeholder={TEXT.REVENUE}
                                         {...register("revenue", {
                                             required: `${TEXT.REVENUE} ${TEXT.IS_REQUIRED}`,
                                             pattern: {
                                                 value: /^[0-9]+$/i,
-                                                message:
-                                                    "This input is number only.",
+                                                message: "This input is number only.",
                                             },
                                         })}
                                         errorMessage={
@@ -302,13 +248,11 @@ export default function ReportAddNew() {
                                                 name={"revenue"}
                                                 render={({ messages }) =>
                                                     messages &&
-                                                    Object.entries(
-                                                        messages,
-                                                    ).map(([type, message]) => (
-                                                        <p key={type}>
-                                                            {message}
-                                                        </p>
-                                                    ))
+                                                    Object.entries(messages).map(
+                                                        ([type, message]) => (
+                                                            <p key={type}>{message}</p>
+                                                        ),
+                                                    )
                                                 }
                                             />
                                         }
