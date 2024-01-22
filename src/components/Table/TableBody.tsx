@@ -64,12 +64,8 @@ export default function TableBody({
                         )}
                         {columns?.map((column: any) => {
                             return (
-                                <td
-                                    key={column.key}
-                                    className="px-3 py-2 text-sm rounded-md"
-                                >
-                                    {typeof column.content === "function" &&
-                                        column.content(row)}
+                                <td key={column.key} className="px-3 py-2 text-sm rounded-md">
+                                    {typeof column.content === "function" && column.content(row)}
                                 </td>
                             );
                         })}

@@ -50,10 +50,7 @@ export default function MenuMobile({ activeRoute }: { activeRoute: string }) {
                                 >
                                     <span className="absolute -inset-0.5" />
                                     <span className="sr-only">Close menu</span>
-                                    <XMarkIcon
-                                        className="h-6 w-6"
-                                        aria-hidden="true"
-                                    />
+                                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                                 </Button>
                             </div>
 
@@ -63,8 +60,7 @@ export default function MenuMobile({ activeRoute }: { activeRoute: string }) {
                                         key={menu.url}
                                         className={clsx(
                                             "-m-2 block p-2 font-medium text-gray-900",
-                                            activeRoute === menu.url &&
-                                                "text-primary",
+                                            activeRoute === menu.url && "text-primary",
                                         )}
                                         href={menu.url}
                                     >

@@ -3,11 +3,7 @@
 import React from "react";
 import ImageComponent from "@/components/Image";
 import Button from "@/components/Button";
-import {
-    EyeIcon,
-    PencilSquareIcon,
-    TrashIcon,
-} from "@heroicons/react/24/outline";
+import { EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Chip, Tooltip } from "@nextui-org/react";
 
 export default function ReportColumns() {
@@ -24,11 +20,7 @@ export default function ReportColumns() {
             content: (row: any) => (
                 <div className="flex items-center gap-2">
                     <span className="w-10 h-10">
-                        <ImageComponent
-                            className="rounded-lg"
-                            src={row.avatar}
-                            alt={row.name}
-                        />
+                        <ImageComponent className="rounded-lg" src={row.avatar} alt={row.name} />
                     </span>
                     <div>
                         <p className="text-sm">{row.name}</p>
@@ -43,9 +35,7 @@ export default function ReportColumns() {
             content: (row: any) => (
                 <div className="flex flex-col">
                     <p className="text-bold text-sm capitalize">{row.role}</p>
-                    <p className="text-bold text-sm capitalize text-default-400">
-                        {row.team}
-                    </p>
+                    <p className="text-bold text-sm capitalize text-default-400">{row.team}</p>
                 </div>
             ),
         },

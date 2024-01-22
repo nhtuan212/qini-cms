@@ -1,11 +1,7 @@
 import React from "react";
 import Input from "../Input";
 import Button from "../Button";
-import {
-    MagnifyingGlassIcon,
-    PlusIcon,
-    XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { usePaginationStore } from "@/stores/usePaginationStore";
 import { useTableStore } from "@/stores/useTableStore";
 import { useModalStore } from "@/stores/useModalStore";

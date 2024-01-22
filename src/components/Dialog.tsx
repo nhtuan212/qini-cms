@@ -17,11 +17,7 @@ const Dialog = ({
 
     return (
         <Transition appear show={open} as={Fragment}>
-            <DialogUI
-                as="div"
-                className="relative z-10"
-                onClose={() => openModal(false)}
-            >
+            <DialogUI as="div" className="relative z-10" onClose={() => openModal(false)}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -61,13 +57,7 @@ const Dialog = ({
     );
 };
 
-const Title = ({
-    children,
-    className,
-}: {
-    children: React.ReactNode;
-    className?: string;
-}) => {
+const Title = ({ children, className }: { children: React.ReactNode; className?: string }) => {
     return (
         <DialogUI.Title as="h3" className={className}>
             {children}

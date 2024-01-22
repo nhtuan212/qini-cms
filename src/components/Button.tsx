@@ -3,21 +3,11 @@ import React, { ButtonHTMLAttributes } from "react";
 
 const Button = React.forwardRef(
     (
-        {
-            className,
-            children,
-            type = "button",
-            ...props
-        }: ButtonHTMLAttributes<HTMLButtonElement>,
+        { className, children, type = "button", ...props }: ButtonHTMLAttributes<HTMLButtonElement>,
         ref: React.ForwardedRef<HTMLButtonElement>,
     ) => {
         return (
-            <button
-                ref={ref}
-                className={clsx("button", className)}
-                type={type}
-                {...props}
-            >
+            <button ref={ref} className={clsx("button", className)} type={type} {...props}>
                 {children}
             </button>
         );

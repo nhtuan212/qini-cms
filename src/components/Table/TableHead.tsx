@@ -22,10 +22,7 @@ export default function TableHead({
             <tr className="bg-gray-100">
                 {isCheckedList && (
                     <th className="px-3 py-2 font-semibold text-tiny first:rounded-l-md last:rounded-r-md">
-                        <Checkbox
-                            checked={isAllChecked}
-                            onChange={onCheckedAll}
-                        />
+                        <Checkbox checked={isAllChecked} onChange={onCheckedAll} />
                     </th>
                 )}
                 {columns?.map((column: any) => (

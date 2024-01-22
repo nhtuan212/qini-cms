@@ -4,19 +4,13 @@ import React from "react";
 import { useTableStore } from "@/stores/useTableStore";
 import { usePaginationStore } from "@/stores/usePaginationStore";
 
-export default function RowsPerPage({
-    rowsPerPage,
-}: {
-    rowsPerPage?: number[];
-}) {
+export default function RowsPerPage({ rowsPerPage }: { rowsPerPage?: number[] }) {
     //** Store */
     const { pageSize, pageSizeStore } = useTableStore();
     const { storeCurrentPage } = usePaginationStore();
 
     //** Functions */
-    const handleChangePageSize = (
-        event: React.ChangeEvent<HTMLSelectElement>,
-    ) => {
+    const handleChangePageSize = (event: React.ChangeEvent<HTMLSelectElement>) => {
         pageSizeStore(Number(event.currentTarget.value));
         storeCurrentPage(1);
     };

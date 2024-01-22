@@ -17,8 +17,7 @@ interface PaginationProps {
 
 export default function Pagination({ className, totalPage }: PaginationProps) {
     //** Store */
-    const { currentPage, rangePage, storeCurrentPage, storeRangePage } =
-        usePaginationStore();
+    const { currentPage, rangePage, storeCurrentPage, storeRangePage } = usePaginationStore();
 
     //** Variables */
     const paginationNumbers = [];
