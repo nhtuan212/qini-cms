@@ -2,7 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { URL } from "@/config/urls";
 import { ROUTE } from "@/config/routes";
-import { fetchData } from "@/utils";
+import { fetchData } from "@/utils/fetch";
 
 export const authOptions: NextAuthOptions = {
     // Configure one or more authentication providers

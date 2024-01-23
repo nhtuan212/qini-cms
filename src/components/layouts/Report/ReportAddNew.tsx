@@ -17,9 +17,11 @@ import {
 } from "@heroicons/react/24/outline";
 import { useFieldArray, useForm, Controller } from "react-hook-form";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { staffApi, timeSheet } from "@/config/apis";
-import { TEXT } from "@/constants/text";
+import { fetchData } from "@/utils/fetch";
 import { wrongTimeSheet, getHours } from "@/utils";
+import { staffApi, timeSheet } from "@/config/apis";
+import { URL } from "@/config/urls";
+import { TEXT } from "@/constants/text";
 
 type FormValues = {
     staff: {
@@ -54,7 +56,7 @@ export default function ReportAddNew() {
         name: "staff",
         control,
     });
-    const onSubmit = (data: FormValues) => {
+    const onSubmit = async (data: FormValues) => {
         const staffArray: any = [];
 
         data.staff.forEach(item => {
@@ -64,7 +66,7 @@ export default function ReportAddNew() {
 
             staffArray.push({
                 timeWorked,
-                date: new Date().toDateString(),
+                date: new Date(),
                 checkIn: getHours(item.checkIn),
                 checkOut: getHours(item.checkOut),
                 revenue: Math.round(data.revenue / data.staff.length),
@@ -72,7 +74,13 @@ export default function ReportAddNew() {
             });
         });
 
-        console.log({ staffArray });
+        return await fetchData({
+            endpoint: URL.report,
+            options: {
+                method: "POST",
+                body: JSON.stringify(staffArray),
+            },
+        }).then(res => res);
     };
 
     return (
@@ -171,7 +179,7 @@ export default function ReportAddNew() {
                                                         });
 
                                                         if (isWrongTimeSheet)
-                                                            return TEXT.CHECK_OUR_SMALL_THAN_CHECK_IN;
+                                                            return TEXT.CHECK_OUR_LARGE_THAN_CHECK_IN;
 
                                                         return true;
                                                     },

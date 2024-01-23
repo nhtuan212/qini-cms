@@ -25,7 +25,7 @@ export const TEXT = {
     DATE: "Ngày",
     CHECK_IN: "Giờ vào",
     CHECK_OUT: "Giờ ra",
-    CHECK_OUR_SMALL_THAN_CHECK_IN: "Giờ ra không được nhỏ hơn giờ vào",
+    CHECK_OUR_LARGE_THAN_CHECK_IN: "Giờ ra phải lớn hơn giờ vào",
     REVENUE: "Doanh thu",
     CANCEL: "Huỷ",
     SAVE: "Save",
