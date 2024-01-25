@@ -1,6 +1,8 @@
+"use client";
+
 import React from "react";
-import Input from "../Input";
-import Button from "../Button";
+import Input from "../../Input";
+import Button from "../../Button";
 import { MagnifyingGlassIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { usePaginationStore } from "@/stores/usePaginationStore";
 import { useTableStore } from "@/stores/useTableStore";
@@ -21,9 +23,9 @@ export default function TopContent() {
 
     return (
         <div className="flex flex-col gap-4 mb-5">
-            <div className="flex justify-between gap-3 items-end">
+            <div className="flex justify-end items-end gap-3">
                 <Input
-                    className="w-full sm:max-w-[44%]"
+                    className="w-full sm:max-w-[44%] hidden"
                     placeholder={TEXT.ENTER_SEARCH}
                     startContent={<MagnifyingGlassIcon className="w-5 mr-2" />}
                     endContent={

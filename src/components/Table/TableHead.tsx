@@ -3,6 +3,7 @@
 import React from "react";
 import Checkbox from "../Checkbox";
 import { useTableStore } from "@/stores/useTableStore";
+import clsx from "clsx";
 
 export default function TableHead({
     columns,
@@ -18,25 +19,26 @@ export default function TableHead({
     const { isAllChecked } = useTableStore();
 
     return (
-        <thead className="sticky top-0 z-20">
-            <tr className="bg-gray-100">
+        <div className="sticky top-0 z-20">
+            <div className="flex items-center w-full bg-gray-100 rounded-md">
                 {isCheckedList && (
-                    <th className="px-3 py-2 font-semibold text-tiny first:rounded-l-md last:rounded-r-md">
+                    <div className="flex items-center px-3 py-2 font-semibold text-tiny">
                         <Checkbox checked={isAllChecked} onChange={onCheckedAll} />
-                    </th>
+                    </div>
                 )}
                 {columns?.map((column: any) => (
-                    <th
+                    <div
                         key={column.key}
-                        className="w-1/2 px-3 py-2 font-semibold text-tiny first:rounded-l-md last:rounded-r-md"
-                        style={{ width: column.with }}
-                        align="left"
+                        className={clsx(
+                            "flex-1 px-3 py-2 font-semibold text-tiny",
+                            column.className,
+                        )}
                     >
-                        {column.name}
-                    </th>
+                        {column.name.toUpperCase()}
+                    </div>
                 ))}
-            </tr>
-            <tr className="w-px h-px block my-0.5"></tr>
-        </thead>
+            </div>
+            <div className="w-px h-px block my-0.5"></div>
+        </div>
     );
 }

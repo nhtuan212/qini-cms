@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
                 // };
 
                 return await fetchData({
-                    endpoint: URL.login,
+                    endpoint: URL.LOGIN,
                     options: {
                         method: "POST",
                         body: JSON.stringify({
