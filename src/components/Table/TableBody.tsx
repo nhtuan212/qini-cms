@@ -3,6 +3,7 @@
 import React from "react";
 import Checkbox from "../Checkbox";
 import { useTableStore } from "@/stores/useTableStore";
+import clsx from "clsx";
 
 export default function TableBody({
     rows,
@@ -50,34 +51,36 @@ export default function TableBody({
     };
 
     return (
-        <tbody>
+        <div>
             {rows?.map((row: any) => {
                 return (
-                    <tr key={row.id} className="hover:bg-gray-50">
+                    <div key={row.id} className="flex items-center hover:bg-gray-50">
                         {isCheckedList && (
-                            <td className="px-3 py-2">
+                            <div className="flex items-center px-3 py-2">
                                 <Checkbox
                                     checked={isChecked(row.id)}
                                     onChange={() => handleChecked(row.id)}
                                 />
-                            </td>
+                            </div>
                         )}
                         {columns?.map((column: any) => {
                             return (
-                                <td key={column.key} className="px-3 py-2 text-sm rounded-md">
+                                <div
+                                    key={column.key}
+                                    className={clsx(
+                                        "flex-1 px-3 py-2 text-sm rounded-md",
+                                        column.className,
+                                    )}
+                                >
                                     {typeof column.content === "function" && column.content(row)}
-                                </td>
+                                </div>
                             );
                         })}
-                    </tr>
+                    </div>
                 );
             })}
 
-            {emptyRows > 0 && (
-                <tr style={{ height: 61 * emptyRows }}>
-                    <td colSpan={6} />
-                </tr>
-            )}
-        </tbody>
+            {emptyRows > 0 && <div style={{ height: 61 * emptyRows }}></div>}
+        </div>
     );
 }

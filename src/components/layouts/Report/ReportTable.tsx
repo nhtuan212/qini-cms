@@ -1,24 +1,42 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Table from "@/components/Table";
-import ReportColumns from "./ReportColumns";
-import ReportAddNew from "./ReportAddNew";
-import { rows } from "@/components/Table/apis";
+import RevenueColumns from "./RevenueColumns";
+import RevenueAddNew from "./RevenueAddNew";
+import ReportDetail from "./ReportDetail";
+import TopContent from "./TopContent";
+import { useReportStore } from "@/stores/useReportStore";
+import { useRevenueStore } from "@/stores/useRevenueStore";
 
 export default function ReportTable() {
+    //** Stores */
+    const { revenueId, getReport } = useReportStore();
+    const { revenue, getRevenue } = useRevenueStore();
+
+    //** Effects */
+    useEffect(() => {
+        getRevenue();
+        getReport();
+    }, [getReport, getRevenue]);
+
     return (
         <>
             <Table
-                columns={ReportColumns()}
-                rows={rows}
+                columns={RevenueColumns()}
+                rows={revenue}
+                topContent={<TopContent />}
                 isCheckedList
                 isPagination
-                rowsPerPage={[5, 10]}
+                pageSize={10}
+                rowsPerPage={[10, 15, 20, 30]}
             />
 
-            {/* Add new content */}
-            <ReportAddNew />
+            {/* Popup add new revenue */}
+            <RevenueAddNew />
+
+            {/* Popup detail revenue when click eye icon */}
+            {revenueId && <ReportDetail revenueId={revenueId} />}
         </>
     );
 }

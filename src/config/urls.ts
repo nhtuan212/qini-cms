@@ -1,5 +1,6 @@
 export const URL = {
-    login: "/login",
-    report: "/report",
-    getUser: "/users",
+    LOGIN: "/login",
+    REPORT: "/report",
+    REVENUE: "/revenue",
+    USER: "/user",
 };

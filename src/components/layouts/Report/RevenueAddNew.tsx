@@ -17,6 +17,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { useFieldArray, useForm, Controller } from "react-hook-form";
 import { useProfileStore } from "@/stores/useProfileStore";
+import { useReportStore } from "@/stores/useReportStore";
+import { useRevenueStore } from "@/stores/useRevenueStore";
 import { fetchData } from "@/utils/fetch";
 import { wrongTimeSheet, getHours } from "@/utils";
 import { staffApi, timeSheet } from "@/config/apis";
@@ -33,10 +35,12 @@ type FormValues = {
     multipleErrorInput: any;
 };
 
-export default function ReportAddNew() {
+export default function RevenueAddNew() {
     //** Stores */
     const { profile } = useProfileStore();
     const { openModal, isModalOpen } = useModalStore();
+    const { getReport } = useReportStore();
+    const { getRevenue } = useRevenueStore();
 
     //** React hook form */
     const {
@@ -57,30 +61,48 @@ export default function ReportAddNew() {
         control,
     });
     const onSubmit = async (data: FormValues) => {
-        const staffArray: any = [];
+        const revenue: number = Number(data.revenue);
+        const report: any = [];
 
-        data.staff.forEach(item => {
-            const checkIn = new Date(item.checkIn);
-            const checkOut = new Date(item.checkOut);
-            const timeWorked = Math.abs(checkOut.valueOf() - checkIn.valueOf()) / (1000 * 60 * 60);
-
-            staffArray.push({
-                timeWorked,
-                date: new Date(),
-                checkIn: getHours(item.checkIn),
-                checkOut: getHours(item.checkOut),
-                revenue: Math.round(data.revenue / data.staff.length),
-                name: item.name,
-            });
-        });
-
-        return await fetchData({
-            endpoint: URL.report,
+        await fetchData({
+            endpoint: URL.REVENUE,
             options: {
                 method: "POST",
-                body: JSON.stringify(staffArray),
+                body: JSON.stringify({ revenue }),
             },
-        }).then(res => res);
+        }).then(revenueRes => {
+            if (revenueRes.data) {
+                data.staff.forEach(item => {
+                    const checkIn = new Date(item.checkIn);
+                    const checkOut = new Date(item.checkOut);
+                    const timeWorked =
+                        Math.abs(checkOut.valueOf() - checkIn.valueOf()) / (1000 * 60 * 60);
+
+                    report.push({
+                        timeWorked,
+                        checkIn: getHours(item.checkIn),
+                        checkOut: getHours(item.checkOut),
+                        target: Math.round(data.revenue / data.staff.length),
+                        name: item.name,
+                        revenueId: revenueRes.data.id,
+                    });
+                });
+
+                return fetchData({
+                    endpoint: URL.REPORT,
+                    options: {
+                        method: "POST",
+                        body: JSON.stringify(report),
+                    },
+                }).then(reportRes => {
+                    if (reportRes) {
+                        openModal(false);
+                        getReport();
+                        getRevenue();
+                    }
+                });
+            }
+        });
     };
 
     return (
@@ -238,9 +260,9 @@ export default function ReportAddNew() {
                                     <Input
                                         className="w-full"
                                         startContent={<CurrencyDollarIcon className="w-6" />}
-                                        placeholder={TEXT.REVENUE}
+                                        placeholder={TEXT.TARGET}
                                         {...register("revenue", {
-                                            required: `${TEXT.REVENUE} ${TEXT.IS_REQUIRED}`,
+                                            required: `${TEXT.TARGET} ${TEXT.IS_REQUIRED}`,
                                             pattern: {
                                                 value: /^[0-9]+$/i,
                                                 message: "This input is number only.",
