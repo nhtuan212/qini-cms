@@ -8,17 +8,20 @@ import ReportDetail from "./ReportDetail";
 import TopContent from "./TopContent";
 import { useReportStore } from "@/stores/useReportStore";
 import { useRevenueStore } from "@/stores/useRevenueStore";
+import { useStaffStore } from "@/stores/useStaffStore";
 
 export default function ReportTable() {
     //** Stores */
     const { revenueId, getReport } = useReportStore();
     const { revenue, getRevenue } = useRevenueStore();
+    const { getStaff } = useStaffStore();
 
     //** Effects */
     useEffect(() => {
         getRevenue();
         getReport();
-    }, [getReport, getRevenue]);
+        getStaff();
+    }, [getReport, getRevenue, getStaff]);
 
     return (
         <>

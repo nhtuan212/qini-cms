@@ -11,7 +11,7 @@ export const timeSheet = [
     { id: 10, value: "2024/01/01 13:30:00" },
 ];
 
-export const staffApi = [
-    { id: "1", value: "Hoàng Tuấn" },
-    { id: "2", value: "Quỳnh Như" },
+export const roleApi = [
+    { id: "1", value: "USER" },
+    { id: "2", value: "ADMIN" },
 ];

@@ -8,6 +8,7 @@ import { usePaginationStore } from "@/stores/usePaginationStore";
 import { useTableStore } from "@/stores/useTableStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { TEXT } from "@/constants/text";
+import { MODAL } from "@/constants";
 
 export default function TopContent() {
     //** Stores */
@@ -23,7 +24,8 @@ export default function TopContent() {
 
     return (
         <div className="flex flex-col gap-4 mb-5">
-            <div className="flex justify-end items-end gap-3">
+            <div className="flex justify-between items-center gap-3">
+                <div className="title">{TEXT.REPORT}</div>
                 <Input
                     className="w-full sm:max-w-[44%] hidden"
                     placeholder={TEXT.ENTER_SEARCH}
@@ -40,7 +42,7 @@ export default function TopContent() {
                     value={filterValue}
                 />
                 <div className="flex gap-3">
-                    <Button onClick={() => openModal(true)}>
+                    <Button onClick={() => openModal(MODAL.ADD_REPORT)}>
                         {TEXT.ADD_NEW}
                         <PlusIcon className="w-5 ml-2" />
                     </Button>

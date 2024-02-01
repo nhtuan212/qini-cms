@@ -24,6 +24,9 @@ const config: Config = {
                 error: {
                     DEFAULT: "#ef4444",
                 },
+                link: {
+                    DEFAULT: "#3b82f6",
+                },
             },
         },
     },

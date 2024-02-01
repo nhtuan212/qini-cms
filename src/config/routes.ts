@@ -4,4 +4,6 @@ export const ROUTE = {
     HOME: "/",
     LOGIN: "/login",
     REPORT: "/bao-cao",
+    TARGET: "/doanh-so",
+    STAFF: "/nhan-vien",
 };

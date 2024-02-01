@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
+import clsx from "clsx";
 import Checkbox from "../Checkbox";
 import { useTableStore } from "@/stores/useTableStore";
-import clsx from "clsx";
 
 export default function TableBody({
     rows,
@@ -54,7 +54,13 @@ export default function TableBody({
         <div>
             {rows?.map((row: any) => {
                 return (
-                    <div key={row.id} className="flex items-center hover:bg-gray-50">
+                    <div
+                        key={row.id}
+                        className={clsx(
+                            "flex items-center rounded-md",
+                            "even:bg-gray-50 hover:bg-gray-50",
+                        )}
+                    >
                         {isCheckedList && (
                             <div className="flex items-center px-3 py-2">
                                 <Checkbox
@@ -67,10 +73,7 @@ export default function TableBody({
                             return (
                                 <div
                                     key={column.key}
-                                    className={clsx(
-                                        "flex-1 px-3 py-2 text-sm rounded-md",
-                                        column.className,
-                                    )}
+                                    className={clsx("flex-1 px-3 py-2 text-sm", column.className)}
                                 >
                                     {typeof column.content === "function" && column.content(row)}
                                 </div>
