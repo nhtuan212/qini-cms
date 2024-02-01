@@ -15,7 +15,7 @@ import { useMenuStore } from "@/stores/useMenuStore";
 import { MENU } from "@/config/menu";
 import { ROUTE } from "@/config/routes";
 
-export default function Header2() {
+export default function Header() {
     //** Store */
     const { openMobileMenu } = useMenuStore();
     const { theme, setTheme } = useTheme();
@@ -67,7 +67,7 @@ export default function Header2() {
 
                             {/* Desktop menus */}
                             <div className="hidden lg:ml-8 lg:block lg:self-stretch">
-                                <div className="flex h-full space-x-8">
+                                <div className="flex items-center h-full space-x-8">
                                     {MENU.map(menu => (
                                         <Link
                                             key={menu.url}
@@ -77,6 +77,7 @@ export default function Header2() {
                                             )}
                                             href={menu.url}
                                         >
+                                            {menu.icon && <span className="mr-1">{menu.icon}</span>}
                                             {menu.label}
                                         </Link>
                                     ))}

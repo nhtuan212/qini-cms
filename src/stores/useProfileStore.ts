@@ -10,8 +10,16 @@ export const useProfileStore = create<ProfileState>()(set => ({
     profile: {
         username: "",
         email: "",
+        role: "",
     },
-    getProfile: session => set(() => ({ profile: session.user })),
+    getProfile: session =>
+        set(() => ({
+            profile: {
+                username: session?.user?.username || "bin",
+                email: session?.user?.email,
+                role: session?.user?.role,
+            },
+        })),
 }));
 
 /**

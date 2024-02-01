@@ -2,8 +2,16 @@
 @tailwind components;
 
 // Common
+* {
+    @apply leading-6 box-border;
+}
+
 .container {
     @apply mx-auto px-4;
+}
+
+.title {
+    @apply font-bold text-primary text-xl;
 }
 
 // Button

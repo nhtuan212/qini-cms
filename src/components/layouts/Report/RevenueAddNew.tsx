@@ -19,11 +19,14 @@ import { useFieldArray, useForm, Controller } from "react-hook-form";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useReportStore } from "@/stores/useReportStore";
 import { useRevenueStore } from "@/stores/useRevenueStore";
+import { useStaffStore } from "@/stores/useStaffStore";
 import { fetchData } from "@/utils/fetch";
 import { wrongTimeSheet, getHours } from "@/utils";
-import { staffApi, timeSheet } from "@/config/apis";
+import { timeSheet } from "@/config/apis";
 import { URL } from "@/config/urls";
 import { TEXT } from "@/constants/text";
+import { MODAL } from "@/constants";
+import { StaffProps } from "@/types/staffProps";
 
 type FormValues = {
     staff: {
@@ -38,9 +41,10 @@ type FormValues = {
 export default function RevenueAddNew() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { openModal, isModalOpen } = useModalStore();
+    const { openModal, modalName } = useModalStore();
     const { getReport } = useReportStore();
     const { getRevenue } = useRevenueStore();
+    const { staff } = useStaffStore();
 
     //** React hook form */
     const {
@@ -96,7 +100,7 @@ export default function RevenueAddNew() {
                     },
                 }).then(reportRes => {
                     if (reportRes) {
-                        openModal(false);
+                        openModal("");
                         getReport();
                         getRevenue();
                     }
@@ -106,7 +110,11 @@ export default function RevenueAddNew() {
     };
 
     return (
-        <Modal isOpen={isModalOpen} size="4xl" onOpenChange={() => openModal(false)}>
+        <Modal
+            isOpen={modalName === MODAL.ADD_REPORT}
+            size="4xl"
+            onOpenChange={() => openModal("")}
+        >
             <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
                 <Modal.Header>{TEXT.ADD_REPORT}</Modal.Header>
                 <Modal.Body>
@@ -145,9 +153,9 @@ export default function RevenueAddNew() {
                                                     />
                                                 }
                                             >
-                                                {staffApi.map(item => (
-                                                    <SelectItem key={item.value} value={item.value}>
-                                                        {item.value}
+                                                {staff.map((item: StaffProps) => (
+                                                    <SelectItem key={item.name} value={item.name}>
+                                                        {item.name}
                                                     </SelectItem>
                                                 ))}
                                             </Select>
@@ -282,7 +290,7 @@ export default function RevenueAddNew() {
                         <Button type="submit">{TEXT.SAVE}</Button>
                         <Button
                             className="bg-white text-default-900 ring-1 ring-inset ring-gray-300"
-                            onClick={() => openModal(false)}
+                            onClick={() => openModal("")}
                         >
                             {TEXT.CANCEL}
                         </Button>
