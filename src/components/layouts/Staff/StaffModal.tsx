@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import Input from "@/components/Input";
 import ErrorMessage from "@/components/ErrorMessage";
@@ -11,19 +11,18 @@ import { useModalStore } from "@/stores/useModalStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { MODAL } from "@/constants";
 import { TEXT } from "@/constants/text";
-import { fetchData } from "@/utils/fetch";
-import { URL } from "@/config/urls";
-import { StaffProps } from "@/types/staffProps";
-import { isEmpty } from "@/utils";
 
 type FormValues = {
     name: string;
 };
 
-export default function AddStaff({ staffId }: { staffId: StaffProps }) {
+export default function StaffModal() {
     //** Stores */
-    const { openModal, modalName } = useModalStore();
-    const { getStaff } = useStaffStore();
+    const { openModal, modalName, modalAction } = useModalStore();
+    const { staffById, getStaff, addStaff, editStaff } = useStaffStore();
+
+    //** States */
+    const [error, setError] = useState("");
 
     //** React hook form */
     const {
@@ -32,7 +31,6 @@ export default function AddStaff({ staffId }: { staffId: StaffProps }) {
         handleSubmit,
         reset,
         setValue,
-        setError,
         formState: { errors },
     } = useForm<FormValues>({
         defaultValues: {
@@ -42,23 +40,20 @@ export default function AddStaff({ staffId }: { staffId: StaffProps }) {
     });
 
     const onSubmit = async (data: FormValues) => {
-        const endpoint = !isEmpty(staffId) ? `${URL.STAFF}/${staffId.id}` : URL.STAFF;
-        const method = !isEmpty(staffId) ? "PUT" : "POST";
+        if (modalAction === "add") {
+            return addStaff(data.name).then(res => {
+                if (res.code !== 200) return setError(res.message);
 
-        return await fetchData({
-            endpoint,
-            options: {
-                method,
-                body: JSON.stringify({
-                    name: data.name,
-                }),
-            },
+                handleCloseModal();
+                getStaff();
+            });
+        }
+
+        return editStaff({
+            id: staffById.id,
+            name: data.name,
         }).then(res => {
-            if (res.code !== 200) {
-                return setError("root.serverError", {
-                    type: res.code,
-                });
-            }
+            if (res.code === 404) return setError(res.message);
 
             handleCloseModal();
             getStaff();
@@ -67,6 +62,7 @@ export default function AddStaff({ staffId }: { staffId: StaffProps }) {
 
     //** Functions */
     const resetForm = () => {
+        setError("");
         reset({
             name: "",
         });
@@ -79,8 +75,8 @@ export default function AddStaff({ staffId }: { staffId: StaffProps }) {
 
     //** Effects */
     useEffect(() => {
-        !isEmpty(staffId) && setValue("name", staffId?.name);
-    }, [staffId, setValue]);
+        modalAction === "edit" && setValue("name", staffById?.name);
+    }, [setValue, modalAction, staffById]);
 
     return (
         <Modal isOpen={modalName === MODAL.ADD_STAFF} size="md" onOpenChange={handleCloseModal}>
@@ -106,9 +102,7 @@ export default function AddStaff({ staffId }: { staffId: StaffProps }) {
                                             <ErrorMessage errors={errors} name={"name"} />
                                         }
                                     />
-                                    {errors?.root?.serverError.type === 400 && (
-                                        <p className="errorMessage">{TEXT.STAFF_IS_EXIST}</p>
-                                    )}
+                                    {error && <p className="errorMessage">{error}</p>}
                                 </>
                             )}
                         />

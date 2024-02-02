@@ -4,13 +4,12 @@ import React, { useEffect } from "react";
 import Table from "@/components/Table";
 import StaffColumns from "./StaffColumns";
 import TopContent from "./TopContent";
-import AddStaff from "./AddStaff";
+import StaffModal from "./StaffModal";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { StaffProps } from "@/types/staffProps";
 
 export default function StaffTable() {
     //** Stores */
-    const { staff, staffId, getStaff } = useStaffStore();
+    const { staff, getStaff } = useStaffStore();
 
     //** Effects */
     useEffect(() => {
@@ -29,7 +28,7 @@ export default function StaffTable() {
             />
 
             {/* Popup add new staff */}
-            <AddStaff staffId={staffId as StaffProps} />
+            <StaffModal />
         </>
     );
 }
