@@ -30,7 +30,7 @@ import { StaffProps } from "@/types/staffProps";
 
 type FormValues = {
     staff: {
-        name: string;
+        staffId: string;
         checkIn: string;
         checkOut: string;
     }[];
@@ -55,7 +55,7 @@ export default function RevenueAddNew() {
         formState: { errors },
     } = useForm<FormValues>({
         defaultValues: {
-            staff: [{ name: "", checkIn: "", checkOut: "" }],
+            staff: [{ staffId: "", checkIn: "", checkOut: "" }],
         },
         // mode: "onBlur",
         criteriaMode: "all",
@@ -66,6 +66,7 @@ export default function RevenueAddNew() {
     });
     const onSubmit = async (data: FormValues) => {
         const revenue: number = Number(data.revenue);
+        const target: number = Math.round(revenue / data.staff.length);
         const report: any = [];
 
         await fetchData({
@@ -82,17 +83,19 @@ export default function RevenueAddNew() {
                     const timeWorked =
                         Math.abs(checkOut.valueOf() - checkIn.valueOf()) / (1000 * 60 * 60);
 
+                    //** Body Report */
                     report.push({
                         timeWorked,
                         checkIn: getHours(item.checkIn),
                         checkOut: getHours(item.checkOut),
-                        target: Math.round(data.revenue / data.staff.length),
-                        name: item.name,
+                        target,
+                        staffId: item.staffId,
                         revenueId: revenueRes.data.id,
                     });
                 });
 
-                return fetchData({
+                //** Create report table */
+                fetchData({
                     endpoint: URL.REPORT,
                     options: {
                         method: "POST",
@@ -136,25 +139,25 @@ export default function RevenueAddNew() {
                                     className="relative w-full flex justify-between items-center gap-3 py-3"
                                 >
                                     <Controller
-                                        name={`staff.${index}.name`}
+                                        name={`staff.${index}.staffId`}
                                         control={control}
                                         render={() => (
                                             <Select
                                                 className="w-full"
                                                 startContent={<UserCircleIcon className="w-6" />}
                                                 label={TEXT.STAFF}
-                                                {...register(`staff.${index}.name`, {
+                                                {...register(`staff.${index}.staffId`, {
                                                     required: `${TEXT.STAFF} ${TEXT.IS_REQUIRED}`,
                                                 })}
                                                 errorMessage={
                                                     <ErrorMessage
                                                         errors={errors}
-                                                        name={`staff.${index}.name`}
+                                                        name={`staff.${index}.staffId`}
                                                     />
                                                 }
                                             >
                                                 {staff.map((item: StaffProps) => (
-                                                    <SelectItem key={item.name} value={item.name}>
+                                                    <SelectItem key={item.id} value={item.name}>
                                                         {item.name}
                                                     </SelectItem>
                                                 ))}
@@ -248,7 +251,7 @@ export default function RevenueAddNew() {
                             <Button
                                 onClick={() =>
                                     append({
-                                        name: "",
+                                        staffId: "",
                                         checkIn: "",
                                         checkOut: "",
                                     })

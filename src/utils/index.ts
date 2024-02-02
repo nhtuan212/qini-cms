@@ -44,3 +44,11 @@ export const isEmpty = (obj: {}) => {
 
     return true;
 };
+
+export const sumArray = (array: number[]): number => {
+    if (!array.length) return 0;
+
+    return array.reduce((accumulator, item) => {
+        return accumulator + item;
+    }, 0);
+};

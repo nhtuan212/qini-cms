@@ -8,7 +8,6 @@ export const TEXT = {
     LOGOUT: "Đăng xuất",
     USERNAME: "Username",
     ENTER_USERNAME: "Enter your username",
-    STAFF_IS_EXIST: "Nhân viên đã tồn tại",
     // EMAIL: "Email",
     PASSWORD: "Password",
     ENTER_PASSWORD: "Enter your password",

@@ -12,13 +12,13 @@ import { MODAL } from "@/constants";
 
 export default function RevenueColumns() {
     //** Stores */
-    const { getStaff, getStaffId, deleteStaff } = useStaffStore();
+    const { getStaff, getStaffById, deleteStaff } = useStaffStore();
     const { openModal } = useModalStore();
 
     //** Functions */
     const handleEditStaff = (id: string) => {
-        getStaffId(id);
-        openModal(MODAL.ADD_STAFF);
+        getStaffById(id);
+        openModal(MODAL.ADD_STAFF, "edit");
     };
 
     const columns = [
