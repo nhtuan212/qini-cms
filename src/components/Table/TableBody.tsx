@@ -52,10 +52,10 @@ export default function TableBody({
 
     return (
         <div>
-            {rows?.map((row: any) => {
+            {rows?.map((row: any, index: number) => {
                 return (
                     <div
-                        key={row.id}
+                        key={`${row.id}-${index}`}
                         className={clsx(
                             "flex items-center rounded-md",
                             "even:bg-gray-50 hover:bg-gray-50",

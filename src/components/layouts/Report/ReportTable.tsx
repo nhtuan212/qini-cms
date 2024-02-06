@@ -12,7 +12,7 @@ import { useStaffStore } from "@/stores/useStaffStore";
 
 export default function ReportTable() {
     //** Stores */
-    const { revenueId, getReport } = useReportStore();
+    const { getReport } = useReportStore();
     const { revenue, getRevenue } = useRevenueStore();
     const { getStaff } = useStaffStore();
 
@@ -39,7 +39,7 @@ export default function ReportTable() {
             <RevenueAddNew />
 
             {/* Popup detail revenue when click eye icon */}
-            {revenueId && <ReportDetail revenueId={revenueId} />}
+            <ReportDetail />
         </>
     );
 }

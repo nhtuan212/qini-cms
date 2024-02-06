@@ -16,7 +16,7 @@ type FormValues = {
     name: string;
 };
 
-export default function StaffModal() {
+export default function AddStaff() {
     //** Stores */
     const { openModal, modalName, modalAction } = useModalStore();
     const { staffById, getStaff, addStaff, editStaff } = useStaffStore();

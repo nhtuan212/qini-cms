@@ -8,11 +8,14 @@ import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Tooltip } from "@nextui-org/react";
 import { TEXT } from "@/constants/text";
 import { currencyFormat, dateFormat } from "@/utils";
+import { useModalStore } from "@/stores/useModalStore";
+import { MODAL } from "@/constants";
 
 export default function RevenueColumns() {
     //** Stores */
-    const { openReportModal } = useReportStore();
+    const { getReportByRevenue } = useReportStore();
     const { getRevenue, deleteRevenue } = useRevenueStore();
+    const { openModal } = useModalStore();
 
     const columns = [
         {
@@ -35,7 +38,8 @@ export default function RevenueColumns() {
                         <Button
                             className="min-w-0 bg-transparent p-0 text-default-500"
                             onClick={() => {
-                                openReportModal(true, row.id);
+                                openModal(MODAL.REPORT_DETAIL);
+                                getReportByRevenue(row.id);
                             }}
                         >
                             <EyeIcon className="w-5" />
