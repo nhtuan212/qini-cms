@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { StaffProps } from "@/types/staffProps";
 
 type StaffState = {
-    staff: [];
+    staff: StaffProps[];
     staffById: StaffProps;
 };
 
@@ -89,6 +89,7 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
                     staff: res?.message,
                 });
             }
+
             return set({ staff: res.data });
         });
     },

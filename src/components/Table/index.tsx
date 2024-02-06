@@ -95,7 +95,7 @@ export default function Table({
         <div className="rounded-md p-3 border shadow-lg">
             {topContent && topContent}
             {rowsPerPage && <RowsPerPage pageSize={pageSize} rowsPerPage={rowsPerPage} />}
-            <div className="min-h-[30rem] max-h-[40rem] flex flex-col w-full overflow-y-auto">
+            <div className="min-h-[20rem] max-h-[40rem] flex flex-col w-full overflow-y-auto">
                 <TableHead
                     columns={columns}
                     rowsLength={rows.length}

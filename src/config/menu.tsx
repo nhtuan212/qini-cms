@@ -10,13 +10,13 @@ export const MENU = [
         icon: <DocumentTextIcon className="w-5" />,
     },
     {
-        url: ROUTE.TARGET,
-        label: TEXT.TARGET,
-        icon: <BanknotesIcon className="w-5" />,
-    },
-    {
         url: ROUTE.STAFF,
         label: TEXT.STAFF,
         icon: <UserCircleIcon className="w-5" />,
+    },
+    {
+        url: ROUTE.SALARY_PAY,
+        label: TEXT.SALARY_PAY,
+        icon: <BanknotesIcon className="w-5" />,
     },
 ];

@@ -1,27 +1,39 @@
-import { URL } from "@/config/urls";
-import { ReportParams, ReportProps } from "@/types/reportProps";
-import { fetchData } from "@/utils/fetch";
 import { create } from "zustand";
+import { fetchData } from "@/utils/fetch";
+import { DateValueType } from "react-tailwindcss-datepicker";
+import {
+    SalaryReportProps,
+    SalaryReportModel,
+    RevenueReportModel,
+    RevenueReportProps,
+} from "./models/ReportModel";
+import { URL } from "@/config/urls";
+import { ReportProps, reportByRevenue, salaryByStaff } from "@/types/reportProps";
 
 type ReportState = {
-    report: [];
-    reportByStaff: ReportProps[];
-    revenueId: string;
-    isReportModalOpen: boolean;
+    report: ReportProps;
+    reportByRevenue: reportByRevenue[];
+    reportByStaff: SalaryReportProps[];
+    salaryByStaff: SalaryReportProps;
 };
 
 type ReportAction = {
     getReport: () => void;
+    getReportByRevenue: (id: string) => void;
     getReportByStaff: (id: string) => void;
-    filterReportByStaff: ({ id, params }: { id: string; params: ReportParams }) => void;
-    openReportModal: (status: boolean, revenueId?: string) => void;
+    getSalaryByStaff: (dateValue: DateValueType) => void;
+    filterReportByStaff: ({ id, params }: { id: string; params: DateValueType }) => Promise<any>;
 };
 
 const initialState: ReportState = {
-    report: [],
+    report: {
+        totalTarget: 0,
+        totalTime: 0,
+        reports: [{}],
+    },
+    reportByRevenue: [],
     reportByStaff: [],
-    revenueId: "",
-    isReportModalOpen: false,
+    salaryByStaff: {},
 };
 
 export const useReportStore = create<ReportState & ReportAction>()(set => ({
@@ -41,9 +53,27 @@ export const useReportStore = create<ReportState & ReportAction>()(set => ({
         });
     },
 
+    getReportByRevenue: async id => {
+        return await fetchData({
+            endpoint: `${URL.REPORT}/revenue/${id}`,
+        }).then(res => {
+            if (res?.code !== 200) {
+                return set({
+                    reportByRevenue: res?.message,
+                });
+            }
+
+            return set({
+                reportByRevenue: res.data.map((item: RevenueReportProps) =>
+                    RevenueReportModel(item),
+                ),
+            });
+        });
+    },
+
     getReportByStaff: async id => {
         return await fetchData({
-            endpoint: `${URL.REPORT}/${id}`,
+            endpoint: `${URL.REPORT}/staff/${id}`,
         }).then(res => {
             if (res?.code !== 200) {
                 return set({
@@ -51,13 +81,34 @@ export const useReportStore = create<ReportState & ReportAction>()(set => ({
                 });
             }
 
-            return set({ reportByStaff: res.data });
+            return set({
+                reportByStaff: res.data,
+            });
         });
     },
 
-    filterReportByStaff: async ({ id, params }: { id: string; params: ReportParams }) => {
+    getSalaryByStaff: async dateValue => {
         return await fetchData({
-            endpoint: `${URL.REPORT}/${id}?startDate=${params.startDate}&endDate=${params.endDate}`,
+            endpoint: `${URL.REPORT}/salary?startDate=${dateValue?.startDate}&endDate=${dateValue?.endDate}`,
+        }).then(res => {
+            if (res?.code !== 200) {
+                return set({
+                    salaryByStaff: res?.message,
+                });
+            }
+
+            return set({
+                salaryByStaff: res.data.map((item: salaryByStaff) => SalaryReportModel(item)),
+            });
+        });
+    },
+
+    filterReportByStaff: async ({ id, params }: { id: string; params: DateValueType }) => {
+        return await fetchData({
+            endpoint: `${URL.REPORT}/staff/${id}?startDate=${params?.startDate}&endDate=${params?.endDate}`,
+            options: {
+                method: "GET",
+            },
         }).then(res => {
             if (res?.code !== 200) {
                 return set({
@@ -68,6 +119,4 @@ export const useReportStore = create<ReportState & ReportAction>()(set => ({
             return set({ reportByStaff: res.data });
         });
     },
-
-    openReportModal: (status, revenueId) => set(() => ({ isReportModalOpen: status, revenueId })),
 }));

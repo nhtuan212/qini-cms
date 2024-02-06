@@ -31,7 +31,7 @@ const Body = ({ children }: { children: React.ReactNode }) => {
 };
 
 const Footer = ({ children }: { children: React.ReactNode }) => {
-    return <ModalFooter>{children}</ModalFooter>;
+    return <ModalFooter className="items-center">{children}</ModalFooter>;
 };
 
 Modal.Header = Header;

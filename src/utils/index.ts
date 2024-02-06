@@ -1,5 +1,7 @@
 "use client";
 
+import moment from "moment";
+
 export const getHours = (date: Date | string) => {
     const hours = new Date(date).getHours();
     const minutes = new Date(date).getMinutes();
@@ -35,6 +37,17 @@ export const dateFormat = (date: Date) => {
     return "Date is not valid";
 };
 
+export const getCurrentMonth = () => {
+    const date = new Date();
+    const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    return {
+        startDate: moment(startDate).format("YYYY-MM-DD"),
+        endDate: moment(endDate).format("YYYY-MM-DD"),
+    };
+};
+
 export const isEmpty = (obj: {}) => {
     for (const prop in obj) {
         if (Object.hasOwn(obj, prop)) {
@@ -45,10 +58,10 @@ export const isEmpty = (obj: {}) => {
     return true;
 };
 
-export const sumArray = (array: number[]): number => {
-    if (!array.length) return 0;
+export const sumArray = (array: any[], field: string): number => {
+    if (!array?.length) return 0;
 
     return array.reduce((accumulator, item) => {
-        return accumulator + item;
+        return accumulator + item[field];
     }, 0);
 };
