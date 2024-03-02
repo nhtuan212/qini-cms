@@ -14,7 +14,27 @@ const Button = React.forwardRef(
     },
 );
 
-export default Button;
+const Icon = React.forwardRef(
+    (
+        { className, children, type = "button", ...props }: ButtonHTMLAttributes<HTMLButtonElement>,
+        ref: React.ForwardedRef<HTMLButtonElement>,
+    ) => {
+        return (
+            <button
+                ref={ref}
+                className={clsx("button buttonIcon", className)}
+                type={type}
+                {...props}
+            >
+                {children}
+            </button>
+        );
+    },
+);
+
+(Button as any).Icon = Icon;
+
+export default Button as any;
 
 // export default function Button({
 //     className,

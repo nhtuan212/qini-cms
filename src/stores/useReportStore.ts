@@ -14,7 +14,7 @@ type ReportState = {
     report: ReportProps;
     reportByRevenue: reportByRevenue[];
     reportByStaff: SalaryReportProps[];
-    salaryByStaff: SalaryReportProps;
+    salaryByStaff: SalaryReportProps[];
 };
 
 type ReportAction = {
@@ -33,7 +33,7 @@ const initialState: ReportState = {
     },
     reportByRevenue: [],
     reportByStaff: [],
-    salaryByStaff: {},
+    salaryByStaff: [],
 };
 
 export const useReportStore = create<ReportState & ReportAction>()(set => ({

@@ -41,6 +41,11 @@
 
     @apply hover:opacity-90 active:opacity-100;
     @apply disabled:opacity-50 disabled:pointer-events-none;
+
+    // Button icon
+    &Icon {
+        @apply bg-transparent text-black;
+    }
 }
 
 // Input

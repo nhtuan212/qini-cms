@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
-import { TEXT } from "@/constants/text";
-import { currencyFormat } from "@/utils";
 import Image from "next/image";
+import Button from "@/components/Button";
+import { EyeIcon } from "@heroicons/react/24/outline";
+import { currencyFormat } from "@/utils";
+import { TEXT } from "@/constants/text";
 
 export default function SalaryColumns() {
     const columns = [
@@ -67,10 +69,20 @@ export default function SalaryColumns() {
             content: (row: any) => <div>{row.rate}</div>,
         },
         {
-            key: "total",
-            name: TEXT.SALARY_RECEIVED,
-            content: (row: any) => <div>{currencyFormat(row.total)}</div>,
+            key: "",
+            name: "",
+            className: "flex flex-none justify-center w-20",
+            content: () => (
+                <Button.Icon>
+                    <EyeIcon className="w-5" />
+                </Button.Icon>
+            ),
         },
+        // {
+        //     key: "total",
+        //     name: TEXT.SALARY_RECEIVED,
+        //     content: (row: any) => <div>{currencyFormat(row.total)}</div>,
+        // },
     ];
 
     return columns;

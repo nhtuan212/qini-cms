@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect } from "react";
+import Header from "./Header";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { ProfileProps } from "@/types/profileProps";
-import Header from "./Header";
 
 export default function Layouts({
     session,
