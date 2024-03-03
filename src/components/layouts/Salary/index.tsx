@@ -1,18 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Button from "@/components/Button";
 import Table from "@/components/Table";
 import SalaryColumns from "./SalaryColumns";
 import StaffDetailTopContent from "./StaffDetailTopContent";
+import SalaryDetail from "./SalaryDetail";
 import { useReportStore } from "@/stores/useReportStore";
 import { SalaryReportProps } from "@/stores/models/ReportModel";
-import { TEXT } from "@/constants/text";
 import { getCurrentMonth, isEmpty } from "@/utils";
 
 export default function SalaryPay() {
     //** Stores */
-    const { getReport, salaryByStaff, getSalaryByStaff } = useReportStore();
+    const { getReport, getSalaryByStaff, salaryByStaff } = useReportStore();
 
     //** States */
     const [salarySortList, setSalarySortList] = useState<SalaryReportProps[]>(salaryByStaff);
@@ -41,9 +40,8 @@ export default function SalaryPay() {
                 topContent={<StaffDetailTopContent />}
             />
 
-            <div className="flex flex-row-reverse mt-4">
-                <Button type="submit">{TEXT.SAVE}</Button>
-            </div>
+            {/* Modal salary detail */}
+            <SalaryDetail />
         </>
     );
 }

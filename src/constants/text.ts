@@ -53,6 +53,10 @@ export const TEXT = {
     SALARY_RECEIVED: "Tiền lương thực nhận",
     RANK: "Xếp hạng",
     RATE: "Tỷ lệ",
+    SALARY_EACH_TIME: "Lương mỗi giờ",
+    SALARY_BY_TIME: "Lương theo giờ",
+    SALARY_BY_PERFORMANCE: "Lương hiệu suất",
+    COPY: "Copy",
 
     IMAGE: {
         ALT: "Image",
