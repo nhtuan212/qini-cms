@@ -57,6 +57,7 @@ export const TEXT = {
     SALARY_BY_TIME: "Lương theo giờ",
     SALARY_BY_PERFORMANCE: "Lương hiệu suất",
     COPY: "Copy",
+    NUMBER_IS_REQUIRED: "Chỉ được nhập số",
 
     IMAGE: {
         ALT: "Image",

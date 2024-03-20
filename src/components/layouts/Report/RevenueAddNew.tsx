@@ -276,7 +276,7 @@ export default function RevenueAddNew() {
                                             required: `${TEXT.TARGET} ${TEXT.IS_REQUIRED}`,
                                             pattern: {
                                                 value: /^[0-9]+$/i,
-                                                message: "This input is number only.",
+                                                message: TEXT.NUMBER_IS_REQUIRED,
                                             },
                                         })}
                                         errorMessage={

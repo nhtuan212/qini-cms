@@ -18,9 +18,7 @@ export default function StaffDetail() {
     //** Effects */
     useEffect(() => {
         getStaffById(staffById?.id);
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getStaffById]);
+    }, [getStaffById, staffById?.id]);
 
     return (
         <Modal

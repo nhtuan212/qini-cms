@@ -6,14 +6,15 @@ import Input from "@/components/Input";
 import ErrorMessage from "@/components/ErrorMessage";
 import Button from "@/components/Button";
 import { Controller, useForm } from "react-hook-form";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { BanknotesIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { StaffData, useStaffStore } from "@/stores/useStaffStore";
 import { MODAL } from "@/constants";
 import { TEXT } from "@/constants/text";
 
 type FormValues = {
     name: string;
+    salary: string | number;
 };
 
 export default function AddStaff() {
@@ -40,23 +41,26 @@ export default function AddStaff() {
     });
 
     const onSubmit = async (data: FormValues) => {
+        const staffData: StaffData = {
+            name: data.name,
+            salary: +data.salary,
+        };
+
         if (modalAction === "add") {
-            return addStaff(data.name).then(res => {
+            return addStaff({ staffData }).then(res => {
                 if (res.code !== 200) return setError(res.message);
 
                 handleCloseModal();
-                getStaff();
             });
         }
 
         return editStaff({
             id: staffById.id,
-            name: data.name,
+            staffData,
         }).then(res => {
             if (res.code === 404) return setError(res.message);
 
             handleCloseModal();
-            getStaff();
         });
     };
 
@@ -65,17 +69,22 @@ export default function AddStaff() {
         setError("");
         reset({
             name: "",
+            salary: 0,
         });
     };
 
     const handleCloseModal = () => {
         openModal("");
         resetForm();
+        getStaff();
     };
 
     //** Effects */
     useEffect(() => {
-        modalAction === "edit" && setValue("name", staffById?.name);
+        if (modalAction === "edit") {
+            setValue("name", staffById?.name);
+            setValue("salary", new Intl.NumberFormat("vi-VN").format(staffById?.salary));
+        }
     }, [setValue, modalAction, staffById]);
 
     return (
@@ -100,6 +109,34 @@ export default function AddStaff() {
                                         })}
                                         errorMessage={
                                             <ErrorMessage errors={errors} name={"name"} />
+                                        }
+                                    />
+                                    {error && <p className="errorMessage">{error}</p>}
+                                </>
+                            )}
+                        />
+
+                        <Controller
+                            name={"salary"}
+                            control={control}
+                            rules={{ required: true }}
+                            render={() => (
+                                <>
+                                    <Input
+                                        className="w-full"
+                                        startContent={<BanknotesIcon className="w-6" />}
+                                        endContent={<span>vnđ</span>}
+                                        placeholder={TEXT.SALARY}
+                                        currencyInput
+                                        {...register("salary", {
+                                            required: `${TEXT.SALARY} ${TEXT.IS_REQUIRED}`,
+                                            setValueAs: value => {
+                                                if (typeof value === "string")
+                                                    return value?.replace(/\.|,/g, "");
+                                            },
+                                        })}
+                                        errorMessage={
+                                            <ErrorMessage errors={errors} name={"salary"} />
                                         }
                                     />
                                     {error && <p className="errorMessage">{error}</p>}

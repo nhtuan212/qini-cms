@@ -2,6 +2,7 @@
 
 import React, { InputHTMLAttributes } from "react";
 import clsx from "clsx";
+import CurrencyInput from "react-currency-input-field";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
@@ -9,6 +10,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     startContent?: React.ReactNode;
     endContent?: React.ReactNode;
     inputRef?: any;
+    currencyInput?: boolean;
+    defaultValue?: number | string;
 }
 
 const Input = React.forwardRef(
@@ -20,6 +23,8 @@ const Input = React.forwardRef(
             startContent,
             endContent,
             type = "text",
+            currencyInput = false,
+            defaultValue = 0,
             ...props
         }: InputProps,
         ref: React.ForwardedRef<HTMLInputElement>,
@@ -29,7 +34,18 @@ const Input = React.forwardRef(
                 {label && <label className="text-sm">{label}</label>}
                 <div className="input-group">
                     {startContent && <span className="mr-2">{startContent}</span>}
-                    <input ref={ref} type={type} {...props} />
+
+                    {currencyInput ? (
+                        <CurrencyInput
+                            ref={ref}
+                            defaultValue={defaultValue}
+                            decimalSeparator=","
+                            groupSeparator="."
+                            {...(props as any)}
+                        />
+                    ) : (
+                        <input ref={ref} type={type} {...props} />
+                    )}
                     {endContent && <span className="ml-2">{endContent}</span>}
                 </div>
 

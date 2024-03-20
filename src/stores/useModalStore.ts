@@ -6,7 +6,7 @@ type ModalState = {
 };
 
 type ModalAction = {
-    openModal: (modalName: string, modalAction?: string) => void;
+    openModal: (modalName: string, modalAction?: string) => Promise<any>;
 };
 
 const initialState: ModalState = {
@@ -17,6 +17,6 @@ const initialState: ModalState = {
 export const useModalStore = create<ModalState & ModalAction>()(set => ({
     ...initialState,
 
-    openModal: (modalName, modalAction) =>
+    openModal: async (modalName, modalAction) =>
         set(() => ({ modalName, modalAction: modalAction || "add" })),
 }));

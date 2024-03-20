@@ -8,12 +8,17 @@ type StaffState = {
     staffById: StaffProps;
 };
 
+export type StaffData = {
+    name: string;
+    salary: number;
+};
+
 type StaffAction = {
     // Api actions
     getStaff: () => void;
     getStaffById: (id: string) => void;
-    addStaff: (name: string) => Promise<any>;
-    editStaff: ({ id, name }: { id: string; name: string }) => Promise<any>;
+    addStaff: ({ staffData }: { staffData: StaffData }) => Promise<any>;
+    editStaff: ({ id, staffData }: { id: string; staffData: StaffData }) => Promise<any>;
     deleteStaff: (id: string) => Promise<void>;
 };
 
@@ -52,25 +57,25 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
         });
     },
 
-    addStaff: async name => {
+    addStaff: async ({ staffData }: { staffData: StaffData }) => {
         return await fetchData({
             endpoint: URL.STAFF,
             options: {
                 method: "POST",
                 body: JSON.stringify({
-                    name,
+                    ...staffData,
                 }),
             },
         }).then(res => res);
     },
 
-    editStaff: async ({ id, name }: { id: string; name: string }) => {
+    editStaff: async ({ id, staffData }: { id: string; staffData: StaffData }) => {
         return await fetchData({
             endpoint: `${URL.STAFF}/${id}`,
             options: {
                 method: "PUT",
                 body: JSON.stringify({
-                    name,
+                    ...staffData,
                 }),
             },
         }).then(res => res);
