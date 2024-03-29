@@ -5,13 +5,13 @@ import Image from "next/image";
 import clsx from "clsx";
 import Modal from "@/components/Modal";
 import Button from "@/components/Button";
-import { MODAL } from "@/constants";
+import { ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { TEXT } from "@/constants/text";
 import { useReportStore } from "@/stores/useReportStore";
 import { currencyFormat } from "@/utils";
-import { ClipboardDocumentIcon } from "@heroicons/react/24/outline";
+import { MODAL } from "@/constants";
+import { TEXT } from "@/constants/text";
 
 export default function SalaryDetail() {
     //** Stores */
