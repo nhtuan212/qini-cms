@@ -21,25 +21,25 @@ export default function RevenueColumns() {
         {
             key: "createAt",
             name: TEXT.DATE,
-            content: (row: any) => <div>{dateFormat(row.createAt)}</div>,
+            content: (params: any) => dateFormat(params.row.createAt),
         },
         {
             key: "revenue",
             name: TEXT.REVENUE,
-            content: (row: any) => <div>{currencyFormat(row.revenue)}</div>,
+            content: (params: any) => currencyFormat(params.row.revenue),
         },
         {
             key: "actions",
             name: "ACTIONS",
             className: "w-[8rem] text-end",
-            content: (row: any) => (
+            content: (params: any) => (
                 <div className="relative flex justify-end items-center gap-2">
                     <Tooltip content="Details">
                         <Button
                             className="min-w-0 bg-transparent p-0 text-default-500"
                             onClick={() => {
                                 openModal(MODAL.REPORT_DETAIL);
-                                getReportByRevenue(row.id);
+                                getReportByRevenue(params.row.id);
                             }}
                         >
                             <EyeIcon className="w-5" />
@@ -53,7 +53,9 @@ export default function RevenueColumns() {
                     <Tooltip content="Remove">
                         <Button
                             className="min-w-0 bg-transparent p-0 text-default-500"
-                            onClick={async () => deleteRevenue(row.id).then(() => getRevenue())}
+                            onClick={async () =>
+                                deleteRevenue(params.row.id).then(() => getRevenue())
+                            }
                         >
                             <TrashIcon className="w-5" />
                         </Button>

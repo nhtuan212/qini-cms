@@ -17,14 +17,18 @@ export default function Columns() {
         {
             key: "name",
             name: "NAME",
-            content: (row: any) => (
+            content: (params: any) => (
                 <div className="flex items-center gap-2">
                     <span className="w-10 h-10">
-                        <ImageComponent className="rounded-lg" src={row.avatar} alt={row.name} />
+                        <ImageComponent
+                            className="rounded-lg"
+                            src={params.row.avatar}
+                            alt={params.row.name}
+                        />
                     </span>
                     <div>
-                        <p className="text-sm">{row.name}</p>
-                        <p className="text-sm text-default-400">{row.email}</p>
+                        <p className="text-sm">{params.row.name}</p>
+                        <p className="text-sm text-default-400">{params.row.email}</p>
                     </div>
                 </div>
             ),
@@ -32,24 +36,26 @@ export default function Columns() {
         {
             key: "role",
             name: "ROLE",
-            content: (row: any) => (
+            content: (params: any) => (
                 <div className="flex flex-col">
-                    <p className="text-bold text-sm capitalize">{row.role}</p>
-                    <p className="text-bold text-sm capitalize text-default-400">{row.team}</p>
+                    <p className="text-bold text-sm capitalize">{params.row.role}</p>
+                    <p className="text-bold text-sm capitalize text-default-400">
+                        {params.row.team}
+                    </p>
                 </div>
             ),
         },
         {
             key: "status",
             name: "STATUS",
-            content: (row: any) => (
+            content: (params: any) => (
                 <Chip
                     className="capitalize"
-                    color={statusColorMap[row.status]}
+                    color={statusColorMap[params.row.status]}
                     size="sm"
                     variant="flat"
                 >
-                    {row.status}
+                    {params.row.status}
                 </Chip>
             ),
         },

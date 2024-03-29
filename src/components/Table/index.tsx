@@ -1,118 +1,88 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import TableHead from "./TableHead";
 import TableBody from "./TableBody";
-import { useTableStore } from "@/stores/useTableStore";
-import Pagination from "../Pagination";
-import RowsPerPage from "./RowsPerPage";
-import { usePaginationStore } from "@/stores/usePaginationStore";
+import TableProvider from "./TableProvider";
+import Pagination from "./Pagination";
 
 export default function Table({
     columns,
     rows,
+    columnVisibility,
+    selectionMode,
+    paginationMode,
+    pinnedColumns,
+    onRowSelectionModeChange,
+    rowSelectionMode,
     topContent,
-    isCheckedList,
-    isPagination,
-    pageSize = 5,
-    rowsPerPage,
 }: {
     columns: any;
     rows: any;
+    selectionMode?: boolean;
+    columnVisibility?: { [key: string]: boolean };
+    paginationMode?: any;
+    pinnedColumns?: {
+        left?: string[];
+        right?: string[];
+    };
+    onRowSelectionModeChange?: (e: readonly string[] | readonly number[]) => void;
+    rowSelectionMode?: readonly string[] | readonly number[];
     topContent?: React.ReactNode;
-    isCheckedList?: boolean;
-    isPagination?: boolean;
-    pageSize?: number;
-    rowsPerPage?: number[];
 }) {
-    //** Store */
-    const {
-        checked,
-        getPageSize,
-        filterValue,
-
-        setPageSize,
-        allCheckedStore,
-        checkedStore,
-        resetTableStore,
-    } = useTableStore();
-
-    const { currentPage } = usePaginationStore();
-
     //** Variables */
-    const filteredItems = useMemo(() => {
-        if (!rows || !rows.length) return [];
-
-        return rows.filter((row: any) => {
-            return Object.values(row).some((value: any) => {
-                if (typeof value === "string") {
-                    return value.toLowerCase().includes(filterValue.toLowerCase());
-                }
-                return false;
-            });
-        });
-    }, [filterValue, rows]);
-
-    const items = useMemo(() => {
-        const start = (currentPage - 1) * getPageSize;
-        const end = start + getPageSize;
-
-        // return isPagination ? rows.slice(start, end) : filteredItems;
-        return filteredItems.slice(start, end);
-    }, [currentPage, getPageSize, filteredItems]);
-
-    // Empty rows
-    const emptyRows = currentPage > 0 ? Math.max(0, currentPage * getPageSize - rows.length) : 0;
+    const columnFiltered = useMemo(
+        () =>
+            columns
+                ?.map((column: any) => {
+                    return {
+                        visible:
+                            columnVisibility && columnVisibility[column.key] === false
+                                ? columnVisibility[column.key]
+                                : true,
+                        ...column,
+                    };
+                })
+                .filter((column: any) => column.visible),
+        [columns, columnVisibility],
+    );
 
     //** Functions */
-    // isCheckedList
-    const handleAllChecked = (checked: boolean) => {
-        if (checked) {
-            const newChecked = rows.map((n: any) => n.id);
-            allCheckedStore(true);
-            return checkedStore(newChecked);
+    const isEmpty = (obj: {}) => {
+        for (const prop in obj) {
+            if (Object.hasOwn(obj, prop)) {
+                return false;
+            }
         }
-        allCheckedStore(false);
-        checkedStore([]);
+
+        return true;
     };
 
-    //** Effects */
-    useEffect(() => {
-        // get page size
-        pageSize && setPageSize(pageSize);
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        // Clear all checked when unmount
-        return () => {
-            resetTableStore();
-        };
-    }, [resetTableStore]);
-
     return (
-        <div className="rounded-md p-3 border shadow-lg">
-            {topContent && topContent}
-            {rowsPerPage && <RowsPerPage pageSize={pageSize} rowsPerPage={rowsPerPage} />}
-            <div className="min-h-[20rem] max-h-[40rem] flex flex-col w-full overflow-y-auto">
-                <TableHead
-                    columns={columns}
-                    rowsLength={rows.length}
-                    isCheckedList={isCheckedList}
-                    onCheckedAll={handleAllChecked}
-                />
-                <TableBody
-                    columns={columns}
-                    rows={items}
-                    emptyRows={emptyRows}
-                    checked={checked}
-                    isCheckedList={isCheckedList}
-                />
+        <TableProvider>
+            <div className="rounded-md p-3 border shadow-lg">
+                <div className="h-[30rem] flex flex-col w-full">
+                    {topContent && topContent}
+                    <div className="h-full overflow-scroll">
+                        <TableHead
+                            columns={columnFiltered}
+                            rows={rows}
+                            selectionMode={selectionMode}
+                            pinnedColumns={pinnedColumns}
+                            onRowSelectionModeChange={onRowSelectionModeChange}
+                        />
+                        <TableBody
+                            columns={columnFiltered}
+                            rows={rows}
+                            selectionMode={selectionMode}
+                            pinnedColumns={pinnedColumns}
+                            onRowSelectionModeChange={onRowSelectionModeChange}
+                            rowSelectionMode={rowSelectionMode}
+                        />
+                    </div>
+                </div>
+                {!isEmpty(paginationMode) && <Pagination rows={rows} {...paginationMode} />}
             </div>
-            {isPagination && (
-                <Pagination totalPage={Math.ceil(filteredItems.length / getPageSize)} />
-            )}
-        </div>
+        </TableProvider>
     );
 }

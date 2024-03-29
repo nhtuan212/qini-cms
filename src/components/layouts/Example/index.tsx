@@ -10,10 +10,8 @@ export default function index() {
         <Table
             columns={Columns()}
             rows={rows}
-            isCheckedList
-            isPagination
-            pageSize={5}
-            rowsPerPage={[5, 10]}
+            selectionMode
+            paginationMode={{ pageSize: 5, pageSizeOptions: [5, 10] }}
         />
     );
 }

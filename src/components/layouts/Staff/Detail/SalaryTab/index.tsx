@@ -15,10 +15,8 @@ export default function SalaryTab() {
             columns={SalaryColumns()}
             rows={reportByStaff}
             topContent={<StaffDetailTopContent />}
-            isCheckedList
-            isPagination
-            pageSize={5}
-            rowsPerPage={[5, 10, 15]}
+            selectionMode
+            paginationMode={{ pageSize: 10, pageSizeOptions: [5, 10] }}
         />
     );
 }

@@ -9,17 +9,17 @@ export default function ReportColumns() {
         {
             key: "name",
             name: TEXT.NAME,
-            content: (row: any) => <div>{row.staffName}</div>,
+            content: (params: any) => <div>{params.row.staffName}</div>,
         },
         {
             key: "timeSheet",
             name: TEXT.TIME_SHEET,
             className: "max-w-[8rem] text-center",
-            content: (row: any) => (
+            content: (params: any) => (
                 <div className="flex">
-                    <p className="flex-1">{row.checkIn}</p>
+                    <p className="flex-1">{params.row.checkIn}</p>
                     <span className="flex-0">-</span>
-                    <p className="flex-1">{row.checkOut}</p>
+                    <p className="flex-1">{params.row.checkOut}</p>
                 </div>
             ),
         },
@@ -27,13 +27,13 @@ export default function ReportColumns() {
             key: "timeWorked",
             name: TEXT.TIME_NUMBER,
             className: "text-center",
-            content: (row: any) => <div>{row.timeWorked}</div>,
+            content: (params: any) => <div>{params.row.timeWorked}</div>,
         },
         {
             key: "target",
             className: "max-w-[8rem]",
             name: TEXT.TARGET,
-            content: (row: any) => <div>{currencyFormat(row.target)}</div>,
+            content: (params: any) => <div>{currencyFormat(params.row.target)}</div>,
         },
     ];
 

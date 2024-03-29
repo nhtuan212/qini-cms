@@ -9,7 +9,7 @@ export default function Checkbox({
     onChange,
 }: {
     checked?: boolean;
-    onChange?: (checked: boolean) => void;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
     //** States */
     const [selected, setSelected] = useState(checked);
@@ -25,7 +25,7 @@ export default function Checkbox({
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelected(event.target.checked);
 
-        typeof onChange === "function" && onChange(event.target.checked);
+        typeof onChange === "function" && onChange(event);
     };
 
     //** Effects */
