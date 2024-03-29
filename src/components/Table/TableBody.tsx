@@ -45,8 +45,6 @@ export default function TableBody({
         return columns?.filter((column: any) => !pinnedColumns?.left?.includes(column.key));
     }, [columns, pinnedColumns]);
 
-    console.log({ items });
-
     //** Functions */
     const handleChecked = (e: React.ChangeEvent<HTMLInputElement>, id: number) => {
         const idChecked = itemList?.indexOf(id);
