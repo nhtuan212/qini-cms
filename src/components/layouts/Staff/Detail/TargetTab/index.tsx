@@ -15,10 +15,8 @@ export default function TargetTab() {
             columns={TargetColumns()}
             rows={reportByStaff}
             topContent={<TargetTopContent />}
-            isCheckedList
-            isPagination
-            pageSize={5}
-            rowsPerPage={[5, 15]}
+            selectionMode
+            paginationMode={{ pageSize: 10, pageSizeOptions: [5, 10] }}
         />
     );
 }

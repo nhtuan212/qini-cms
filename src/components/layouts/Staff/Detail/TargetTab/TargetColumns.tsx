@@ -9,17 +9,17 @@ export default function TargetColumns() {
         {
             key: "createAt",
             name: TEXT.DATE,
-            content: (row: any) => <div>{dateFormat(row.createAt)}</div>,
+            content: (params: any) => <div>{dateFormat(params.row.createAt)}</div>,
         },
         {
             key: "timeNumber",
             name: TEXT.TIME_NUMBER,
-            content: (row: any) => <div>{row.timeWorked}</div>,
+            content: (params: any) => <div>{params.row.timeWorked}</div>,
         },
         {
             key: "target",
             name: TEXT.TARGET,
-            content: (row: any) => <div>{currencyFormat(row.target)}</div>,
+            content: (params: any) => <div>{currencyFormat(params.row.target)}</div>,
         },
     ];
 

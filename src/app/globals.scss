@@ -83,6 +83,11 @@
     }
 }
 
+// Table
+.cellStickyLeft {
+    @apply sticky left-0 min-h-14 flex bg-gray-100 border-r-2 z-50;
+}
+
 // Error Message
 .errorMessage {
     @apply p-1 text-tiny text-danger;

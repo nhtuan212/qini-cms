@@ -27,12 +27,10 @@ export default function ReportTable() {
         <>
             <Table
                 columns={RevenueColumns()}
-                rows={revenue}
                 topContent={<TopContent />}
-                isCheckedList
-                isPagination
-                pageSize={10}
-                rowsPerPage={[10, 15, 20, 30]}
+                rows={revenue}
+                selectionMode
+                paginationMode={{ pageSize: 10, pageSizeOptions: [5, 10] }}
             />
 
             {/* Popup add new revenue */}
