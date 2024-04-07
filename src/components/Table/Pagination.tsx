@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Button from "../Button";
 import { TableContext } from "./TableProvider";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
@@ -14,7 +14,7 @@ type PaginationProps = {
 
 export default function Pagination(props: PaginationProps) {
     //** Spread syntax */
-    const { rows, pageSizeOptions } = props;
+    const { rows, pageSize, pageSizeOptions } = props;
 
     //** Context */
     const { currentPage, rowsPerPage, handleCurrentPage, handleRowsPerPage } =
@@ -23,6 +23,13 @@ export default function Pagination(props: PaginationProps) {
     //** Variables */
     const totalPage = rows.length;
     const initialPage = 1;
+
+    //** Effects */
+    useEffect(() => {
+        handleRowsPerPage(pageSize);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if (!totalPage || totalPage <= 1) return null;
 
@@ -58,7 +65,7 @@ export default function Pagination(props: PaginationProps) {
                 <Button.Icon
                     className="min-w-8 bg-gray-200 p-0.5"
                     onClick={() => handleCurrentPage(currentPage + rowsPerPage)}
-                    disabled={currentPage >= totalPage}
+                    disabled={currentPage + rowsPerPage >= totalPage}
                 >
                     <ChevronRightIcon className="w-4 text-gray-800" />
                 </Button.Icon>

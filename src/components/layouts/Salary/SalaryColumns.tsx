@@ -24,8 +24,8 @@ export default function SalaryColumns() {
         {
             key: "totalTime",
             name: TEXT.TIME_NUMBER,
-            className: "flex flex-none justify-center w-16",
-            content: (params: any) => <div>{params.row.totalTime}</div>,
+            className: "flex flex-none justify-center w-24",
+            content: (params: any) => <div>{params.row.totalTime} 2</div>,
         },
         {
             key: "totalTarget",
@@ -40,7 +40,7 @@ export default function SalaryColumns() {
         {
             key: "rank",
             name: TEXT.RANK,
-            className: "flex flex-none justify-center w-24",
+            className: "flex flex-none justify-center w-30",
             content: (params: any) => {
                 switch (params.row.rank) {
                     case "A":
@@ -72,13 +72,13 @@ export default function SalaryColumns() {
         {
             key: "rate",
             name: TEXT.RATE,
-            className: "flex flex-none justify-center w-20",
+            className: "flex flex-none justify-center w-24",
             content: (params: any) => <div>{params.row.rate}</div>,
         },
         {
             key: "",
             name: "",
-            className: "flex flex-none justify-center w-20",
+            className: "flex flex-none justify-center w-24",
             content: (params: any) => (
                 <Button.Icon
                     onClick={() => {

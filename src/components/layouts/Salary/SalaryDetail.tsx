@@ -21,7 +21,7 @@ export default function SalaryDetail() {
 
     //** Variables */
     const { performance, rank, rate, staffName, total, totalTarget, totalTime } =
-        salaryByStaff.find(item => item.staffId === staffById.id) || {};
+        salaryByStaff.find(item => item.staffId === staffById?.id) || {};
 
     const detailColumn = clsx("flex border-b last:border-b-0");
     const detailColumnItem = clsx(
