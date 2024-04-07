@@ -1,6 +1,7 @@
 import { reportByRevenue, salaryByStaff } from "@/types/reportProps";
 
 export type SalaryReportProps = {
+    id: string;
     staffId?: string;
     staffName?: string;
     totalTarget?: number;
@@ -13,6 +14,7 @@ export type SalaryReportProps = {
 
 export const SalaryReportModel = (data: salaryByStaff): SalaryReportProps => {
     return {
+        id: data.id,
         staffId: data.staffId,
         staffName: data.staffName,
         performance: data.performance,

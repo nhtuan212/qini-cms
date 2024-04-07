@@ -5,36 +5,41 @@ import clsx from "clsx";
 import Checkbox from "../Checkbox";
 import { TableContext } from "./TableProvider";
 
-export default function TableBody({
-    rows,
-    columns,
-    selectionMode,
-    pinnedColumns,
-    onRowSelectionModeChange,
-    rowSelectionMode,
-}: {
-    rows: any;
-    columns: any;
-    selectionMode?: boolean;
-    pinnedColumns?: {
-        left?: string[];
-        right?: string[];
-    };
-    onRowSelectionModeChange?: (e: readonly string[] | readonly number[]) => void;
-    rowSelectionMode?: readonly string[] | readonly number[];
-}) {
+type TableBodyProps = {
+    loading?: boolean;
+    rowSelection?: readonly string[] | readonly number[];
+    onRowSelection?: (e: readonly string[] | readonly number[]) => void;
+};
+
+export default function TableBody({ ...props }: TableBodyProps) {
     //** Context */
-    const { itemList, currentPage, rowsPerPage, handleCheckedItem, handleCheckedAll } =
-        useContext(TableContext);
+    const {
+        rows,
+        columns,
+        isSelectionMode,
+        itemList,
+        currentPage,
+        rowsPerPage,
+        pinnedColumns,
+        handleCheckedItem,
+        handleCheckedAll,
+    } = useContext(TableContext);
+
+    //** Spread syntax */
+    const { loading, onRowSelection, rowSelection } = props;
 
     //** Variables */
-    const isChecked = (id: number): boolean => itemList?.indexOf(id) !== -1;
+    const isChecked = useMemo(() => {
+        return (id: number) => itemList?.indexOf(id) !== -1;
+    }, [itemList]);
 
-    const items = useMemo(() => {
+    const rowsData = useMemo(() => {
+        if (rowsPerPage === 0) return rows.items;
+
         const start = currentPage - 1;
         const end = start + rowsPerPage;
 
-        return rows.slice(start, end);
+        return rows.items.slice(start, end);
     }, [currentPage, rows, rowsPerPage]);
 
     const pinnedColumnsLeft = useMemo(() => {
@@ -70,13 +75,13 @@ export default function TableBody({
         typeof handleCheckedItem === "function" && handleCheckedItem(newChecked);
 
         typeof handleCheckedAll === "function" &&
-            handleCheckedAll(newChecked.length === rows.length);
+            handleCheckedAll(newChecked.length === rows.items.length);
 
-        typeof onRowSelectionModeChange === "function" && onRowSelectionModeChange(newChecked);
+        typeof onRowSelection === "function" && onRowSelection(newChecked);
     };
 
     const renderSelectionMode = (id: number) => {
-        if (selectionMode) {
+        if (isSelectionMode) {
             return (
                 <div className="flex items-center px-3 py-2">
                     <Checkbox
@@ -107,15 +112,46 @@ export default function TableBody({
 
     //** Effects */
     useEffect(() => {
-        //** Checked item in rowSelectionMode */
-        if (Array.isArray(rowSelectionMode)) {
-            return handleCheckedItem(rowSelectionMode);
+        //** Checked item in rowSelection */
+        if (Array.isArray(rowSelection)) {
+            return handleCheckedItem(rowSelection);
         }
-    }, [rowSelectionMode, handleCheckedItem]);
 
-    return items.length > 0 ? (
+        //eslint-disable-next-line
+    }, [rowSelection]);
+
+    if (rowsData.length === 0) {
+        if (loading) {
+            return (
+                <div className="flex items-center justify-center w-full h-full text-gray-400">
+                    <div
+                        className={clsx(
+                            "absolute top-0 left-0 z-[100]",
+                            "w-full h-full",
+                            "flex justify-center items-center",
+                            "bg-white/50",
+                        )}
+                    >
+                        <div
+                            className={clsx(
+                                "w-10 h-10 border-3 border-t-primary animate-spin rounded-full",
+                            )}
+                        ></div>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="sticky left-0 flex items-center justify-center w-full h-full text-gray-400">
+                No data available
+            </div>
+        );
+    }
+
+    return (
         <div className="min-w-full w-fit">
-            {items?.map((row: any, index: number) => {
+            {rowsData?.map((row: any, index: number) => {
                 return (
                     <div
                         id={row.id}
@@ -141,10 +177,6 @@ export default function TableBody({
                     </div>
                 );
             })}
-        </div>
-    ) : (
-        <div className="flex items-center justify-center w-full h-full text-gray-400">
-            No data available
         </div>
     );
 }

@@ -20,6 +20,7 @@ export type ReportProps = {
 };
 
 export type salaryByStaff = {
+    id: string;
     staffId: string;
     staffName: string;
     rank: string;
