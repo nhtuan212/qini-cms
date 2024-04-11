@@ -21,7 +21,13 @@ type ReportAction = {
     getReport: () => void;
     getReportByRevenue: (id: string) => void;
     getReportByStaff: (id: string) => void;
-    getSalaryByStaff: (dateValue: DateValueType) => void;
+    getSalaryByStaff: ({
+        staffId,
+        dateValue,
+    }: {
+        staffId?: string;
+        dateValue: DateValueType;
+    }) => void;
     filterReportByStaff: ({ id, params }: { id: string; params: DateValueType }) => Promise<any>;
 };
 
@@ -87,9 +93,17 @@ export const useReportStore = create<ReportState & ReportAction>()(set => ({
         });
     },
 
-    getSalaryByStaff: async dateValue => {
+    getSalaryByStaff: async ({
+        staffId,
+        dateValue,
+    }: {
+        staffId?: string;
+        dateValue: DateValueType;
+    }) => {
+        const endpoint = `${URL.REPORT}/salary?startDate=${dateValue?.startDate}&endDate=${dateValue?.endDate}${staffId && `&staffId=${staffId}`}`;
+
         return await fetchData({
-            endpoint: `${URL.REPORT}/salary?startDate=${dateValue?.startDate}&endDate=${dateValue?.endDate}`,
+            endpoint,
         }).then(res => {
             if (res?.code !== 200) {
                 return set({

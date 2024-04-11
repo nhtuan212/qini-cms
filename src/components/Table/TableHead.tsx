@@ -158,11 +158,6 @@ export default function TableHead({ ...props }: TableHeadProps) {
     return (
         <div className="sticky top-0 z-10">
             <div className="min-w-full w-fit flex items-center bg-gray-100 rounded-md">
-                {/* {selectionMode &&
-                    pinnedColumns?.left?.includes("__Selection__") &&
-                    renderSelectionMode()}
-                {columns.map((column: any) => renderColumn(column))} */}
-
                 {pinnedColumns?.left && pinnedColumns?.left?.length > 0 && (
                     <div className="cellStickyLeft">
                         {pinnedColumns?.left?.includes("__Selection__") && renderSelectionMode()}
