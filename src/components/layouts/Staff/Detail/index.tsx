@@ -2,11 +2,8 @@
 
 import React, { useEffect } from "react";
 import TargetTab from "./TargetTab";
-import SalaryTab from "./SalaryTab";
 import Modal from "@/components/Modal";
-import { Tab, Tabs } from "@nextui-org/react";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { TEXT } from "@/constants/text";
 import { MODAL } from "@/constants";
 import { useModalStore } from "@/stores/useModalStore";
 
@@ -30,14 +27,7 @@ export default function StaffDetail() {
                 <div className="title mb-5">{staffById?.name}</div>
             </Modal.Header>
             <Modal.Body>
-                <Tabs aria-label="Options">
-                    <Tab key="revenue" title={TEXT.REVENUE}>
-                        <TargetTab />
-                    </Tab>
-                    <Tab key="salary" title={TEXT.SALARY}>
-                        <SalaryTab />
-                    </Tab>
-                </Tabs>
+                <TargetTab />
             </Modal.Body>
         </Modal>
     );

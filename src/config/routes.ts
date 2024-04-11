@@ -4,6 +4,5 @@ export const ROUTE = {
     HOME: "/",
     LOGIN: "/login",
     REPORT: "/bao-cao",
-    SALARY_PAY: "/tinh-luong",
     STAFF: "/nhan-vien",
 };

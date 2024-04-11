@@ -44,8 +44,6 @@ export const TEXT = {
     EDIT: "Sửa",
     DELETE: "Xoá",
     SALARY: "Tiền lương",
-    SALARY_PAY: "Tính lương",
-    SUBMIT_SALARY_PAY: "Xác nhận tính lương",
     SALARY_OF: "Tiền lương của",
     PAYROLL_MONTH: "Bảng lương tháng",
     WORKING_DAY: "Ngày làm việc",
