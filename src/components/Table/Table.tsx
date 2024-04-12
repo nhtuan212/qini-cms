@@ -9,7 +9,7 @@ import { TableProps } from ".";
 import { TableContext } from "./TableProvider";
 
 export default function Table({ ...props }: TableProps) {
-    //** Spread syntax */
+    //** Destructuring */
     const {
         loading,
         className,

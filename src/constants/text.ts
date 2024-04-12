@@ -44,6 +44,7 @@ export const TEXT = {
     EDIT: "Sửa",
     DELETE: "Xoá",
     SALARY: "Tiền lương",
+    SALARY_GREATER_THAN_ZERO: "Tiền lương phải lớn hơn 0",
     SALARY_OF: "Tiền lương của",
     PAYROLL_MONTH: "Bảng lương tháng",
     WORKING_DAY: "Ngày làm việc",

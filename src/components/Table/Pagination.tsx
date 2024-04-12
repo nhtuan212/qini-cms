@@ -13,7 +13,7 @@ type PaginationProps = {
 };
 
 export default function Pagination(props: PaginationProps) {
-    //** Spread syntax */
+    //** Destructuring */
     const { rows, pageSize, pageSizeOptions } = props;
 
     //** Context */

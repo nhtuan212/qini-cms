@@ -25,7 +25,7 @@ export default function TableHead({ ...props }: TableHeadProps) {
         handleCheckedAll,
     } = useContext(TableContext);
 
-    //** Spread syntax */
+    //** Destructuring */
     const { sortingMode, onRowSelection } = props;
     const { items } = rows;
 
