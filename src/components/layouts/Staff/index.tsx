@@ -12,11 +12,12 @@ import { useStaffStore } from "@/stores/useStaffStore";
 import { MODAL, ROLE } from "@/constants";
 import { StaffProps } from "@/types/staffProps";
 import { TEXT } from "@/constants/text";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function Staff() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { openModal } = useModalStore();
+    const { openModal, modalMessage, onConfirm, onCancel } = useModalStore();
     const { staff, getStaff } = useStaffStore();
 
     //** Effects */
@@ -46,7 +47,7 @@ export default function Staff() {
                                     <div className="flex justify-between items-center">
                                         <p className="text-lg">{item.name}</p>
                                         {profile.role === ROLE.ADMIN && (
-                                            <StaffActions id={item.id} />
+                                            <StaffActions item={item} />
                                         )}
                                     </div>
                                 </div>
@@ -60,6 +61,9 @@ export default function Staff() {
 
             {/* Popup staff detail */}
             <StaffDetail />
+
+            {/* Confirm modal */}
+            <ConfirmModal modalMessage={modalMessage} onConfirm={onConfirm} onCancel={onCancel} />
         </>
     );
 }

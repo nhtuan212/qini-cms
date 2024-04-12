@@ -11,12 +11,16 @@ import { useModalStore } from "@/stores/useModalStore";
 import { useReportStore } from "@/stores/useReportStore";
 import { MODAL, ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
+import { StaffProps } from "@/types/staffProps";
 
-export default function StaffActions({ id }: { id: string }) {
+export default function StaffActions({ item }: { item: StaffProps }) {
+    //** Destructuring */
+    const { id, name } = item;
+
     //** Stores */
     const { profile } = useProfileStore();
     const { getStaff, getStaffById, deleteStaff } = useStaffStore();
-    const { openModal } = useModalStore();
+    const { openModal, openConfirmModal } = useModalStore();
     const { getReportByStaff } = useReportStore();
 
     //** Variables */
@@ -40,6 +44,19 @@ export default function StaffActions({ id }: { id: string }) {
     const handleEditStaff = (id: string) => {
         getStaffById(id);
         openModal(MODAL.ADD_STAFF, "edit");
+    };
+
+    const handleDeleteStaff = (id: string) => {
+        openConfirmModal({
+            modalName: MODAL.CONFIRM,
+            modalMessage: `Bạn có chắc chắn muốn xoá ${name} không ?`,
+            onConfirm: () =>
+                deleteStaff(id).then(() => {
+                    getStaff();
+                    openModal("");
+                }),
+            onCancel: () => openModal(""),
+        });
     };
 
     return (
@@ -70,7 +87,7 @@ export default function StaffActions({ id }: { id: string }) {
                     key="delete"
                     startContent={<TrashIcon className="w-5" />}
                     textValue={TEXT.DELETE}
-                    onClick={() => deleteStaff(id).then(() => getStaff())}
+                    onClick={() => handleDeleteStaff(id)}
                 >
                     {TEXT.DELETE}
                 </DropdownItem>

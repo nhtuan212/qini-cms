@@ -25,7 +25,7 @@ export default function TableBody({ ...props }: TableBodyProps) {
         handleCheckedAll,
     } = useContext(TableContext);
 
-    //** Spread syntax */
+    //** Destructuring */
     const { loading, onRowSelection, rowSelection } = props;
 
     //** Variables */

@@ -69,7 +69,7 @@ export default function AddStaff() {
         setError("");
         reset({
             name: "",
-            salary: 0,
+            salary: "",
         });
     };
 
@@ -88,7 +88,7 @@ export default function AddStaff() {
     }, [setValue, modalAction, staffById]);
 
     return (
-        <Modal isOpen={modalName === MODAL.ADD_STAFF} size="md" onOpenChange={handleCloseModal}>
+        <Modal isOpen={modalName === MODAL.ADD_STAFF} size="sm" onOpenChange={handleCloseModal}>
             <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
                 <Modal.Header>{TEXT.STAFF}</Modal.Header>
 
@@ -130,9 +130,10 @@ export default function AddStaff() {
                                         currencyInput
                                         {...register("salary", {
                                             required: `${TEXT.SALARY} ${TEXT.IS_REQUIRED}`,
-                                            setValueAs: value => {
-                                                if (typeof value === "string")
-                                                    return value?.replace(/\.|,/g, "");
+
+                                            min: {
+                                                value: 1,
+                                                message: TEXT.SALARY_GREATER_THAN_ZERO,
                                             },
                                         })}
                                         errorMessage={

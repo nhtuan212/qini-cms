@@ -9,6 +9,9 @@ export const STAFF = {
 };
 
 export const MODAL = {
+    // Confirm
+    CONFIRM: "CONFIRM",
+
     // Reports
     ADD_REPORT: "ADD_REPORT",
     REPORT_DETAIL: "REPORT_DETAIL",

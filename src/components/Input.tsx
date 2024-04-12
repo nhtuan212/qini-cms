@@ -24,7 +24,7 @@ const Input = React.forwardRef(
             endContent,
             type = "text",
             currencyInput = false,
-            defaultValue = 0,
+            defaultValue = "",
             ...props
         }: InputProps,
         ref: React.ForwardedRef<HTMLInputElement>,
