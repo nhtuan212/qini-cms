@@ -29,6 +29,22 @@ const config: Config = {
                     DEFAULT: "#3b82f6",
                 },
             },
+
+            // Animation
+            animation: {
+                zoomIn: "zoomIn .2s ease-in-out",
+            },
+
+            // that is actual animation
+            keyframes: () => ({
+                zoomIn: {
+                    "0%": {
+                        opacity: "0",
+                        transform: "translateY(100px) scale(0.6) translateZ(100px)",
+                    },
+                    "100%": { opacity: "1", transform: "translateY(0px) scale(1) translateZ(0px)" },
+                },
+            }),
         },
     },
     variants: {

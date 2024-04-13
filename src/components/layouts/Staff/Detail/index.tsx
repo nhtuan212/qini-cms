@@ -18,13 +18,9 @@ export default function StaffDetail() {
     }, [getStaffById, staffById?.id]);
 
     return (
-        <Modal
-            isOpen={modalName === MODAL.STAFF_DETAIL}
-            size="4xl"
-            onOpenChange={() => openModal("")}
-        >
+        <Modal open={modalName === MODAL.STAFF_DETAIL} size="4xl" onClose={() => openModal("")}>
             <Modal.Header>
-                <div className="title mb-5">{staffById?.name}</div>
+                <div className="title">{staffById?.name}</div>
             </Modal.Header>
             <Modal.Body>
                 <TargetTab />
