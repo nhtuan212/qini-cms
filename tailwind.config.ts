@@ -33,6 +33,8 @@ const config: Config = {
             // Animation
             animation: {
                 zoomIn: "zoomIn .2s ease-in-out",
+                fadeIn: "fadeIn .2s ease-in-out",
+                fadeInLeft: "fadeInLeft .2s ease-in-out",
             },
 
             // that is actual animation
@@ -43,6 +45,14 @@ const config: Config = {
                         transform: "translateY(100px) scale(0.6) translateZ(100px)",
                     },
                     "100%": { opacity: "1", transform: "translateY(0px) scale(1) translateZ(0px)" },
+                },
+                fadeIn: {
+                    "0%": { opacity: "0" },
+                    "100%": { opacity: "1" },
+                },
+                fadeInLeft: {
+                    "0%": { opacity: "0", transform: "translateX(-20px)" },
+                    "100%": { opacity: "1", transform: "translateX(0)" },
                 },
             }),
         },
