@@ -9,12 +9,21 @@ type ModalProps = {
     isCloseIcon?: boolean;
     size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full";
     radius?: "sm" | "md" | "lg";
+    className?: string;
     onClose?: () => void;
 };
 
 const Modal = ({ ...props }: ModalProps) => {
     //** Destructuring */
-    const { children, open, isCloseIcon = true, size = "md", radius = "md", onClose } = props;
+    const {
+        children,
+        open,
+        isCloseIcon = true,
+        size = "md",
+        radius = "md",
+        className,
+        onClose,
+    } = props;
 
     //** States */
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,7 +74,12 @@ const Modal = ({ ...props }: ModalProps) => {
     if (!isModalOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div
+            className={clsx(
+                "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50",
+                className,
+            )}
+        >
             <div
                 ref={ref}
                 className={clsx(
@@ -89,7 +103,6 @@ const Modal = ({ ...props }: ModalProps) => {
                     radius === "md" && "rounded-md",
                     radius === "lg" && "rounded-lg",
                 )}
-                {...props}
             >
                 {isCloseIcon && (
                     <button className="absolute top-4 right-4" onClick={handleClose}>
