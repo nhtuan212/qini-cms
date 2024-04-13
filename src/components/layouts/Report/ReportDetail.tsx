@@ -20,11 +20,7 @@ export default function ReportDetail() {
     const totalRevenue = sumArray(reportByRevenue, "target");
 
     return (
-        <Modal
-            isOpen={modalName === MODAL.REPORT_DETAIL}
-            size="4xl"
-            onOpenChange={() => openModal("")}
-        >
+        <Modal open={modalName === MODAL.REPORT_DETAIL} size="4xl" onClose={() => openModal("")}>
             <Modal.Header>
                 <div>
                     {TEXT.REPORT_DATE}: {moment(reportByRevenue[0]?.createAt).format("DD/MM/YYYY")}

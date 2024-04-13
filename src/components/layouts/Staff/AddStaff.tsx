@@ -88,7 +88,7 @@ export default function AddStaff() {
     }, [setValue, modalAction, staffById]);
 
     return (
-        <Modal isOpen={modalName === MODAL.ADD_STAFF} size="sm" onOpenChange={handleCloseModal}>
+        <Modal open={modalName === MODAL.ADD_STAFF} size="sm" onClose={handleCloseModal}>
             <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
                 <Modal.Header>{TEXT.STAFF}</Modal.Header>
 

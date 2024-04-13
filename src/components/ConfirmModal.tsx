@@ -20,16 +20,13 @@ export default function ConfirmModal({ ...props }: ConfirmModalProps) {
     const { modalName, openModal } = useModalStore();
 
     return (
-        <Modal
-            isOpen={modalName === MODAL.CONFIRM}
-            size="sm"
-            hideCloseButton
-            onOpenChange={() => openModal("")}
-        >
+        <Modal open={modalName === MODAL.CONFIRM} size="sm" onClose={() => openModal("")}>
             <Modal.Header>{modalMessage}</Modal.Header>
             <Modal.Footer>
-                <Button onClick={onCancel}>Cancel</Button>
                 <Button onClick={onConfirm}>Confirm</Button>
+                <Button className="bg-error" onClick={onCancel}>
+                    Cancel
+                </Button>
             </Modal.Footer>
         </Modal>
     );

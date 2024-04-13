@@ -113,11 +113,7 @@ export default function RevenueAddNew() {
     };
 
     return (
-        <Modal
-            isOpen={modalName === MODAL.ADD_REPORT}
-            size="4xl"
-            onOpenChange={() => openModal("")}
-        >
+        <Modal open={modalName === MODAL.ADD_REPORT} size="4xl" onClose={() => openModal("")}>
             <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
                 <Modal.Header>{TEXT.ADD_REPORT}</Modal.Header>
                 <Modal.Body>
