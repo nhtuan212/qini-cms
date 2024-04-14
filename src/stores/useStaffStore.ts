@@ -10,7 +10,6 @@ type StaffState = {
 
 export type StaffData = {
     name: string;
-    salary: number;
 };
 
 type StaffAction = {

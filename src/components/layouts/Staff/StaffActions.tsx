@@ -2,9 +2,13 @@
 
 import React from "react";
 import Button from "@/components/Button";
-import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
-import { IdentificationIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+    EllipsisVerticalIcon,
+    EyeIcon,
+    PencilSquareIcon,
+    TrashIcon,
+} from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
@@ -63,13 +67,13 @@ export default function StaffActions({ item }: { item: StaffProps }) {
         <Dropdown>
             <DropdownTrigger>
                 <Button className="min-w-0 h-auto bg-transparent p-0 text-black">
-                    <EllipsisVerticalIcon className="w-5" />
+                    <EllipsisVerticalIcon className="w-6" />
                 </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="Staff actions" disabledKeys={disabledKeys}>
                 <DropdownItem
                     key="detail"
-                    startContent={<IdentificationIcon className="w-5" />}
+                    startContent={<EyeIcon className="w-5" />}
                     textValue={TEXT.DETAIL}
                     onClick={() => handleDetailStaff(id)}
                 >
