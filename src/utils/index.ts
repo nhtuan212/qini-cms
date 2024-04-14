@@ -48,15 +48,15 @@ export const getCurrentMonth = () => {
     };
 };
 
-export const isEmpty = (obj: {}) => {
-    for (const prop in obj) {
-        if (Object.hasOwn(obj, prop)) {
-            return false;
-        }
-    }
+// export const isEmpty = (obj: {}) => {
+//     for (const prop in obj) {
+//         if (Object.hasOwn(obj, prop)) {
+//             return false;
+//         }
+//     }
 
-    return true;
-};
+//     return true;
+// };
 
 export const sumArray = (array: any[], field: string): number => {
     if (!array?.length) return 0;
