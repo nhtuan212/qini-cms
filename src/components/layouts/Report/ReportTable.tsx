@@ -1,20 +1,23 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Table from "@/components/Table";
 import RevenueColumns from "./RevenueColumns";
 import RevenueAddNew from "./RevenueAddNew";
 import ReportDetail from "./ReportDetail";
 import TopContent from "./TopContent";
+import Table from "@/components/Table";
+import ConfirmModal from "@/components/ConfirmModal";
 import { useReportStore } from "@/stores/useReportStore";
 import { useRevenueStore } from "@/stores/useRevenueStore";
 import { useStaffStore } from "@/stores/useStaffStore";
+import { useModalStore } from "@/stores/useModalStore";
 
 export default function ReportTable() {
     //** Stores */
     const { getReport } = useReportStore();
     const { revenue, getRevenue } = useRevenueStore();
     const { getStaff } = useStaffStore();
+    const { modalMessage, onConfirm, onCancel } = useModalStore();
 
     //** Effects */
     useEffect(() => {
@@ -37,6 +40,9 @@ export default function ReportTable() {
 
             {/* Popup detail revenue when click eye icon */}
             <ReportDetail />
+
+            {/* Confirm modal */}
+            <ConfirmModal modalMessage={modalMessage} onConfirm={onConfirm} onCancel={onCancel} />
         </>
     );
 }

@@ -23,10 +23,10 @@ export default function ConfirmModal({ ...props }: ConfirmModalProps) {
         <Modal open={modalName === MODAL.CONFIRM} size="sm" onClose={() => openModal("")}>
             <Modal.Header>{modalMessage}</Modal.Header>
             <Modal.Footer>
-                <Button onClick={onConfirm}>Confirm</Button>
                 <Button className="bg-error" onClick={onCancel}>
                     Cancel
                 </Button>
+                <Button onClick={onConfirm}>Confirm</Button>
             </Modal.Footer>
         </Modal>
     );
