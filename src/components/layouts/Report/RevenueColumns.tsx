@@ -2,17 +2,19 @@
 
 import React from "react";
 import Button from "@/components/Button";
+import { Tooltip } from "@nextui-org/react";
+import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useReportStore } from "@/stores/useReportStore";
 import { useRevenueStore } from "@/stores/useRevenueStore";
-import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Tooltip } from "@nextui-org/react";
-import { TEXT } from "@/constants/text";
-import { currencyFormat, dateFormat } from "@/utils";
 import { useModalStore } from "@/stores/useModalStore";
-import { MODAL } from "@/constants";
+import { useProfileStore } from "@/stores/useProfileStore";
+import { currencyFormat, dateFormat } from "@/utils";
+import { MODAL, ROLE } from "@/constants";
+import { TEXT } from "@/constants/text";
 
 export default function RevenueColumns() {
     //** Stores */
+    const { profile } = useProfileStore();
     const { getReportByRevenue } = useReportStore();
     const { getRevenue, deleteRevenue } = useRevenueStore();
     const { openModal, openConfirmModal } = useModalStore();
@@ -64,14 +66,16 @@ export default function RevenueColumns() {
                             <PencilSquareIcon className="w-5" />
                         </Button>
                     </Tooltip> */}
-                    <Tooltip content="Remove">
-                        <Button
-                            className="min-w-0 bg-transparent p-0 text-default-500"
-                            onClick={() => handleDeleteReport(params.row.id)}
-                        >
-                            <TrashIcon className="w-5" />
-                        </Button>
-                    </Tooltip>
+                    {profile.role === ROLE.ADMIN && (
+                        <Tooltip content="Remove">
+                            <Button
+                                className="min-w-0 bg-transparent p-0 text-default-500"
+                                onClick={() => handleDeleteReport(params.row.id)}
+                            >
+                                <TrashIcon className="w-5" />
+                            </Button>
+                        </Tooltip>
+                    )}
                 </div>
             ),
         },
