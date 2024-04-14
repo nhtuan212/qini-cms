@@ -52,6 +52,7 @@ export default function RevenueAddNew() {
         register,
         handleSubmit,
         getValues,
+        reset,
         formState: { errors },
     } = useForm<FormValues>({
         defaultValues: {
@@ -111,6 +112,15 @@ export default function RevenueAddNew() {
             }
         });
     };
+
+    React.useEffect(() => {
+        if (modalName === MODAL.ADD_REPORT) {
+            reset({
+                staff: [{ staffId: "", checkIn: "", checkOut: "" }],
+                revenue: 0,
+            });
+        }
+    }, [modalName, reset]);
 
     return (
         <Modal open={modalName === MODAL.ADD_REPORT} size="4xl" onClose={() => openModal("")}>
@@ -273,6 +283,10 @@ export default function RevenueAddNew() {
                                             pattern: {
                                                 value: /^[0-9]+$/i,
                                                 message: TEXT.NUMBER_IS_REQUIRED,
+                                            },
+                                            min: {
+                                                value: 1,
+                                                message: TEXT.REVENUE_GREATER_THAN_ZERO,
                                             },
                                         })}
                                         errorMessage={

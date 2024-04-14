@@ -15,7 +15,21 @@ export default function RevenueColumns() {
     //** Stores */
     const { getReportByRevenue } = useReportStore();
     const { getRevenue, deleteRevenue } = useRevenueStore();
-    const { openModal } = useModalStore();
+    const { openModal, openConfirmModal } = useModalStore();
+
+    //** Functions */
+    const handleDeleteReport = (id: string) => {
+        openConfirmModal({
+            modalName: MODAL.CONFIRM,
+            modalMessage: "Bạn có chắc chắn muốn xoá báo cáo này không ?",
+            onConfirm: () =>
+                deleteRevenue(id).then(() => {
+                    openModal("");
+                    getRevenue();
+                }),
+            onCancel: () => openModal(""),
+        });
+    };
 
     const columns = [
         {
@@ -53,9 +67,7 @@ export default function RevenueColumns() {
                     <Tooltip content="Remove">
                         <Button
                             className="min-w-0 bg-transparent p-0 text-default-500"
-                            onClick={async () =>
-                                deleteRevenue(params.row.id).then(() => getRevenue())
-                            }
+                            onClick={() => handleDeleteReport(params.row.id)}
                         >
                             <TrashIcon className="w-5" />
                         </Button>

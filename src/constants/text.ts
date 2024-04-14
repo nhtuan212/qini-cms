@@ -36,6 +36,7 @@ export const TEXT = {
     TARGET: "Doanh số",
     TARGET_OF: "Doanh số của",
     REVENUE: "Doanh thu",
+    REVENUE_GREATER_THAN_ZERO: "Doanh thu phải lớn hơn 0",
     CANCEL: "Huỷ",
     SAVE: "Save",
     ENTER_SEARCH: "Nhập từ khóa tìm kiếm ...",

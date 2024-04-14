@@ -41,6 +41,7 @@ export const useRevenueStore = create<RevenueState & RevenueAction>()(set => ({
             },
         }).then(res => {
             if (res?.code === 200) {
+                return res.data;
                 return set({ revenue: res.data });
             }
             return set({
