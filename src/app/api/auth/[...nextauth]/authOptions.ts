@@ -65,7 +65,7 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
 
-    debug: true,
+    // debug: process.env.NODE_ENV !== "production",
     session: { strategy: "jwt" },
     callbacks: {
         async jwt({ token, user }: { token: any; user: any }) {

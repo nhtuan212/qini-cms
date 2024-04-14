@@ -86,6 +86,7 @@ export default function Header() {
 
                             <div className="flex items-center ml-auto">
                                 <Switch
+                                    className="invisible"
                                     defaultSelected
                                     isSelected={themeMode === "light"}
                                     color="success"

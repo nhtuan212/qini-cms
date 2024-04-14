@@ -3,7 +3,7 @@
 import React from "react";
 import Table from "@/components/Table";
 import Columns from "./columns";
-import { rows } from "@/components/Table/apis";
+import { rows } from "@/components/layouts/Example/apis";
 
 export default function index() {
     return (
