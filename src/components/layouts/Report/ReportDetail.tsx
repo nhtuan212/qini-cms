@@ -29,7 +29,7 @@ export default function ReportDetail() {
             <Modal.Body>
                 <div
                     dangerouslySetInnerHTML={{
-                        __html: `<div class="flex justify-end">
+                        __html: `<div class="flex justify-end mb-4">
                         ${TEXT.TOTAL_TARGET}: <span class="ml-2 font-bold text-primary">${currencyFormat(totalRevenue)}</span>
                     </div>`,
                     }}

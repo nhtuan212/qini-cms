@@ -5,7 +5,6 @@ import Button from "@/components/Button";
 import AddStaff from "./AddStaff";
 import StaffActions from "./StaffActions";
 import StaffDetail from "./Detail";
-import ConfirmModal from "@/components/ConfirmModal";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
@@ -17,7 +16,7 @@ import { TEXT } from "@/constants/text";
 export default function Staff() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { openModal, modalMessage, onConfirm, onCancel } = useModalStore();
+    const { openModal } = useModalStore();
     const { staff, getStaff } = useStaffStore();
 
     //** Effects */
@@ -61,9 +60,6 @@ export default function Staff() {
 
             {/* Popup staff detail */}
             <StaffDetail />
-
-            {/* Confirm modal */}
-            <ConfirmModal modalMessage={modalMessage} onConfirm={onConfirm} onCancel={onCancel} />
         </>
     );
 }
