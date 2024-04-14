@@ -29,7 +29,6 @@ export default function ReportTable() {
                 columns={RevenueColumns()}
                 topContent={<TopContent />}
                 rows={revenue}
-                selectionMode
                 paginationMode={{ pageSize: 10, pageSizeOptions: [5, 10] }}
             />
 

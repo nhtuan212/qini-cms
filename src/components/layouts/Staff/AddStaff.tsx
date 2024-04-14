@@ -6,7 +6,7 @@ import Input from "@/components/Input";
 import ErrorMessage from "@/components/ErrorMessage";
 import Button from "@/components/Button";
 import { Controller, useForm } from "react-hook-form";
-import { BanknotesIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
 import { StaffData, useStaffStore } from "@/stores/useStaffStore";
 import { MODAL } from "@/constants";
@@ -14,7 +14,6 @@ import { TEXT } from "@/constants/text";
 
 type FormValues = {
     name: string;
-    salary: string | number;
 };
 
 export default function AddStaff() {
@@ -43,7 +42,6 @@ export default function AddStaff() {
     const onSubmit = async (data: FormValues) => {
         const staffData: StaffData = {
             name: data.name,
-            salary: +data.salary,
         };
 
         if (modalAction === "add") {
@@ -69,7 +67,6 @@ export default function AddStaff() {
         setError("");
         reset({
             name: "",
-            salary: "",
         });
     };
 
@@ -83,7 +80,6 @@ export default function AddStaff() {
     useEffect(() => {
         if (modalAction === "edit") {
             setValue("name", staffById?.name);
-            setValue("salary", new Intl.NumberFormat("vi-VN").format(staffById?.salary));
         }
     }, [setValue, modalAction, staffById]);
 
@@ -109,35 +105,6 @@ export default function AddStaff() {
                                         })}
                                         errorMessage={
                                             <ErrorMessage errors={errors} name={"name"} />
-                                        }
-                                    />
-                                    {error && <p className="errorMessage">{error}</p>}
-                                </>
-                            )}
-                        />
-
-                        <Controller
-                            name={"salary"}
-                            control={control}
-                            rules={{ required: true }}
-                            render={() => (
-                                <>
-                                    <Input
-                                        className="w-full"
-                                        startContent={<BanknotesIcon className="w-6" />}
-                                        endContent={<span>vnđ</span>}
-                                        placeholder={TEXT.SALARY}
-                                        currencyInput
-                                        {...register("salary", {
-                                            required: `${TEXT.SALARY} ${TEXT.IS_REQUIRED}`,
-
-                                            min: {
-                                                value: 1,
-                                                message: TEXT.SALARY_GREATER_THAN_ZERO,
-                                            },
-                                        })}
-                                        errorMessage={
-                                            <ErrorMessage errors={errors} name={"salary"} />
                                         }
                                     />
                                     {error && <p className="errorMessage">{error}</p>}
