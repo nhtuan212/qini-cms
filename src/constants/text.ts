@@ -1,5 +1,5 @@
 export const TEXT = {
-    STAFF: "Nhân viên",
+    STAFF: "Nhân viên 2",
     REPORT: "Báo cáo",
     SETTING: "Cài đặt",
     // ACCOUNT: "Tài khoản",
