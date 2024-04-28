@@ -1,0 +1,21 @@
+services:
+    qini-frontend:
+        image: ${APP_IMAGE}
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - ${APP_PORT}:3000
+        container_name: ${APP_NAME}
+        env_file:
+            - .env
+        environment:
+            - NODE_ENV=production
+        command: npm start
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge

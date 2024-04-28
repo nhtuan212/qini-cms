@@ -1,0 +1,38 @@
+name: PRODUCTION CI/CD
+
+on:
+    # push:
+    #     branches: [ "main" ]
+    # pull_request:
+    #     branches: [ "main" ]
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        environment: production
+
+        steps:
+            - name: Check Out Repository
+              uses: actions/checkout@v4
+
+            - name: Set Environment Variables
+              run: |
+                  echo "${{ secrets.QINI_CMS_ENV }}" | tr -d '\r' > .env
+
+            - name: Build Docker image
+              env:
+                  PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+                  USER_NAME: root
+                  IP: ${{ secrets.IP }}
+                  PASSWORD: ${{ secrets.PASSWORD }}
+
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+                  chmod 700 ~/.ssh/id_rsa
+                  eval $(ssh-agent -s)
+
+                  sshpass -p $PASSWORD rsync -avzr --rsync-path="mkdir -p /apps/qini-cms && rsync" --delete -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ./ $USER_NAME@$IP:/apps/qini-cms
+                  sshpass -p $PASSWORD ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER_NAME@$IP "cd /apps/qini-cms && docker compose up -d --build && docker image prune -f -a"
