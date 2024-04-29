@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import Modal from "@/components/Modal";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import ErrorMessage from "@/components/ErrorMessage";
+import DatePickerComponent from "@/components/DatePicker";
 import { useModalStore } from "@/stores/useModalStore";
 import { Select, SelectItem } from "@nextui-org/react";
 import {
@@ -27,6 +28,7 @@ import { URL } from "@/config/urls";
 import { TEXT } from "@/constants/text";
 import { MODAL } from "@/constants";
 import { StaffProps } from "@/types/staffProps";
+import { DateValueType } from "react-tailwindcss-datepicker";
 
 type FormValues = {
     staff: {
@@ -45,6 +47,17 @@ export default function RevenueAddNew() {
     const { getReport } = useReportStore();
     const { getRevenue } = useRevenueStore();
     const { staff } = useStaffStore();
+
+    //** States */
+    const [dateValue, setDateValue] = useState<DateValueType>({
+        startDate: null,
+        endDate: null,
+    });
+
+    //** Functions */
+    const handleValueChange = (newValue: DateValueType) => {
+        setDateValue(newValue);
+    };
 
     //** React hook form */
     const {
@@ -66,15 +79,22 @@ export default function RevenueAddNew() {
         control,
     });
     const onSubmit = async (data: FormValues) => {
-        const revenue: number = Number(data.revenue);
-        const target: number = Math.round(revenue / data.staff.length);
+        const revenueBody: {
+            revenue: number;
+            date: any;
+        } = {
+            revenue: data.revenue,
+            date: dateValue?.startDate && new Date(dateValue?.startDate),
+        };
+
+        const target: number = Math.round(revenueBody.revenue / data.staff.length);
         const report: any = [];
 
         await fetchData({
             endpoint: URL.REVENUE,
             options: {
                 method: "POST",
-                body: JSON.stringify({ revenue }),
+                body: JSON.stringify({ ...revenueBody }),
             },
         }).then(revenueRes => {
             if (revenueRes.data) {
@@ -104,7 +124,7 @@ export default function RevenueAddNew() {
                     },
                 }).then(reportRes => {
                     if (reportRes) {
-                        openModal("");
+                        // openModal("");
                         getReport();
                         getRevenue();
                     }
@@ -113,7 +133,8 @@ export default function RevenueAddNew() {
         });
     };
 
-    React.useEffect(() => {
+    //** Effects */
+    useEffect(() => {
         if (modalName === MODAL.ADD_REPORT) {
             reset({
                 staff: [{ staffId: "", checkIn: "", checkOut: "" }],
@@ -133,9 +154,18 @@ export default function RevenueAddNew() {
                                 {TEXT.WORK_SHIFT}:{" "}
                                 <b className="text-primary">{profile.username}</b>
                             </p>
-                            <p>
+                            {/* <p>
                                 {TEXT.DATE}: {new Date().toDateString()}
-                            </p>
+                            </p> */}
+
+                            <div>
+                                <DatePickerComponent
+                                    useRange={false}
+                                    asSingle={true}
+                                    value={dateValue}
+                                    onChange={handleValueChange}
+                                />
+                            </div>
                         </div>
 
                         {fields.map((field, index) => {

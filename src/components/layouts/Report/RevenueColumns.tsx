@@ -37,7 +37,7 @@ export default function RevenueColumns() {
         {
             key: "createAt",
             name: TEXT.DATE,
-            content: (params: any) => dateFormat(params.row.createAt),
+            content: (params: any) => dateFormat(params.row.date),
         },
         {
             key: "revenue",
