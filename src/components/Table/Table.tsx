@@ -88,7 +88,7 @@ export default function Table({ ...props }: TableProps) {
 
     return (
         <div className={clsx("rounded-md p-3 border shadow-lg", className)}>
-            <div className="h-[30rem] flex flex-col w-full">
+            <div className="w-full h-full flex flex-col">
                 {topContent && topContent}
                 <div className="h-full overflow-scroll">
                     <TableHead sortingMode={sortingMode} onRowSelection={onRowSelection} />

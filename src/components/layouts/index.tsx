@@ -24,7 +24,7 @@ export default function Layouts({
     }, [getProfile, session]);
 
     return (
-        <main>
+        <main className="h-screen">
             <Header />
             <section className="container py-4">{children}</section>
 

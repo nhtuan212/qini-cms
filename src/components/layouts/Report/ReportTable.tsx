@@ -26,10 +26,11 @@ export default function ReportTable() {
     return (
         <>
             <Table
+                className="h-[70rem]"
                 columns={RevenueColumns()}
                 topContent={<TopContent />}
                 rows={revenue}
-                paginationMode={{ pageSize: 10, pageSizeOptions: [5, 10] }}
+                paginationMode={{ pageSize: 10, pageSizeOptions: [10, 20, 30] }}
             />
 
             {/* Popup add new revenue */}
