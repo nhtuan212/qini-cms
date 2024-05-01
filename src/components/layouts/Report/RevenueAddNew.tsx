@@ -314,10 +314,6 @@ export default function RevenueAddNew() {
                                                 value: /^[0-9]+$/i,
                                                 message: TEXT.NUMBER_IS_REQUIRED,
                                             },
-                                            min: {
-                                                value: 1,
-                                                message: TEXT.REVENUE_GREATER_THAN_ZERO,
-                                            },
                                         })}
                                         errorMessage={
                                             <ErrorMessage errors={errors} name={"revenue"} />
