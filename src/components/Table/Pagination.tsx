@@ -65,7 +65,7 @@ export default function Pagination(props: PaginationProps) {
                 <Button.Icon
                     className="min-w-8 bg-gray-200 p-0.5"
                     onClick={() => handleCurrentPage(currentPage + rowsPerPage)}
-                    disabled={currentPage + rowsPerPage >= totalPage}
+                    disabled={currentPage + rowsPerPage > totalPage}
                 >
                     <ChevronRightIcon className="w-4 text-gray-800" />
                 </Button.Icon>
