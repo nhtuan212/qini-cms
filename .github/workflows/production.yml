@@ -35,4 +35,4 @@ jobs:
                   eval $(ssh-agent -s)
 
                   sshpass -p $PASSWORD rsync -avzr --rsync-path="mkdir -p /apps/qini-cms && rsync" --delete -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ./ $USER_NAME@$IP:/apps/qini-cms
-                  sshpass -p $PASSWORD ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER_NAME@$IP "cd /apps/qini-cms && docker compose up -d --build && docker image prune -f -a"
+                  sshpass -p $PASSWORD ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER_NAME@$IP "cd /apps/qini-cms && docker compose up -d --build && docker system prune -f -a"
