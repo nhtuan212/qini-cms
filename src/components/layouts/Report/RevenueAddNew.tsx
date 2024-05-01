@@ -124,7 +124,7 @@ export default function RevenueAddNew() {
                     },
                 }).then(reportRes => {
                     if (reportRes) {
-                        // openModal("");
+                        openModal("");
                         getReport();
                         getRevenue();
                     }

@@ -26,7 +26,7 @@ export default function Table({ ...props }: TableProps) {
     } = props;
 
     //** Context */
-    const { handleRows, handleColumns, handleSelectionMode, handlePinnedColumns, currentPage } =
+    const { handleRows, handleColumns, handleSelectionMode, handlePinnedColumns } =
         useContext(TableContext);
 
     //** Variables */
@@ -99,7 +99,7 @@ export default function Table({ ...props }: TableProps) {
                     />
                 </div>
             </div>
-            {!isEmpty(paginationMode) && currentPage > rows.length && (
+            {!isEmpty(paginationMode) && rows.length && (
                 <Pagination rows={rows} {...paginationMode} />
             )}
         </div>
