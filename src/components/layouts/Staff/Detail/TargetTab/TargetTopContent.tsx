@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
-import { useReportStore } from "@/stores/useReportStore";
+import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { TEXT } from "@/constants/text";
 import { currencyFormat, getCurrentMonth, sumArray } from "@/utils";
@@ -10,7 +10,7 @@ import { currencyFormat, getCurrentMonth, sumArray } from "@/utils";
 export default function TargetTopContent() {
     //** Stores */
     const { staffById } = useStaffStore();
-    const { reportByStaff, filterReportByStaff } = useReportStore();
+    const { reportByStaff, getReportByStaff } = useReportsOnStaffsStore();
 
     //** States */
     const [dateValue, setDateValue] = useState<DateValueType>(getCurrentMonth());
@@ -21,20 +21,16 @@ export default function TargetTopContent() {
 
     //** Functions */
     const handleValueChange = (newValue: DateValueType) => {
-        // filterReportByStaff({
-        //     id: staffById?.id,
-        //     params: newValue,
-        // });
         setDateValue(newValue);
     };
 
     //** Effects */
     useEffect(() => {
-        filterReportByStaff({
-            id: staffById?.id,
+        getReportByStaff({
+            staffId: staffById?.id,
             params: dateValue,
         });
-    }, [staffById, filterReportByStaff, dateValue]);
+    }, [staffById, getReportByStaff, dateValue]);
 
     return (
         <div className="flex flex-col gap-4 mb-5">

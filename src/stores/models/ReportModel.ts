@@ -1,6 +1,6 @@
-import { reportByRevenue, salaryByStaff } from "@/types/reportProps";
+import { reportDetail } from "@/types/reportProps";
 
-export type SalaryReportProps = {
+export type ReportByStaff = {
     id: string;
     staffId?: string;
     staffName?: string;
@@ -12,21 +12,7 @@ export type SalaryReportProps = {
     rate?: number;
 };
 
-export const SalaryReportModel = (data: salaryByStaff): SalaryReportProps => {
-    return {
-        id: data.id,
-        staffId: data.staffId,
-        staffName: data.staffName,
-        performance: data.performance,
-        total: data.total,
-        rank: data.rank,
-        rate: data.rate,
-        totalTarget: data._sum.target,
-        totalTime: data._sum.timeWorked,
-    };
-};
-
-export type RevenueReportProps = {
+export type ReportDetailProps = {
     id?: string;
     checkIn?: string;
     checkOut?: string;
@@ -37,7 +23,7 @@ export type RevenueReportProps = {
     createAt?: Date;
 };
 
-export const RevenueReportModel = (data: reportByRevenue): RevenueReportProps => {
+export const ReportDetailModel = (data: reportDetail): ReportDetailProps => {
     return {
         id: data.id,
         checkIn: data.checkIn,

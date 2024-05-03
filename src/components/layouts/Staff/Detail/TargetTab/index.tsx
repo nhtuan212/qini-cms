@@ -4,18 +4,17 @@ import React from "react";
 import Table from "@/components/Table";
 import TargetColumns from "./TargetColumns";
 import TargetTopContent from "./TargetTopContent";
-import { useReportStore } from "@/stores/useReportStore";
+import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 
 export default function TargetTab() {
     //** Stores */
-    const { reportByStaff } = useReportStore();
+    const { reportByStaff } = useReportsOnStaffsStore();
 
     return (
         <Table
             columns={TargetColumns()}
             rows={reportByStaff}
             topContent={<TargetTopContent />}
-            selectionMode
             paginationMode={{ pageSize: 10, pageSizeOptions: [5, 10] }}
         />
     );

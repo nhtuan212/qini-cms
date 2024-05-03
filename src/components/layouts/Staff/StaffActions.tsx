@@ -12,7 +12,6 @@ import {
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { useReportStore } from "@/stores/useReportStore";
 import { MODAL, ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
 import { StaffProps } from "@/types/staffProps";
@@ -25,7 +24,6 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     const { profile } = useProfileStore();
     const { getStaff, getStaffById, deleteStaff } = useStaffStore();
     const { openModal, openConfirmModal } = useModalStore();
-    const { getReportByStaff } = useReportStore();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -41,7 +39,6 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     //** Functions */
     const handleDetailStaff = (id: string) => {
         getStaffById(id);
-        getReportByStaff(id);
         openModal(MODAL.STAFF_DETAIL);
     };
 

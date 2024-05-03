@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 
 type ModalProps = {
@@ -27,7 +27,6 @@ const Modal = ({ ...props }: ModalProps) => {
 
     //** States */
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
 
     //** Functions */
     const handleClose = () => {
@@ -37,12 +36,6 @@ const Modal = ({ ...props }: ModalProps) => {
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") handleClose();
-    };
-
-    const backDropHandler = (e: Event) => {
-        if (ref?.current?.contains(e.target as HTMLElement) === false) {
-            handleClose();
-        }
     };
 
     //** Effects */
@@ -55,35 +48,22 @@ const Modal = ({ ...props }: ModalProps) => {
         // Handle keydown
         window.addEventListener("keydown", handleKeyDown);
 
-        // setTimeout in order to prevent the eventListener to be attached before the modal is open.
-        setTimeout(() => {
-            window.addEventListener("mousedown", backDropHandler);
-        });
-
-        return () => {
-            // Handle keydown
-            window.addEventListener("keydown", handleKeyDown);
-
-            // remove the event listener when the modal is closed
-            window.removeEventListener("mousedown", backDropHandler);
-        };
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ref]);
+    }, []);
 
     if (!isModalOpen) return null;
 
     return (
-        <div
-            className={clsx(
-                "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50",
-                className,
-            )}
-        >
+        <div className={clsx("fixed inset-0 z-50 flex items-center justify-center", className)}>
             <div
-                ref={ref}
+                className="absolute top-0 left-0 w-full h-full z-50 bg-black bg-opacity-50"
+                onClick={() => {
+                    handleClose();
+                }}
+            ></div>
+            <div
                 className={clsx(
-                    "relative w-full flex flex-col justify-between gap-2 bg-white p-4 rounded-lg",
+                    "relative w-full flex flex-col justify-between gap-2 bg-white p-4 rounded-lg z-[9999]",
                     "animate-zoomIn",
 
                     // Size

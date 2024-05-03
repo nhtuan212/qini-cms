@@ -19,23 +19,7 @@ export type ReportProps = {
     ];
 };
 
-export type salaryByStaff = {
-    id: string;
-    staffId: string;
-    staffName: string;
-    rank: string;
-    rate: number;
-    totalTarget: number;
-    totalTime: number;
-    total: number;
-    performance: number;
-    _sum: {
-        target: number;
-        timeWorked: number;
-    };
-};
-
-export type reportByRevenue = {
+export type reportDetail = {
     id?: string;
     checkIn?: string;
     checkOut?: string;

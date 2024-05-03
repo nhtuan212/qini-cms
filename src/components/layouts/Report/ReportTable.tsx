@@ -1,42 +1,41 @@
 "use client";
 
 import React, { useEffect } from "react";
-import RevenueColumns from "./RevenueColumns";
-import RevenueAddNew from "./RevenueAddNew";
+import ReportColumns from "./ReportColumns";
+import ReportAddNew from "./ReportAddNew";
 import ReportDetail from "./ReportDetail";
 import TopContent from "./TopContent";
 import Table from "@/components/Table";
-import { useReportStore } from "@/stores/useReportStore";
-import { useRevenueStore } from "@/stores/useRevenueStore";
+import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
+import { useReportsStore } from "@/stores/useReportsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 
 export default function ReportTable() {
     //** Stores */
-    const { getReport } = useReportStore();
-    const { revenue, getRevenue } = useRevenueStore();
+    const { getReportsOnStaffs } = useReportsOnStaffsStore();
+    const { report, getReport } = useReportsStore();
     const { getStaff } = useStaffStore();
 
     //** Effects */
     useEffect(() => {
-        getRevenue();
         getReport();
+        getReportsOnStaffs();
         getStaff();
-    }, [getReport, getRevenue, getStaff]);
+    }, [getReport, getReportsOnStaffs, getStaff]);
 
     return (
         <>
             <Table
-                className="h-[70rem]"
-                columns={RevenueColumns()}
+                columns={ReportColumns()}
                 topContent={<TopContent />}
-                rows={revenue}
+                rows={report}
                 paginationMode={{ pageSize: 10, pageSizeOptions: [10, 20, 30] }}
             />
 
-            {/* Popup add new revenue */}
-            <RevenueAddNew />
+            {/* Popup add new report */}
+            <ReportAddNew />
 
-            {/* Popup detail revenue when click eye icon */}
+            {/* Popup detail report when click eye icon */}
             <ReportDetail />
         </>
     );

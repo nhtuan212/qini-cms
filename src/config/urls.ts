@@ -1,7 +1,7 @@
 export const URL = {
     LOGIN: "/login",
     REPORT: "/report",
-    REVENUE: "/revenue",
+    REPORTONSTAFF: "/report-on-staff",
     USER: "/user",
     STAFF: "/staff",
 };

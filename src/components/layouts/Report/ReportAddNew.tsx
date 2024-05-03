@@ -18,8 +18,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { useFieldArray, useForm, Controller } from "react-hook-form";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { useReportStore } from "@/stores/useReportStore";
-import { useRevenueStore } from "@/stores/useRevenueStore";
+import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
+import { useReportsStore } from "@/stores/useReportsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { fetchData } from "@/utils/fetch";
 import { wrongTimeSheet, getHours } from "@/utils";
@@ -44,8 +44,8 @@ export default function RevenueAddNew() {
     //** Stores */
     const { profile } = useProfileStore();
     const { openModal, modalName } = useModalStore();
-    const { getReport } = useReportStore();
-    const { getRevenue } = useRevenueStore();
+    const { getReportsOnStaffs } = useReportsOnStaffsStore();
+    const { getReport } = useReportsStore();
     const { staff } = useStaffStore();
 
     //** States */
@@ -78,23 +78,24 @@ export default function RevenueAddNew() {
         name: "staff",
         control,
     });
+
     const onSubmit = async (data: FormValues) => {
-        const revenueBody: {
+        const reportsOnStaffs: any = [];
+        const createAt = dateValue?.startDate && new Date(dateValue?.startDate);
+
+        const reportBody: {
             revenue: number;
-            date: any;
+            createAt: any;
         } = {
             revenue: data.revenue,
-            date: dateValue?.startDate && new Date(dateValue?.startDate),
+            createAt,
         };
 
-        const target: number = Math.round(revenueBody.revenue / data.staff.length);
-        const report: any = [];
-
         await fetchData({
-            endpoint: URL.REVENUE,
+            endpoint: URL.REPORT,
             options: {
                 method: "POST",
-                body: JSON.stringify({ ...revenueBody }),
+                body: JSON.stringify({ ...reportBody }),
             },
         }).then(revenueRes => {
             if (revenueRes.data) {
@@ -103,30 +104,32 @@ export default function RevenueAddNew() {
                     const checkOut = new Date(item.checkOut);
                     const timeWorked =
                         Math.abs(checkOut.valueOf() - checkIn.valueOf()) / (1000 * 60 * 60);
+                    const target: number = Math.round(reportBody.revenue / data.staff.length);
 
                     //** Body Report */
-                    report.push({
-                        timeWorked,
+                    reportsOnStaffs.push({
+                        reportId: revenueRes.data.id,
+                        staffId: item.staffId,
                         checkIn: getHours(item.checkIn),
                         checkOut: getHours(item.checkOut),
+                        timeWorked,
                         target,
-                        staffId: item.staffId,
-                        revenueId: revenueRes.data.id,
+                        createAt,
                     });
                 });
 
                 //** Create report table */
                 fetchData({
-                    endpoint: URL.REPORT,
+                    endpoint: URL.REPORTONSTAFF,
                     options: {
                         method: "POST",
-                        body: JSON.stringify(report),
+                        body: JSON.stringify(reportsOnStaffs),
                     },
                 }).then(reportRes => {
                     if (reportRes) {
                         openModal("");
+                        getReportsOnStaffs();
                         getReport();
-                        getRevenue();
                     }
                 });
             }
@@ -141,6 +144,10 @@ export default function RevenueAddNew() {
                 revenue: 0,
             });
         }
+
+        return () => {
+            setDateValue({ startDate: null, endDate: null });
+        };
     }, [modalName, reset]);
 
     return (

@@ -143,7 +143,7 @@ export default function TableBody({ ...props }: TableBodyProps) {
         }
 
         return (
-            <div className="sticky left-0 flex items-center justify-center w-full h-full text-gray-400">
+            <div className=" w-full h-60 flex items-center justify-center text-gray-400">
                 No data available
             </div>
         );

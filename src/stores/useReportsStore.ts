@@ -2,39 +2,39 @@ import { URL } from "@/config/urls";
 import { fetchData } from "@/utils/fetch";
 import { create } from "zustand";
 
-type RevenueState = {
-    revenue: [];
+type ReportState = {
+    report: [];
 };
 
-type RevenueAction = {
-    getRevenue: () => void;
-    deleteRevenue: (id: string) => Promise<void>;
+type ReportAction = {
+    getReport: () => void;
+    deleteReport: (id: string) => Promise<void>;
 };
 
-const initialState: RevenueState = {
-    revenue: [],
+const initialState: ReportState = {
+    report: [],
 };
 
-export const useRevenueStore = create<RevenueState & RevenueAction>()(set => ({
+export const useReportsStore = create<ReportState & ReportAction>()(set => ({
     ...initialState,
 
     // Actions
-    getRevenue: async () => {
+    getReport: async () => {
         return await fetchData({
-            endpoint: URL.REVENUE,
+            endpoint: URL.REPORT,
         }).then(res => {
             if (res?.code === 200) {
-                return set({ revenue: res.data });
+                return set({ report: res.data });
             }
             return set({
-                revenue: res?.message,
+                report: res?.message,
             });
         });
     },
 
-    deleteRevenue: async (id: string) => {
+    deleteReport: async (id: string) => {
         return await fetchData({
-            endpoint: URL.REVENUE,
+            endpoint: URL.REPORT,
             options: {
                 method: "DELETE",
                 body: JSON.stringify({ id }),
@@ -44,7 +44,7 @@ export const useRevenueStore = create<RevenueState & RevenueAction>()(set => ({
                 return res.data;
             }
             return set({
-                revenue: res?.message,
+                report: res?.message,
             });
         });
     },

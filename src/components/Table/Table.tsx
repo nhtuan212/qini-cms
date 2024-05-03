@@ -99,7 +99,7 @@ export default function Table({ ...props }: TableProps) {
                     />
                 </div>
             </div>
-            {!isEmpty(paginationMode) && rows.length && (
+            {!isEmpty(paginationMode) && !!rows.length && (
                 <Pagination rows={rows} {...paginationMode} />
             )}
         </div>

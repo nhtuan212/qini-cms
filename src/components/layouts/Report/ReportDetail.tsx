@@ -4,8 +4,8 @@ import React from "react";
 import moment from "moment";
 import Modal from "@/components/Modal";
 import Table from "@/components/Table";
-import ReportColumns from "./ReportColumns";
-import { useReportStore } from "@/stores/useReportStore";
+import ReportDetailColumns from "./ReportDetailColumns";
+import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { currencyFormat, sumArray } from "@/utils";
 import { MODAL } from "@/constants";
@@ -13,17 +13,17 @@ import { TEXT } from "@/constants/text";
 
 export default function ReportDetail() {
     //** Stores */
-    const { reportByRevenue } = useReportStore();
+    const { reportDetail } = useReportsOnStaffsStore();
     const { modalName, openModal } = useModalStore();
 
     //** Variables */
-    const totalRevenue = sumArray(reportByRevenue, "target");
+    const totalRevenue = sumArray(reportDetail, "target");
 
     return (
         <Modal open={modalName === MODAL.REPORT_DETAIL} size="4xl" onClose={() => openModal("")}>
             <Modal.Header>
                 <div>
-                    {TEXT.REPORT_DATE}: {moment(reportByRevenue[0]?.createAt).format("DD/MM/YYYY")}
+                    {TEXT.REPORT_DATE}: {moment(reportDetail[0]?.createAt).format("DD/MM/YYYY")}
                 </div>
             </Modal.Header>
             <Modal.Body>
@@ -34,7 +34,7 @@ export default function ReportDetail() {
                     </div>`,
                     }}
                 />
-                <Table columns={ReportColumns()} rows={reportByRevenue} />
+                <Table columns={ReportDetailColumns()} rows={reportDetail} />
             </Modal.Body>
         </Modal>
     );
