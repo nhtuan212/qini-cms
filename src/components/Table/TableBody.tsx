@@ -120,30 +120,30 @@ export default function TableBody({ ...props }: TableBodyProps) {
         //eslint-disable-next-line
     }, [rowSelection]);
 
-    if (rowsData.length === 0) {
-        if (loading) {
-            return (
-                <div className="flex items-center justify-center w-full h-full text-gray-400">
+    if (loading) {
+        return (
+            <div className="relative flex items-center justify-center w-full h-full text-gray-400">
+                <div
+                    className={clsx(
+                        "absolute top-0 left-0 z-[100]",
+                        "w-full h-full",
+                        "flex justify-center items-center",
+                        "bg-white/50",
+                    )}
+                >
                     <div
                         className={clsx(
-                            "absolute top-0 left-0 z-[100]",
-                            "w-full h-full",
-                            "flex justify-center items-center",
-                            "bg-white/50",
+                            "w-10 h-10 border-3 border-t-primary animate-spin rounded-full",
                         )}
-                    >
-                        <div
-                            className={clsx(
-                                "w-10 h-10 border-3 border-t-primary animate-spin rounded-full",
-                            )}
-                        ></div>
-                    </div>
+                    ></div>
                 </div>
-            );
-        }
+            </div>
+        );
+    }
 
+    if (rowsData && rowsData.length === 0) {
         return (
-            <div className=" w-full h-60 flex items-center justify-center text-gray-400">
+            <div className="w-full h-full flex items-center justify-center text-gray-400">
                 No data available
             </div>
         );

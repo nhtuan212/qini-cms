@@ -4,7 +4,6 @@ import React from "react";
 import Button from "@/components/Button";
 import { Tooltip } from "@nextui-org/react";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { useReportsStore } from "@/stores/useReportsStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useProfileStore } from "@/stores/useProfileStore";
@@ -15,11 +14,16 @@ import { TEXT } from "@/constants/text";
 export default function RevenueColumns() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { getReportDetail } = useReportsOnStaffsStore();
-    const { getReport, deleteReport } = useReportsStore();
+    // const { getReportDetail } = useReportsOnStaffsStore();
+    const { getReport, getReportDetail, deleteReport } = useReportsStore();
     const { openModal, openConfirmModal } = useModalStore();
 
     //** Functions */
+    const handleReportDetail = (id: string) => {
+        openModal(MODAL.REPORT_DETAIL);
+        getReportDetail(id);
+    };
+
     const handleDeleteReport = (id: string) => {
         openConfirmModal({
             modalName: MODAL.CONFIRM,
@@ -40,6 +44,35 @@ export default function RevenueColumns() {
             content: (params: any) => dateFormat(params.row.createAt),
         },
         {
+            key: "shift",
+            name: TEXT.WORK_SHIFT,
+            content: (params: any) => params.row.shift.name,
+        },
+        {
+            key: "staff",
+            name: TEXT.STAFF,
+            content: (params: any) => {
+                const staff = params.row.reportsOnStaffs.map((item: any) => item.staff.name);
+
+                return staff.map((item: any, index: number) => (
+                    <div key={item + index}>{item}</div>
+                ));
+            },
+        },
+        {
+            key: "timeSheet",
+            name: TEXT.TIME_SHEET,
+            content: (params: any) => {
+                const timeSheet = params.row.reportsOnStaffs.map(
+                    (item: any) => `${item.checkIn} - ${item.checkOut}`,
+                );
+
+                return timeSheet.map((item: any, index: number) => (
+                    <div key={item + index}>{item}</div>
+                ));
+            },
+        },
+        {
             key: "revenue",
             name: TEXT.REVENUE,
             content: (params: any) => currencyFormat(params.row.revenue),
@@ -54,10 +87,7 @@ export default function RevenueColumns() {
                         <Button
                             className="min-w-0 bg-transparent p-0 text-default-500"
                             onClick={() => {
-                                openModal(MODAL.REPORT_DETAIL);
-                                getReportDetail({
-                                    reportId: params.row.id,
-                                });
+                                handleReportDetail(params.row.id);
                             }}
                         >
                             <EyeIcon className="w-5" />

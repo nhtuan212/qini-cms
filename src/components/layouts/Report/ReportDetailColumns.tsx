@@ -9,7 +9,7 @@ export default function ReportColumns() {
         {
             key: "name",
             name: TEXT.NAME,
-            content: (params: any) => <div>{params.row.staffName}</div>,
+            content: (params: any) => <div>{params.row.staff.name}</div>,
         },
         {
             key: "timeSheet",

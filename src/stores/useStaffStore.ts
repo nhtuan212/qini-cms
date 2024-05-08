@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { StaffProps } from "@/types/staffProps";
 
 type StaffState = {
+    isStaffLoading?: boolean;
     staff: StaffProps[];
     staffById: StaffProps;
 };
@@ -22,6 +23,7 @@ type StaffAction = {
 };
 
 const initialState: StaffState = {
+    isStaffLoading: false,
     staff: [],
     staffById: {} as StaffProps,
 };
@@ -43,7 +45,11 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
         });
     },
 
-    getStaffById: async id => {
+    getStaffById: async (id: string) => {
+        set({
+            isStaffLoading: true,
+        });
+
         return await fetchData({
             endpoint: `${URL.STAFF}/${id}`,
         }).then(res => {
@@ -52,7 +58,10 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
                     staffById: res?.message,
                 });
             }
-            return set({ staffById: res.data });
+            return set({
+                isStaffLoading: false,
+                staffById: res.data,
+            });
         });
     },
 

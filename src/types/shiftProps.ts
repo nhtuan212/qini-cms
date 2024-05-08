@@ -1,6 +1,5 @@
-export type StaffProps = {
+export type ShiftProps = {
     id: string;
     name: string;
-    active: boolean;
     createAt: string;
 };

@@ -21,13 +21,22 @@ export type ReportProps = {
 
 export type reportDetail = {
     id?: string;
-    checkIn?: string;
-    checkOut?: string;
-    staff?: {
+    createAt?: Date;
+    revenue?: number;
+
+    reportsOnStaffs?: [
+        {
+            checkIn?: string;
+            checkOut?: string;
+            staff?: {
+                name?: string;
+            };
+            staffId?: string;
+            target?: number;
+            timeWorked?: number;
+        },
+    ];
+    shift?: {
         name?: string;
     };
-    staffId?: string;
-    target?: number;
-    timeWorked?: number;
-    createAt?: Date;
 };

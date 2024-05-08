@@ -1,89 +1,61 @@
 import { create } from "zustand";
 import { fetchData } from "@/utils/fetch";
-import { DateValueType } from "react-tailwindcss-datepicker";
-import { ReportByStaff, ReportDetailModel, ReportDetailProps } from "./models/ReportModel";
 import { URL } from "@/config/urls";
-import { ReportProps, reportDetail } from "@/types/reportProps";
 
 type ReportState = {
-    report: ReportProps;
-    reportDetail: reportDetail[];
-    reportByStaff: ReportByStaff[];
+    isReportsOnStaffLoading: boolean;
+    reportsOnStaff: [];
 };
 
 type ReportAction = {
-    getReportsOnStaffs: () => void;
-    getReportDetail: ({ reportId }: { reportId: string }) => void;
-    getReportByStaff: ({
+    getReportsOnStaff: ({
         staffId,
-        params,
+        startDate,
+        endDate,
     }: {
         staffId: string;
-        params?: DateValueType;
+        startDate?: Date | string | null;
+        endDate?: Date | string | null;
     }) => Promise<any>;
 };
 
 const initialState: ReportState = {
-    report: {
-        totalTarget: 0,
-        totalTime: 0,
-        reports: [{}],
-    },
-    reportDetail: [],
-    reportByStaff: [],
+    isReportsOnStaffLoading: false,
+    reportsOnStaff: [],
 };
 
 export const useReportsOnStaffsStore = create<ReportState & ReportAction>()(set => ({
     ...initialState,
 
-    // Actions
-    getReportsOnStaffs: async () => {
-        return await fetchData({
-            endpoint: URL.REPORT,
-        }).then(res => {
-            if (res?.code !== 200) {
-                return set({
-                    report: res?.message,
-                });
-            }
-            return set({ report: res.data });
-        });
-    },
-
-    getReportDetail: async ({ reportId }: { reportId: string }) => {
-        return await fetchData({
-            endpoint: `${URL.REPORTONSTAFF}?reportId=${reportId}`,
-        }).then(res => {
-            if (res?.code !== 200) {
-                return set({
-                    reportDetail: res?.message,
-                });
-            }
-
-            return set({
-                reportDetail: res.data.map((item: ReportDetailProps) => ReportDetailModel(item)),
-            });
-        });
-    },
-
-    getReportByStaff: async ({ staffId, params }: { staffId: string; params?: DateValueType }) => {
+    getReportsOnStaff: async ({
+        staffId,
+        startDate,
+        endDate,
+    }: {
+        staffId: string;
+        startDate?: Date | string | null;
+        endDate?: Date | string | null;
+    }) => {
         const url = `${URL.REPORTONSTAFF}?staffId=${staffId}`;
         const endpoint =
-            params && params.startDate && params.endDate
-                ? `${url}&&startDate=${params.startDate}&endDate=${params.endDate}`
-                : `${url}`;
+            startDate && endDate ? `${url}&&startDate=${startDate}&endDate=${endDate}` : `${url}`;
+
+        set({
+            isReportsOnStaffLoading: true,
+        });
 
         return await fetchData({
             endpoint,
         }).then(res => {
             if (res?.code !== 200) {
                 return set({
-                    reportByStaff: res?.message,
+                    reportsOnStaff: res?.message,
                 });
             }
 
             return set({
-                reportByStaff: res.data,
+                isReportsOnStaffLoading: false,
+                reportsOnStaff: res.data,
             });
         });
     },

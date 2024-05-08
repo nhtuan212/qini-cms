@@ -9,7 +9,14 @@ export default function TargetColumns() {
         {
             key: "createAt",
             name: TEXT.DATE,
-            content: (params: any) => <div>{dateFormat(params.row.createAt)}</div>,
+            content: (params: any) => (
+                <div>{`${dateFormat(params.row.createAt)} - ${params.row.report.shift.name}`}</div>
+            ),
+        },
+        {
+            key: "timeSheet",
+            name: TEXT.TIME_SHEET,
+            content: (params: any) => <div>{`${params.row.checkIn} - ${params.row.checkOut}`}</div>,
         },
         {
             key: "timeNumber",
