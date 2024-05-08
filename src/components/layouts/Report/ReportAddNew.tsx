@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import clsx from "clsx";
+import moment from "moment";
 import Modal from "@/components/Modal";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
@@ -17,10 +18,9 @@ import {
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useFieldArray, useForm, Controller } from "react-hook-form";
-import { useProfileStore } from "@/stores/useProfileStore";
-import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { useReportsStore } from "@/stores/useReportsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
+import { useShiftStore } from "@/stores/useShiftsStore";
 import { fetchData } from "@/utils/fetch";
 import { wrongTimeSheet, getHours } from "@/utils";
 import { timeSheet } from "@/config/apis";
@@ -28,9 +28,11 @@ import { URL } from "@/config/urls";
 import { TEXT } from "@/constants/text";
 import { MODAL } from "@/constants";
 import { StaffProps } from "@/types/staffProps";
-import { DateValueType } from "react-tailwindcss-datepicker";
+import { ShiftProps } from "@/types/shiftProps";
+import { DateType, DateValueType } from "react-tailwindcss-datepicker";
 
 type FormValues = {
+    shift: string;
     staff: {
         staffId: string;
         checkIn: string;
@@ -42,11 +44,10 @@ type FormValues = {
 
 export default function RevenueAddNew() {
     //** Stores */
-    const { profile } = useProfileStore();
     const { openModal, modalName } = useModalStore();
-    const { getReportsOnStaffs } = useReportsOnStaffsStore();
     const { getReport } = useReportsStore();
     const { staff } = useStaffStore();
+    const { shifts } = useShiftStore();
 
     //** States */
     const [dateValue, setDateValue] = useState<DateValueType>({
@@ -81,13 +82,17 @@ export default function RevenueAddNew() {
 
     const onSubmit = async (data: FormValues) => {
         const reportsOnStaffs: any = [];
-        const createAt = dateValue?.startDate && new Date(dateValue?.startDate);
+        const createAt = dateValue?.startDate
+            ? new Date(`${dateValue?.startDate} ${moment().format("HH:mm:ss")}`).toISOString()
+            : new Date();
 
         const reportBody: {
             revenue: number;
-            createAt: any;
+            shiftId: string;
+            createAt?: DateType;
         } = {
             revenue: data.revenue,
+            shiftId: data.shift,
             createAt,
         };
 
@@ -128,7 +133,6 @@ export default function RevenueAddNew() {
                 }).then(reportRes => {
                     if (reportRes) {
                         openModal("");
-                        getReportsOnStaffs();
                         getReport();
                     }
                 });
@@ -156,24 +160,35 @@ export default function RevenueAddNew() {
                 <Modal.Header>{TEXT.ADD_REPORT}</Modal.Header>
                 <Modal.Body>
                     <div className="flex flex-column flex-wrap gap-4 my-4">
-                        <div className="w-full flex justify-between items-center">
-                            <p>
-                                {TEXT.WORK_SHIFT}:{" "}
-                                <b className="text-primary">{profile.username}</b>
-                            </p>
-                            {/* <p>
-                                {TEXT.DATE}: {new Date().toDateString()}
-                            </p> */}
+                        <DatePickerComponent
+                            useRange={false}
+                            asSingle={true}
+                            value={dateValue}
+                            onChange={handleValueChange}
+                            displayFormat={"DD/MM/YYYY"}
+                        />
 
-                            <div>
-                                <DatePickerComponent
-                                    useRange={false}
-                                    asSingle={true}
-                                    value={dateValue}
-                                    onChange={handleValueChange}
-                                />
-                            </div>
-                        </div>
+                        <Controller
+                            name="shift"
+                            control={control}
+                            render={() => (
+                                <Select
+                                    className="w-full"
+                                    startContent={<ClockIcon className="w-6" />}
+                                    label={TEXT.WORK_SHIFT}
+                                    {...register("shift", {
+                                        required: `${TEXT.WORK_SHIFT} ${TEXT.IS_REQUIRED}`,
+                                    })}
+                                    errorMessage={<ErrorMessage errors={errors} name={"shift"} />}
+                                >
+                                    {shifts.map((item: ShiftProps) => (
+                                        <SelectItem key={item.id} value={item.id}>
+                                            {item.name}
+                                        </SelectItem>
+                                    ))}
+                                </Select>
+                            )}
+                        />
 
                         {fields.map((field, index) => {
                             return (

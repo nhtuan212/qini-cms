@@ -8,12 +8,13 @@ import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 
 export default function TargetTab() {
     //** Stores */
-    const { reportByStaff } = useReportsOnStaffsStore();
+    const { reportsOnStaff, isReportsOnStaffLoading } = useReportsOnStaffsStore();
 
     return (
         <Table
             columns={TargetColumns()}
-            rows={reportByStaff}
+            rows={reportsOnStaff}
+            loading={isReportsOnStaffLoading}
             topContent={<TargetTopContent />}
             paginationMode={{ pageSize: 10, pageSizeOptions: [5, 10] }}
         />

@@ -87,8 +87,8 @@ export default function Table({ ...props }: TableProps) {
     }, [handlePinnedColumns, pinnedColumns]);
 
     return (
-        <div className={clsx("rounded-md p-3 border shadow-lg", className)}>
-            <div className="w-full h-full flex flex-col">
+        <div className={clsx("table", className)}>
+            <div className="tableContainer">
                 {topContent && topContent}
                 <div className="h-full overflow-scroll">
                     <TableHead sortingMode={sortingMode} onRowSelection={onRowSelection} />

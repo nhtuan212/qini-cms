@@ -1,36 +1,34 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
-import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
+import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { TEXT } from "@/constants/text";
 import { currencyFormat, getCurrentMonth, sumArray } from "@/utils";
 
 export default function TargetTopContent() {
     //** Stores */
     const { staffById } = useStaffStore();
-    const { reportByStaff, getReportByStaff } = useReportsOnStaffsStore();
+    const { getReportsOnStaff, reportsOnStaff, isReportsOnStaffLoading } =
+        useReportsOnStaffsStore();
 
     //** States */
     const [dateValue, setDateValue] = useState<DateValueType>(getCurrentMonth());
 
     //** Variables */
-    const totalTarget = sumArray(reportByStaff, "target");
-    const totalTimeWorked = sumArray(reportByStaff, "timeWorked");
+    const totalTarget = !isReportsOnStaffLoading ? sumArray(reportsOnStaff, "target") : 0;
+    const totalTimeWorked = !isReportsOnStaffLoading ? sumArray(reportsOnStaff, "timeWorked") : 0;
 
     //** Functions */
     const handleValueChange = (newValue: DateValueType) => {
         setDateValue(newValue);
-    };
 
-    //** Effects */
-    useEffect(() => {
-        getReportByStaff({
-            staffId: staffById?.id,
-            params: dateValue,
+        getReportsOnStaff({
+            staffId: staffById.id,
+            ...newValue,
         });
-    }, [staffById, getReportByStaff, dateValue]);
+    };
 
     return (
         <div className="flex flex-col gap-4 mb-5">

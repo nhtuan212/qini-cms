@@ -10,11 +10,13 @@ import {
     TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
+import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { MODAL, ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
 import { StaffProps } from "@/types/staffProps";
+import { getCurrentMonth } from "@/utils";
 
 export default function StaffActions({ item }: { item: StaffProps }) {
     //** Destructuring */
@@ -23,6 +25,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getStaff, getStaffById, deleteStaff } = useStaffStore();
+    const { getReportsOnStaff } = useReportsOnStaffsStore();
     const { openModal, openConfirmModal } = useModalStore();
 
     //** Variables */
@@ -39,6 +42,12 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     //** Functions */
     const handleDetailStaff = (id: string) => {
         getStaffById(id);
+
+        getReportsOnStaff({
+            staffId: id,
+            ...getCurrentMonth(),
+        });
+
         openModal(MODAL.STAFF_DETAIL);
     };
 

@@ -4,4 +4,5 @@ export const URL = {
     REPORTONSTAFF: "/report-on-staff",
     USER: "/user",
     STAFF: "/staff",
+    SHIFT: "/shift",
 };
