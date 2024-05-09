@@ -68,13 +68,8 @@ export default function RevenueAddNew() {
         getValues,
         reset,
         formState: { errors },
-    } = useForm<FormValues>({
-        defaultValues: {
-            staff: [{ staffId: "", checkIn: "", checkOut: "" }],
-        },
-        // mode: "onBlur",
-        criteriaMode: "all",
-    });
+    } = useForm<FormValues>();
+
     const { fields, append, remove } = useFieldArray({
         name: "staff",
         control,
@@ -142,14 +137,9 @@ export default function RevenueAddNew() {
 
     //** Effects */
     useEffect(() => {
-        if (modalName === MODAL.ADD_REPORT) {
-            reset({
-                staff: [{ staffId: "", checkIn: "", checkOut: "" }],
-                revenue: 0,
-            });
-        }
-
+        //** Reset form when modal is closed */
         return () => {
+            reset();
             setDateValue({ startDate: null, endDate: null });
         };
     }, [modalName, reset]);
@@ -179,7 +169,12 @@ export default function RevenueAddNew() {
                                     {...register("shift", {
                                         required: `${TEXT.WORK_SHIFT} ${TEXT.IS_REQUIRED}`,
                                     })}
-                                    errorMessage={<ErrorMessage errors={errors} name={"shift"} />}
+                                    isInvalid={!!errors.shift}
+                                    errorMessage={
+                                        errors.shift && (
+                                            <ErrorMessage errors={errors} name={"shift"} />
+                                        )
+                                    }
                                 >
                                     {shifts.map((item: ShiftProps) => (
                                         <SelectItem key={item.id} value={item.id}>
@@ -194,7 +189,7 @@ export default function RevenueAddNew() {
                             return (
                                 <div
                                     key={field.id}
-                                    className="relative w-full flex justify-between items-center gap-3 py-3"
+                                    className="relative w-full flex justify-between items-center gap-3"
                                 >
                                     <Controller
                                         name={`staff.${index}.staffId`}
@@ -207,11 +202,14 @@ export default function RevenueAddNew() {
                                                 {...register(`staff.${index}.staffId`, {
                                                     required: `${TEXT.STAFF} ${TEXT.IS_REQUIRED}`,
                                                 })}
+                                                isInvalid={!!`staff.${index}.staffId`}
                                                 errorMessage={
-                                                    <ErrorMessage
-                                                        errors={errors}
-                                                        name={`staff.${index}.staffId`}
-                                                    />
+                                                    `staff.${index}.staffId` && (
+                                                        <ErrorMessage
+                                                            errors={errors}
+                                                            name={`staff.${index}.staffId`}
+                                                        />
+                                                    )
                                                 }
                                             >
                                                 {staff.map((item: StaffProps) => (
@@ -234,11 +232,14 @@ export default function RevenueAddNew() {
                                                 {...register(`staff.${index}.checkIn`, {
                                                     required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
                                                 })}
+                                                isInvalid={!!`staff.${index}.checkIn`}
                                                 errorMessage={
-                                                    <ErrorMessage
-                                                        errors={errors}
-                                                        name={`staff.${index}.checkIn`}
-                                                    />
+                                                    `staff.${index}.checkIn` && (
+                                                        <ErrorMessage
+                                                            errors={errors}
+                                                            name={`staff.${index}.checkIn`}
+                                                        />
+                                                    )
                                                 }
                                             >
                                                 {timeSheet.map(item => (
@@ -275,11 +276,14 @@ export default function RevenueAddNew() {
                                                         return true;
                                                     },
                                                 })}
+                                                isInvalid={!!`staff.${index}.checkOut`}
                                                 errorMessage={
-                                                    <ErrorMessage
-                                                        errors={errors}
-                                                        name={`staff.${index}.checkOut`}
-                                                    />
+                                                    `staff.${index}.checkOut` && (
+                                                        <ErrorMessage
+                                                            errors={errors}
+                                                            name={`staff.${index}.checkOut`}
+                                                        />
+                                                    )
                                                 }
                                             >
                                                 {timeSheet.map(item => (

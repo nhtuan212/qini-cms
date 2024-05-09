@@ -9,9 +9,5 @@ type DatePickerProps = {
 } & DatepickerType;
 
 export default function DatePickerComponent(props: DatePickerProps) {
-    return (
-        <>
-            <Datepicker containerClassName={clsx("datepicker", props.classNames)} {...props} />
-        </>
-    );
+    return <Datepicker containerClassName={clsx("datepicker", props.classNames)} {...props} />;
 }
