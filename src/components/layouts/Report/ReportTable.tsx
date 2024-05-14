@@ -12,7 +12,7 @@ import { useShiftStore } from "@/stores/useShiftsStore";
 
 export default function ReportTable() {
     //** Stores */
-    const { report, getReport } = useReportsStore();
+    const { report, isReportLoading, getReport } = useReportsStore();
     const { getStaff } = useStaffStore();
     const { getShifts } = useShiftStore();
 
@@ -30,7 +30,7 @@ export default function ReportTable() {
                 columns={ReportColumns()}
                 topContent={<TopContent />}
                 rows={report}
-                loading={report.length === 0}
+                loading={isReportLoading}
                 paginationMode={{ pageSize: 10, pageSizeOptions: [10, 20, 30] }}
             />
 

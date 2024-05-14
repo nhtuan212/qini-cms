@@ -139,7 +139,17 @@ export default function RevenueAddNew() {
     useEffect(() => {
         //** Reset form when modal is closed */
         return () => {
-            reset();
+            reset({
+                shift: "",
+                staff: [
+                    {
+                        staffId: "",
+                        checkIn: "",
+                        checkOut: "",
+                    },
+                ],
+                revenue: 0,
+            });
             setDateValue({ startDate: null, endDate: null });
         };
     }, [modalName, reset]);

@@ -9,10 +9,11 @@ export default function ErrorMessage({ errors, name }: { errors: FieldErrors; na
         <ErrorMessageHook
             errors={errors}
             name={name}
-            render={({ messages }) =>
-                messages &&
-                Object.entries(messages).map(([type, message]) => <p key={type}>{message}</p>)
-            }
+            render={({ message }) => <p>{message}</p>}
+            // render={({ messages }) =>
+            //     messages &&
+            //     Object.entries(messages).map(([type, message]) => <p key={type}>{message}</p>)
+            // }
         />
     );
 }
