@@ -4,7 +4,7 @@ import React, { InputHTMLAttributes } from "react";
 import clsx from "clsx";
 import CurrencyInput from "react-currency-input-field";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+type InputProps = {
     label?: string;
     errorMessage?: React.ReactNode;
     startContent?: React.ReactNode;
@@ -12,7 +12,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     inputRef?: any;
     currencyInput?: boolean;
     defaultValue?: number | string;
-}
+} & InputHTMLAttributes<HTMLInputElement>;
 
 const Input = React.forwardRef(
     (
