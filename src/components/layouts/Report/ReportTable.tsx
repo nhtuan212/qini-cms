@@ -16,6 +16,21 @@ export default function ReportTable() {
     const { getStaff } = useStaffStore();
     const { getShifts } = useShiftStore();
 
+    //** Variables */
+    const reportGroupByDate = Object.entries(
+        report.reduce((acc: any, item: any) => {
+            const date = item.createAt.split("T")[0];
+
+            if (!acc[date]) {
+                acc[date] = [];
+            }
+
+            acc[date].push(item);
+
+            return acc;
+        }, {}),
+    );
+
     //** Effects */
     useEffect(() => {
         getReport();
@@ -29,7 +44,7 @@ export default function ReportTable() {
                 className="[&>.tableContainer]:h-[40rem]"
                 columns={ReportColumns()}
                 topContent={<TopContent />}
-                rows={report}
+                rows={reportGroupByDate}
                 loading={isReportLoading}
                 paginationMode={{ pageSize: 10, pageSizeOptions: [10, 20, 30] }}
             />

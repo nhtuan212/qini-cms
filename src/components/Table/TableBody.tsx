@@ -156,10 +156,7 @@ export default function TableBody({ ...props }: TableBodyProps) {
                     <div
                         id={row.id}
                         key={`${row.id}-${index}`}
-                        className={clsx(
-                            "flex items-center rounded-md",
-                            "even:bg-gray-50 hover:bg-gray-50",
-                        )}
+                        className={clsx("flex items-center rounded-md", "even:bg-gray-50")}
                     >
                         {pinnedColumns?.left && pinnedColumns?.left?.length > 0 && (
                             <div className="cellStickyLeft">

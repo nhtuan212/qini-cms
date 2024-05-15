@@ -13,7 +13,7 @@ import { useReportsStore } from "@/stores/useReportsStore";
 
 export default function ReportDetail() {
     //** Stores */
-    const { reportDetail, isReportLoading } = useReportsStore();
+    const { reportDetail, isReportDetailLoading } = useReportsStore();
     const { modalName, openModal } = useModalStore();
 
     //** Destructuring */
@@ -21,8 +21,8 @@ export default function ReportDetail() {
 
     //** Variables */
     const detailCreateAt =
-        !isReportLoading && `${moment(createAt).format("DD/MM/YYYY")} - ${shift?.name}`;
-    const detailRevenue = !isReportLoading ? currencyFormat(revenue as number) : 0;
+        !isReportDetailLoading && `${moment(createAt).format("DD/MM/YYYY")} - ${shift?.name}`;
+    const detailRevenue = !isReportDetailLoading ? currencyFormat(revenue as number) : 0;
 
     return (
         <Modal open={modalName === MODAL.REPORT_DETAIL} size="4xl" onClose={() => openModal("")}>
@@ -40,7 +40,7 @@ export default function ReportDetail() {
                 <Table
                     columns={ReportDetailColumns()}
                     rows={reportsOnStaffs}
-                    loading={isReportLoading}
+                    loading={isReportDetailLoading}
                 />
             </Modal.Body>
         </Modal>

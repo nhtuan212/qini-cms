@@ -5,6 +5,7 @@ import { reportDetail } from "@/types/reportProps";
 
 type ReportState = {
     isReportLoading?: boolean;
+    isReportDetailLoading?: boolean;
     report: [];
     reportDetail: reportDetail;
 };
@@ -17,6 +18,7 @@ type ReportAction = {
 
 const initialState: ReportState = {
     isReportLoading: false,
+    isReportDetailLoading: false,
     report: [],
     reportDetail: {},
 };
@@ -26,21 +28,28 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
 
     // Actions
     getReport: async () => {
+        set({
+            isReportLoading: true,
+        });
+
         return await fetchData({
             endpoint: URL.REPORT,
         }).then(res => {
-            if (res?.code === 200) {
-                return set({ report: res.data });
+            if (res?.code !== 200) {
+                return set({
+                    report: res?.message,
+                });
             }
             return set({
-                report: res?.message,
+                isReportLoading: false,
+                report: res.data,
             });
         });
     },
 
     getReportDetail: async (id: string) => {
         set({
-            isReportLoading: true,
+            isReportDetailLoading: true,
         });
 
         return await fetchData({
@@ -53,7 +62,7 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
             }
 
             return set({
-                isReportLoading: false,
+                isReportDetailLoading: false,
                 reportDetail: res.data[0],
             });
         });
