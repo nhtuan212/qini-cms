@@ -69,41 +69,49 @@ export default function RevenueColumns() {
                     return (
                         <div
                             key={item + index}
-                            className="flex justify-between items-center py-2 border-b last:border-b-0"
+                            className="flex justify-between items-center flex-wrap gap-3 py-2 border-b last:border-b-0"
                         >
                             <div className="flex-1">{item}</div>
-                            <div className="flex-1">
-                                {staff.map((staffName: any, index: number) => (
-                                    <div key={staffName + index}>{staffName}</div>
-                                ))}
-                            </div>
-                            <div className="flex-1">
-                                {timeSheet.map((time: any, index: number) => (
-                                    <div key={time + index}>{time}</div>
-                                ))}
-                            </div>
-                            <div className="flex-1">{currencyFormat(target)}</div>
 
-                            <Tooltip content="Details">
-                                <Button
-                                    className="min-w-0 bg-transparent p-0 text-default-500"
-                                    onClick={() => {
-                                        handleReportDetail(params.row[1][index].id);
-                                    }}
-                                >
-                                    <EyeIcon className="w-5" />
-                                </Button>
-                            </Tooltip>
-                            {profile.role === ROLE.ADMIN && (
-                                <Tooltip content="Remove">
-                                    <Button
-                                        className="min-w-0 bg-transparent p-0 text-default-500"
-                                        onClick={() => handleDeleteReport(params.row[1][index].id)}
-                                    >
-                                        <TrashIcon className="w-5" />
-                                    </Button>
-                                </Tooltip>
-                            )}
+                            <div className="md:flex-[3] w-full flex items-center flex-wrap gap-2">
+                                <div className="flex-1">
+                                    {staff.map((staffName: any, index: number) => (
+                                        <div key={staffName + index}>{staffName}</div>
+                                    ))}
+                                </div>
+                                <div className="flex-1">
+                                    {timeSheet.map((time: any, index: number) => (
+                                        <div key={time + index}>{time}</div>
+                                    ))}
+                                </div>
+                                <div className="md:flex-1 w-full flex items-center text-primary">
+                                    <div className="flex-1 font-bold">{currencyFormat(target)}</div>
+                                    <div className="flex-1 flex justify-end">
+                                        <Tooltip content="Details">
+                                            <Button
+                                                className="min-w-0 bg-transparent p-0 text-default-500"
+                                                onClick={() => {
+                                                    handleReportDetail(params.row[1][index].id);
+                                                }}
+                                            >
+                                                <EyeIcon className="w-5" />
+                                            </Button>
+                                        </Tooltip>
+                                        {profile.role === ROLE.ADMIN && (
+                                            <Tooltip content="Remove">
+                                                <Button
+                                                    className="min-w-0 bg-transparent p-0 text-default-500"
+                                                    onClick={() =>
+                                                        handleDeleteReport(params.row[1][index].id)
+                                                    }
+                                                >
+                                                    <TrashIcon className="w-5" />
+                                                </Button>
+                                            </Tooltip>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     );
                 });
