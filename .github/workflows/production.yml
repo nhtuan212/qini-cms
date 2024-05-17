@@ -32,7 +32,6 @@ jobs:
                   mkdir -p ~/.ssh
                   echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
                   chmod 700 ~/.ssh/id_rsa
-                  eval $(ssh-agent -s)
 
-                  sshpass -p $PASSWORD rsync -avzr --rsync-path="mkdir -p /apps/qini-cms && rsync" --delete -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ./ $USER_NAME@$IP:/apps/qini-cms
-                  sshpass -p $PASSWORD ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER_NAME@$IP "cd /apps/qini-cms && docker compose up -d --build && docker system prune -f -a"
+                  rsync -avzr --rsync-path="mkdir -p /apps/qini-cms && rsync" --delete -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ./ $USER_NAME@$IP:/apps/qini-cms
+                  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER_NAME@$IP "cd /apps/qini-cms && docker compose up -d --build && docker system prune -f -a"
