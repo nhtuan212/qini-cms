@@ -13,7 +13,8 @@ type ReportState = {
 type ReportAction = {
     getReport: () => void;
     getReportDetail: (id: string) => void;
-    deleteReport: (id: string) => Promise<void>;
+    updateReportDetail: (id: string, data: any) => Promise<void>;
+    deleteReportDetail: (id: string) => Promise<void>;
 };
 
 const initialState: ReportState = {
@@ -68,7 +69,24 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
         });
     },
 
-    deleteReport: async (id: string) => {
+    updateReportDetail: async (id: string, data: reportDetail) => {
+        return await fetchData({
+            endpoint: `${URL.REPORT}/${id}`,
+            options: {
+                method: "PUT",
+                body: JSON.stringify({ ...data }),
+            },
+        }).then(res => {
+            if (res?.code === 200) {
+                return res.data;
+            }
+            return set({
+                report: res?.message,
+            });
+        });
+    },
+
+    deleteReportDetail: async (id: string) => {
         return await fetchData({
             endpoint: URL.REPORT,
             options: {

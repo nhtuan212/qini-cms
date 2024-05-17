@@ -23,6 +23,7 @@ export type reportDetail = {
     id?: string;
     createAt?: Date;
     revenue?: number;
+    isApproved?: boolean;
 
     reportsOnStaffs?: [
         {

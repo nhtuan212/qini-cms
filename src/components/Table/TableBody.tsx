@@ -110,6 +110,14 @@ export default function TableBody({ ...props }: TableBodyProps) {
         );
     };
 
+    const renderLoading = () => {
+        return (
+            <div className="absolute top-0 left-0 z-[100] w-full h-full flex justify-center items-center bg-white/50">
+                <div className="w-10 h-10 border-3 border-t-primary animate-spin rounded-full"></div>
+            </div>
+        );
+    };
+
     //** Effects */
     useEffect(() => {
         //** Checked item in rowSelection */
@@ -120,37 +128,18 @@ export default function TableBody({ ...props }: TableBodyProps) {
         //eslint-disable-next-line
     }, [rowSelection]);
 
-    if (loading) {
-        return (
-            <div className="relative flex items-center justify-center w-full h-full text-gray-400">
-                <div
-                    className={clsx(
-                        "absolute top-0 left-0 z-[100]",
-                        "w-full h-full",
-                        "flex justify-center items-center",
-                        "bg-white/50",
-                    )}
-                >
-                    <div
-                        className={clsx(
-                            "w-10 h-10 border-3 border-t-primary animate-spin rounded-full",
-                        )}
-                    ></div>
-                </div>
-            </div>
-        );
-    }
-
     if (rowsData && rowsData.length === 0) {
         return (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-                No data available
+            <div className="relative w-full h-full flex items-center justify-center text-gray-400">
+                {loading && renderLoading()}
+                <div className="text-center">No data available</div>
             </div>
         );
     }
 
     return (
         <div className="min-w-full w-fit">
+            {loading && renderLoading()}
             {rowsData?.map((row: any, index: number) => {
                 return (
                     <div
