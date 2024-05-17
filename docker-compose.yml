@@ -12,9 +12,7 @@ services:
             - .env
         environment:
             - NODE_ENV=production
-        # command: npm start
-        command: >
-            bash -c "npm install && npm run build && npm start"
+        command: npm start
         networks:
             - app-network
 
