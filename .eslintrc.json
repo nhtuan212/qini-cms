@@ -56,7 +56,10 @@
             }
         ],
         // Resolved no-unused-vars Typescript such as declare enum type ...
-        "@typescript-eslint/no-unused-vars": "error"
+        "@typescript-eslint/no-unused-vars": "error",
+
+        // Resolved no-unescaped-entities React such as <div>`'`</div>
+        "react/no-unescaped-entities": "off"
     },
 
     "settings": {

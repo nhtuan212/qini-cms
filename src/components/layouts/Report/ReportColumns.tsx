@@ -84,7 +84,7 @@ export default function RevenueColumns() {
                                         <div key={time + index}>{time}</div>
                                     ))}
                                 </div>
-                                <div className="md:flex-1 w-full flex items-center text-primary">
+                                <div className="md:flex-1 w-full flex items-center gap-2 text-primary">
                                     <div className="flex-1 font-bold">{currencyFormat(target)}</div>
                                     <div className="flex-1 flex justify-end">
                                         <Tooltip content="Details">

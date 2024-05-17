@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import clsx from "clsx";
 import ReportColumns from "./ReportColumns";
 import ReportAddNew from "./ReportAddNew";
 import ReportDetail from "./ReportDetail";
@@ -41,7 +42,10 @@ export default function ReportTable() {
     return (
         <>
             <Table
-                className="[&>.tableContainer]:h-[40rem]"
+                className={clsx(
+                    "[&>.tableContainer]:h-[40rem]",
+                    "[&_.bodyCell]:border-b [&_.bodyCell]:border-primary",
+                )}
                 columns={ReportColumns()}
                 topContent={<TopContent />}
                 rows={reportGroupByDate}
