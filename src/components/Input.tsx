@@ -1,6 +1,6 @@
 "use client";
 
-import React, { InputHTMLAttributes } from "react";
+import React, { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import clsx from "clsx";
 import CurrencyInput from "react-currency-input-field";
 
@@ -12,7 +12,9 @@ type InputProps = {
     inputRef?: any;
     currencyInput?: boolean;
     defaultValue?: number | string;
-} & InputHTMLAttributes<HTMLInputElement>;
+    rows?: number;
+} & InputHTMLAttributes<HTMLInputElement> &
+    TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 const Input = React.forwardRef(
     (
@@ -27,10 +29,10 @@ const Input = React.forwardRef(
             defaultValue = "",
             ...props
         }: InputProps,
-        ref: React.ForwardedRef<HTMLInputElement>,
+        ref: React.Ref<HTMLInputElement> & React.Ref<HTMLTextAreaElement>,
     ) => {
         return (
-            <div className={clsx("input", className)}>
+            <div className={clsx("input", className, props.disabled && "opacity-50")}>
                 {label && <label className="text-sm">{label}</label>}
                 <div className="input-group">
                     {startContent && <span className="mr-2">{startContent}</span>}
@@ -42,6 +44,12 @@ const Input = React.forwardRef(
                             decimalSeparator=","
                             groupSeparator="."
                             {...(props as any)}
+                        />
+                    ) : type === "textarea" ? (
+                        <textarea
+                            ref={ref}
+                            className="w-full resize-none focus:outline-none"
+                            {...props}
                         />
                     ) : (
                         <input ref={ref} type={type} {...props} />
@@ -56,24 +64,3 @@ const Input = React.forwardRef(
 );
 
 export default Input;
-
-// export default function Input({
-//     className,
-//     label,
-//     startContent,
-//     endContent,
-//     type = "text",
-//     onChange,
-//     ...props
-// }: InputProps) {
-//     return (
-//         <div className={clsx("input", className)}>
-//             {label && <label className="text-sm">{label}</label>}
-//             <div className="input-group">
-//                 {startContent && <span className="mr-2">{startContent}</span>}
-//                 <input type={type} onChange={onChange} {...props} />
-//                 {endContent && <span className="ml-2">{endContent}</span>}
-//             </div>
-//         </div>
-//     );
-// }

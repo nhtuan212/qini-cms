@@ -4,7 +4,7 @@ import Loading from "@/components/Loading";
 export default function loading() {
     return (
         <div className="w-full h-full">
-            <Loading className="w-32 h-32" />
+            <Loading className="[&>div]:w-32 [&>div]:h-32 " />
         </div>
     );
 }

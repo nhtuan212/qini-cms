@@ -8,6 +8,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import ErrorMessage from "@/components/ErrorMessage";
 import DatePickerComponent from "@/components/DatePicker";
+import Loading from "@/components/Loading";
 import { useModalStore } from "@/stores/useModalStore";
 import { Select, SelectItem } from "@nextui-org/react";
 import {
@@ -21,15 +22,14 @@ import { useFieldArray, useForm, Controller } from "react-hook-form";
 import { useReportsStore } from "@/stores/useReportsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
-import { fetchData } from "@/utils/fetch";
-import { wrongTimeSheet, getHours } from "@/utils";
+import { wrongTimeSheet } from "@/utils";
 import { timeSheet } from "@/config/apis";
-import { URL } from "@/config/urls";
 import { TEXT } from "@/constants/text";
 import { MODAL } from "@/constants";
 import { StaffProps } from "@/types/staffProps";
 import { ShiftProps } from "@/types/shiftProps";
-import { DateType, DateValueType } from "react-tailwindcss-datepicker";
+import { DateValueType } from "react-tailwindcss-datepicker";
+import { ReportProps, reportsOnStaffsProps } from "@/types/reportProps";
 
 type FormValues = {
     shift: string;
@@ -38,14 +38,21 @@ type FormValues = {
         checkIn: string;
         checkOut: string;
     }[];
+    description?: string;
     revenue: number;
-    multipleErrorInput: any;
 };
 
 export default function RevenueAddNew() {
     //** Stores */
-    const { openModal, modalName } = useModalStore();
-    const { getReport } = useReportsStore();
+    const { openModal, modalName, modalAction } = useModalStore();
+    const {
+        getReport,
+        createReport,
+        updateReport,
+        resetReport,
+        reportDetail,
+        isReportDetailLoading,
+    } = useReportsStore();
     const { staff } = useStaffStore();
     const { shifts } = useShiftStore();
 
@@ -54,6 +61,8 @@ export default function RevenueAddNew() {
         startDate: null,
         endDate: null,
     });
+    const [shiftValue, setShiftValue] = useState<any>(new Set([]));
+    const [reportValue, setReportValue] = useState<any>(new Set([]));
 
     //** Functions */
     const handleValueChange = (newValue: DateValueType) => {
@@ -61,6 +70,13 @@ export default function RevenueAddNew() {
     };
 
     //** React hook form */
+    const defaultValues = {
+        shift: "",
+        staff: [],
+        description: "",
+        revenue: 0,
+    };
+
     const {
         control,
         register,
@@ -68,7 +84,7 @@ export default function RevenueAddNew() {
         getValues,
         reset,
         formState: { errors },
-    } = useForm<FormValues>();
+    } = useForm<FormValues>({ defaultValues });
 
     const { fields, append, remove } = useFieldArray({
         name: "staff",
@@ -76,69 +92,100 @@ export default function RevenueAddNew() {
     });
 
     const onSubmit = async (data: FormValues) => {
-        const reportsOnStaffs: any = [];
-        const createAt = dateValue?.startDate
-            ? new Date(`${dateValue?.startDate} ${moment().format("HH:mm:ss")}`).toISOString()
-            : new Date();
-
-        const reportBody: {
-            revenue: number;
-            shiftId: string;
-            createAt?: DateType;
-        } = {
+        const reports: ReportProps = {
             revenue: data.revenue,
             shiftId: data.shift,
-            createAt,
+            description: data?.description,
+            ...(!reportDetail.createAt && {
+                createAt: dateValue?.startDate
+                    ? new Date(
+                          `${dateValue?.startDate} ${moment().format("HH:mm:ss")}`,
+                      ).toISOString()
+                    : new Date().toISOString(),
+            }),
         };
 
-        await fetchData({
-            endpoint: URL.REPORT,
-            options: {
-                method: "POST",
-                body: JSON.stringify({ ...reportBody }),
-            },
-        }).then(revenueRes => {
-            if (revenueRes.data) {
-                data.staff.forEach(item => {
-                    const checkIn = new Date(item.checkIn);
-                    const checkOut = new Date(item.checkOut);
-                    const timeWorked =
-                        Math.abs(checkOut.valueOf() - checkIn.valueOf()) / (1000 * 60 * 60);
-                    const target: number = Math.round(reportBody.revenue / data.staff.length);
+        const reportsOnStaffs: reportsOnStaffsProps = data.staff.map(item => ({
+            staffId: item.staffId,
+            checkIn: item.checkIn,
+            checkOut: item.checkOut,
+            timeWorked:
+                Math.abs(
+                    new Date(`2024-01-01T${item.checkOut}`).valueOf() -
+                        new Date(`2024-01-01T${item.checkIn}`).valueOf(),
+                ) /
+                (1000 * 60 * 60),
+            target: Math.round(data.revenue / data.staff.length),
+        }));
 
-                    //** Body Report */
-                    reportsOnStaffs.push({
-                        reportId: revenueRes.data.id,
-                        staffId: item.staffId,
-                        checkIn: getHours(item.checkIn),
-                        checkOut: getHours(item.checkOut),
-                        timeWorked,
-                        target,
-                        createAt,
-                    });
-                });
+        //** Edit report */
+        if (modalAction === "edit") {
+            return updateReport({
+                id: reportDetail.id,
+                reports,
+            }).then(() => {
+                openModal("");
+                getReport();
+            });
+        }
 
-                //** Create report table */
-                fetchData({
-                    endpoint: URL.REPORTONSTAFF,
-                    options: {
-                        method: "POST",
-                        body: JSON.stringify(reportsOnStaffs),
-                    },
-                }).then(reportRes => {
-                    if (reportRes) {
-                        openModal("");
-                        getReport();
-                    }
-                });
-            }
+        //** Create report */
+        createReport({
+            reports,
+            reportsOnStaffs,
+        }).then(() => {
+            openModal("");
+            getReport();
         });
     };
 
     //** Effects */
     useEffect(() => {
-        //** Reset form when modal is closed */
+        reset({
+            shift: reportDetail.shiftId || "",
+            staff: reportDetail.reportsOnStaffs?.map(item => ({
+                staffId: item.staff?.id,
+                checkIn: item.checkIn,
+                checkOut: item.checkOut,
+            })) || [
+                {
+                    staffId: "",
+                    checkIn: "",
+                    checkOut: "",
+                },
+            ],
+            description: reportDetail.description || "",
+            revenue: reportDetail.revenue || 0,
+        });
+    }, [reset, reportDetail]);
+
+    useEffect(() => {
+        setShiftValue(new Set([reportDetail.shiftId]));
+        setReportValue(
+            new Set(
+                reportDetail.reportsOnStaffs?.map(item => ({
+                    staffId: item.staff?.id,
+                    checkIn: item.checkIn,
+                    checkOut: item.checkOut,
+                })) || [
+                    {
+                        staffId: "",
+                        checkIn: "",
+                        checkOut: "",
+                    },
+                ],
+            ),
+        );
+
         return () => {
+            setShiftValue(new Set([]));
+            setReportValue(new Set([]));
+        };
+    }, [reportDetail]);
+
+    useEffect(() => {
+        return () => {
+            //** Reset form */
             reset({
                 shift: "",
                 staff: [
@@ -148,17 +195,31 @@ export default function RevenueAddNew() {
                         checkOut: "",
                     },
                 ],
+                description: "",
                 revenue: 0,
             });
+
+            //** Reset date value */
             setDateValue({ startDate: null, endDate: null });
+
+            //** Reset report detail */
+            resetReport();
         };
-    }, [modalName, reset]);
+    }, [modalName, resetReport, reset]);
+
+    useEffect(() => {
+        setDateValue({
+            startDate: moment(reportDetail.createAt).format("YYYY-MM-DD"),
+            endDate: moment(reportDetail.createAt).format("YYYY-MM-DD"),
+        });
+    }, [reportDetail]);
 
     return (
         <Modal open={modalName === MODAL.ADD_REPORT} size="4xl" onClose={() => openModal("")}>
             <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
                 <Modal.Header>{TEXT.ADD_REPORT}</Modal.Header>
-                <Modal.Body>
+                <Modal.Body className="relative">
+                    {isReportDetailLoading && <Loading className="absolute w-full h-full" />}
                     <div className="flex flex-column flex-wrap gap-4 my-4">
                         <DatePickerComponent
                             useRange={false}
@@ -176,6 +237,9 @@ export default function RevenueAddNew() {
                                     className="w-full"
                                     startContent={<ClockIcon className="w-6" />}
                                     label={TEXT.WORK_SHIFT}
+                                    selectedKeys={shiftValue}
+                                    onSelectionChange={(value: any) => setShiftValue(value)}
+                                    isDisabled={modalAction === "edit"}
                                     {...register("shift", {
                                         required: `${TEXT.WORK_SHIFT} ${TEXT.IS_REQUIRED}`,
                                     })}
@@ -209,6 +273,11 @@ export default function RevenueAddNew() {
                                                 className="w-full"
                                                 startContent={<UserCircleIcon className="w-6" />}
                                                 label={TEXT.STAFF}
+                                                selectedKeys={reportValue[index]}
+                                                onSelectionChange={(value: any) =>
+                                                    setReportValue(value)
+                                                }
+                                                isDisabled={modalAction === "edit"}
                                                 {...register(`staff.${index}.staffId`, {
                                                     required: `${TEXT.STAFF} ${TEXT.IS_REQUIRED}`,
                                                 })}
@@ -239,6 +308,11 @@ export default function RevenueAddNew() {
                                                 className="w-full"
                                                 startContent={<ClockIcon className="w-6" />}
                                                 label={TEXT.CHECK_IN}
+                                                selectedKeys={reportValue[index]}
+                                                onSelectionChange={(value: any) =>
+                                                    setReportValue(value)
+                                                }
+                                                isDisabled={modalAction === "edit"}
                                                 {...register(`staff.${index}.checkIn`, {
                                                     required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
                                                 })}
@@ -254,7 +328,7 @@ export default function RevenueAddNew() {
                                             >
                                                 {timeSheet.map(item => (
                                                     <SelectItem key={item.value} value={item.value}>
-                                                        {getHours(item.value)}
+                                                        {item.value}
                                                     </SelectItem>
                                                 ))}
                                             </Select>
@@ -269,6 +343,11 @@ export default function RevenueAddNew() {
                                                 className="w-full"
                                                 startContent={<ClockIcon className="w-6" />}
                                                 label={TEXT.CHECK_OUT}
+                                                selectedKeys={reportValue[index]}
+                                                onSelectionChange={(value: any) =>
+                                                    setReportValue(value)
+                                                }
+                                                isDisabled={modalAction === "edit"}
                                                 {...register(`staff.${index}.checkOut`, {
                                                     required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
 
@@ -298,7 +377,7 @@ export default function RevenueAddNew() {
                                             >
                                                 {timeSheet.map(item => (
                                                     <SelectItem key={item.value} value={item.value}>
-                                                        {getHours(item.value)}
+                                                        {item.value}
                                                     </SelectItem>
                                                 ))}
                                             </Select>
@@ -319,20 +398,22 @@ export default function RevenueAddNew() {
                             );
                         })}
 
-                        <div className="w-full flex justify-end">
-                            <Button
-                                onClick={() =>
-                                    append({
-                                        staffId: "",
-                                        checkIn: "",
-                                        checkOut: "",
-                                    })
-                                }
-                            >
-                                <PlusIcon className="w-5 mr-2" />
-                                {TEXT.ADD_STAFF}
-                            </Button>
-                        </div>
+                        {modalAction !== "edit" && (
+                            <div className="w-full flex justify-end">
+                                <Button
+                                    onClick={() =>
+                                        append({
+                                            staffId: "",
+                                            checkIn: "",
+                                            checkOut: "",
+                                        })
+                                    }
+                                >
+                                    <PlusIcon className="w-5 mr-2" />
+                                    {TEXT.ADD_STAFF}
+                                </Button>
+                            </div>
+                        )}
 
                         <div className="w-full">
                             <Controller
@@ -344,6 +425,7 @@ export default function RevenueAddNew() {
                                         className="w-full"
                                         startContent={<CurrencyDollarIcon className="w-6" />}
                                         placeholder={TEXT.TARGET}
+                                        disabled={modalAction === "edit"}
                                         {...register("revenue", {
                                             required: `${TEXT.TARGET} ${TEXT.IS_REQUIRED}`,
                                             pattern: {
@@ -354,6 +436,23 @@ export default function RevenueAddNew() {
                                         errorMessage={
                                             <ErrorMessage errors={errors} name={"revenue"} />
                                         }
+                                    />
+                                )}
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <Controller
+                                name={"description"}
+                                control={control}
+                                rules={{ required: false }}
+                                render={() => (
+                                    <Input
+                                        className="w-full"
+                                        type="textarea"
+                                        rows={4}
+                                        placeholder={TEXT.NOTE}
+                                        {...register("description")}
                                     />
                                 )}
                             />

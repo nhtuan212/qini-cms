@@ -34,4 +34,4 @@ jobs:
                   chmod 700 ~/.ssh/id_rsa
 
                   rsync -avzr --rsync-path="mkdir -p /apps/qini-cms && rsync" --delete -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ./ $USER_NAME@$IP:/apps/qini-cms
-                  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER_NAME@$IP "cd /apps/qini-cms && docker compose up -d --build && docker system prune -f -a"
+                  ssh -o ServerAliveInterval=600 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER_NAME@$IP "cd /apps/qini-cms && docker compose up -d --build && docker system prune -f -a"

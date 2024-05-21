@@ -2,13 +2,6 @@
 
 import moment from "moment";
 
-export const getHours = (date: Date | string) => {
-    const hours = new Date(date).getHours();
-    const minutes = new Date(date).getMinutes();
-
-    return `${hours}:${minutes}`;
-};
-
 export const wrongTimeSheet = ({
     checkIn,
     checkOut,
@@ -16,8 +9,8 @@ export const wrongTimeSheet = ({
     checkIn: Date | string;
     checkOut: Date | string;
 }) => {
-    const checkInTime = new Date(checkIn).getTime();
-    const checkOutTime = new Date(checkOut).getTime();
+    const checkInTime = new Date(`2024-01-01T${checkIn}`).getTime();
+    const checkOutTime = new Date(`2024-01-01T${checkOut}`).getTime();
 
     return checkOutTime <= checkInTime;
 };

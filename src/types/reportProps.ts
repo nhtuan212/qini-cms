@@ -1,35 +1,38 @@
 export type ReportProps = {
-    totalTarget: number;
-    totalTime: number;
-    startDate?: string;
-    endDate?: string;
-    reports: [
-        {
-            id?: string;
-            revenueId?: string;
-            checkIn?: string;
-            checkOut?: string;
-            target?: number;
-            createAt?: Date;
-            updateAt?: Date;
-            timeWorked?: number;
-            staffId?: string;
-            revenue?: number;
-        },
-    ];
+    id?: string;
+    createAt?: Date | string;
+    revenue?: number;
+    description?: string;
+    isApproved?: boolean;
+    shiftId?: string;
+
+    shift?: {
+        name?: string;
+    };
 };
 
-export type reportDetail = {
-    id?: string;
-    createAt?: Date;
-    revenue?: number;
-    isApproved?: boolean;
+export type reportsOnStaffsProps = {
+    staffId?: string;
+    checkIn?: string;
+    checkOut?: string;
+    timeWorked?: number;
+    target?: number;
+}[];
 
-    reportsOnStaffs?: [
+export type ReportDetailProps = {
+    id: string;
+    createAt?: Date | string;
+    revenue?: number;
+    description?: string;
+    isApproved?: boolean;
+    shiftId?: string;
+
+    reportsOnStaffs: [
         {
             checkIn?: string;
             checkOut?: string;
             staff?: {
+                id?: string;
                 name?: string;
             };
             staffId?: string;

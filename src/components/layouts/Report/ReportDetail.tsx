@@ -4,6 +4,7 @@ import React from "react";
 import moment from "moment";
 import Modal from "@/components/Modal";
 import Table from "@/components/Table";
+import Input from "@/components/Input";
 import ReportDetailColumns from "./ReportDetailColumns";
 import { useModalStore } from "@/stores/useModalStore";
 import { currencyFormat } from "@/utils";
@@ -29,7 +30,7 @@ export default function ReportDetail() {
             <Modal.Header>
                 {TEXT.REPORT_DATE}: {detailCreateAt}
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className="flex flex-col gap-4">
                 <div
                     dangerouslySetInnerHTML={{
                         __html: `<div class="flex justify-end mb-4">
@@ -41,6 +42,14 @@ export default function ReportDetail() {
                     columns={ReportDetailColumns()}
                     rows={reportsOnStaffs}
                     loading={isReportDetailLoading}
+                />
+
+                <Input
+                    type="textarea"
+                    rows={4}
+                    readOnly
+                    label={TEXT.NOTE}
+                    value={reportDetail?.description || ""}
                 />
             </Modal.Body>
         </Modal>

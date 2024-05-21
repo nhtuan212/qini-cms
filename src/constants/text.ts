@@ -58,6 +58,7 @@ export const TEXT = {
     COPY: "Copy",
     NUMBER_IS_REQUIRED: "Chỉ được nhập số",
     NO_PERMISSION: "Bạn không có quyền truy cập",
+    NOTE: "Ghi chú",
 
     IMAGE: {
         ALT: "Image",
