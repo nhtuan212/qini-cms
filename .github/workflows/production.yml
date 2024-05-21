@@ -33,9 +33,5 @@ jobs:
                   echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
                   chmod 700 ~/.ssh/id_rsa
 
-                  touch ~/.ssh/config
-                  chmod 600 ~/.ssh/config
-                  echo "ServerAliveInterval 600" >> ~/.ssh/config
-
                   rsync -avzr --rsync-path="mkdir -p /apps/qini-cms && rsync" --delete -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' ./ $USER_NAME@$IP:/apps/qini-cms
-                  ssh -o ServerAliveInterval=600 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER_NAME@$IP "cd /apps/qini-cms && docker compose up -d --build && docker system prune -f -a"
+                  ssh -o ServerAliveInterval=60 -o ServerAlivecountMax=1000 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $USER_NAME@$IP "cd /apps/qini-cms && docker compose up -d --build && docker system prune -f -a"
