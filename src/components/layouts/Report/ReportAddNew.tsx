@@ -96,7 +96,7 @@ export default function RevenueAddNew() {
             revenue: data.revenue,
             shiftId: data.shift,
             description: data?.description,
-            ...(!reportDetail.createAt && {
+            ...((!reportDetail.createAt || modalAction === "edit") && {
                 createAt: dateValue?.startDate
                     ? new Date(
                           `${dateValue?.startDate} ${moment().format("HH:mm:ss")}`,
@@ -181,7 +181,7 @@ export default function RevenueAddNew() {
             setShiftValue(new Set([]));
             setReportValue(new Set([]));
         };
-    }, [reportDetail]);
+    }, [reportDetail, modalName]);
 
     useEffect(() => {
         return () => {

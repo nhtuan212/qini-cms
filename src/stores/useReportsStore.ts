@@ -28,7 +28,7 @@ const initialState: ReportState = {
     report: [],
     reportDetail: {
         id: "",
-        createAt: new Date(),
+        createAt: "",
         revenue: 0,
         description: "",
         isApproved: false,
