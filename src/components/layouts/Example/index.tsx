@@ -13,6 +13,11 @@ import { DateValueType } from "react-tailwindcss-datepicker";
 import Switch from "@/components/Switch";
 import { SunIcon } from "@heroicons/react/24/outline";
 import { MoonIcon } from "@heroicons/react/24/outline";
+import DatePickerNextUI from "@/components/DatePickerNextUI";
+import { parseDate } from "@internationalized/date";
+import moment from "moment";
+import { DatePicker } from "@nextui-org/date-picker";
+import { I18nProvider } from "@react-aria/i18n";
 
 export default function Example() {
     //** Stores */
@@ -33,6 +38,27 @@ export default function Example() {
     const onModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setThemeMode(event.target.checked ? "light" : "dark");
     };
+
+    //** Datepicker */
+    const [value, setValue] = React.useState<any>(
+        parseDate(moment(new Date("2024-05-01")).format("YYYY-MM-DD")),
+    );
+    const handleSetDate = (date: any) => {
+        setValue(parseDate(moment(new Date(date)).format("YYYY-MM-DD")));
+
+        console.log({
+            moment: moment(new Date(`${date} ${moment().format("hh:mm")}`)).format(
+                "YYYY-MM-DD hh:mm:ss",
+            ),
+            moment24H: moment(new Date(`${date} ${moment().format("HH:mm")}`)).format(
+                "YYYY-MM-DD HH:mm:ss",
+            ),
+        });
+    };
+
+    const [date, setDate] = React.useState<any>(
+        parseDate(moment(new Date("2024-05-01")).format("YYYY-MM-DD")),
+    );
 
     return (
         <>
@@ -55,6 +81,24 @@ export default function Example() {
                     asSingle={true}
                     value={dateValue}
                     onChange={handleValueChange}
+                />
+            </div>
+            <div className="flex flex-col gap-4 mb-4">
+                <I18nProvider locale="vi-VN">
+                    <DatePicker
+                        showMonthAndYearPickers
+                        variant="bordered"
+                        className="max-w-md"
+                        label="Appointment date"
+                        value={date}
+                        onChange={setDate}
+                    />
+                </I18nProvider>
+                <DatePickerNextUI
+                    className="max-w-[284px]"
+                    label="Date (controlled)"
+                    value={value}
+                    onChange={date => handleSetDate(date)}
                 />
             </div>
             <div className="mb-4">
