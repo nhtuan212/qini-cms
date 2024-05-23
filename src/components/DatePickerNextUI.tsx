@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { DatePicker as DatePickerNextUI, DatePickerProps } from "@nextui-org/date-picker";
+import { DatePicker as DatePickerNextUI, DatePickerProps } from "@nextui-org/react";
 import { I18nProvider } from "@react-aria/i18n";
 
 type DatePickerType = {

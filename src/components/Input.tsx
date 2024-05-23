@@ -2,7 +2,7 @@
 
 import React, { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import clsx from "clsx";
-import CurrencyInput from "react-currency-input-field";
+import { NumericFormat } from "react-number-format";
 
 type InputProps = {
     label?: string;
@@ -10,8 +10,7 @@ type InputProps = {
     startContent?: React.ReactNode;
     endContent?: React.ReactNode;
     inputRef?: any;
-    currencyInput?: boolean;
-    defaultValue?: number | string;
+    isCurrency?: boolean;
     rows?: number;
 } & InputHTMLAttributes<HTMLInputElement> &
     TextareaHTMLAttributes<HTMLTextAreaElement>;
@@ -25,8 +24,7 @@ const Input = React.forwardRef(
             startContent,
             endContent,
             type = "text",
-            currencyInput = false,
-            defaultValue = "",
+            isCurrency = false,
             ...props
         }: InputProps,
         ref: React.Ref<HTMLInputElement> & React.Ref<HTMLTextAreaElement>,
@@ -37,12 +35,14 @@ const Input = React.forwardRef(
                 <div className="input-group">
                     {startContent && <span className="mr-2">{startContent}</span>}
 
-                    {currencyInput ? (
-                        <CurrencyInput
-                            ref={ref}
-                            defaultValue={defaultValue}
-                            decimalSeparator=","
-                            groupSeparator="."
+                    {isCurrency ? (
+                        <NumericFormat
+                            getInputRef={ref}
+                            defaultValue={0}
+                            thousandSeparator={true}
+                            // onValueChange={v => {
+                            //     console.log(v.value);
+                            // }}
                             {...(props as any)}
                         />
                     ) : type === "textarea" ? (

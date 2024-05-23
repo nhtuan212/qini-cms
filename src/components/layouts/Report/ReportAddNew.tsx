@@ -92,8 +92,10 @@ export default function RevenueAddNew() {
     });
 
     const onSubmit = async (data: FormValues) => {
+        const revenue = +String(data.revenue).replace(/[^0-9]/g, "") || 0;
+
         const reports: ReportProps = {
-            revenue: data.revenue,
+            revenue,
             shiftId: data.shift,
             description: data?.description,
             ...((!reportDetail.createAt || modalAction === "edit") && {
@@ -115,7 +117,7 @@ export default function RevenueAddNew() {
                         new Date(`2024-01-01T${item.checkIn}`).valueOf(),
                 ) /
                 (1000 * 60 * 60),
-            target: Math.round(data.revenue / data.staff.length),
+            target: Math.round(revenue / data.staff.length),
         }));
 
         //** Edit report */
@@ -420,19 +422,22 @@ export default function RevenueAddNew() {
                                 name={"revenue"}
                                 control={control}
                                 rules={{ required: true }}
-                                render={() => (
+                                render={({ field: { onChange } }) => (
                                     <Input
                                         className="w-full"
                                         startContent={<CurrencyDollarIcon className="w-6" />}
                                         placeholder={TEXT.TARGET}
                                         disabled={modalAction === "edit"}
+                                        isCurrency
                                         {...register("revenue", {
                                             required: `${TEXT.TARGET} ${TEXT.IS_REQUIRED}`,
-                                            pattern: {
-                                                value: /^[0-9]+$/i,
-                                                message: TEXT.NUMBER_IS_REQUIRED,
-                                            },
+
+                                            // pattern: {
+                                            //     value: /^[0-9]+$/i,
+                                            //     message: TEXT.NUMBER_IS_REQUIRED,
+                                            // },
                                         })}
+                                        onChange={onChange}
                                         errorMessage={
                                             <ErrorMessage errors={errors} name={"revenue"} />
                                         }

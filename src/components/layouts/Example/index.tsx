@@ -16,7 +16,7 @@ import { MoonIcon } from "@heroicons/react/24/outline";
 import DatePickerNextUI from "@/components/DatePickerNextUI";
 import { parseDate } from "@internationalized/date";
 import moment from "moment";
-import { DatePicker } from "@nextui-org/date-picker";
+import { DatePicker } from "@nextui-org/react";
 import { I18nProvider } from "@react-aria/i18n";
 
 export default function Example() {
@@ -58,6 +58,7 @@ export default function Example() {
 
     const [date, setDate] = React.useState<any>(
         parseDate(moment(new Date("2024-05-01")).format("YYYY-MM-DD")),
+        // parseAbsoluteToLocal("2021-04-07T18:45:22Z"),
     );
 
     return (
@@ -74,6 +75,7 @@ export default function Example() {
                     </Modal.Body>
                 </Modal>
             </div>
+
             <div className="flex flex-col gap-4 mb-4">
                 <Input placeholder="Input" />
                 <DatePickerComponent
@@ -83,10 +85,11 @@ export default function Example() {
                     onChange={handleValueChange}
                 />
             </div>
+
             <div className="flex flex-col gap-4 mb-4">
                 <I18nProvider locale="vi-VN">
                     <DatePicker
-                        showMonthAndYearPickers
+                        // showMonthAndYearPickers
                         variant="bordered"
                         className="max-w-md"
                         label="Appointment date"
@@ -112,12 +115,15 @@ export default function Example() {
                     onChange={event => onModeChange(event)}
                 />
             </div>
-            <Table
-                columns={Columns()}
-                rows={rows}
-                selectionMode
-                paginationMode={{ pageSize: 5, pageSizeOptions: [5, 10] }}
-            />
+
+            <div>
+                <Table
+                    columns={Columns()}
+                    rows={rows}
+                    selectionMode
+                    paginationMode={{ pageSize: 5, pageSizeOptions: [5, 10] }}
+                />
+            </div>
         </>
     );
 }
