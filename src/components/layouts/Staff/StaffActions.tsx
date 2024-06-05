@@ -33,6 +33,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
 
     switch (profile.role) {
         case ROLE.USER:
+        case ROLE.REPORT:
             disabledKeys.push("edit", "delete");
             break;
         default:

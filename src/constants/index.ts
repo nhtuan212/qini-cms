@@ -1,6 +1,7 @@
 export const ROLE = {
     ADMIN: "ADMIN",
     USER: "USER",
+    REPORT: "REPORT",
 };
 
 export const STAFF = {

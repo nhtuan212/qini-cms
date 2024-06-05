@@ -5,7 +5,7 @@ import Button from "@/components/Button";
 import AddStaff from "./AddStaff";
 import StaffActions from "./StaffActions";
 import StaffDetail from "./Detail";
-import ErrorPage from "@/components/ErrorPage";
+// import ErrorPage from "@/components/ErrorPage";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
@@ -25,9 +25,9 @@ export default function Staff() {
         getStaff();
     }, [getStaff]);
 
-    if (profile.role !== ROLE.ADMIN) {
-        return <ErrorPage />;
-    }
+    // if (profile.role !== ROLE.ADMIN) {
+    //     return <ErrorPage />;
+    // }
 
     return (
         <>
@@ -50,7 +50,8 @@ export default function Staff() {
                                 >
                                     <div className="flex justify-between items-center">
                                         <p className="text-lg">{item.name}</p>
-                                        {profile.role === ROLE.ADMIN && (
+                                        {(profile.role === ROLE.ADMIN ||
+                                            profile.role === ROLE.REPORT) && (
                                             <StaffActions item={item} />
                                         )}
                                     </div>
