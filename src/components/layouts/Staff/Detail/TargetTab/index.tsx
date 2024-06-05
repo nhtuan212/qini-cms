@@ -12,11 +12,12 @@ export default function TargetTab() {
 
     return (
         <Table
+            className="[&>.tableContainer]:h-[40rem]"
             columns={TargetColumns()}
             rows={reportsOnStaff}
             loading={isReportsOnStaffLoading}
             topContent={<TargetTopContent />}
-            paginationMode={{ pageSize: 10, pageSizeOptions: [5, 10] }}
+            paginationMode={{ pageSize: 50, pageSizeOptions: [50, 60] }}
         />
     );
 }

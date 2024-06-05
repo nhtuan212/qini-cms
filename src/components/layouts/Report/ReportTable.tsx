@@ -50,7 +50,7 @@ export default function ReportTable() {
                 topContent={<TopContent />}
                 rows={reportGroupByDate}
                 loading={isReportLoading}
-                paginationMode={{ pageSize: 10, pageSizeOptions: [10, 20, 30] }}
+                paginationMode={{ pageSize: 31, pageSizeOptions: [10, 20, 30] }}
             />
 
             {/* Popup add new report */}

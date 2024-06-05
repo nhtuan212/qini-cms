@@ -93,17 +93,16 @@ export default function RevenueAddNew() {
 
     const onSubmit = async (data: FormValues) => {
         const revenue = +String(data.revenue).replace(/[^0-9]/g, "") || 0;
+        const createAt = dateValue?.startDate
+            ? new Date(`${dateValue?.startDate} ${moment().format("HH:mm:ss")}`).toISOString()
+            : new Date().toISOString();
 
         const reports: ReportProps = {
             revenue,
             shiftId: data.shift,
             description: data?.description,
             ...((!reportDetail.createAt || modalAction === "edit") && {
-                createAt: dateValue?.startDate
-                    ? new Date(
-                          `${dateValue?.startDate} ${moment().format("HH:mm:ss")}`,
-                      ).toISOString()
-                    : new Date().toISOString(),
+                createAt,
             }),
         };
 
@@ -118,6 +117,9 @@ export default function RevenueAddNew() {
                 ) /
                 (1000 * 60 * 60),
             target: Math.round(revenue / data.staff.length),
+            ...((!reportDetail.createAt || modalAction === "edit") && {
+                createAt,
+            }),
         }));
 
         //** Edit report */
