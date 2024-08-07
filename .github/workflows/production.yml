@@ -17,6 +17,9 @@ jobs:
             - name: Check Out Repository
               uses: actions/checkout@v4
 
+            - name: Print branch name
+              run: git branch > temp.txt && echo temp.txt && rm -rf temp.txt
+
             - name: Set Environment Variables
               run: |
                   echo "${{ secrets.QINI_CMS_ENV }}" | tr -d '\r' > .env
