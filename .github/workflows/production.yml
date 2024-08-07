@@ -18,7 +18,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Print branch name
-              run: git branch > temp.txt && echo temp.txt && rm -rf temp.txt
+              run: git branch > temp.txt && cat temp.txt && rm -rf temp.txt
 
             - name: Set Environment Variables
               run: |
