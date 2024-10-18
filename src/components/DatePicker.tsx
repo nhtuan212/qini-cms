@@ -1,13 +1,14 @@
 "use client";
 
-import clsx from "clsx";
 import React from "react";
-import Datepicker, { DatepickerType } from "react-tailwindcss-datepicker";
+import { DatePicker as DatePickerNextUI, DatePickerProps } from "@nextui-org/react";
 
-type DatePickerProps = {
+type DatePickerType = {
     errorMessage?: string;
-} & DatepickerType;
+} & DatePickerProps;
 
-export default function DatePickerComponent(props: DatePickerProps) {
-    return <Datepicker containerClassName={clsx("datepicker", props.classNames)} {...props} />;
-}
+const DatePicker = React.forwardRef<HTMLElement, DatePickerType>(({ ...props }, ref) => {
+    return <DatePickerNextUI ref={ref} variant={props.variant || "bordered"} {...props} />;
+});
+
+export default DatePicker;

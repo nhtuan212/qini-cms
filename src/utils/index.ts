@@ -16,11 +16,7 @@ export const wrongTimeSheet = ({
 };
 
 export const currencyFormat = (amount: number) => {
-    if (amount)
-        return new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-        }).format(amount);
+    if (amount) return new Intl.NumberFormat("it-IT").format(amount);
 
     return 0;
 };
@@ -29,6 +25,16 @@ export const dateFormat = (date: Date) => {
     if (date) return new Intl.DateTimeFormat("vi-VN").format(new Date(date));
 
     return "Date is not valid";
+};
+
+export const dateFormat2 = (date: Date) => {
+    const dateFormat = new Date(date);
+
+    const day = String(dateFormat.getUTCDate()).padStart(2, "0");
+    const month = String(dateFormat.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed in JavaScript
+    const year = dateFormat.getUTCFullYear();
+
+    return `${year}-${month}-${day}`;
 };
 
 export const getCurrentMonth = () => {
@@ -42,15 +48,21 @@ export const getCurrentMonth = () => {
     };
 };
 
-// export const isEmpty = (obj: {}) => {
-//     for (const prop in obj) {
-//         if (Object.hasOwn(obj, prop)) {
-//             return false;
-//         }
-//     }
+/**
+ * Checks if the provided data is empty.
+ *
+ * @param data - The data to check, which can be an array of strings or numbers, or an object.
+ * @returns `true` if the data is empty, `false` otherwise.
+ */
+export const isEmpty = (data: Array<string | number> | object) => {
+    if (!data) return true;
 
-//     return true;
-// };
+    if (Array.isArray(data)) {
+        return data.length === 0;
+    }
+
+    return Object.keys(data).length === 0;
+};
 
 export const sumArray = (array: any[], field: string): number => {
     if (!array?.length) return 0;

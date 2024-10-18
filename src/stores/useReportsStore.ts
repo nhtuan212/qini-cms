@@ -2,31 +2,36 @@ import { URL } from "@/config/urls";
 import { create } from "zustand";
 import { fetchData } from "@/utils/fetch";
 import { ReportProps, ReportDetailProps, reportsOnStaffsProps } from "@/types/reportProps";
+import { STATUS_CODE } from "@/constants";
 
 type ReportState = {
-    isReportLoading?: boolean;
-    isReportDetailLoading?: boolean;
+    isLoading?: boolean;
     report: [];
-    reportDetail: ReportDetailProps;
+    reportById: ReportDetailProps;
 };
 
 type ReportAction = {
-    getReport: () => void;
-    getReportDetail: (id: string) => Promise<void>;
+    getReport: () => Promise<void>;
+    getReportById: (id: string) => Promise<void>;
     createReport: (data: {
         reports: ReportProps;
         reportsOnStaffs: reportsOnStaffsProps;
-    }) => Promise<void>;
-    updateReport: ({ id, reports }: { id: string; reports: ReportProps }) => Promise<void>;
+    }) => Promise<{
+        code: number;
+        message: string;
+    }>;
+    updateReport: ({ id, reports }: { id: string; reports: ReportProps }) => Promise<{
+        code: number;
+        message: string;
+    }>;
     deleteReport: (id: string) => Promise<void>;
     resetReport: () => void;
 };
 
 const initialState: ReportState = {
-    isReportLoading: false,
-    isReportDetailLoading: false,
+    isLoading: false,
     report: [],
-    reportDetail: {
+    reportById: {
         id: "",
         createAt: "",
         revenue: 0,
@@ -58,7 +63,7 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
     // Actions
     getReport: async () => {
         set({
-            isReportLoading: true,
+            isLoading: true,
         });
 
         return await fetchData({
@@ -70,15 +75,15 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
                 });
             }
             return set({
-                isReportLoading: false,
+                isLoading: false,
                 report: res.data,
             });
         });
     },
 
-    getReportDetail: async (id: string) => {
+    getReportById: async (id: string) => {
         set({
-            isReportDetailLoading: true,
+            isLoading: true,
         });
 
         return await fetchData({
@@ -86,13 +91,13 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
         }).then(res => {
             if (res?.code !== 200) {
                 return set({
-                    reportDetail: res?.message,
+                    reportById: res?.message,
                 });
             }
 
             return set({
-                isReportDetailLoading: false,
-                reportDetail: res.data[0],
+                isLoading: false,
+                reportById: res.data[0],
             });
         });
     },
@@ -116,12 +121,14 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
                 body,
             },
         }).then(res => {
-            if (res?.code === 200) {
-                return res.data;
+            if (res?.code !== STATUS_CODE.OK) {
+                return {
+                    code: res?.code,
+                    message: res?.message,
+                };
             }
-            return set({
-                report: res?.message,
-            });
+
+            return res.data;
         });
     },
 
@@ -161,7 +168,7 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
 
     resetReport: () => {
         return set({
-            reportDetail: initialState.reportDetail,
+            reportById: initialState.reportById,
         });
     },
 }));

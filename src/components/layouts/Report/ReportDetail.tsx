@@ -14,16 +14,18 @@ import { useReportsStore } from "@/stores/useReportsStore";
 
 export default function ReportDetail() {
     //** Stores */
-    const { reportDetail, isReportDetailLoading } = useReportsStore();
+    const { reportById, isLoading } = useReportsStore();
     const { modalName, openModal } = useModalStore();
 
     //** Destructuring */
-    const { revenue, createAt, reportsOnStaffs, shift } = reportDetail;
+    const { revenue, transfer, cash, createAt, reportsOnStaffs, shift } = reportById;
 
     //** Variables */
     const detailCreateAt =
-        !isReportDetailLoading && `${moment(createAt).format("DD/MM/YYYY")} - ${shift?.name}`;
-    const detailRevenue = !isReportDetailLoading ? currencyFormat(revenue as number) : 0;
+        !isLoading && `${moment(createAt).format("DD/MM/YYYY")} - ${shift?.name}`;
+    const detailRevenue = !isLoading ? currencyFormat(revenue as number) : 0;
+    const transferRevenue = !isLoading ? currencyFormat(transfer as number) : 0;
+    const cashRevenue = !isLoading ? currencyFormat(cash as number) : 0;
 
     return (
         <Modal open={modalName === MODAL.REPORT_DETAIL} size="4xl" onClose={() => openModal("")}>
@@ -31,25 +33,30 @@ export default function ReportDetail() {
                 {TEXT.REPORT_DATE}: {detailCreateAt}
             </Modal.Header>
             <Modal.Body className="flex flex-col gap-4">
-                <div
-                    dangerouslySetInnerHTML={{
-                        __html: `<div class="flex justify-end mb-4">
-                        ${TEXT.TOTAL_TARGET}: <span class="ml-2 font-bold text-primary">${detailRevenue}</span>
-                    </div>`,
-                    }}
-                />
-                <Table
-                    columns={ReportDetailColumns()}
-                    rows={reportsOnStaffs}
-                    loading={isReportDetailLoading}
-                />
+                <div className="grid grid-cols-4 justify-end gap-2">
+                    <div className="col-start-3 text-right">
+                        {TEXT.TRANSFER}:{" "}
+                        <span className="ml-2 font-bold text-primary">{transferRevenue}</span>
+                    </div>
+
+                    <div className="col-start-4 text-right">
+                        {TEXT.CASH}:{" "}
+                        <span className="ml-2 font-bold text-primary">{cashRevenue}</span>
+                    </div>
+
+                    <div className="col-start-4 text-right">
+                        {TEXT.TOTAL_TARGET}:{" "}
+                        <span className="ml-2 font-bold text-primary">{detailRevenue}</span>
+                    </div>
+                </div>
+                <Table columns={ReportDetailColumns()} rows={reportsOnStaffs} loading={isLoading} />
 
                 <Input
                     type="textarea"
-                    rows={4}
+                    minRows={4}
                     readOnly
                     label={TEXT.NOTE}
-                    value={reportDetail?.description || ""}
+                    value={reportById?.description || ""}
                 />
             </Modal.Body>
         </Modal>

@@ -2,6 +2,8 @@ export type ReportProps = {
     id?: string;
     createAt?: Date | string;
     revenue?: number;
+    transfer?: number;
+    cash?: number;
     description?: string;
     isApproved?: boolean;
     shiftId?: string;
@@ -23,6 +25,8 @@ export type ReportDetailProps = {
     id: string;
     createAt?: Date | string;
     revenue?: number;
+    transfer?: number;
+    cash?: number;
     description?: string;
     isApproved?: boolean;
     shiftId?: string;

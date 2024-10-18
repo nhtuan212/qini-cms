@@ -13,7 +13,7 @@ import { useShiftStore } from "@/stores/useShiftsStore";
 
 export default function ReportTable() {
     //** Stores */
-    const { report, isReportLoading, getReport } = useReportsStore();
+    const { getReport, isLoading, report } = useReportsStore();
     const { getStaff } = useStaffStore();
     const { getShifts } = useShiftStore();
 
@@ -46,10 +46,10 @@ export default function ReportTable() {
                     "[&>.tableContainer]:h-[40rem]",
                     "[&_.bodyCell]:border-b [&_.bodyCell]:border-primary",
                 )}
+                loading={isLoading}
                 columns={ReportColumns()}
                 topContent={<TopContent />}
                 rows={reportGroupByDate}
-                loading={isReportLoading}
                 paginationMode={{ pageSize: 31, pageSizeOptions: [10, 20, 30] }}
             />
 

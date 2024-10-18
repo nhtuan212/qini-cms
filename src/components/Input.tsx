@@ -1,65 +1,42 @@
 "use client";
 
-import React, { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
-import clsx from "clsx";
-import { NumericFormat } from "react-number-format";
-
-type InputProps = {
-    label?: string;
-    errorMessage?: React.ReactNode;
-    startContent?: React.ReactNode;
-    endContent?: React.ReactNode;
-    inputRef?: any;
-    isCurrency?: boolean;
-    rows?: number;
-} & InputHTMLAttributes<HTMLInputElement> &
-    TextareaHTMLAttributes<HTMLTextAreaElement>;
+import React from "react";
+import {
+    Input as InputNextUI,
+    InputProps,
+    Textarea as TextareaNextUI,
+    TextAreaProps,
+} from "@nextui-org/react";
 
 const Input = React.forwardRef(
     (
-        {
-            className,
-            label,
-            errorMessage,
-            startContent,
-            endContent,
-            type = "text",
-            isCurrency = false,
-            ...props
-        }: InputProps,
-        ref: React.Ref<HTMLInputElement> & React.Ref<HTMLTextAreaElement>,
+        { variant = "bordered", radius = "sm", ...props }: InputProps | TextAreaProps,
+        ref: React.Ref<HTMLInputElement>,
     ) => {
-        return (
-            <div className={clsx("input", className, props.disabled && "opacity-50")}>
-                {label && <label className="text-sm">{label}</label>}
-                <div className="input-group">
-                    {startContent && <span className="mr-2">{startContent}</span>}
+        const renderInput = () => {
+            if (props.type === "textarea") {
+                return (
+                    <TextareaNextUI
+                        ref={ref as React.Ref<HTMLTextAreaElement>}
+                        variant={variant}
+                        radius={radius}
+                        {...(props as TextAreaProps)}
+                    />
+                );
+            }
 
-                    {isCurrency ? (
-                        <NumericFormat
-                            getInputRef={ref}
-                            defaultValue={0}
-                            thousandSeparator={true}
-                            // onValueChange={v => {
-                            //     console.log(v.value);
-                            // }}
-                            {...(props as any)}
-                        />
-                    ) : type === "textarea" ? (
-                        <textarea
-                            ref={ref}
-                            className="w-full resize-none focus:outline-none"
-                            {...props}
-                        />
-                    ) : (
-                        <input ref={ref} type={type} {...props} />
-                    )}
-                    {endContent && <span className="ml-2">{endContent}</span>}
-                </div>
+            return (
+                <InputNextUI
+                    ref={ref}
+                    variant={variant}
+                    radius={radius}
+                    {...(props as InputProps)}
+                />
+            );
+        };
 
-                {errorMessage && <div className="errorMessage">{errorMessage}</div>}
-            </div>
-        );
+        //** Render */
+        return renderInput();
     },
 );
 

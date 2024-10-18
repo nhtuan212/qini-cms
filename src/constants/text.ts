@@ -18,6 +18,7 @@ export const TEXT = {
     ADD_STAFF: "Thêm nhân viên",
     NAME: "Tên",
     CASH: "Tiền mặt",
+    TRANSFER: "Chuyển khoản",
     TOTAL: "Tổng cộng",
     WORK_SHIFT: "Ca làm việc",
     SUBMIT_SHIFT: "Chốt ca",
@@ -59,6 +60,7 @@ export const TEXT = {
     NUMBER_IS_REQUIRED: "Chỉ được nhập số",
     NO_PERMISSION: "Bạn không có quyền truy cập",
     NOTE: "Ghi chú",
+    DATE_PICKER: "Chọn ngày",
 
     IMAGE: {
         ALT: "Image",

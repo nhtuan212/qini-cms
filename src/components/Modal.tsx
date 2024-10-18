@@ -87,7 +87,6 @@ const Modal = ({ ...props }: ModalProps) => {
                 {isCloseIcon && (
                     <button className="absolute top-4 right-4" onClick={handleClose}>
                         <svg
-                            aria-hidden="true"
                             fill="none"
                             focusable="false"
                             height="1em"

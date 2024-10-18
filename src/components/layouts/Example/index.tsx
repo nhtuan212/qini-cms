@@ -8,15 +8,14 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Modal from "@/components/Modal";
 import { useModalStore } from "@/stores/useModalStore";
-import DatePickerComponent from "@/components/DatePicker";
+import DatePickerComponent from "@/components/DatePicker-old";
+import DatePicker from "@/components/DatePicker";
 import { DateValueType } from "react-tailwindcss-datepicker";
 import Switch from "@/components/Switch";
 import { SunIcon } from "@heroicons/react/24/outline";
 import { MoonIcon } from "@heroicons/react/24/outline";
-import DatePickerNextUI from "@/components/DatePickerNextUI";
 import { parseDate } from "@internationalized/date";
 import moment from "moment";
-import { DatePicker } from "@nextui-org/react";
 import { I18nProvider } from "@react-aria/i18n";
 
 export default function Example() {
@@ -97,7 +96,7 @@ export default function Example() {
                         onChange={setDate}
                     />
                 </I18nProvider>
-                <DatePickerNextUI
+                <DatePicker
                     className="max-w-[284px]"
                     label="Date (controlled)"
                     value={value}

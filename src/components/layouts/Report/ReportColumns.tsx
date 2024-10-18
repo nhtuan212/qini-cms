@@ -16,7 +16,7 @@ import { ReportProps } from "@/types/reportProps";
 export default function RevenueColumns() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { getReport, getReportDetail, updateReport, deleteReport } = useReportsStore();
+    const { getReport, getReportById, updateReport, deleteReport } = useReportsStore();
     const { openModal, openConfirmModal } = useModalStore();
 
     //** Functions */
@@ -37,14 +37,14 @@ export default function RevenueColumns() {
         });
     };
 
-    const handleGetReportDetail = (id: string) => {
-        openModal(MODAL.REPORT_DETAIL);
-        getReportDetail(id);
+    const handleGetReportById = async (id: string) => {
+        await getReportById(id);
+        await openModal(MODAL.REPORT_DETAIL);
     };
 
-    const handleEditReport = (id: string) => {
-        openModal(MODAL.ADD_REPORT, "edit");
-        getReportDetail(id);
+    const handleEditReport = async (id: string) => {
+        await getReportById(id);
+        await openModal(MODAL.ADD_REPORT, "edit");
     };
 
     const handleDeleteReport = (id: string) => {
@@ -77,10 +77,13 @@ export default function RevenueColumns() {
 
                 return shift.map((item: any, index: number) => {
                     const revenue = params.row[1][index].revenue;
+                    const cash = params.row[1][index].cash;
+                    const transfer = params.row[1][index].transfer;
                     const staff = reportsOnStaffs[index].map((staff: any) => staff.staff.name);
                     const timeSheet = reportsOnStaffs[index].map(
                         (timeSheet: any) => `${timeSheet.checkIn} - ${timeSheet.checkOut}`,
                     );
+                    const isApproved = params.row[1][index].isApproved;
 
                     return (
                         <div
@@ -93,7 +96,7 @@ export default function RevenueColumns() {
                                     handleReportApproved(params.row[1][index]);
                                 }}
                             >
-                                {params.row[1][index].isApproved ? (
+                                {isApproved ? (
                                     <CheckCircleIconActive className="w-5 text-primary" />
                                 ) : (
                                     <CheckCircleIcon className="w-5" />
@@ -113,16 +116,33 @@ export default function RevenueColumns() {
                                         <div key={time + index}>{time}</div>
                                     ))}
                                 </div>
-                                <div className="md:flex-1 w-full flex items-center gap-2 text-primary">
-                                    <div className="flex-1 font-bold">
-                                        {currencyFormat(revenue)}
+                                <div className="md:flex-[2] w-full flex items-center gap-2 text-primary">
+                                    <div className="flex-auto font-bold">
+                                        <div className="flex items-end">
+                                            <span className="flex-1 font-normal text-black">
+                                                {TEXT.TRANSFER}
+                                            </span>
+                                            {currencyFormat(transfer)}
+                                        </div>
+                                        <div className="flex items-end">
+                                            <span className="flex-1 font-normal text-black">
+                                                {TEXT.CASH}
+                                            </span>
+                                            {currencyFormat(cash)}
+                                        </div>
+                                        <div className="flex items-end">
+                                            <span className="flex-1 font-normal text-black">
+                                                {TEXT.REVENUE}
+                                            </span>
+                                            {currencyFormat(revenue)}
+                                        </div>
                                     </div>
                                     <div className="flex-1 flex justify-end gap-1">
                                         <Tooltip content="Details">
                                             <Button
                                                 className="min-w-0 bg-transparent p-0 text-default-500"
                                                 onClick={() => {
-                                                    handleGetReportDetail(params.row[1][index].id);
+                                                    handleGetReportById(params.row[1][index].id);
                                                 }}
                                             >
                                                 <EyeIcon className="w-5" />
