@@ -33,18 +33,18 @@ export default function ReportDetail() {
                 {TEXT.REPORT_DATE}: {detailCreateAt}
             </Modal.Header>
             <Modal.Body className="flex flex-col gap-4">
-                <div className="grid grid-cols-4 justify-end gap-2">
-                    <div className="col-start-3 text-right">
+                <div className="grid md:grid-cols-4 grid-cols-2 justify-end gap-2">
+                    <div className="md:col-start-3 text-right">
                         {TEXT.TRANSFER}:{" "}
                         <span className="ml-2 font-bold text-primary">{transferRevenue}</span>
                     </div>
 
-                    <div className="col-start-4 text-right">
+                    <div className="md:col-start-4 text-right">
                         {TEXT.CASH}:{" "}
                         <span className="ml-2 font-bold text-primary">{cashRevenue}</span>
                     </div>
 
-                    <div className="col-start-4 text-right">
+                    <div className="md:col-start-4 col-start-2 text-right">
                         {TEXT.TOTAL_TARGET}:{" "}
                         <span className="ml-2 font-bold text-primary">{detailRevenue}</span>
                     </div>

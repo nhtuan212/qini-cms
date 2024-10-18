@@ -117,7 +117,7 @@ export default function RevenueColumns() {
                                     ))}
                                 </div>
                                 <div className="md:flex-[2] w-full flex items-center gap-2 text-primary">
-                                    <div className="flex-auto font-bold">
+                                    <div className="flex-[2] font-bold">
                                         <div className="flex items-end">
                                             <span className="flex-1 font-normal text-black">
                                                 {TEXT.TRANSFER}
