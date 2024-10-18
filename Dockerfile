@@ -4,6 +4,6 @@ WORKDIR /src
 COPY . /src
 
 # Building the app
-RUN npm cache verify
-RUN npm install
-RUN npm run build
+RUN yarn cache clean
+RUN yarn
+RUN yarn build
