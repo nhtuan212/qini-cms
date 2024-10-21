@@ -92,6 +92,7 @@ export default function RevenueAddNew() {
         register,
         handleSubmit,
         getValues,
+        reset,
         formState: { errors },
     } = useForm<FormValues>({ values: defaultValues });
 
@@ -170,6 +171,7 @@ export default function RevenueAddNew() {
     useEffect(() => {
         return () => {
             if (modalName) {
+                reset();
                 resetReport();
                 setAmountValue({
                     revenue: 0,
@@ -178,7 +180,7 @@ export default function RevenueAddNew() {
                 });
             }
         };
-    }, [modalName, resetReport, reportById]);
+    }, [resetReport, reset, modalName, reportById]);
 
     return (
         <Modal open={modalName === MODAL.ADD_REPORT} size="4xl" onClose={() => openModal("")}>
