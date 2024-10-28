@@ -77,6 +77,7 @@ export default function RevenueColumns() {
 
                 return shift.map((item: any, index: number) => {
                     const revenue = params.row[1][index].revenue;
+                    const deduction = params.row[1][index].deduction;
                     const cash = params.row[1][index].cash;
                     const transfer = params.row[1][index].transfer;
                     const staff = reportsOnStaffs[index].map((staff: any) => staff.staff.name);
@@ -116,25 +117,35 @@ export default function RevenueColumns() {
                                         <div key={time + index}>{time}</div>
                                     ))}
                                 </div>
-                                <div className="md:flex-[2] w-full flex items-center gap-2 text-primary">
+                                <div className="md:flex-[2] w-full flex items-center gap-2">
                                     <div className="flex-[2] font-bold">
+                                        <div className="flex items-end border-b">
+                                            <span className="flex-1 font-normal text-black">
+                                                {TEXT.REVENUE}
+                                            </span>
+                                            <span className="text-primary">
+                                                {currencyFormat(revenue)}
+                                            </span>
+                                        </div>
                                         <div className="flex items-end">
                                             <span className="flex-1 font-normal text-black">
                                                 {TEXT.TRANSFER}
                                             </span>
                                             {currencyFormat(transfer)}
                                         </div>
+                                        {deduction && (
+                                            <div className="flex items-end italic">
+                                                <span className="flex-1 font-normal text-black">
+                                                    {TEXT.DEDUCTION}
+                                                </span>
+                                                <span className="text-error">{`- ${currencyFormat(deduction)}`}</span>
+                                            </div>
+                                        )}
                                         <div className="flex items-end">
                                             <span className="flex-1 font-normal text-black">
                                                 {TEXT.CASH}
                                             </span>
                                             {currencyFormat(cash)}
-                                        </div>
-                                        <div className="flex items-end">
-                                            <span className="flex-1 font-normal text-black">
-                                                {TEXT.REVENUE}
-                                            </span>
-                                            {currencyFormat(revenue)}
                                         </div>
                                     </div>
                                     <div className="flex-1 flex justify-end gap-1">
