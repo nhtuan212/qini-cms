@@ -18,7 +18,7 @@ export default function ReportDetail() {
     const { modalName, openModal } = useModalStore();
 
     //** Destructuring */
-    const { revenue, transfer, cash, createAt, reportsOnStaffs, shift } = reportById;
+    const { revenue, transfer, cash, deduction, createAt, reportsOnStaffs, shift } = reportById;
 
     //** Variables */
     const detailCreateAt =
@@ -26,6 +26,7 @@ export default function ReportDetail() {
     const detailRevenue = !isLoading ? currencyFormat(revenue as number) : 0;
     const transferRevenue = !isLoading ? currencyFormat(transfer as number) : 0;
     const cashRevenue = !isLoading ? currencyFormat(cash as number) : 0;
+    const deductionRevenue = !isLoading ? currencyFormat(deduction as number) : 0;
 
     return (
         <Modal open={modalName === MODAL.REPORT_DETAIL} size="4xl" onClose={() => openModal("")}>
@@ -35,17 +36,22 @@ export default function ReportDetail() {
             <Modal.Body className="flex flex-col gap-4">
                 <div className="grid md:grid-cols-4 grid-cols-2 justify-end gap-2">
                     <div className="md:col-start-3 text-right">
-                        {TEXT.TRANSFER}:{" "}
+                        {TEXT.TRANSFER}:
                         <span className="ml-2 font-bold text-primary">{transferRevenue}</span>
                     </div>
 
                     <div className="md:col-start-4 text-right">
-                        {TEXT.CASH}:{" "}
+                        {TEXT.DEDUCTION}:
+                        <span className="ml-2 font-bold text-primary">{deductionRevenue}</span>
+                    </div>
+
+                    <div className="md:col-start-4 text-right">
+                        {TEXT.CASH}:
                         <span className="ml-2 font-bold text-primary">{cashRevenue}</span>
                     </div>
 
                     <div className="md:col-start-4 col-start-2 text-right">
-                        {TEXT.TOTAL_TARGET}:{" "}
+                        {TEXT.TOTAL_TARGET}:
                         <span className="ml-2 font-bold text-primary">{detailRevenue}</span>
                     </div>
                 </div>

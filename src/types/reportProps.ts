@@ -4,6 +4,7 @@ export type ReportProps = {
     revenue?: number;
     transfer?: number;
     cash?: number;
+    deduction?: number;
     description?: string;
     isApproved?: boolean;
     shiftId?: string;
@@ -27,6 +28,7 @@ export type ReportDetailProps = {
     revenue?: number;
     transfer?: number;
     cash?: number;
+    deduction?: number;
     description?: string;
     isApproved?: boolean;
     shiftId?: string;

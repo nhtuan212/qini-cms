@@ -44,6 +44,7 @@ type FormValues = {
     revenue?: number;
     transfer?: number;
     cash?: number;
+    deduction?: number;
 };
 
 export default function RevenueAddNew() {
@@ -58,10 +59,12 @@ export default function RevenueAddNew() {
         revenue: number;
         transfer: number;
         cash: number;
+        deduction: number;
     }>({
         revenue: 0,
         transfer: 0,
         cash: 0,
+        deduction: 0,
     });
 
     //** React hook form */
@@ -84,6 +87,7 @@ export default function RevenueAddNew() {
         revenue: reportById.revenue || 0,
         transfer: reportById.transfer || 0,
         cash: reportById.cash || 0,
+        deduction: reportById.deduction || 0,
         description: reportById.description || "",
     };
 
@@ -104,7 +108,8 @@ export default function RevenueAddNew() {
     const onSubmit = async (data: FormValues) => {
         const revenue = +String(data.revenue).replace(/[^0-9]/g, "") || 0;
         const transfer = +String(data.transfer).replace(/[^0-9]/g, "") || 0;
-        const cash = revenue - transfer;
+        const deduction = +String(data.deduction).replace(/[^0-9]/g, "") || 0;
+        const cash = revenue - transfer - deduction;
 
         const createAt = data.date
             ? new Date(`${data.date} ${moment().format("HH:mm:ss")}`).toISOString()
@@ -113,6 +118,7 @@ export default function RevenueAddNew() {
         const reports: ReportProps = {
             revenue,
             transfer,
+            deduction,
             cash,
             shiftId: data.shift,
             description: data?.description,
@@ -162,11 +168,11 @@ export default function RevenueAddNew() {
     useEffect(() => {
         setAmountValue({
             ...amountValue,
-            cash: amountValue.revenue - amountValue.transfer,
+            cash: amountValue.revenue - amountValue.transfer - amountValue.deduction,
         });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [amountValue.revenue, amountValue.transfer, amountValue.cash]);
+    }, [amountValue.revenue, amountValue.transfer, amountValue.cash, amountValue.deduction]);
 
     useEffect(() => {
         return () => {
@@ -177,6 +183,7 @@ export default function RevenueAddNew() {
                     revenue: 0,
                     transfer: 0,
                     cash: 0,
+                    deduction: 0,
                 });
             }
         };
@@ -349,9 +356,9 @@ export default function RevenueAddNew() {
                             </div>
                         )}
 
-                        <div className="w-full grid grid-cols-2 items-start gap-4">
+                        <div className="w-full grid grid-cols-3 items-start gap-4">
                             <CurrencyInput
-                                className="col-span-2"
+                                className="col-span-3"
                                 label={TEXT.TARGET}
                                 value={currencyFormat(reportById.revenue as number)}
                                 startContent={<CurrencyDollarIcon className="w-5 h-5" />}
@@ -390,6 +397,27 @@ export default function RevenueAddNew() {
                                 errorMessage={<ErrorMessage errors={errors} name={"transfer"} />}
                             />
                             <CurrencyInput
+                                label={TEXT.DEDUCTION}
+                                value={currencyFormat(
+                                    (reportById.deduction as number) || amountValue.deduction,
+                                )}
+                                startContent={<CurrencyDollarIcon className="w-5 h-5" />}
+                                placeholder={TEXT.DEDUCTION}
+                                isDisabled={modalAction === "edit"}
+                                isInvalid={!!errors.deduction}
+                                {...register("deduction", {
+                                    required: `${TEXT.DEDUCTION} ${TEXT.IS_REQUIRED}`,
+
+                                    onChange: e => {
+                                        setAmountValue({
+                                            ...amountValue,
+                                            deduction: e.target.value.replace(/[^0-9]/g, ""),
+                                        });
+                                    },
+                                })}
+                                errorMessage={<ErrorMessage errors={errors} name={"deduction"} />}
+                            />
+                            <CurrencyInput
                                 label={TEXT.CASH}
                                 value={currencyFormat(
                                     (reportById.cash as number) || amountValue.cash,
@@ -406,7 +434,16 @@ export default function RevenueAddNew() {
                                 className="w-full"
                                 type="textarea"
                                 placeholder={TEXT.NOTE}
-                                {...register("description")}
+                                isInvalid={!!errors.description}
+                                {...register("description", {
+                                    validate: value => {
+                                        if (amountValue.deduction > 0 && !value) {
+                                            return TEXT.NOTE_HAVE_DEDUCTION;
+                                        }
+                                        return true;
+                                    },
+                                })}
+                                errorMessage={<ErrorMessage errors={errors} name={"description"} />}
                             />
                         </div>
                     </div>
