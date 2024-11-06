@@ -25,12 +25,13 @@ import { useShiftStore } from "@/stores/useShiftsStore";
 import { currencyFormat, dateFormat2, wrongTimeSheet } from "@/utils";
 import { timeSheet } from "@/config/apis";
 import { TEXT } from "@/constants/text";
-import { MODAL } from "@/constants";
+import { MODAL, ROLE } from "@/constants";
 import { StaffProps } from "@/types/staffProps";
 import { ShiftProps } from "@/types/shiftProps";
 import { ReportProps, reportsOnStaffsProps } from "@/types/reportProps";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { DateProps } from "@/lib/types";
+import { useProfileStore } from "@/stores/useProfileStore";
 
 type FormValues = {
     date?: DateProps;
@@ -49,6 +50,7 @@ type FormValues = {
 
 export default function RevenueAddNew() {
     //** Stores */
+    const { profile } = useProfileStore();
     const { modalName, modalAction, openModal } = useModalStore();
     const { reportById, getReport, createReport, updateReport, resetReport } = useReportsStore();
     const { staff } = useStaffStore();
@@ -109,7 +111,10 @@ export default function RevenueAddNew() {
         const revenue = +String(data.revenue).replace(/[^0-9]/g, "") || 0;
         const transfer = +String(data.transfer).replace(/[^0-9]/g, "") || 0;
         const deduction = +String(data.deduction).replace(/[^0-9]/g, "") || 0;
-        const cash = revenue - transfer - deduction;
+        const cash =
+            data.cash && data.cash >= 0
+                ? +String(data.cash).replace(/[^0-9]/g, "")
+                : revenue - transfer - deduction;
 
         const createAt = data.date
             ? new Date(`${data.date} ${moment().format("HH:mm:ss")}`).toISOString()
@@ -424,8 +429,19 @@ export default function RevenueAddNew() {
                                 )}
                                 startContent={<CurrencyDollarIcon className="w-5 h-5" />}
                                 placeholder={TEXT.CASH}
-                                readOnly
-                                isDisabled={modalAction === "edit"}
+                                readOnly={profile.role === "staff"}
+                                isDisabled={modalAction === "edit" && profile.role !== ROLE.ADMIN}
+                                isInvalid={!!errors.cash}
+                                {...register("cash", {
+                                    required: `${TEXT.CASH} ${TEXT.IS_REQUIRED}`,
+                                    onChange: e => {
+                                        setAmountValue({
+                                            ...amountValue,
+                                            cash: e.target.value.replace(/[^0-9]/g, ""),
+                                        });
+                                    },
+                                })}
+                                errorMessage={<ErrorMessage errors={errors} name={"cash"} />}
                             />
                         </div>
 
