@@ -115,10 +115,7 @@ export default function RevenueAddNew() {
             data.cash && data.cash >= 0
                 ? +String(data.cash).replace(/[^0-9]/g, "")
                 : revenue - transfer - deduction;
-
-        const createAt = data.date
-            ? new Date(`${data.date} ${moment().format("HH:mm:ss")}`).toISOString()
-            : new Date().toISOString();
+        const createAt = new Date(`${data.date} ${moment().format("HH:mm:ss")}`).toISOString();
 
         const reports: ReportProps = {
             revenue,
@@ -127,9 +124,7 @@ export default function RevenueAddNew() {
             cash,
             shiftId: data.shift,
             description: data?.description,
-            ...((!reportById.createAt || modalAction === "edit") && {
-                createAt,
-            }),
+            createAt,
         };
 
         const reportsOnStaffs: reportsOnStaffsProps = data.staff.map(item => ({
@@ -143,9 +138,7 @@ export default function RevenueAddNew() {
                 ) /
                 (1000 * 60 * 60),
             target: Math.round(revenue / data.staff.length),
-            ...((!reportById.createAt || modalAction === "edit") && {
-                createAt,
-            }),
+            createAt,
         }));
 
         //** Edit report */
@@ -210,11 +203,7 @@ export default function RevenueAddNew() {
                                 <DatePicker
                                     label={TEXT.DATE_PICKER}
                                     isRequired
-                                    defaultValue={
-                                        reportById.createAt
-                                            ? parseDate(dateFormat2(reportById.createAt as Date))
-                                            : today(getLocalTimeZone())
-                                    }
+                                    defaultValue={field.value}
                                     isInvalid={!!errors.date}
                                     onChange={field.onChange}
                                     errorMessage={errors.date && errors.date.message}

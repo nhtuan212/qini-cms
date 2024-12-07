@@ -66,11 +66,10 @@ export default function RevenueColumns() {
             name: TEXT.DATE,
             content: (params: any) => dateFormat(params.row[0]),
         },
-
         {
             key: "detail",
             name: TEXT.DETAIL,
-            className: "flex-[3]",
+            className: "flex-[6]",
             content: (params: any) => {
                 const shift = params.row[1].map((item: any) => item.shift.name);
                 const reportsOnStaffs = params.row[1].map((item: any) => item.reportsOnStaffs);
@@ -89,7 +88,7 @@ export default function RevenueColumns() {
                     return (
                         <div
                             key={item + index}
-                            className="flex justify-between items-center flex-wrap gap-3 py-2 border-b last:border-b-0"
+                            className="flex justify-between items-center flex-wrap gap-6 py-2 border-b last:border-b-0"
                         >
                             <Button
                                 className="min-w-0 bg-transparent p-0 text-default-500"
@@ -106,7 +105,7 @@ export default function RevenueColumns() {
 
                             <div className="flex-1">{item}</div>
 
-                            <div className="md:flex-[3] w-full flex items-center flex-wrap gap-2">
+                            <div className="flex-[10] flex items-center flex-wrap gap-2">
                                 <div className="flex-1">
                                     {staff.map((staffName: any, index: number) => (
                                         <div key={staffName + index}>{staffName}</div>
@@ -117,8 +116,8 @@ export default function RevenueColumns() {
                                         <div key={time + index}>{time}</div>
                                     ))}
                                 </div>
-                                <div className="md:flex-[2] w-full flex items-center gap-2">
-                                    <div className="flex-[2] font-bold">
+                                <div className="md:flex-[6] w-full flex items-center gap-4">
+                                    <div className="flex-1 font-bold">
                                         <div className="flex items-end border-b">
                                             <span className="flex-1 font-normal text-black">
                                                 {TEXT.REVENUE}
@@ -148,7 +147,8 @@ export default function RevenueColumns() {
                                             {currencyFormat(cash)}
                                         </div>
                                     </div>
-                                    <div className="flex-1 flex justify-end gap-1">
+                                    <div className="flex-1">{params.row[1][index].description}</div>
+                                    <div className="flex justify-end gap-1">
                                         <Tooltip content="Details">
                                             <Button
                                                 className="min-w-0 bg-transparent p-0 text-default-500"

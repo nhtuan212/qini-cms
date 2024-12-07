@@ -1,18 +1,22 @@
 export type ReportProps = {
-    id?: string;
-    createAt?: Date | string;
-    revenue?: number;
-    transfer?: number;
-    cash?: number;
-    deduction?: number;
-    description?: string;
-    isApproved?: boolean;
-    shiftId?: string;
-
-    shift?: {
-        name?: string;
-    };
+    [key: string]: any;
 };
+
+// export type ReportProps = {
+//     id?: string;
+//     createAt?: Date | string;
+//     revenue?: number;
+//     transfer?: number;
+//     cash?: number;
+//     deduction?: number;
+//     description?: string;
+//     isApproved?: boolean;
+//     shiftId?: string;
+
+//     shift?: {
+//         name?: string;
+//     };
+// };
 
 export type reportsOnStaffsProps = {
     staffId?: string;
