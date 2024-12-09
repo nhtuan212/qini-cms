@@ -1,8 +1,11 @@
 "use client";
 
 import React from "react";
+import StaffModal from "./StaffModal";
+import StaffModalDetail from "./StaffModalDetail";
 import Button from "@/components/Button";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import ConfirmModal from "@/components/ConfirmModal";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
 import {
     EllipsisVerticalIcon,
     EyeIcon,
@@ -13,20 +16,21 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { MODAL, ROLE } from "@/constants";
+import { ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
-import { StaffProps } from "@/types/staffProps";
 import { getCurrentMonth } from "@/utils";
+import { ModalActionProps } from "@/lib/types";
+import { StaffProps } from "@/types/staffProps";
 
 export default function StaffActions({ item }: { item: StaffProps }) {
     //** Destructuring */
-    const { id, name } = item;
+    const { id } = item;
 
     //** Stores */
     const { profile } = useProfileStore();
+    const { getModal } = useModalStore();
     const { getStaff, getStaffById, deleteStaff } = useStaffStore();
     const { getReportsOnStaff } = useReportsOnStaffsStore();
-    const { openModal, openConfirmModal } = useModalStore();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -41,32 +45,48 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     }
 
     //** Functions */
-    const handleDetailStaff = (id: string) => {
-        getStaffById(id);
-
-        getReportsOnStaff({
+    const handleViewStaff = async (id: string) => {
+        await getStaffById(id);
+        await getReportsOnStaff({
             staffId: id,
             ...getCurrentMonth(),
         });
 
-        openModal(MODAL.STAFF_DETAIL);
+        getModal({
+            isOpen: true,
+            size: "3xl",
+            modalHeader: TEXT.StaffDetail,
+            action: ModalActionProps.UPDATE,
+            modalBody: <StaffModalDetail />,
+        });
     };
 
-    const handleEditStaff = (id: string) => {
-        getStaffById(id);
-        openModal(MODAL.ADD_STAFF, "edit");
+    const handleUpdateStaff = async (id: string) => {
+        await getStaffById(id);
+
+        getModal({
+            isOpen: true,
+            modalHeader: TEXT.editStaff,
+            action: ModalActionProps.UPDATE,
+            modalBody: <StaffModal />,
+        });
     };
 
     const handleDeleteStaff = (id: string) => {
-        openConfirmModal({
-            modalName: MODAL.CONFIRM,
-            modalMessage: `Bạn có chắc chắn muốn xoá ${name} không ?`,
-            onConfirm: () =>
-                deleteStaff(id).then(() => {
-                    getStaff();
-                    openModal("");
-                }),
-            onCancel: () => openModal(""),
+        getModal({
+            isOpen: true,
+            action: ModalActionProps.UPDATE,
+            modalHeader: TEXT.confirmDelete,
+            modalBody: (
+                <ConfirmModal
+                    onConfirm={async () => {
+                        await deleteStaff(id);
+                        await getStaff();
+
+                        getModal({ isOpen: false });
+                    }}
+                />
+            ),
         });
     };
 
@@ -82,7 +102,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                     key="detail"
                     startContent={<EyeIcon className="w-5" />}
                     textValue={TEXT.DETAIL}
-                    onClick={() => handleDetailStaff(id)}
+                    onClick={() => handleViewStaff(id)}
                 >
                     {TEXT.DETAIL}
                 </DropdownItem>
@@ -90,7 +110,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                     key="edit"
                     startContent={<PencilSquareIcon className="w-5" />}
                     textValue={TEXT.EDIT}
-                    onClick={() => handleEditStaff(id)}
+                    onClick={() => handleUpdateStaff(id)}
                 >
                     {TEXT.EDIT}
                 </DropdownItem>

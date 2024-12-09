@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { StaffProps } from "@/types/staffProps";
 
 type StaffState = {
-    isStaffLoading?: boolean;
+    isLoading?: boolean;
     staff: StaffProps[];
     staffById: StaffProps;
 };
@@ -15,15 +15,15 @@ export type StaffData = {
 
 type StaffAction = {
     // Api actions
-    getStaff: () => void;
-    getStaffById: (id: string) => void;
+    getStaff: () => Promise<void>;
+    getStaffById: (id: string) => Promise<void>;
     addStaff: ({ staffData }: { staffData: StaffData }) => Promise<any>;
     editStaff: ({ id, staffData }: { id: string; staffData: StaffData }) => Promise<any>;
     deleteStaff: (id: string) => Promise<void>;
 };
 
 const initialState: StaffState = {
-    isStaffLoading: false,
+    isLoading: false,
     staff: [],
     staffById: {} as StaffProps,
 };
@@ -33,9 +33,17 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
 
     // Api Actions
     getStaff: async () => {
+        set({
+            isLoading: true,
+        });
+
         return await fetchData({
             endpoint: URL.STAFF,
         }).then(res => {
+            set({
+                isLoading: false,
+            });
+
             if (res?.code !== 200) {
                 return set({
                     staff: res?.message,
@@ -47,25 +55,32 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
 
     getStaffById: async (id: string) => {
         set({
-            isStaffLoading: true,
+            isLoading: true,
         });
 
         return await fetchData({
             endpoint: `${URL.STAFF}/${id}`,
         }).then(res => {
+            set({
+                isLoading: false,
+            });
+
             if (res?.code !== 200) {
                 return set({
                     staffById: res?.message,
                 });
             }
             return set({
-                isStaffLoading: false,
                 staffById: res.data,
             });
         });
     },
 
     addStaff: async ({ staffData }: { staffData: StaffData }) => {
+        set({
+            isLoading: true,
+        });
+
         return await fetchData({
             endpoint: URL.STAFF,
             options: {
@@ -74,10 +89,20 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
                     ...staffData,
                 }),
             },
-        }).then(res => res);
+        }).then(res => {
+            set({
+                isLoading: false,
+            });
+
+            return res;
+        });
     },
 
     editStaff: async ({ id, staffData }: { id: string; staffData: StaffData }) => {
+        set({
+            isLoading: true,
+        });
+
         return await fetchData({
             endpoint: `${URL.STAFF}/${id}`,
             options: {
@@ -86,10 +111,20 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
                     ...staffData,
                 }),
             },
-        }).then(res => res);
+        }).then(res => {
+            set({
+                isLoading: false,
+            });
+
+            return res;
+        });
     },
 
     deleteStaff: async (id: string) => {
+        set({
+            isLoading: true,
+        });
+
         return await fetchData({
             endpoint: URL.STAFF,
             options: {
@@ -97,6 +132,10 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
                 body: JSON.stringify({ id }),
             },
         }).then(res => {
+            set({
+                isLoading: false,
+            });
+
             if (res?.code !== 200) {
                 return set({
                     staff: res?.message,

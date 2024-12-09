@@ -1,33 +1,39 @@
 import { create } from "zustand";
-import { MODAL } from "@/constants";
+import { ModalProps } from "@nextui-org/react";
+import { ModalActionProps } from "@/lib/types";
 
-type ModalProps = {
-    modalName: string;
-    modalAction?: string;
-    modalMessage: string;
-    onConfirm: () => void;
-    onCancel: () => void;
+type UseModalProps = {
+    action?: ModalActionProps;
+    modalHeader?: React.ReactNode;
+    modalBody?: React.ReactNode;
+    modalFooter?: React.ReactNode;
+} & Omit<ModalProps, "children">;
+
+type ModalState = {
+    modal: UseModalProps;
 };
 
 type ModalAction = {
-    openModal: (modalName: string, modalAction?: string) => Promise<any>;
-    openConfirmModal: ({ modalMessage, onConfirm, onCancel }: ModalProps) => Promise<any>;
+    getModal: ({ ...props }: UseModalProps) => Promise<void>;
 };
 
-const initialState: ModalProps = {
-    modalName: "",
-    modalAction: "add",
-    modalMessage: "",
-    onConfirm: () => {},
-    onCancel: () => {},
+const initialState: ModalState = {
+    modal: {
+        isOpen: false,
+        action: ModalActionProps.CREATE,
+    },
 };
 
-export const useModalStore = create<ModalProps & ModalAction>()(set => ({
+export const useModalStore = create<ModalState & ModalAction>()((set, get) => ({
     ...initialState,
 
-    openModal: async (modalName, modalAction) =>
-        set(() => ({ modalName, modalAction: modalAction || "add" })),
-
-    openConfirmModal: async ({ modalMessage, onConfirm, onCancel }) =>
-        set(() => ({ modalName: MODAL.CONFIRM, modalMessage, onConfirm, onCancel })),
+    getModal: async ({ ...props }) => {
+        return set(() => ({
+            modal: {
+                size: get().modal.isOpen ? get().modal.size : initialState.modal.size,
+                ...initialState.modal,
+                ...props,
+            },
+        }));
+    },
 }));

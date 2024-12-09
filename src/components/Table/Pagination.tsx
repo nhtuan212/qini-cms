@@ -54,21 +54,23 @@ export default function Pagination(props: PaginationProps) {
                 <p>{`${currentPage} - ${currentPage + rowsPerPage - 1} of ${totalPage}`}</p>
             </div>
             <nav className="pagination">
-                <Button.Icon
+                <Button
                     className="min-w-8 bg-gray-200 p-0.5"
+                    isIconOnly
                     onClick={() => handleCurrentPage(currentPage - rowsPerPage)}
                     disabled={currentPage === initialPage}
                 >
                     <ChevronLeftIcon className="w-4 text-gray-800" />
-                </Button.Icon>
+                </Button>
 
-                <Button.Icon
+                <Button
                     className="min-w-8 bg-gray-200 p-0.5"
+                    isIconOnly
                     onClick={() => handleCurrentPage(currentPage + rowsPerPage)}
                     disabled={currentPage + rowsPerPage > totalPage}
                 >
                     <ChevronRightIcon className="w-4 text-gray-800" />
-                </Button.Icon>
+                </Button>
             </nav>
         </div>
     );

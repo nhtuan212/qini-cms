@@ -2,15 +2,15 @@
 
 import React from "react";
 import { TEXT } from "@/constants/text";
-import { currencyFormat, dateFormat } from "@/utils";
+import { currencyFormat, formatDate } from "@/utils";
 
-export default function TargetColumns() {
+export default function StaffDetailColumns() {
     const columns = [
         {
             key: "createAt",
             name: TEXT.DATE,
             content: (params: any) => (
-                <div>{`${dateFormat(params.row.createAt)} - ${params.row.report.shift.name}`}</div>
+                <div>{`${formatDate(params.row.createAt)} - ${params.row.report.shift.name}`}</div>
             ),
         },
         {

@@ -1,6 +1,6 @@
 "use client";
 
-import moment from "moment";
+import dayjs from "dayjs";
 
 export const wrongTimeSheet = ({
     checkIn,
@@ -21,13 +21,13 @@ export const currencyFormat = (amount: number) => {
     return 0;
 };
 
-export const dateFormat = (date: Date) => {
-    if (date) return new Intl.DateTimeFormat("vi-VN").format(new Date(date));
+export const formatDate = (date: Date | null, format: string = "DD/MM/YYYY") => {
+    if (!date) return dayjs().format(format);
 
-    return "Date is not valid";
+    return dayjs(date).format(format);
 };
 
-export const dateFormat2 = (date: Date) => {
+export const dateFormat = (date: Date) => {
     const dateFormat = new Date(date);
 
     const day = String(dateFormat.getUTCDate()).padStart(2, "0");
@@ -43,8 +43,8 @@ export const getCurrentMonth = () => {
     const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
     return {
-        startDate: moment(startDate).format("YYYY-MM-DD"),
-        endDate: moment(endDate).format("YYYY-MM-DD"),
+        startDate: formatDate(startDate, "YYYY-MM-DD"),
+        endDate: formatDate(endDate, "YYYY-MM-DD"),
     };
 };
 
@@ -64,10 +64,36 @@ export const isEmpty = (data: Array<string | number> | object) => {
     return Object.keys(data).length === 0;
 };
 
+/**
+ * Sums the values of a specified field in an array of objects.
+ *
+ * @param array - The array of objects to sum.
+ * @param field - The field in each object whose values should be summed.
+ * @returns The sum of the values of the specified field in the array.
+ */
 export const sumArray = (array: any[], field: string): number => {
     if (!array?.length) return 0;
 
     return array.reduce((accumulator, item) => {
         return accumulator + item[field];
     }, 0);
+};
+
+/**
+ * Creates a debounced function that delays the invocation of the provided function until after a specified wait time has elapsed since the last time the debounced function was invoked.
+ *
+ * @param func - The function to debounce.
+ * @param wait - The number of milliseconds to delay; defaults to 300 milliseconds.
+ * @returns A debounced function that delays the invocation of `func`.
+ */
+export const debounce = (func: (...args: any[]) => void, wait = 1000) => {
+    let timeout: any;
+
+    return (...args: any) => {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, wait);
+    };
 };

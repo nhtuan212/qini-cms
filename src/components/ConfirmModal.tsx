@@ -1,33 +1,43 @@
-"use client";
-
 import React from "react";
-import Modal from "./Modal";
-import Button from "./Button";
+import Button from "@/components/Button";
 import { useModalStore } from "@/stores/useModalStore";
-import { MODAL } from "@/constants";
+import { TEXT } from "@/constants/text";
+import { debounce } from "@/utils";
 
-type ConfirmModalProps = {
-    modalMessage: string;
-    onConfirm: () => void;
-    onCancel: () => void;
-};
-
-export default function ConfirmModal({ ...props }: ConfirmModalProps) {
-    //** Destructuring */
-    const { modalMessage, onConfirm, onCancel } = props;
-
+function ConfirmModal({
+    onConfirm,
+    content,
+}: {
+    onConfirm: () => Promise<any>;
+    content?: React.ReactNode;
+}) {
     //** Stores */
-    const { modalName, openModal } = useModalStore();
+    const { getModal } = useModalStore();
 
+    //** Render */
     return (
-        <Modal open={modalName === MODAL.CONFIRM} size="sm" onClose={() => openModal("")}>
-            <Modal.Header>{modalMessage}</Modal.Header>
-            <Modal.Footer>
-                <Button className="bg-error" onClick={onCancel}>
-                    Cancel
+        <div className="flex flex-col gap-4">
+            {content}
+
+            <div className="flex justify-end gap-2">
+                <Button
+                    color="default"
+                    variant="bordered"
+                    onClick={() => {
+                        getModal({
+                            isOpen: false,
+                        });
+                    }}
+                >
+                    {TEXT.CANCEL}
                 </Button>
-                <Button onClick={onConfirm}>Confirm</Button>
-            </Modal.Footer>
-        </Modal>
+
+                <Button type="button" color="danger" onClick={debounce(onConfirm)}>
+                    {TEXT.submit}
+                </Button>
+            </div>
+        </div>
     );
 }
+
+export default ConfirmModal;

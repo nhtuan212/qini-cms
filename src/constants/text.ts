@@ -1,5 +1,7 @@
 export const TEXT = {
     STAFF: "Nhân viên",
+    editStaff: "Sửa nhân viên",
+    StaffDetail: "Chi tiết nhân viên",
     REPORT: "Báo cáo",
     // ACCOUNT: "Tài khoản",
     LOGIN_YOUR_ACCOUNT: "Login in to your account",
@@ -15,6 +17,7 @@ export const TEXT = {
     IS_REQUIRED: "không được để trống",
     ADD_NEW: "Thêm mới",
     ADD_REPORT: "Thêm báo cáo",
+    EDIT_REPORT: "Cập nhật báo cáo",
     ADD_STAFF: "Thêm nhân viên",
     NAME: "Tên",
     CASH: "Tiền mặt",
@@ -63,6 +66,8 @@ export const TEXT = {
     NOTE: "Ghi chú",
     NOTE_HAVE_DEDUCTION: "Nhập ghi chú khi có số tiền khấu trừ",
     DATE_PICKER: "Chọn ngày",
+    confirmDelete: "Bạn có chắc chắn muốn xoá ?",
+    submit: "Xác nhận",
 
     IMAGE: {
         ALT: "Image",

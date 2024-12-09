@@ -142,14 +142,14 @@ export default function TableHead({ ...props }: TableHeadProps) {
                 {column.name}
 
                 {sortingMode && (
-                    <Button.Icon className="w-auto h-auto p-0">
+                    <Button className="w-auto h-auto p-0" isIconOnly>
                         <ChevronDownIcon
                             className={clsx(
                                 "w-3 text-gray-500 transition-all",
                                 sortDescriptor.direction === "ascending" && "transform rotate-180",
                             )}
                         />
-                    </Button.Icon>
+                    </Button>
                 )}
             </div>
         );

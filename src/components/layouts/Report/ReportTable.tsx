@@ -3,8 +3,6 @@
 import React, { useEffect } from "react";
 import clsx from "clsx";
 import ReportColumns from "./ReportColumns";
-import ReportAddNew from "./ReportAddNew";
-import ReportDetail from "./ReportDetail";
 import TopContent from "./TopContent";
 import Table from "@/components/Table";
 import { useReportsStore } from "@/stores/useReportsStore";
@@ -40,24 +38,16 @@ export default function ReportTable() {
     }, [getReport, getStaff, getShifts]);
 
     return (
-        <>
-            <Table
-                className={clsx(
-                    "[&>.tableContainer]:h-[40rem]",
-                    "[&_.bodyCell]:border-b [&_.bodyCell]:border-primary",
-                )}
-                loading={isLoading}
-                columns={ReportColumns()}
-                topContent={<TopContent />}
-                rows={reportGroupByDate}
-                paginationMode={{ pageSize: 31, pageSizeOptions: [10, 20, 30] }}
-            />
-
-            {/* Popup add new report */}
-            <ReportAddNew />
-
-            {/* Popup detail report when click eye icon */}
-            <ReportDetail />
-        </>
+        <Table
+            className={clsx(
+                "[&>.tableContainer]:h-[40rem]",
+                "[&_.bodyCell]:border-b [&_.bodyCell]:border-primary",
+            )}
+            loading={isLoading}
+            columns={ReportColumns()}
+            topContent={<TopContent />}
+            rows={reportGroupByDate}
+            paginationMode={{ pageSize: 31, pageSizeOptions: [10, 20, 30] }}
+        />
     );
 }

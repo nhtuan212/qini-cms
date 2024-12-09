@@ -8,10 +8,8 @@ export type IconProps = {
 export type DateProps = ZonedDateTime | CalendarDate | CalendarDateTime | undefined | null;
 
 //** Enums */
-export enum ActionProps {
-    ADD = "add",
-    EDIT = "edit",
+export enum ModalActionProps {
+    CREATE = "create",
+    UPDATE = "update",
     DELETE = "delete",
-    VIEW = "view",
-    SEARCH = "search",
 }

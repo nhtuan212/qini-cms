@@ -3,7 +3,7 @@
 import React from "react";
 import ImageComponent from "@/components/Image";
 import { signOut } from "next-auth/react";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
 import { ArrowRightStartOnRectangleIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { TEXT } from "@/constants/text";

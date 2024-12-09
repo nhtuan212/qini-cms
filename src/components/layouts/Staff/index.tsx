@@ -1,39 +1,43 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Button from "@/components/Button";
-import AddStaff from "./AddStaff";
+import StaffModal from "./StaffModal";
 import StaffActions from "./StaffActions";
-import StaffDetail from "./Detail";
-// import ErrorPage from "@/components/ErrorPage";
+import Button from "@/components/Button";
+import Loading from "@/components/Loading";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { MODAL, ROLE } from "@/constants";
-import { StaffProps } from "@/types/staffProps";
+import { ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
+import { StaffProps } from "@/types/staffProps";
 
 export default function Staff() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { openModal } = useModalStore();
-    const { staff, getStaff } = useStaffStore();
+    const { getModal } = useModalStore();
+    const { isLoading, staff, getStaff } = useStaffStore();
 
     //** Effects */
     useEffect(() => {
         getStaff();
     }, [getStaff]);
 
-    // if (profile.role !== ROLE.ADMIN) {
-    //     return <ErrorPage />;
-    // }
-
     return (
         <>
+            {isLoading && <Loading />}
             <div className="flex justify-between items-center">
                 <div className="title">{TEXT.STAFF}</div>
-                <Button onClick={() => openModal(MODAL.ADD_STAFF)}>
+                <Button
+                    onClick={() =>
+                        getModal({
+                            isOpen: true,
+                            modalHeader: TEXT.ADD_STAFF,
+                            modalBody: <StaffModal />,
+                        })
+                    }
+                >
                     {TEXT.ADD_NEW}
                     <PlusIcon className="w-5 ml-2" />
                 </Button>
@@ -60,12 +64,6 @@ export default function Staff() {
                         })}
                 </div>
             </div>
-
-            {/* Popup add new staff */}
-            <AddStaff />
-
-            {/* Popup staff detail */}
-            <StaffDetail />
         </>
     );
 }

@@ -2,9 +2,11 @@
 
 import React, { useEffect } from "react";
 import Header from "./Header";
-import ConfirmModal from "../ConfirmModal";
+import Alert from "../Alert";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "../Modal";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
+import { useAlertStore } from "@/stores/useAlertStore";
 import { ProfileProps } from "@/types/profileProps";
 
 export default function Layouts({
@@ -16,7 +18,8 @@ export default function Layouts({
 }) {
     //** Store */
     const { getProfile } = useProfileStore();
-    const { modalMessage, onConfirm, onCancel } = useModalStore();
+    const { modal, getModal } = useModalStore();
+    const { alert, getAlert } = useAlertStore();
 
     //** Effects */
     useEffect(() => {
@@ -26,10 +29,27 @@ export default function Layouts({
     return (
         <main className="h-screen">
             <Header />
+
             <section className="container py-4">{children}</section>
 
-            {/* Confirm modal */}
-            <ConfirmModal modalMessage={modalMessage} onConfirm={onConfirm} onCancel={onCancel} />
+            <Modal
+                isOpen={modal.isOpen}
+                size={modal.size}
+                onOpenChange={(isOpen: boolean) => getModal({ isOpen })}
+            >
+                {modal.modalHeader && <ModalHeader>{modal.modalHeader}</ModalHeader>}
+                {modal.modalBody && <ModalBody>{modal.modalBody}</ModalBody>}
+                {modal.modalFooter && <ModalFooter>{modal.modalFooter}</ModalFooter>}
+            </Modal>
+
+            <Alert
+                {...alert}
+                onClose={() => {
+                    getAlert({ isOpen: false });
+                }}
+            >
+                {alert.alertContent}
+            </Alert>
         </main>
     );
 }

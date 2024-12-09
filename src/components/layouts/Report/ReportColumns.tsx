@@ -1,6 +1,9 @@
 "use client";
 
 import React from "react";
+import ReportAddNew from "./ReportAddNew";
+import ReportDetail from "./ReportDetail";
+import ConfirmModal from "@/components/ConfirmModal";
 import Button from "@/components/Button";
 import { Tooltip } from "@nextui-org/react";
 import { CheckCircleIcon, EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -8,16 +11,17 @@ import { CheckCircleIcon as CheckCircleIconActive } from "@heroicons/react/24/so
 import { useReportsStore } from "@/stores/useReportsStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { currencyFormat, dateFormat } from "@/utils";
-import { MODAL, ROLE } from "@/constants";
+import { currencyFormat, formatDate } from "@/utils";
+import { ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
 import { ReportProps } from "@/types/reportProps";
+import { ModalActionProps } from "@/lib/types";
 
 export default function RevenueColumns() {
     //** Stores */
     const { profile } = useProfileStore();
     const { getReport, getReportById, updateReport, deleteReport } = useReportsStore();
-    const { openModal, openConfirmModal } = useModalStore();
+    const { getModal } = useModalStore();
 
     //** Functions */
     const handleReportApproved = (params: ReportProps) => {
@@ -39,24 +43,40 @@ export default function RevenueColumns() {
 
     const handleGetReportById = async (id: string) => {
         await getReportById(id);
-        await openModal(MODAL.REPORT_DETAIL);
+        await getModal({
+            isOpen: true,
+            size: "5xl",
+            modalHeader: TEXT.REPORT,
+            modalBody: <ReportDetail />,
+        });
     };
 
     const handleEditReport = async (id: string) => {
         await getReportById(id);
-        await openModal(MODAL.ADD_REPORT, "edit");
+        await getModal({
+            isOpen: true,
+            size: "3xl",
+            action: ModalActionProps.UPDATE,
+            modalHeader: TEXT.EDIT_REPORT,
+            modalBody: <ReportAddNew />,
+        });
     };
 
     const handleDeleteReport = (id: string) => {
-        openConfirmModal({
-            modalName: MODAL.CONFIRM,
-            modalMessage: "Bạn có chắc chắn muốn xoá báo cáo này không ?",
-            onConfirm: () =>
-                deleteReport(id).then(() => {
-                    openModal("");
-                    getReport();
-                }),
-            onCancel: () => openModal(""),
+        getModal({
+            isOpen: true,
+            action: ModalActionProps.UPDATE,
+            modalHeader: TEXT.confirmDelete,
+            modalBody: (
+                <ConfirmModal
+                    onConfirm={async () => {
+                        await deleteReport(id);
+                        await getReport();
+
+                        getModal({ isOpen: false });
+                    }}
+                />
+            ),
         });
     };
 
@@ -64,7 +84,7 @@ export default function RevenueColumns() {
         {
             key: "createAt",
             name: TEXT.DATE,
-            content: (params: any) => dateFormat(params.row[0]),
+            content: (params: any) => formatDate(params.row[0]),
         },
         {
             key: "detail",

@@ -31,32 +31,6 @@
     }
 }
 
-// Button
-.button {
-    // Display
-    @apply relative inline-flex justify-center items-center align-middle;
-
-    // Responsive sizing
-    @apply min-w-6 h-6;
-    @apply sm:min-w-9 sm:h-9;
-
-    // Responsive spacing
-    @apply py-1 px-2;
-    @apply sm:py-2 sm:px-4;
-
-    // Background, text and ...
-    @apply bg-primary text-white text-sm;
-    @apply rounded-md cursor-pointer;
-
-    @apply hover:opacity-90 active:opacity-100;
-    @apply disabled:opacity-50 disabled:pointer-events-none;
-
-    // Button icon
-    &Icon {
-        @apply bg-transparent text-black;
-    }
-}
-
 // Input
 .input {
     @apply flex flex-wrap gap-2;

@@ -1,50 +1,23 @@
-import clsx from "clsx";
-import React, { ButtonHTMLAttributes } from "react";
+"use client";
 
-const Button = React.forwardRef(
-    (
-        { className, children, type = "button", ...props }: ButtonHTMLAttributes<HTMLButtonElement>,
-        ref: React.ForwardedRef<HTMLButtonElement>,
-    ) => {
-        return (
-            <button ref={ref} className={clsx("button", className)} type={type} {...props}>
-                {children}
-            </button>
-        );
-    },
-);
+import React from "react";
+import { Button as ButtonNextUI, ButtonProps } from "@nextui-org/react";
 
-const Icon = React.forwardRef(
-    (
-        { className, children, type = "button", ...props }: ButtonHTMLAttributes<HTMLButtonElement>,
-        ref: React.ForwardedRef<HTMLButtonElement>,
-    ) => {
-        return (
-            <button
-                ref={ref}
-                className={clsx("button buttonIcon", className)}
-                type={type}
-                {...props}
-            >
-                {children}
-            </button>
-        );
-    },
-);
+interface ButtonComponent
+    extends React.ForwardRefExoticComponent<ButtonProps & React.RefAttributes<HTMLButtonElement>> {}
 
-(Button as any).Icon = Icon;
+const Button = React.forwardRef(({ ...props }: ButtonProps, ref: React.Ref<HTMLButtonElement>) => {
+    return (
+        <ButtonNextUI
+            ref={ref}
+            className={props.className}
+            color={props.color || "primary"}
+            radius={props.radius || "sm"}
+            {...props}
+        >
+            {props.children}
+        </ButtonNextUI>
+    );
+}) as ButtonComponent;
 
-export default Button as any;
-
-// export default function Button({
-//     className,
-//     children,
-//     type = "button",
-//     ...props
-// }: ButtonHTMLAttributes<HTMLButtonElement>) {
-//     return (
-//         <button className={clsx("button", className)} type={type} {...props}>
-//             {children}
-//         </button>
-//     );
-// }
+export default Button;
