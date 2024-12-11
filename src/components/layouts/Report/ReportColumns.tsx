@@ -11,7 +11,7 @@ import { CheckCircleIcon as CheckCircleIconActive } from "@heroicons/react/24/so
 import { useReportsStore } from "@/stores/useReportsStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { currencyFormat, formatDate } from "@/utils";
+import { breakStringIntoLines, currencyFormat, formatDate } from "@/utils";
 import { ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
 import { ReportProps } from "@/types/reportProps";
@@ -45,7 +45,7 @@ export default function RevenueColumns() {
         await getReportById(id);
         await getModal({
             isOpen: true,
-            size: "5xl",
+            size: "3xl",
             modalHeader: TEXT.REPORT,
             modalBody: <ReportDetail />,
         });
@@ -152,7 +152,7 @@ export default function RevenueColumns() {
                                             </span>
                                             {currencyFormat(transfer)}
                                         </div>
-                                        {deduction && (
+                                        {deduction > 0 && (
                                             <div className="flex items-end italic">
                                                 <span className="flex-1 font-normal text-black">
                                                     {TEXT.DEDUCTION}
@@ -167,7 +167,21 @@ export default function RevenueColumns() {
                                             {currencyFormat(cash)}
                                         </div>
                                     </div>
-                                    <div className="flex-1">{params.row[1][index].description}</div>
+                                    <div className="flex-1">
+                                        {breakStringIntoLines(params.row[1][index].description).map(
+                                            (line: string, index: number) => {
+                                                if (line === "")
+                                                    return (
+                                                        <div
+                                                            key={line + index}
+                                                            className="h-2"
+                                                        ></div>
+                                                    );
+
+                                                return <div key={line + index}>{line}</div>;
+                                            },
+                                        )}
+                                    </div>
                                     <div className="flex justify-end gap-1">
                                         <Tooltip content="Details">
                                             <Button

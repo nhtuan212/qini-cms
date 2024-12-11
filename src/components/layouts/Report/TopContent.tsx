@@ -21,6 +21,7 @@ export default function TopContent() {
                         onClick={() =>
                             getModal({
                                 isOpen: true,
+                                size: "3xl",
                                 modalHeader: TEXT.ADD_REPORT,
                                 modalBody: <ReportAddNew />,
                             })

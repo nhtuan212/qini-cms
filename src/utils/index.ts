@@ -97,3 +97,27 @@ export const debounce = (func: (...args: any[]) => void, wait = 1000) => {
         }, wait);
     };
 };
+
+/**
+ * Breaks a string into multiple lines of a specified length.
+ *
+ * @param str - The string to break into lines.
+ * @param maxLength - The maximum length of each line.
+ * @returns The string broken into multiple lines.
+ */
+export function breakStringIntoLines(str: string): string[] {
+    if (!str) return [];
+
+    const lines = str.split("\n");
+    const result: string[] = [];
+
+    for (const line of lines) {
+        if (line.includes("\n")) {
+            result.push(...line.split("\n"));
+        } else {
+            result.push(line);
+        }
+    }
+
+    return result;
+}
