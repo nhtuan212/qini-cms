@@ -33,7 +33,7 @@ function ConfirmModal({
                 </Button>
 
                 <Button type="button" color="danger" onClick={debounce(onConfirm)}>
-                    {TEXT.submit}
+                    {TEXT.SUBMIT}
                 </Button>
             </div>
         </div>

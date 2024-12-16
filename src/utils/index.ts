@@ -121,3 +121,21 @@ export function breakStringIntoLines(str: string): string[] {
 
     return result;
 }
+
+/**
+ * Converts an object to a query string.
+ *
+ * @param obj - The object to convert to a query string.
+ * @returns The query string.
+ */
+export function convertObjectToSearchQuery(obj: object): string {
+    if (!obj) return "";
+
+    const params = new URLSearchParams(
+        Object.entries(obj)
+            .filter(([key, value]) => key !== "" && value)
+            .map(([key, value]) => [key, String(value)]),
+    );
+
+    return `?${params.toString()}`;
+}

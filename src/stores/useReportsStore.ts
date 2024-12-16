@@ -6,12 +6,15 @@ import { STATUS_CODE } from "@/constants";
 
 type ReportState = {
     isLoading?: boolean;
-    report: [];
+    reports: [];
     reportById: ReportDetailProps;
+    reportPagination?: {
+        [key: string]: any;
+    };
 };
 
 type ReportAction = {
-    getReport: () => Promise<void>;
+    getReport: (params?: { [key: string]: any }) => Promise<void>;
     getReportById: (id: string) => Promise<void>;
     createReport: (data: {
         reports: ReportProps;
@@ -30,7 +33,7 @@ type ReportAction = {
 
 const initialState: ReportState = {
     isLoading: false,
-    report: [],
+    reports: [],
     reportById: {
         id: "",
         createAt: "",
@@ -57,26 +60,34 @@ const initialState: ReportState = {
     },
 };
 
+const getUrlSearch = () => {
+    return window.location.search.slice(1);
+};
+
 export const useReportsStore = create<ReportState & ReportAction>()(set => ({
     ...initialState,
 
     // Actions
-    getReport: async () => {
+    getReport: async params => {
+        const filterParams = new URLSearchParams(params).toString();
+        const endpoint = `/report${params ? `&${filterParams}` : `${getUrlSearch() ? `?${getUrlSearch()}` : ""}`}`;
+
         set({
             isLoading: true,
         });
 
         return await fetchData({
-            endpoint: URL.REPORT,
+            endpoint,
         }).then(res => {
             if (res?.code !== 200) {
                 return set({
-                    report: res?.message,
+                    reports: res?.message,
                 });
             }
             return set({
                 isLoading: false,
-                report: res.data,
+                reports: res.data,
+                reportPagination: res.pagination,
             });
         });
     },
@@ -139,14 +150,7 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
                 method: "PUT",
                 body: JSON.stringify({ ...reports }),
             },
-        }).then(res => {
-            if (res?.code === 200) {
-                return res.data;
-            }
-            return set({
-                report: res?.message,
-            });
-        });
+        }).then(res => res);
     },
 
     deleteReport: async (id: string) => {
@@ -156,14 +160,7 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
                 method: "DELETE",
                 body: JSON.stringify({ id }),
             },
-        }).then(res => {
-            if (res?.code === 200) {
-                return res.data;
-            }
-            return set({
-                report: res?.message,
-            });
-        });
+        }).then(res => res);
     },
 
     resetReport: () => {

@@ -17,7 +17,6 @@ export default function StaffModalDetail() {
             rows={reportsOnStaff}
             loading={isReportsOnStaffLoading}
             topContent={<StaffDetailTopContent />}
-            paginationMode={{ pageSize: 50, pageSizeOptions: [50, 60] }}
         />
     );
 }

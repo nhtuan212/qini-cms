@@ -25,7 +25,6 @@
         "@internationalized/date": "^3.5.4",
         "@nextui-org/react": "^2.4.8",
         "autoprefixer": "^10.4.20",
-        "clsx": "^2.1.0",
         "dayjs": "^1.11.10",
         "framer-motion": "^10.18.0",
         "next": "14.0.4",
@@ -37,6 +36,7 @@
         "react-number-format": "^5.3.4",
         "react-tailwindcss-datepicker": "^1.6.6",
         "sass": "^1.69.7",
+        "tailwind-merge": "^2.5.5",
         "zustand": "^4.4.7"
     },
     "devDependencies": {

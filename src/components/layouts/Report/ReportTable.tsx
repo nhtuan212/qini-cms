@@ -1,53 +1,62 @@
 "use client";
 
-import React, { useEffect } from "react";
-import clsx from "clsx";
+import React, { useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { twMerge } from "tailwind-merge";
 import ReportColumns from "./ReportColumns";
 import TopContent from "./TopContent";
 import Table from "@/components/Table";
 import { useReportsStore } from "@/stores/useReportsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
+import { convertObjectToSearchQuery } from "@/utils";
 
 export default function ReportTable() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
     //** Stores */
-    const { getReport, isLoading, report } = useReportsStore();
+    const { isLoading, reports, reportPagination, getReport } = useReportsStore();
     const { getStaff } = useStaffStore();
     const { getShifts } = useShiftStore();
 
     //** Variables */
-    const reportGroupByDate = Object.entries(
-        report.reduce((acc: any, item: any) => {
-            const date = item.createAt.split("T")[0];
-
-            if (!acc[date]) {
-                acc[date] = [];
-            }
-
-            acc[date].push(item);
-
-            return acc;
-        }, {}),
+    const currentSearch = useMemo(
+        () => ({
+            ...Object.fromEntries(searchParams.entries()),
+            page: searchParams.get("page") || "1",
+        }),
+        [searchParams],
     );
 
     //** Effects */
     useEffect(() => {
-        getReport();
         getStaff();
         getShifts();
-    }, [getReport, getStaff, getShifts]);
+    }, [getStaff, getShifts]);
+
+    useEffect(() => {
+        getReport();
+    }, [getReport, currentSearch]);
 
     return (
         <Table
-            className={clsx(
-                "[&>.tableContainer]:h-[40rem]",
+            className={twMerge(
+                "[&>.tableContainer]:h-[85vh]",
                 "[&_.bodyCell]:border-b [&_.bodyCell]:border-primary",
             )}
             loading={isLoading}
+            rows={reports}
             columns={ReportColumns()}
             topContent={<TopContent />}
-            rows={reportGroupByDate}
-            paginationMode={{ pageSize: 31, pageSizeOptions: [10, 20, 30] }}
+            paginationMode={{
+                total: reportPagination?.total,
+                page: reportPagination?.page,
+                rowsPerPage: reportPagination?.rowsPerPage,
+                onChange: page => {
+                    router.push(convertObjectToSearchQuery({ ...currentSearch, page }));
+                },
+            }}
         />
     );
 }

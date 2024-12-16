@@ -14,8 +14,8 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { breakStringIntoLines, currencyFormat, formatDate } from "@/utils";
 import { ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
-import { ReportProps } from "@/types/reportProps";
 import { ModalActionProps } from "@/lib/types";
+import { ReportProps } from "@/types/reportProps";
 
 export default function RevenueColumns() {
     //** Stores */
@@ -66,7 +66,7 @@ export default function RevenueColumns() {
         getModal({
             isOpen: true,
             action: ModalActionProps.UPDATE,
-            modalHeader: TEXT.confirmDelete,
+            modalHeader: TEXT.CONFIRM_DELETE,
             modalBody: (
                 <ConfirmModal
                     onConfirm={async () => {
@@ -80,40 +80,127 @@ export default function RevenueColumns() {
         });
     };
 
+    //** Render */
     const columns = [
         {
-            key: "createAt",
+            key: TEXT.DATE,
             name: TEXT.DATE,
-            content: (params: any) => formatDate(params.row[0]),
+            content: (params: ReportProps) => formatDate(params.row.createAt),
         },
         {
-            key: "detail",
-            name: TEXT.DETAIL,
-            className: "flex-[6]",
-            content: (params: any) => {
-                const shift = params.row[1].map((item: any) => item.shift.name);
-                const reportsOnStaffs = params.row[1].map((item: any) => item.reportsOnStaffs);
+            key: "WORK_SHIFT",
+            className: "flex-initial min-w-16",
+            name: TEXT.WORK_SHIFT,
+            content: (params: ReportProps) => params.row.shift.name,
+        },
+        {
+            key: TEXT.NAME,
+            className: "flex-initial min-w-20",
+            name: TEXT.NAME,
+            content: (params: ReportProps) => {
+                const staff = params.row.reportsOnStaffs.map(
+                    (item: ReportProps["reportsOnStaffs"]) => item.staff.name,
+                );
 
-                return shift.map((item: any, index: number) => {
-                    const revenue = params.row[1][index].revenue;
-                    const deduction = params.row[1][index].deduction;
-                    const cash = params.row[1][index].cash;
-                    const transfer = params.row[1][index].transfer;
-                    const staff = reportsOnStaffs[index].map((staff: any) => staff.staff.name);
-                    const timeSheet = reportsOnStaffs[index].map(
-                        (timeSheet: any) => `${timeSheet.checkIn} - ${timeSheet.checkOut}`,
-                    );
-                    const isApproved = params.row[1][index].isApproved;
+                return staff.map((item: ReportProps["staffName"], index: number) => (
+                    <div key={item + index}>{item}</div>
+                ));
+            },
+        },
+        {
+            key: TEXT.TIME_SHEET,
+            name: TEXT.TIME_SHEET,
+            content: (params: ReportProps) => {
+                return params.row.reportsOnStaffs.map(
+                    (item: ReportProps["reportsOnStaffs"], index: number) => (
+                        <div key={item + index}>
+                            {item.checkIn} - {item.checkOut}
+                        </div>
+                    ),
+                );
+            },
+        },
+        {
+            key: TEXT.TIME_NUMBER,
+            className: "flex-initial min-w-16",
+            name: TEXT.TIME_NUMBER,
+            content: (params: ReportProps) => {
+                return params.row.reportsOnStaffs.map(
+                    (item: ReportProps["reportsOnStaffs"], index: number) => (
+                        <div key={item + index}>{item.timeWorked}</div>
+                    ),
+                );
+            },
+        },
+        {
+            key: TEXT.AMOUNT,
+            className: "flex-[4] [&.headCell]:justify-end",
+            name: TEXT.AMOUNT,
+            content: (params: ReportProps) => {
+                const revenue = params.row.revenue;
+                const deduction = params.row.deduction;
+                const cash = params.row.cash;
+                const transfer = params.row.transfer;
 
-                    return (
-                        <div
-                            key={item + index}
-                            className="flex justify-between items-center flex-wrap gap-6 py-2 border-b last:border-b-0"
-                        >
+                return (
+                    <div className="flex items-end gap-4">
+                        <div className="flex-1 font-bold">
+                            <div className="flex items-end border-b">
+                                <span className="flex-1 font-normal text-black">
+                                    {TEXT.REVENUE}
+                                </span>
+                                <span className="text-primary">{currencyFormat(revenue)}</span>
+                            </div>
+                            <div className="flex items-end">
+                                <span className="flex-1 font-normal text-black">
+                                    {TEXT.TRANSFER}
+                                </span>
+                                {currencyFormat(transfer)}
+                            </div>
+                            {deduction > 0 && (
+                                <div className="flex items-end italic">
+                                    <span className="flex-1 font-normal text-black">
+                                        {TEXT.DEDUCTION}
+                                    </span>
+                                    <span className="text-error">{`- ${currencyFormat(deduction)}`}</span>
+                                </div>
+                            )}
+                            <div className="flex items-end">
+                                <span className="flex-1 font-normal text-black">{TEXT.CASH}</span>
+                                {currencyFormat(cash)}
+                            </div>
+                        </div>
+                    </div>
+                );
+            },
+        },
+        {
+            key: TEXT.NOTE,
+            className: "flex-[3]",
+            name: TEXT.NOTE,
+            content: (params: ReportProps) => {
+                return breakStringIntoLines(params.row.description).map(
+                    (line: string, index: number) => {
+                        if (line === "") return <div key={line + index} className="h-2"></div>;
+
+                        return <div key={line + index}>{line}</div>;
+                    },
+                );
+            },
+        },
+        {
+            key: "actions",
+            name: "",
+            content: (params: ReportProps) => {
+                const isApproved = params.row.isApproved;
+
+                return (
+                    <div className="flex justify-end gap-1">
+                        <Tooltip content={TEXT.PAID}>
                             <Button
                                 className="min-w-0 bg-transparent p-0 text-default-500"
                                 onClick={() => {
-                                    handleReportApproved(params.row[1][index]);
+                                    handleReportApproved(params.row);
                                 }}
                             >
                                 {isApproved ? (
@@ -122,105 +209,39 @@ export default function RevenueColumns() {
                                     <CheckCircleIcon className="w-5" />
                                 )}
                             </Button>
-
-                            <div className="flex-1">{item}</div>
-
-                            <div className="flex-[10] flex items-center flex-wrap gap-2">
-                                <div className="flex-1">
-                                    {staff.map((staffName: any, index: number) => (
-                                        <div key={staffName + index}>{staffName}</div>
-                                    ))}
-                                </div>
-                                <div className="flex-1">
-                                    {timeSheet.map((time: any, index: number) => (
-                                        <div key={time + index}>{time}</div>
-                                    ))}
-                                </div>
-                                <div className="md:flex-[6] w-full flex items-center gap-4">
-                                    <div className="flex-1 font-bold">
-                                        <div className="flex items-end border-b">
-                                            <span className="flex-1 font-normal text-black">
-                                                {TEXT.REVENUE}
-                                            </span>
-                                            <span className="text-primary">
-                                                {currencyFormat(revenue)}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-end">
-                                            <span className="flex-1 font-normal text-black">
-                                                {TEXT.TRANSFER}
-                                            </span>
-                                            {currencyFormat(transfer)}
-                                        </div>
-                                        {deduction > 0 && (
-                                            <div className="flex items-end italic">
-                                                <span className="flex-1 font-normal text-black">
-                                                    {TEXT.DEDUCTION}
-                                                </span>
-                                                <span className="text-error">{`- ${currencyFormat(deduction)}`}</span>
-                                            </div>
-                                        )}
-                                        <div className="flex items-end">
-                                            <span className="flex-1 font-normal text-black">
-                                                {TEXT.CASH}
-                                            </span>
-                                            {currencyFormat(cash)}
-                                        </div>
-                                    </div>
-                                    <div className="flex-1">
-                                        {breakStringIntoLines(params.row[1][index].description).map(
-                                            (line: string, index: number) => {
-                                                if (line === "")
-                                                    return (
-                                                        <div
-                                                            key={line + index}
-                                                            className="h-2"
-                                                        ></div>
-                                                    );
-
-                                                return <div key={line + index}>{line}</div>;
-                                            },
-                                        )}
-                                    </div>
-                                    <div className="flex justify-end gap-1">
-                                        <Tooltip content="Details">
-                                            <Button
-                                                className="min-w-0 bg-transparent p-0 text-default-500"
-                                                onClick={() => {
-                                                    handleGetReportById(params.row[1][index].id);
-                                                }}
-                                            >
-                                                <EyeIcon className="w-5" />
-                                            </Button>
-                                        </Tooltip>
-                                        <Tooltip content="Edit">
-                                            <Button className="min-w-0 bg-transparent p-0 text-default-500">
-                                                <PencilSquareIcon
-                                                    className="w-5"
-                                                    onClick={() => {
-                                                        handleEditReport(params.row[1][index].id);
-                                                    }}
-                                                />
-                                            </Button>
-                                        </Tooltip>
-                                        {profile.role === ROLE.ADMIN && (
-                                            <Tooltip content="Remove">
-                                                <Button
-                                                    className="min-w-0 bg-transparent p-0 text-default-500"
-                                                    onClick={() =>
-                                                        handleDeleteReport(params.row[1][index].id)
-                                                    }
-                                                >
-                                                    <TrashIcon className="w-5" />
-                                                </Button>
-                                            </Tooltip>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                });
+                        </Tooltip>
+                        <Tooltip content={TEXT.DETAIL}>
+                            <Button
+                                className="min-w-0 bg-transparent p-0 text-default-500"
+                                onClick={() => {
+                                    handleGetReportById(params.row.id);
+                                }}
+                            >
+                                <EyeIcon className="w-5" />
+                            </Button>
+                        </Tooltip>
+                        <Tooltip content={TEXT.EDIT}>
+                            <Button className="min-w-0 bg-transparent p-0 text-default-500">
+                                <PencilSquareIcon
+                                    className="w-5"
+                                    onClick={() => {
+                                        handleEditReport(params.row.id);
+                                    }}
+                                />
+                            </Button>
+                        </Tooltip>
+                        {profile.role === ROLE.ADMIN && (
+                            <Tooltip content={TEXT.DELETE}>
+                                <Button
+                                    className="min-w-0 bg-transparent p-0 text-default-500"
+                                    onClick={() => handleDeleteReport(params.row.id)}
+                                >
+                                    <TrashIcon className="w-5" />
+                                </Button>
+                            </Tooltip>
+                        )}
+                    </div>
+                );
             },
         },
     ];

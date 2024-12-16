@@ -76,7 +76,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
         getModal({
             isOpen: true,
             action: ModalActionProps.UPDATE,
-            modalHeader: TEXT.confirmDelete,
+            modalHeader: TEXT.CONFIRM_DELETE,
             modalBody: (
                 <ConfirmModal
                     onConfirm={async () => {
