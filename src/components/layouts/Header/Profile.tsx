@@ -37,7 +37,7 @@ export default function Profile() {
                     textValue={TEXT.LOGOUT}
                     onClick={async () =>
                         await signOut().then(() => {
-                            localStorage.clear();
+                            console.log("Logout");
                         })
                     }
                 >
