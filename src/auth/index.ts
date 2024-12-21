@@ -1,12 +1,11 @@
 import NextAuth, { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import { authCredentials } from "./credentials";
+import { authCredentials } from "./authCredentials";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-    secret: process.env.AUTH_SECRET,
+    session: { strategy: "jwt" },
     providers: [...authCredentials],
 
-    session: { strategy: "jwt" },
     debug: process.env.NODE_ENV === "development",
 
     callbacks: {

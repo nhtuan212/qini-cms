@@ -35,11 +35,7 @@ export default function Profile() {
                     key="logout"
                     startContent={<ArrowRightStartOnRectangleIcon className="w-6" />}
                     textValue={TEXT.LOGOUT}
-                    onClick={async () =>
-                        await signOut().then(() => {
-                            console.log("Logout");
-                        })
-                    }
+                    onClick={async () => await signOut()}
                 >
                     {TEXT.LOGOUT}
                 </DropdownItem>
