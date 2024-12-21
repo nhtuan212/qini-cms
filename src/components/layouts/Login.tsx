@@ -31,21 +31,21 @@ export default function Login() {
         const username = data.get("username");
         const password = data.get("password");
 
-        const login = await signIn("credentials", {
+        return await signIn("credentials", {
             username,
             password,
             redirect: false,
             callbackUrl: searchParams.get("callbackUrl") || ROUTE.HOME,
+        }).then(res => {
+            if (res?.code) {
+                return setErrorLogin(res?.code as string);
+            }
+
+            setErrorLogin("");
+
+            router.push(searchParams.get("callbackUrl") || ROUTE.HOME);
+            router.refresh();
         });
-
-        if (!login?.ok) {
-            const { message } = JSON.parse(login?.error as string);
-            return setErrorLogin(message);
-        }
-
-        setErrorLogin("");
-        router.push(searchParams.get("callbackUrl") || ROUTE.HOME);
-        router.refresh();
     };
 
     return (
@@ -94,15 +94,6 @@ export default function Login() {
                             {errorLogin}
                         </p>
                     )}
-
-                    <div className="text-right text-sm">
-                        <Link
-                            href="#"
-                            className="font-semibold text-indigo-600 hover:text-indigo-500"
-                        >
-                            {TEXT.FORGOT_PASSWORD}
-                        </Link>
-                    </div>
 
                     <Button className="w-full bg-primary text-white" type="submit">
                         {TEXT.LOGIN}

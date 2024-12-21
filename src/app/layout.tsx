@@ -1,12 +1,9 @@
 import React from "react";
-import UIProvider from "@/components/UIProvider";
-import AuthProvider from "@/components/AuthProvider";
-import Layouts from "@/components/layouts";
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/authOptions";
-import { ProfileProps } from "@/types/profileProps";
 import { Roboto } from "next/font/google";
+import UIProvider from "@/components/UIProvider";
+import MainLayout from "@/components/layouts";
+import { auth } from "@/auth";
 import "./globals.scss";
 
 const roboto = Roboto({
@@ -20,16 +17,21 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-    const session: ProfileProps | null = await getServerSession(authOptions);
+    const session = await auth();
+
+    //** Render */
+    const RenderMainLayout = () => {
+        if (session) {
+            return <MainLayout session={session}>{children}</MainLayout>;
+        }
+
+        return children;
+    };
 
     return (
         <html suppressHydrationWarning lang="en">
             <body className={roboto.className}>
-                <UIProvider>
-                    <AuthProvider>
-                        {session ? <Layouts session={session}>{children}</Layouts> : children}
-                    </AuthProvider>
-                </UIProvider>
+                <UIProvider>{RenderMainLayout()}</UIProvider>
             </body>
         </html>
     );

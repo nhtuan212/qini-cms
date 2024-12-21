@@ -1,23 +1,29 @@
-import { ProfileProps } from "@/types/profileProps";
 import { create } from "zustand";
+import { Session } from "next-auth";
 
-interface ProfileState {
-    profile: ProfileProps["user"];
-    getProfile: (session: ProfileProps) => void;
-}
+export type ProfileProps = {
+    [key: string]: any;
+};
 
-export const useProfileStore = create<ProfileState>()(set => ({
-    profile: {
-        username: "",
-        email: "",
-        role: "",
-    },
+type ProfileState = {
+    profile: ProfileProps;
+};
+
+type ProfileAction = {
+    getProfile: (session: Session) => void;
+};
+
+const initialState: ProfileState = {
+    profile: {},
+};
+
+export const useProfileStore = create<ProfileState & ProfileAction>()(set => ({
+    ...initialState,
+
     getProfile: session =>
         set(() => ({
             profile: {
-                username: session?.user?.username || "bin",
-                email: session?.user?.email,
-                role: session?.user?.role,
+                ...session.user,
             },
         })),
 }));

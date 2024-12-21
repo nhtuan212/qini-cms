@@ -7,14 +7,14 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "../Modal";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useAlertStore } from "@/stores/useAlertStore";
-import { ProfileProps } from "@/types/profileProps";
+import { Session } from "next-auth";
 
-export default function Layouts({
-    session,
+export default function MainLayout({
     children,
+    session,
 }: {
-    session: ProfileProps;
     children: React.ReactNode;
+    session: Session;
 }) {
     //** Store */
     const { getProfile } = useProfileStore();
