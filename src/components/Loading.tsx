@@ -1,17 +1,18 @@
-import clsx from "clsx";
+"use client";
+
 import React from "react";
+import { twMerge } from "tailwind-merge";
 
 export default function Loading({ className }: { className?: string }) {
     return (
         <div
-            className={clsx(
-                "fixed inset-0 flex justify-center items-center bg-white bg-opacity-80 z-[9999]",
+            className={twMerge(
+                "absolute top-0 left-0 w-full h-full flex items-center justify-center",
+                "bg-white bg-opacity-90 z-50",
                 className,
             )}
         >
-            <div
-                className={clsx("w-10 h-10 border-3 border-t-primary animate-spin rounded-full")}
-            ></div>
+            <div className="w-16 h-16 border-t-2 border-b-2 border-gray-400 rounded-full animate-spin"></div>
         </div>
     );
 }

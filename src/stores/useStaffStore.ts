@@ -1,7 +1,10 @@
 import { URL } from "@/config/urls";
 import { fetchData } from "@/utils/fetch";
 import { create } from "zustand";
-import { StaffProps } from "@/types/staffProps";
+
+export type StaffProps = {
+    [key: string]: any;
+};
 
 type StaffState = {
     isLoading?: boolean;
@@ -9,17 +12,20 @@ type StaffState = {
     staffById: StaffProps;
 };
 
-export type StaffData = {
-    name: string;
-};
-
 type StaffAction = {
     // Api actions
     getStaff: () => Promise<void>;
-    getStaffById: (id: string) => Promise<void>;
-    addStaff: ({ staffData }: { staffData: StaffData }) => Promise<any>;
-    editStaff: ({ id, staffData }: { id: string; staffData: StaffData }) => Promise<any>;
-    deleteStaff: (id: string) => Promise<void>;
+    getStaffById: (id: StaffProps["id"]) => Promise<StaffProps>;
+    createStaff: (bodyParams: StaffProps) => Promise<StaffProps>;
+    updateStaff: ({
+        id,
+        bodyParams,
+    }: {
+        id: StaffProps["id"];
+        bodyParams: StaffProps;
+    }) => Promise<StaffProps>;
+    deleteStaff: (id: StaffProps["id"]) => Promise<void>;
+    resetStaff: () => Promise<void>;
 };
 
 const initialState: StaffState = {
@@ -49,11 +55,12 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
                     staff: res?.message,
                 });
             }
+
             return set({ staff: res.data });
         });
     },
 
-    getStaffById: async (id: string) => {
+    getStaffById: async id => {
         set({
             isLoading: true,
         });
@@ -70,13 +77,16 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
                     staffById: res?.message,
                 });
             }
-            return set({
+
+            set({
                 staffById: res.data,
             });
+
+            return res.data;
         });
     },
 
-    addStaff: async ({ staffData }: { staffData: StaffData }) => {
+    createStaff: async bodyParams => {
         set({
             isLoading: true,
         });
@@ -85,9 +95,7 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
             endpoint: URL.STAFF,
             options: {
                 method: "POST",
-                body: JSON.stringify({
-                    ...staffData,
-                }),
+                body: JSON.stringify(bodyParams),
             },
         }).then(res => {
             set({
@@ -98,7 +106,7 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
         });
     },
 
-    editStaff: async ({ id, staffData }: { id: string; staffData: StaffData }) => {
+    updateStaff: async ({ id, bodyParams }) => {
         set({
             isLoading: true,
         });
@@ -107,9 +115,7 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
             endpoint: `${URL.STAFF}/${id}`,
             options: {
                 method: "PUT",
-                body: JSON.stringify({
-                    ...staffData,
-                }),
+                body: JSON.stringify(bodyParams),
             },
         }).then(res => {
             set({
@@ -120,7 +126,7 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
         });
     },
 
-    deleteStaff: async (id: string) => {
+    deleteStaff: async id => {
         set({
             isLoading: true,
         });
@@ -143,6 +149,12 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
             }
 
             return set({ staff: res.data });
+        });
+    },
+
+    resetStaff: async () => {
+        set({
+            staffById: initialState.staffById,
         });
     },
 }));

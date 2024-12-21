@@ -25,12 +25,14 @@ export default function Profile() {
             </DropdownTrigger>
             <DropdownMenu aria-label="Staff actions">
                 <DropdownItem
+                    key="profile"
                     startContent={<UserCircleIcon className="w-6" />}
                     textValue={profile?.username}
                 >
                     {profile?.username}
                 </DropdownItem>
                 <DropdownItem
+                    key="logout"
                     startContent={<ArrowRightStartOnRectangleIcon className="w-6" />}
                     textValue={TEXT.LOGOUT}
                     onClick={async () =>

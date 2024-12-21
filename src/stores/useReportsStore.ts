@@ -1,13 +1,18 @@
 import { URL } from "@/config/urls";
 import { create } from "zustand";
 import { fetchData } from "@/utils/fetch";
-import { ReportProps, ReportDetailProps, reportsOnStaffsProps } from "@/types/reportProps";
 import { STATUS_CODE } from "@/constants";
+
+export type ReportProps = {
+    [key: string]: any;
+};
 
 type ReportState = {
     isLoading?: boolean;
     reports: [];
-    reportById: ReportDetailProps;
+    reportById: ReportProps & {
+        reportsOnStaffs?: [ReportProps];
+    };
     reportPagination?: {
         [key: string]: any;
     };
@@ -16,10 +21,7 @@ type ReportState = {
 type ReportAction = {
     getReport: (params?: { [key: string]: any }) => Promise<void>;
     getReportById: (id: string) => Promise<void>;
-    createReport: (data: {
-        reports: ReportProps;
-        reportsOnStaffs: reportsOnStaffsProps;
-    }) => Promise<{
+    createReport: (data: { reports: ReportProps; reportsOnStaffs: ReportProps }) => Promise<{
         code: number;
         message: string;
     }>;
@@ -34,30 +36,7 @@ type ReportAction = {
 const initialState: ReportState = {
     isLoading: false,
     reports: [],
-    reportById: {
-        id: "",
-        createAt: "",
-        revenue: 0,
-        description: "",
-        isApproved: false,
-        shiftId: "",
-        reportsOnStaffs: [
-            {
-                checkIn: "",
-                checkOut: "",
-                staff: {
-                    id: "",
-                    name: "",
-                },
-                staffId: "",
-                target: 0,
-                timeWorked: 0,
-            },
-        ],
-        shift: {
-            name: "",
-        },
-    },
+    reportById: {},
 };
 
 const getUrlSearch = () => {
@@ -118,7 +97,7 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
         reportsOnStaffs,
     }: {
         reports: ReportProps;
-        reportsOnStaffs: reportsOnStaffsProps;
+        reportsOnStaffs: ReportProps;
     }) => {
         const body = JSON.stringify({
             ...reports,

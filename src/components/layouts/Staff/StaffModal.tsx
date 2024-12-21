@@ -7,7 +7,7 @@ import Button from "@/components/Button";
 import { Controller, useForm } from "react-hook-form";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
-import { StaffData, useStaffStore } from "@/stores/useStaffStore";
+import { useStaffStore } from "@/stores/useStaffStore";
 import { TEXT } from "@/constants/text";
 import { ModalActionProps } from "@/lib/types";
 
@@ -18,7 +18,7 @@ type FormValues = {
 export default function StaffModal() {
     //** Stores */
     const { modal, getModal } = useModalStore();
-    const { staffById, getStaff, addStaff, editStaff } = useStaffStore();
+    const { staffById, getStaff, createStaff, updateStaff } = useStaffStore();
 
     //** Spread syntax */
     const { action } = modal;
@@ -42,21 +42,17 @@ export default function StaffModal() {
     });
 
     const onSubmit = async (data: FormValues) => {
-        const staffData: StaffData = {
-            name: data.name,
-        };
-
         switch (action) {
             case ModalActionProps.CREATE:
-                return addStaff({ staffData }).then(res => {
+                return createStaff(data).then(res => {
                     if (res.code !== 200) return setError(res.message);
 
                     handleCloseModal();
                 });
             case ModalActionProps.UPDATE:
-                return editStaff({
+                return updateStaff({
                     id: staffById.id,
-                    staffData,
+                    bodyParams: data,
                 }).then(res => {
                     if (res.code !== 200) return setError(res.message);
 

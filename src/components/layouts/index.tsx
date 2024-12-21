@@ -35,6 +35,7 @@ export default function Layouts({
             <Modal
                 isOpen={modal.isOpen}
                 size={modal.size}
+                isDismissable={modal.isDismissable}
                 onOpenChange={(isOpen: boolean) => getModal({ isOpen })}
             >
                 {modal.modalHeader && <ModalHeader>{modal.modalHeader}</ModalHeader>}

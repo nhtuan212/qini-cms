@@ -8,10 +8,9 @@ import Loading from "@/components/Loading";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
-import { StaffProps } from "@/types/staffProps";
 
 export default function Staff() {
     //** Stores */

@@ -2,21 +2,19 @@ import { create } from "zustand";
 import { fetchData } from "@/utils/fetch";
 import { URL } from "@/config/urls";
 
+export type ReportsOnStaffProps = {
+    [key: string]: any;
+};
+
 type ReportState = {
     isReportsOnStaffLoading: boolean;
     reportsOnStaff: [];
 };
 
 type ReportAction = {
-    getReportsOnStaff: ({
-        staffId,
-        startDate,
-        endDate,
-    }: {
-        staffId: string;
-        startDate?: Date | string | null;
-        endDate?: Date | string | null;
-    }) => Promise<any>;
+    getReportsOnStaff: (
+        params: Pick<ReportsOnStaffProps, "staffId" | "startDate" | "endDate">,
+    ) => Promise<void>;
 };
 
 const initialState: ReportState = {
@@ -27,18 +25,8 @@ const initialState: ReportState = {
 export const useReportsOnStaffsStore = create<ReportState & ReportAction>()(set => ({
     ...initialState,
 
-    getReportsOnStaff: async ({
-        staffId,
-        startDate,
-        endDate,
-    }: {
-        staffId: string;
-        startDate?: Date | string | null;
-        endDate?: Date | string | null;
-    }) => {
-        const url = `${URL.REPORTONSTAFF}?staffId=${staffId}`;
-        const endpoint =
-            startDate && endDate ? `${url}&&startDate=${startDate}&endDate=${endDate}` : `${url}`;
+    getReportsOnStaff: async ({ staffId, startDate, endDate }: ReportsOnStaffProps) => {
+        const endpoint = `${URL.REPORT_ON_STAFF}?staffId=${staffId}&startDate=${startDate}&endDate=${endDate}`;
 
         set({
             isReportsOnStaffLoading: true,

@@ -6,7 +6,6 @@ import {
     CheckCircleIcon,
     ExclamationCircleIcon,
     InformationCircleIcon,
-    XMarkIcon,
 } from "@heroicons/react/24/outline";
 
 export type AlertProps = {
@@ -82,11 +81,6 @@ export default function Alert({
                     {title && <p className="mb-1 font-semibold">{title}</p>}
                     <p className="mt-0.5 text-sm">{children}</p>
                 </div>
-
-                {/* Close button */}
-                <button className="ml-4" onClick={handleClose}>
-                    <XMarkIcon className="w-5" />
-                </button>
             </div>
         </div>
     );

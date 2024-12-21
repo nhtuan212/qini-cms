@@ -1,6 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
+import { getLocalTimeZone, startOfMonth, today } from "@internationalized/date";
 
 export const wrongTimeSheet = ({
     checkIn,
@@ -27,24 +28,12 @@ export const formatDate = (date: Date | null, format: string = "DD/MM/YYYY") => 
     return dayjs(date).format(format);
 };
 
-export const dateFormat = (date: Date) => {
-    const dateFormat = new Date(date);
-
-    const day = String(dateFormat.getUTCDate()).padStart(2, "0");
-    const month = String(dateFormat.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed in JavaScript
-    const year = dateFormat.getUTCFullYear();
-
-    return `${year}-${month}-${day}`;
-};
-
-export const getCurrentMonth = () => {
-    const date = new Date();
-    const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
-    const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+export const getDateTime = () => {
+    const now = today(getLocalTimeZone());
 
     return {
-        startDate: formatDate(startDate, "YYYY-MM-DD"),
-        endDate: formatDate(endDate, "YYYY-MM-DD"),
+        firstDayOfMonth: startOfMonth(now),
+        lastDayOfMonth: now,
     };
 };
 

@@ -17,19 +17,18 @@ import {
     XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { useReportsStore } from "@/stores/useReportsStore";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { ReportProps, useReportsStore } from "@/stores/useReportsStore";
+import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
-import { currencyFormat, dateFormat, formatDate, wrongTimeSheet } from "@/utils";
+import { currencyFormat, formatDate, wrongTimeSheet } from "@/utils";
 import { timeSheet } from "@/config/apis";
 import { TEXT } from "@/constants/text";
 import { ROLE } from "@/constants";
-import { StaffProps } from "@/types/staffProps";
 import { ShiftProps } from "@/types/shiftProps";
-import { ReportProps, reportsOnStaffsProps } from "@/types/reportProps";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { DateProps } from "@/lib/types";
 import { useProfileStore } from "@/stores/useProfileStore";
+import { DateValue } from "@nextui-org/react";
 
 type FormValues = {
     date?: DateProps;
@@ -73,7 +72,7 @@ export default function ReportAddNew() {
     //** React hook form */
     const defaultValues = {
         date: reportById.createAt
-            ? parseDate(dateFormat(reportById.createAt as Date))
+            ? parseDate(formatDate(reportById.createAt, "YYYY-MM-DD"))
             : today(getLocalTimeZone()),
         shift: reportById.shiftId || "",
         staff: reportById.reportsOnStaffs?.map(item => ({
@@ -128,7 +127,7 @@ export default function ReportAddNew() {
             createAt,
         };
 
-        const reportsOnStaffs: reportsOnStaffsProps = data.staff.map(item => ({
+        const reportsOnStaffs: ReportProps = data.staff.map(item => ({
             staffId: item.staffId,
             checkIn: item.checkIn,
             checkOut: item.checkOut,
@@ -206,7 +205,7 @@ export default function ReportAddNew() {
                         <DatePicker
                             label={TEXT.DATE_PICKER}
                             isRequired
-                            defaultValue={field.value}
+                            defaultValue={field.value as unknown as DateValue}
                             isInvalid={!!errors.date}
                             onChange={field.onChange}
                             errorMessage={errors.date && errors.date.message}

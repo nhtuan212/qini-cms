@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
+import React from "react";
+import DateRangePicker from "@/components/DateRangePicker";
+import Button from "@/components/Button";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { TEXT } from "@/constants/text";
-import { currencyFormat, getCurrentMonth, sumArray } from "@/utils";
+import { currencyFormat, getDateTime, sumArray } from "@/utils";
 
 export default function TargetTopContent() {
     //** Stores */
@@ -14,43 +15,56 @@ export default function TargetTopContent() {
         useReportsOnStaffsStore();
 
     //** States */
-    const [dateValue, setDateValue] = useState<DateValueType>(getCurrentMonth());
+    const [dateValue, setDateValue] = React.useState({
+        start: getDateTime().firstDayOfMonth,
+        end: getDateTime().lastDayOfMonth,
+    });
 
     //** Variables */
     const totalTarget = !isReportsOnStaffLoading ? sumArray(reportsOnStaff, "target") : 0;
     const totalTimeWorked = !isReportsOnStaffLoading ? sumArray(reportsOnStaff, "timeWorked") : 0;
 
     //** Functions */
-    const handleValueChange = (newValue: DateValueType) => {
-        setDateValue(newValue);
-
+    const handleFilterReports = () => {
         getReportsOnStaff({
             staffId: staffById.id,
-            ...newValue,
+            startDate: dateValue.start.toString(),
+            endDate: dateValue.end.toString(),
         });
     };
 
+    //** Render */
     return (
-        <div className="flex flex-col gap-4 mb-5">
-            <div className="flex justify-between items-center gap-3">
-                <div className="w-full">
-                    <div>
-                        {`${TEXT.TOTAL_TARGET}: `}
-                        <b className="text-primary">{currencyFormat(totalTarget)}</b>
-                    </div>
-                    <div>
-                        {`${TEXT.TIME_SHEET}: `}
-                        <b className="text-primary">{totalTimeWorked}</b>
-                    </div>
+        <div className="flex justify-between flex-wrap gap-3">
+            <div>
+                <div>
+                    {`${TEXT.TOTAL_TARGET}: `}
+                    <b className="text-primary">{currencyFormat(totalTarget)}</b>
                 </div>
-                <Datepicker
-                    containerClassName="datepicker"
+                <div>
+                    {`${TEXT.TIME_SHEET}: `}
+                    <b className="text-primary">{totalTimeWorked}</b>
+                </div>
+            </div>
+            <div className="flex-1 flex flex-wrap gap-4 xs:justify-end items-center">
+                <DateRangePicker
+                    label={TEXT.DATE_PICKER}
+                    className="w-fit"
                     value={dateValue}
-                    onChange={handleValueChange}
-                    useRange={false}
-                    displayFormat={"DD/MM/YYYY"}
-                    readOnly
+                    onChange={(newValue: any) =>
+                        setDateValue({
+                            start: newValue?.start,
+                            end: newValue?.end,
+                        })
+                    }
+                    onKeyUp={e => {
+                        if (e.key === "Enter") {
+                            handleFilterReports();
+                        }
+                    }}
                 />
+
+                <Button onClick={() => handleFilterReports()}>{TEXT.SUBMIT}</Button>
             </div>
         </div>
     );

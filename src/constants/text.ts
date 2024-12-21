@@ -1,7 +1,10 @@
 export const TEXT = {
+    IMAGE: {
+        ALT: "Image",
+    },
+
     STAFF: "Nhân viên",
-    editStaff: "Sửa nhân viên",
-    StaffDetail: "Chi tiết nhân viên",
+    UPDATE_STAFF: "Cập nhật nhân viên",
     REPORT: "Báo cáo",
     LOGIN_YOUR_ACCOUNT: "Login in to your account",
     LOGIN: "Login",
@@ -68,8 +71,4 @@ export const TEXT = {
     SUBMIT: "Xác nhận",
     AMOUNT: "Số tiền",
     PAID: "Đã thu tiền",
-
-    IMAGE: {
-        ALT: "Image",
-    },
 };

@@ -122,20 +122,26 @@ export default function TableBody({ ...props }: TableBodyProps) {
     };
     const renderLoading = () => {
         return (
-            <div className="absolute top-0 left-0 z-[100] w-full h-full flex justify-center items-center bg-white/50">
-                <div className="w-10 h-10 border-3 border-t-primary animate-spin rounded-full"></div>
+            <div
+                className={twMerge(
+                    "absolute top-0 left-0 w-full h-full flex items-center justify-center",
+                    "bg-white bg-opacity-90 z-50",
+                )}
+            >
+                <div className="w-16 h-16 border-t-2 border-b-2 border-gray-400 rounded-full animate-spin"></div>
             </div>
         );
     };
 
     if (rowsData && rowsData.length === 0) {
         return (
-            <div className="relative w-full min-h-96 flex items-center justify-center text-gray-400">
+            <div className="relative w-full h-full min-h-96 flex items-center justify-center text-gray-400">
                 {loading && renderLoading()}
                 <div className="text-center">No data available</div>
             </div>
         );
     }
+
     return (
         <div className="min-w-full w-fit min-h-96">
             {loading && renderLoading()}

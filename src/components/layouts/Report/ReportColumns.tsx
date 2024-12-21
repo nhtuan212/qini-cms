@@ -8,14 +8,13 @@ import Button from "@/components/Button";
 import { Tooltip } from "@nextui-org/react";
 import { CheckCircleIcon, EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CheckCircleIcon as CheckCircleIconActive } from "@heroicons/react/24/solid";
-import { useReportsStore } from "@/stores/useReportsStore";
+import { ReportProps, useReportsStore } from "@/stores/useReportsStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { breakStringIntoLines, currencyFormat, formatDate } from "@/utils";
 import { ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
 import { ModalActionProps } from "@/lib/types";
-import { ReportProps } from "@/types/reportProps";
 
 export default function RevenueColumns() {
     //** Stores */

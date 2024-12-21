@@ -33,6 +33,10 @@ const config: Config = {
                 },
             },
 
+            screens: {
+                xs: "460px",
+            },
+
             // Animation
             animation: {
                 zoomIn: "zoomIn .2s ease-in-out",

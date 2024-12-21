@@ -91,7 +91,7 @@ export default function Table({ ...props }: TableProps) {
             <div className="tableContainer min-h-[38rem] flex flex-col gap-4">
                 {topContent && topContent}
 
-                <div className="overflow-scroll" ref={ref}>
+                <div className="h-full overflow-scroll" ref={ref}>
                     <TableHead sortingMode={sortingMode} onRowSelection={onRowSelection} />
                     <TableBody
                         loading={loading}

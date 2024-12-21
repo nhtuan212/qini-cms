@@ -14,13 +14,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { ROLE } from "@/constants";
 import { TEXT } from "@/constants/text";
-import { getCurrentMonth } from "@/utils";
+import { getDateTime } from "@/utils";
 import { ModalActionProps } from "@/lib/types";
-import { StaffProps } from "@/types/staffProps";
 
 export default function StaffActions({ item }: { item: StaffProps }) {
     //** Destructuring */
@@ -29,7 +28,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getStaff, getStaffById, deleteStaff } = useStaffStore();
+    const { getStaff, getStaffById, deleteStaff, resetStaff } = useStaffStore();
     const { getReportsOnStaff } = useReportsOnStaffsStore();
 
     //** Variables */
@@ -46,18 +45,21 @@ export default function StaffActions({ item }: { item: StaffProps }) {
 
     //** Functions */
     const handleViewStaff = async (id: string) => {
-        await getStaffById(id);
         await getReportsOnStaff({
             staffId: id,
-            ...getCurrentMonth(),
+            startDate: getDateTime().firstDayOfMonth.toString(),
+            endDate: getDateTime().lastDayOfMonth.toString(),
         });
 
-        getModal({
-            isOpen: true,
-            size: "3xl",
-            modalHeader: TEXT.StaffDetail,
-            action: ModalActionProps.UPDATE,
-            modalBody: <StaffModalDetail />,
+        await getStaffById(id).then(res => {
+            getModal({
+                isOpen: true,
+                size: "3xl",
+                modalHeader: `${TEXT.STAFF}: ${res.name}`,
+                action: ModalActionProps.UPDATE,
+                isDismissable: false,
+                modalBody: <StaffModalDetail />,
+            });
         });
     };
 
@@ -66,8 +68,9 @@ export default function StaffActions({ item }: { item: StaffProps }) {
 
         getModal({
             isOpen: true,
-            modalHeader: TEXT.editStaff,
+            modalHeader: TEXT.UPDATE_STAFF,
             action: ModalActionProps.UPDATE,
+            isDismissable: false,
             modalBody: <StaffModal />,
         });
     };
@@ -90,6 +93,14 @@ export default function StaffActions({ item }: { item: StaffProps }) {
         });
     };
 
+    //** Effects */
+    React.useEffect(() => {
+        return () => {
+            resetStaff();
+        };
+    }, [resetStaff]);
+
+    //** Render */
     return (
         <Dropdown>
             <DropdownTrigger>

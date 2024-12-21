@@ -1,38 +1,5 @@
 {
     // Remove Unknown at rule @tailwind
     "css.customData": [".vscode/tailwind.json"],
-    "cSpell.words": [
-        "chắc",
-        "chắn",
-        "Chốt",
-        "clsx",
-        "compat",
-        "Đăng",
-        "datepicker",
-        "Doanh",
-        "heroicons",
-        "Hoang",
-        "hookform",
-        "khoản",
-        "không",
-        "linebreak",
-        "muốn",
-        "NEXTAUTH",
-        "nextui",
-        "Ngày",
-        "Nhân",
-        "Parens",
-        "qini",
-        "REPORTONSTAFF",
-        "signin",
-        "tailwindcss",
-        "Thêm",
-        "Tiền",
-        "Tổng",
-        "Tuan",
-        "việc",
-        "viên",
-        "xuất",
-        "zustand"
-    ]
+    "cSpell.words": ["clickaway", "datepicker", "Dismissable", "khóa", "nextui", "qini"]
 }
