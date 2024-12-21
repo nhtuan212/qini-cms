@@ -1,8 +1,7 @@
 import Credentials from "next-auth/providers/credentials";
 import { CredentialsSignin } from "next-auth";
-import { URL } from "@/config/urls";
 import { fetchData } from "@/utils/fetch";
-import { STATUS_CODE } from "@/constants";
+import { STATUS_CODE, URL } from "@/constants";
 import { TEXT } from "@/constants/text";
 
 class InvalidLogin401 extends CredentialsSignin {
@@ -20,7 +19,7 @@ export const authCredentials = [
             password: { label: "Password", type: "password" },
         },
 
-        async authorize(credentials) {
+        authorize: async credentials => {
             return await fetchData({
                 endpoint: URL.LOGIN,
                 options: {

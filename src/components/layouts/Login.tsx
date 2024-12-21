@@ -35,7 +35,6 @@ export default function Login() {
             username,
             password,
             redirect: false,
-            callbackUrl: searchParams.get("callbackUrl") || ROUTE.HOME,
         }).then(res => {
             if (res?.code) {
                 return setErrorLogin(res?.code as string);
