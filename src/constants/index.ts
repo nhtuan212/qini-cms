@@ -22,6 +22,7 @@ export const STAFF = {
 };
 
 export const URL = {
+    HOME: "/",
     LOGIN: "/login",
     REPORT: "/report",
     REPORT_ON_STAFF: "/report-on-staff",

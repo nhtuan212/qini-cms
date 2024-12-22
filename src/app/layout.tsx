@@ -1,14 +1,20 @@
 import React from "react";
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
-import UIProvider from "@/components/UIProvider";
-import MainLayout from "@/components/layouts";
+import localFont from "next/font/local";
 import { auth } from "@/auth";
+import Provider from "@/components/Provider";
+import MainLayout from "@/components/layouts";
 import "./globals.scss";
 
-const roboto = Roboto({
-    weight: ["400", "700"],
-    subsets: ["latin"],
+const geistSans = localFont({
+    src: "./fonts/GeistVF.woff",
+    variable: "--font-geist-sans",
+    weight: "100 900",
+});
+const geistMono = localFont({
+    src: "./fonts/GeistMonoVF.woff",
+    variable: "--font-geist-mono",
+    weight: "100 900",
 });
 
 export const metadata: Metadata = {
@@ -30,8 +36,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
     return (
         <html suppressHydrationWarning lang="en">
-            <body className={roboto.className}>
-                <UIProvider>{RenderMainLayout()}</UIProvider>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+                <Provider>{RenderMainLayout()}</Provider>
             </body>
         </html>
     );
