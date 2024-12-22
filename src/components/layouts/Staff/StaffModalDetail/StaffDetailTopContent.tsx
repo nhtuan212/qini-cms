@@ -1,12 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import DateRangePicker from "@/components/DateRangePicker";
 import Button from "@/components/Button";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { TEXT } from "@/constants/text";
 import { currencyFormat, getDateTime, sumArray } from "@/utils";
+import { RangeValue } from "@nextui-org/react";
+import { CalendarDate } from "@internationalized/date";
 
 export default function TargetTopContent() {
     //** Stores */
@@ -15,7 +17,7 @@ export default function TargetTopContent() {
         useReportsOnStaffsStore();
 
     //** States */
-    const [dateValue, setDateValue] = React.useState({
+    const [dateValue, setDateValue] = useState<RangeValue<CalendarDate>>({
         start: getDateTime().firstDayOfMonth,
         end: getDateTime().lastDayOfMonth,
     });

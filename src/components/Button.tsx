@@ -3,9 +3,6 @@
 import React from "react";
 import { Button as ButtonNextUI, ButtonProps } from "@nextui-org/react";
 
-interface ButtonComponent
-    extends React.ForwardRefExoticComponent<ButtonProps & React.RefAttributes<HTMLButtonElement>> {}
-
 const Button = React.forwardRef(({ ...props }: ButtonProps, ref: React.Ref<HTMLButtonElement>) => {
     return (
         <ButtonNextUI
@@ -18,6 +15,6 @@ const Button = React.forwardRef(({ ...props }: ButtonProps, ref: React.Ref<HTMLB
             {props.children}
         </ButtonNextUI>
     );
-}) as ButtonComponent;
+});
 
 export default Button;
