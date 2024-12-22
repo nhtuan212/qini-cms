@@ -23,7 +23,7 @@ function ConfirmModal({
                 <Button
                     color="default"
                     variant="bordered"
-                    onClick={() => {
+                    onPress={() => {
                         getModal({
                             isOpen: false,
                         });
@@ -32,7 +32,7 @@ function ConfirmModal({
                     {TEXT.CANCEL}
                 </Button>
 
-                <Button type="button" color="danger" onClick={debounce(onConfirm)}>
+                <Button type="button" color="danger" onPress={debounce(onConfirm)}>
                     {TEXT.SUBMIT}
                 </Button>
             </div>

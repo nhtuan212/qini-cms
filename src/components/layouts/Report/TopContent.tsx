@@ -18,7 +18,7 @@ export default function TopContent() {
                 <div className="title">{TEXT.REPORT}</div>
                 <div className="flex gap-3">
                     <Button
-                        onClick={() =>
+                        onPress={() =>
                             getModal({
                                 isOpen: true,
                                 size: "3xl",

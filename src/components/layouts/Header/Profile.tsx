@@ -35,12 +35,7 @@ export default function Profile() {
                     key="logout"
                     startContent={<ArrowRightStartOnRectangleIcon className="w-6" />}
                     textValue={TEXT.LOGOUT}
-                    onClick={() =>
-                        // signOut({
-                        //     redirect: false,
-                        // }).then(() => router.push(URL.HOME))
-                        signOut()
-                    }
+                    onPress={() => signOut()}
                 >
                     {TEXT.LOGOUT}
                 </DropdownItem>

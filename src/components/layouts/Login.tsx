@@ -75,7 +75,7 @@ export default function Login() {
                         endContent={
                             <Button
                                 className="p-0 h-auto bg-transparent focus:outline-none"
-                                onClick={toggleVisibility}
+                                onPress={toggleVisibility}
                             >
                                 {isVisible ? (
                                     <EyeSlashIcon className="w-6 text-primary pointer-events-none" />

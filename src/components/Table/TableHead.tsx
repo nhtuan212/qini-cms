@@ -130,7 +130,7 @@ export default function TableHead({ ...props }: TableHeadProps) {
                     <Button
                         className="w-auto h-auto bg-transparent p-0"
                         isIconOnly
-                        onClick={() => handleSortingRows(column.key)}
+                        onPress={() => handleSortingRows(column.key)}
                     >
                         <ChevronDownIcon
                             className={twMerge(

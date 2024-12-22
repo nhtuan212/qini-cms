@@ -198,7 +198,7 @@ export default function RevenueColumns() {
                         <Tooltip content={TEXT.PAID}>
                             <Button
                                 className="min-w-0 bg-transparent p-0 text-default-500"
-                                onClick={() => {
+                                onPress={() => {
                                     handleReportApproved(params.row);
                                 }}
                             >
@@ -212,7 +212,7 @@ export default function RevenueColumns() {
                         <Tooltip content={TEXT.DETAIL}>
                             <Button
                                 className="min-w-0 bg-transparent p-0 text-default-500"
-                                onClick={() => {
+                                onPress={() => {
                                     handleGetReportById(params.row.id);
                                 }}
                             >
@@ -220,20 +220,20 @@ export default function RevenueColumns() {
                             </Button>
                         </Tooltip>
                         <Tooltip content={TEXT.EDIT}>
-                            <Button className="min-w-0 bg-transparent p-0 text-default-500">
-                                <PencilSquareIcon
-                                    className="w-5"
-                                    onClick={() => {
-                                        handleEditReport(params.row.id);
-                                    }}
-                                />
+                            <Button
+                                className="min-w-0 bg-transparent p-0 text-default-500"
+                                onPress={() => {
+                                    handleEditReport(params.row.id);
+                                }}
+                            >
+                                <PencilSquareIcon className="w-5" />
                             </Button>
                         </Tooltip>
                         {profile.role === ROLE.ADMIN && (
                             <Tooltip content={TEXT.DELETE}>
                                 <Button
                                     className="min-w-0 bg-transparent p-0 text-default-500"
-                                    onClick={() => handleDeleteReport(params.row.id)}
+                                    onPress={() => handleDeleteReport(params.row.id)}
                                 >
                                     <TrashIcon className="w-5" />
                                 </Button>

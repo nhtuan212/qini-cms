@@ -324,7 +324,7 @@ export default function ReportAddNew() {
                                         "absolute -right-2 -top-2",
                                         "min-w-6 h-6 p-0 rounded-full",
                                     )}
-                                    onClick={() => remove(index)}
+                                    onPress={() => remove(index)}
                                 >
                                     <XMarkIcon className="w-4" />
                                 </Button>
@@ -336,7 +336,7 @@ export default function ReportAddNew() {
                 {action !== "update" && (
                     <div className="w-full flex justify-end">
                         <Button
-                            onClick={() =>
+                            onPress={() =>
                                 append({
                                     staffId: "",
                                     checkIn: "",
@@ -453,7 +453,7 @@ export default function ReportAddNew() {
                 <div className="w-full flex justify-end gap-2">
                     <Button
                         className="bg-white text-default-900 ring-1 ring-inset ring-gray-300"
-                        onClick={() =>
+                        onPress={() =>
                             getModal({
                                 isOpen: false,
                             })

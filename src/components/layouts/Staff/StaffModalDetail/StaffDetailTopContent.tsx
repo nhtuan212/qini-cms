@@ -64,7 +64,7 @@ export default function TargetTopContent() {
                     }}
                 />
 
-                <Button onClick={() => handleFilterReports()}>{TEXT.SUBMIT}</Button>
+                <Button onPress={() => handleFilterReports()}>{TEXT.SUBMIT}</Button>
             </div>
         </div>
     );

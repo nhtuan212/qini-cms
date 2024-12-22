@@ -29,7 +29,7 @@ export default function Staff() {
             <div className="flex justify-between items-center">
                 <div className="title">{TEXT.STAFF}</div>
                 <Button
-                    onClick={() =>
+                    onPress={() =>
                         getModal({
                             isOpen: true,
                             modalHeader: TEXT.ADD_STAFF,

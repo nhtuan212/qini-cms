@@ -113,7 +113,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                     key="detail"
                     startContent={<EyeIcon className="w-5" />}
                     textValue={TEXT.DETAIL}
-                    onClick={() => handleViewStaff(id)}
+                    onPress={() => handleViewStaff(id)}
                 >
                     {TEXT.DETAIL}
                 </DropdownItem>
@@ -121,7 +121,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                     key="edit"
                     startContent={<PencilSquareIcon className="w-5" />}
                     textValue={TEXT.EDIT}
-                    onClick={() => handleUpdateStaff(id)}
+                    onPress={() => handleUpdateStaff(id)}
                 >
                     {TEXT.EDIT}
                 </DropdownItem>
@@ -129,7 +129,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                     key="delete"
                     startContent={<TrashIcon className="w-5" />}
                     textValue={TEXT.DELETE}
-                    onClick={() => handleDeleteStaff(id)}
+                    onPress={() => handleDeleteStaff(id)}
                 >
                     {TEXT.DELETE}
                 </DropdownItem>

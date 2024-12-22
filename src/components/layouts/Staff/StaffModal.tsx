@@ -114,7 +114,7 @@ export default function StaffModal() {
                 <Button type="submit">{TEXT.SAVE}</Button>
                 <Button
                     className="bg-white text-default-900 ring-1 ring-inset ring-gray-300"
-                    onClick={handleCloseModal}
+                    onPress={handleCloseModal}
                 >
                     {TEXT.CANCEL}
                 </Button>
