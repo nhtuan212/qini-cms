@@ -26,7 +26,7 @@ import { TEXT } from "@/constants/text";
 import { ROLE } from "@/constants";
 import { ShiftProps } from "@/types/shiftProps";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
-import { DateProps } from "@/lib/types";
+import { DateProps, ModalActionProps } from "@/lib/types";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { DateValue } from "@nextui-org/react";
 
@@ -149,7 +149,7 @@ export default function ReportAddNew() {
                 });
                 break;
 
-            case "update":
+            case ModalActionProps.UPDATE:
                 await updateReport({
                     id: reportById.id,
                     reports,
@@ -213,21 +213,30 @@ export default function ReportAddNew() {
                     )}
                 />
 
-                <Select
-                    className="w-full"
-                    startContent={<ClockIcon className="w-5 h-5" />}
-                    label={TEXT.WORK_SHIFT}
-                    isInvalid={!!errors.shift}
-                    {...register("shift", {
-                        required: `${TEXT.WORK_SHIFT} ${TEXT.IS_REQUIRED}`,
-                    })}
-                    errorMessage={errors.shift && <ErrorMessage errors={errors} name={"shift"} />}
-                    isDisabled={action === "update"}
-                >
-                    {shifts.map((item: ShiftProps) => (
-                        <SelectItem key={item.id}>{item.name}</SelectItem>
-                    ))}
-                </Select>
+                <Controller
+                    name="shift"
+                    control={control}
+                    rules={{
+                        required: `${TEXT.DATE} ${TEXT.IS_REQUIRED}`,
+                    }}
+                    render={({ field }) => (
+                        <Select
+                            className="w-full"
+                            startContent={<ClockIcon className="w-5 h-5" />}
+                            label={TEXT.WORK_SHIFT}
+                            {...field}
+                            isInvalid={!!errors.shift}
+                            errorMessage={
+                                errors.shift && <ErrorMessage errors={errors} name={"shift"} />
+                            }
+                            isDisabled={action === ModalActionProps.UPDATE}
+                        >
+                            {shifts.map((item: ShiftProps) => (
+                                <SelectItem key={item.id}>{item.name}</SelectItem>
+                            ))}
+                        </Select>
+                    )}
+                />
 
                 {fields.map((field, index) => {
                     return (
@@ -235,61 +244,75 @@ export default function ReportAddNew() {
                             key={field.id}
                             className="relative w-full flex justify-between items-center gap-3"
                         >
-                            <Select
-                                startContent={<UserCircleIcon className="w-5 h-5" />}
-                                label={TEXT.STAFF}
-                                isInvalid={!!errors.staff?.[index]?.staffId}
-                                {...register(`staff.${index}.staffId`, {
+                            <Controller
+                                name={`staff.${index}.staffId`}
+                                control={control}
+                                rules={{
                                     required: `${TEXT.STAFF} ${TEXT.IS_REQUIRED}`,
-                                })}
-                                errorMessage={
-                                    errors.staff?.[index]?.staffId && (
-                                        <ErrorMessage
-                                            errors={errors}
-                                            name={`staff.${index}.staffId`}
-                                        />
-                                    )
-                                }
-                                isDisabled={action === "update"}
-                            >
-                                {staff.map((item: StaffProps) => (
-                                    <SelectItem key={item.id} value={item.name}>
-                                        {item.name}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-                            <Select
-                                className="w-full"
-                                startContent={<ClockIcon className="w-5 h-5" />}
-                                label={TEXT.CHECK_IN}
-                                isInvalid={!!`staff.${index}.checkIn`}
-                                {...register(`staff.${index}.checkIn`, {
+                                }}
+                                render={({ field }) => {
+                                    return (
+                                        <Select
+                                            startContent={<UserCircleIcon className="w-5 h-5" />}
+                                            label={TEXT.STAFF}
+                                            {...field}
+                                            isInvalid={!!errors.staff?.[index]?.staffId}
+                                            errorMessage={
+                                                errors.staff?.[index]?.staffId && (
+                                                    <ErrorMessage
+                                                        errors={errors}
+                                                        name={`staff.${index}.staffId`}
+                                                    />
+                                                )
+                                            }
+                                            isDisabled={action === ModalActionProps.UPDATE}
+                                        >
+                                            {staff.map((item: StaffProps) => (
+                                                <SelectItem key={item.id} value={item.name}>
+                                                    {item.name}
+                                                </SelectItem>
+                                            ))}
+                                        </Select>
+                                    );
+                                }}
+                            />
+                            <Controller
+                                name={`staff.${index}.checkIn`}
+                                control={control}
+                                rules={{
                                     required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
-                                })}
-                                errorMessage={
-                                    errors.staff?.[index]?.checkIn && (
-                                        <ErrorMessage
-                                            errors={errors}
-                                            name={`staff.${index}.checkIn`}
-                                        />
-                                    )
-                                }
-                                isDisabled={action === "update"}
-                            >
-                                {timeSheet.map(item => (
-                                    <SelectItem key={item.value} value={item.value}>
-                                        {item.value}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-                            <Select
-                                className="w-full"
-                                startContent={<ClockIcon className="w-5 h-5" />}
-                                label={TEXT.CHECK_OUT}
-                                isInvalid={!!`staff.${index}.checkOut`}
-                                {...register(`staff.${index}.checkOut`, {
-                                    required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
-
+                                }}
+                                render={({ field }) => {
+                                    return (
+                                        <Select
+                                            startContent={<UserCircleIcon className="w-5 h-5" />}
+                                            label={TEXT.CHECK_IN}
+                                            {...field}
+                                            isInvalid={!!errors.staff?.[index]?.checkIn}
+                                            errorMessage={
+                                                errors.staff?.[index]?.checkIn && (
+                                                    <ErrorMessage
+                                                        errors={errors}
+                                                        name={`staff.${index}.checkIn`}
+                                                    />
+                                                )
+                                            }
+                                            isDisabled={action === ModalActionProps.UPDATE}
+                                        >
+                                            {timeSheet.map(item => (
+                                                <SelectItem key={item.value} value={item.value}>
+                                                    {item.value}
+                                                </SelectItem>
+                                            ))}
+                                        </Select>
+                                    );
+                                }}
+                            />
+                            <Controller
+                                name={`staff.${index}.checkOut`}
+                                control={control}
+                                rules={{
+                                    required: `${TEXT.CHECK_OUT} ${TEXT.IS_REQUIRED}`,
                                     validate: value => {
                                         const isWrongTimeSheet = wrongTimeSheet({
                                             checkIn: getValues(`staff.${index}.checkIn`),
@@ -301,24 +324,34 @@ export default function ReportAddNew() {
 
                                         return true;
                                     },
-                                })}
-                                errorMessage={
-                                    errors.staff?.[index]?.checkOut && (
-                                        <ErrorMessage
-                                            errors={errors}
-                                            name={`staff.${index}.checkOut`}
-                                        />
-                                    )
-                                }
-                                isDisabled={action === "update"}
-                            >
-                                {timeSheet.map(item => (
-                                    <SelectItem key={item.value} value={item.value}>
-                                        {item.value}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-                            {index > 0 && action !== "update" && (
+                                }}
+                                render={({ field }) => {
+                                    return (
+                                        <Select
+                                            startContent={<UserCircleIcon className="w-5 h-5" />}
+                                            label={TEXT.CHECK_OUT}
+                                            {...field}
+                                            isInvalid={!!errors.staff?.[index]?.checkOut}
+                                            errorMessage={
+                                                errors.staff?.[index]?.checkOut && (
+                                                    <ErrorMessage
+                                                        errors={errors}
+                                                        name={`staff.${index}.checkOut`}
+                                                    />
+                                                )
+                                            }
+                                            isDisabled={action === ModalActionProps.UPDATE}
+                                        >
+                                            {timeSheet.map(item => (
+                                                <SelectItem key={item.value} value={item.value}>
+                                                    {item.value}
+                                                </SelectItem>
+                                            ))}
+                                        </Select>
+                                    );
+                                }}
+                            />
+                            {index > 0 && action !== ModalActionProps.UPDATE && (
                                 <Button
                                     className={clsx(
                                         "absolute -right-2 -top-2",
@@ -333,7 +366,7 @@ export default function ReportAddNew() {
                     );
                 })}
 
-                {action !== "update" && (
+                {action !== ModalActionProps.UPDATE && (
                     <div className="w-full flex justify-end">
                         <Button
                             onPress={() =>
@@ -357,7 +390,7 @@ export default function ReportAddNew() {
                         value={currencyFormat(reportById.revenue as number)}
                         startContent={<CurrencyDollarIcon className="w-5 h-5" />}
                         placeholder={TEXT.TARGET}
-                        isDisabled={action === "update"}
+                        isDisabled={action === ModalActionProps.UPDATE}
                         isInvalid={!!errors.revenue}
                         {...register("revenue", {
                             required: `${TEXT.TARGET} ${TEXT.IS_REQUIRED}`,
@@ -376,7 +409,7 @@ export default function ReportAddNew() {
                         value={currencyFormat(reportById.transfer as number)}
                         startContent={<CurrencyDollarIcon className="w-5 h-5" />}
                         placeholder={TEXT.TRANSFER}
-                        isDisabled={action === "update"}
+                        isDisabled={action === ModalActionProps.UPDATE}
                         isInvalid={!!errors.transfer}
                         {...register("transfer", {
                             required: `${TEXT.TRANSFER} ${TEXT.IS_REQUIRED}`,
@@ -397,7 +430,7 @@ export default function ReportAddNew() {
                         )}
                         startContent={<CurrencyDollarIcon className="w-5 h-5" />}
                         placeholder={TEXT.DEDUCTION}
-                        isDisabled={action === "update"}
+                        isDisabled={action === ModalActionProps.UPDATE}
                         isInvalid={!!errors.deduction}
                         {...register("deduction", {
                             required: `${TEXT.DEDUCTION} ${TEXT.IS_REQUIRED}`,
@@ -417,7 +450,9 @@ export default function ReportAddNew() {
                         startContent={<CurrencyDollarIcon className="w-5 h-5" />}
                         placeholder={TEXT.CASH}
                         readOnly={profile.role === "staff"}
-                        isDisabled={action === "update" && profile.role !== ROLE.ADMIN}
+                        isDisabled={
+                            action === ModalActionProps.UPDATE && profile.role !== ROLE.ADMIN
+                        }
                         isInvalid={!!errors.cash}
                         {...register("cash", {
                             required: `${TEXT.CASH} ${TEXT.IS_REQUIRED}`,
@@ -461,6 +496,7 @@ export default function ReportAddNew() {
                     >
                         {TEXT.CANCEL}
                     </Button>
+
                     <Button type="submit">{TEXT.SAVE}</Button>
                 </div>
             </div>
