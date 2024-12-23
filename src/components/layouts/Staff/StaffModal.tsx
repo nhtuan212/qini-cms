@@ -27,6 +27,10 @@ export default function StaffModal() {
     const [error, setError] = useState("");
 
     //** React hook form */
+    const defaultValues = {
+        name: action === ModalActionProps.UPDATE ? staffById.name : "",
+    };
+
     const {
         control,
         register,
@@ -35,9 +39,7 @@ export default function StaffModal() {
         setValue,
         formState: { errors },
     } = useForm<FormValues>({
-        defaultValues: {
-            name: "",
-        },
+        values: defaultValues,
         criteriaMode: "all",
     });
 

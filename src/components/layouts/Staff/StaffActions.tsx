@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import StaffModal from "./StaffModal";
 import StaffModalDetail from "./StaffModalDetail";
 import Button from "@/components/Button";
@@ -94,7 +94,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     };
 
     //** Effects */
-    React.useEffect(() => {
+    useEffect(() => {
         return () => {
             resetStaff();
         };

@@ -26,6 +26,7 @@ export default function Staff() {
     return (
         <>
             {isLoading && <Loading />}
+
             <div className="flex justify-between items-center">
                 <div className="title">{TEXT.STAFF}</div>
                 <Button
