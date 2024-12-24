@@ -28,7 +28,6 @@ import { ShiftProps } from "@/types/shiftProps";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { DateProps, ModalActionProps } from "@/lib/types";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { DateValue } from "@nextui-org/react";
 
 type FormValues = {
     date?: DateProps;
@@ -92,8 +91,6 @@ export default function ReportAddNew() {
         deduction: reportById.deduction || 0,
         description: reportById.description || "",
     };
-
-    console.log({ defaultValues });
 
     const {
         control,
@@ -208,9 +205,8 @@ export default function ReportAddNew() {
                         <DatePicker
                             label={TEXT.DATE_PICKER}
                             isRequired
-                            defaultValue={field.value as unknown as DateValue}
+                            {...field}
                             isInvalid={!!errors.date}
-                            onChange={field.onChange}
                             errorMessage={errors.date && errors.date.message}
                         />
                     )}
