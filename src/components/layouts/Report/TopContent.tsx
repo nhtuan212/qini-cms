@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import ReportAddNew from "./ReportAddNew";
+import ReportModal from "./ReportModal";
 import Button from "../../Button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
@@ -23,7 +23,7 @@ export default function TopContent() {
                                 isOpen: true,
                                 size: "3xl",
                                 modalHeader: TEXT.ADD_REPORT,
-                                modalBody: <ReportAddNew />,
+                                modalBody: <ReportModal />,
                             })
                         }
                     >

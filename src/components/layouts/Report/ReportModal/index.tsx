@@ -93,10 +93,13 @@ export default function ReportAddNew() {
         description: reportById.description || "",
     };
 
+    console.log({ defaultValues });
+
     const {
         control,
         register,
         handleSubmit,
+        setValue,
         getValues,
         reset,
         formState: { errors },
@@ -213,30 +216,25 @@ export default function ReportAddNew() {
                     )}
                 />
 
-                <Controller
-                    name="shift"
-                    control={control}
-                    rules={{
+                <Select
+                    className="w-full"
+                    startContent={<ClockIcon className="w-5 h-5" />}
+                    label={TEXT.WORK_SHIFT}
+                    {...register("shift", {
                         required: `${TEXT.DATE} ${TEXT.IS_REQUIRED}`,
-                    }}
-                    render={({ field }) => (
-                        <Select
-                            className="w-full"
-                            startContent={<ClockIcon className="w-5 h-5" />}
-                            label={TEXT.WORK_SHIFT}
-                            {...field}
-                            isInvalid={!!errors.shift}
-                            errorMessage={
-                                errors.shift && <ErrorMessage errors={errors} name={"shift"} />
-                            }
-                            isDisabled={action === ModalActionProps.UPDATE}
-                        >
-                            {shifts.map((item: ShiftProps) => (
-                                <SelectItem key={item.id}>{item.name}</SelectItem>
-                            ))}
-                        </Select>
-                    )}
-                />
+
+                        onChange: e => {
+                            setValue("shift", e.target.value);
+                        },
+                    })}
+                    isInvalid={!!errors.shift}
+                    errorMessage={errors.shift && <ErrorMessage errors={errors} name={"shift"} />}
+                    isDisabled={action === ModalActionProps.UPDATE}
+                >
+                    {shifts.map((item: ShiftProps) => (
+                        <SelectItem key={item.id}>{item.name}</SelectItem>
+                    ))}
+                </Select>
 
                 {fields.map((field, index) => {
                     return (
@@ -244,75 +242,66 @@ export default function ReportAddNew() {
                             key={field.id}
                             className="relative w-full flex justify-between items-center gap-3"
                         >
-                            <Controller
-                                name={`staff.${index}.staffId`}
-                                control={control}
-                                rules={{
+                            <Select
+                                startContent={<UserCircleIcon className="w-5 h-5" />}
+                                label={TEXT.STAFF}
+                                {...register(`staff.${index}.staffId`, {
                                     required: `${TEXT.STAFF} ${TEXT.IS_REQUIRED}`,
-                                }}
-                                render={({ field }) => {
-                                    return (
-                                        <Select
-                                            startContent={<UserCircleIcon className="w-5 h-5" />}
-                                            label={TEXT.STAFF}
-                                            {...field}
-                                            isInvalid={!!errors.staff?.[index]?.staffId}
-                                            errorMessage={
-                                                errors.staff?.[index]?.staffId && (
-                                                    <ErrorMessage
-                                                        errors={errors}
-                                                        name={`staff.${index}.staffId`}
-                                                    />
-                                                )
-                                            }
-                                            isDisabled={action === ModalActionProps.UPDATE}
-                                        >
-                                            {staff.map((item: StaffProps) => (
-                                                <SelectItem key={item.id} value={item.name}>
-                                                    {item.name}
-                                                </SelectItem>
-                                            ))}
-                                        </Select>
-                                    );
-                                }}
-                            />
-                            <Controller
-                                name={`staff.${index}.checkIn`}
-                                control={control}
-                                rules={{
+
+                                    onChange: e => {
+                                        setValue(`staff.${index}.staffId`, e.target.value);
+                                    },
+                                })}
+                                isInvalid={!!errors.staff?.[index]?.staffId}
+                                errorMessage={
+                                    errors.staff?.[index]?.staffId && (
+                                        <ErrorMessage
+                                            errors={errors}
+                                            name={`staff.${index}.staffId`}
+                                        />
+                                    )
+                                }
+                                isDisabled={action === ModalActionProps.UPDATE}
+                            >
+                                {staff.map((item: StaffProps) => (
+                                    <SelectItem key={item.id} value={item.name}>
+                                        {item.name}
+                                    </SelectItem>
+                                ))}
+                            </Select>
+                            <Select
+                                startContent={<UserCircleIcon className="w-5 h-5" />}
+                                label={TEXT.CHECK_IN}
+                                {...register(`staff.${index}.checkIn`, {
                                     required: `${TEXT.CHECK_IN} ${TEXT.IS_REQUIRED}`,
-                                }}
-                                render={({ field }) => {
-                                    return (
-                                        <Select
-                                            startContent={<UserCircleIcon className="w-5 h-5" />}
-                                            label={TEXT.CHECK_IN}
-                                            {...field}
-                                            isInvalid={!!errors.staff?.[index]?.checkIn}
-                                            errorMessage={
-                                                errors.staff?.[index]?.checkIn && (
-                                                    <ErrorMessage
-                                                        errors={errors}
-                                                        name={`staff.${index}.checkIn`}
-                                                    />
-                                                )
-                                            }
-                                            isDisabled={action === ModalActionProps.UPDATE}
-                                        >
-                                            {timeSheet.map(item => (
-                                                <SelectItem key={item.value} value={item.value}>
-                                                    {item.value}
-                                                </SelectItem>
-                                            ))}
-                                        </Select>
-                                    );
-                                }}
-                            />
-                            <Controller
-                                name={`staff.${index}.checkOut`}
-                                control={control}
-                                rules={{
+
+                                    onChange: e => {
+                                        setValue(`staff.${index}.checkIn`, e.target.value);
+                                    },
+                                })}
+                                isInvalid={!!errors.staff?.[index]?.checkIn}
+                                errorMessage={
+                                    errors.staff?.[index]?.checkIn && (
+                                        <ErrorMessage
+                                            errors={errors}
+                                            name={`staff.${index}.checkIn`}
+                                        />
+                                    )
+                                }
+                                isDisabled={action === ModalActionProps.UPDATE}
+                            >
+                                {timeSheet.map(item => (
+                                    <SelectItem key={item.value} value={item.value}>
+                                        {item.value}
+                                    </SelectItem>
+                                ))}
+                            </Select>
+                            <Select
+                                startContent={<UserCircleIcon className="w-5 h-5" />}
+                                label={TEXT.CHECK_OUT}
+                                {...register(`staff.${index}.checkOut`, {
                                     required: `${TEXT.CHECK_OUT} ${TEXT.IS_REQUIRED}`,
+
                                     validate: value => {
                                         const isWrongTimeSheet = wrongTimeSheet({
                                             checkIn: getValues(`staff.${index}.checkIn`),
@@ -324,33 +313,28 @@ export default function ReportAddNew() {
 
                                         return true;
                                     },
-                                }}
-                                render={({ field }) => {
-                                    return (
-                                        <Select
-                                            startContent={<UserCircleIcon className="w-5 h-5" />}
-                                            label={TEXT.CHECK_OUT}
-                                            {...field}
-                                            isInvalid={!!errors.staff?.[index]?.checkOut}
-                                            errorMessage={
-                                                errors.staff?.[index]?.checkOut && (
-                                                    <ErrorMessage
-                                                        errors={errors}
-                                                        name={`staff.${index}.checkOut`}
-                                                    />
-                                                )
-                                            }
-                                            isDisabled={action === ModalActionProps.UPDATE}
-                                        >
-                                            {timeSheet.map(item => (
-                                                <SelectItem key={item.value} value={item.value}>
-                                                    {item.value}
-                                                </SelectItem>
-                                            ))}
-                                        </Select>
-                                    );
-                                }}
-                            />
+
+                                    onChange: e => {
+                                        setValue(`staff.${index}.checkOut`, e.target.value);
+                                    },
+                                })}
+                                isInvalid={!!errors.staff?.[index]?.checkOut}
+                                errorMessage={
+                                    errors.staff?.[index]?.checkOut && (
+                                        <ErrorMessage
+                                            errors={errors}
+                                            name={`staff.${index}.checkOut`}
+                                        />
+                                    )
+                                }
+                                isDisabled={action === ModalActionProps.UPDATE}
+                            >
+                                {timeSheet.map(item => (
+                                    <SelectItem key={item.value} value={item.value}>
+                                        {item.value}
+                                    </SelectItem>
+                                ))}
+                            </Select>
                             {index > 0 && action !== ModalActionProps.UPDATE && (
                                 <Button
                                     className={clsx(

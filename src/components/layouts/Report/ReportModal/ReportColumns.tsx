@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import ReportAddNew from "./ReportAddNew";
-import ReportDetail from "./ReportDetail";
+import ReportModal from ".";
+import ReportDetailModal from "../ReportDetailModal";
 import ConfirmModal from "@/components/ConfirmModal";
 import Button from "@/components/Button";
 import { Tooltip } from "@nextui-org/react";
@@ -46,7 +46,7 @@ export default function RevenueColumns() {
             isOpen: true,
             size: "3xl",
             modalHeader: TEXT.REPORT,
-            modalBody: <ReportDetail />,
+            modalBody: <ReportDetailModal />,
         });
     };
 
@@ -57,7 +57,7 @@ export default function RevenueColumns() {
             size: "3xl",
             action: ModalActionProps.UPDATE,
             modalHeader: TEXT.EDIT_REPORT,
-            modalBody: <ReportAddNew />,
+            modalBody: <ReportModal />,
         });
     };
 

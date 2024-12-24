@@ -10,7 +10,7 @@ import { useReportsStore } from "@/stores/useReportsStore";
 import { currencyFormat } from "@/utils";
 import { TEXT } from "@/constants/text";
 
-export default function ReportDetail() {
+export default function ReportDetailModalModal() {
     //** Stores */
     const { modal } = useModalStore();
     const { isLoading, reportById, resetReport } = useReportsStore();
