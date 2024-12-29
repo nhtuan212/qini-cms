@@ -20,7 +20,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { ReportProps, useReportsStore } from "@/stores/useReportsStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
-import { currencyFormat, formatDate, wrongTimeSheet } from "@/utils";
+import { convertAmountToNumber, currencyFormat, formatDate, wrongTimeSheet } from "@/utils";
 import { timeSheet } from "@/config/apis";
 import { TEXT } from "@/constants/text";
 import { ROLE } from "@/constants";
@@ -108,13 +108,12 @@ export default function ReportAddNew() {
     });
 
     const onSubmit = async (data: FormValues) => {
-        const revenue = +String(data.revenue).replace(/[^0-9]/g, "") || 0;
-        const transfer = +String(data.transfer).replace(/[^0-9]/g, "") || 0;
-        const deduction = +String(data.deduction).replace(/[^0-9]/g, "") || 0;
-        const cash =
-            data.cash && data.cash >= 0
-                ? +String(data.cash).replace(/[^0-9]/g, "")
-                : revenue - transfer - deduction;
+        const revenue = convertAmountToNumber(String(data.revenue));
+        const transfer = convertAmountToNumber(String(data.transfer));
+        const deduction = convertAmountToNumber(String(data.deduction));
+        const cash = data.cash
+            ? convertAmountToNumber(String(data.cash))
+            : revenue - transfer - deduction;
         const createAt = new Date(`${data.date} ${formatDate(null, "HH:mm:ss")}`).toISOString();
 
         const reports: ReportProps = {

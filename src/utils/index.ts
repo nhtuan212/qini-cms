@@ -22,6 +22,12 @@ export const currencyFormat = (amount: number) => {
     return 0;
 };
 
+export const convertAmountToNumber = (amount: string) => {
+    if (!amount) return 0;
+
+    return parseFloat(amount.replace(/[^0-9]/g, ""));
+};
+
 export const formatDate = (date: Date | null, format: string = "DD/MM/YYYY") => {
     if (!date) return dayjs().format(format);
 

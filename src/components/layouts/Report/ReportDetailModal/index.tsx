@@ -61,7 +61,7 @@ export default function ReportDetailModalModal() {
             </div>
 
             <Table
-                className="min-h-10 [&>.tableContainer]:h-60"
+                className="min-h-10 [&>.tableContainer]:min-h-16"
                 columns={ReportDetailColumns()}
                 rows={reportsOnStaffs}
                 loading={isLoading}
