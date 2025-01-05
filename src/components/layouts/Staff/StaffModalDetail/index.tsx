@@ -8,14 +8,14 @@ import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 
 export default function StaffModalDetail() {
     //** Stores */
-    const { reportsOnStaff, isReportsOnStaffLoading } = useReportsOnStaffsStore();
+    const { reportsOnStaff, isLoading } = useReportsOnStaffsStore();
 
     return (
         <Table
             className="[&>.tableContainer]:h-[40rem]"
             columns={StaffDetailColumns()}
             rows={reportsOnStaff}
-            loading={isReportsOnStaffLoading}
+            loading={isLoading}
             topContent={<StaffDetailTopContent />}
         />
     );

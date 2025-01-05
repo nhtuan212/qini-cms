@@ -69,10 +69,9 @@ export default function RevenueColumns() {
             modalBody: (
                 <ConfirmModal
                     onConfirm={async () => {
-                        await deleteReport(id);
-                        await getReport();
-
-                        getModal({ isOpen: false });
+                        deleteReport(id)
+                            .then(() => getModal({ isOpen: false }))
+                            .then(() => getReport());
                     }}
                 />
             ),

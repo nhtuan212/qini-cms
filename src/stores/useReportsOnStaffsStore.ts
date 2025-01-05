@@ -7,7 +7,7 @@ export type ReportsOnStaffProps = {
 };
 
 type ReportState = {
-    isReportsOnStaffLoading: boolean;
+    isLoading: boolean;
     reportsOnStaff: [];
 };
 
@@ -18,7 +18,7 @@ type ReportAction = {
 };
 
 const initialState: ReportState = {
-    isReportsOnStaffLoading: false,
+    isLoading: false,
     reportsOnStaff: [],
 };
 
@@ -29,7 +29,7 @@ export const useReportsOnStaffsStore = create<ReportState & ReportAction>()(set 
         const endpoint = `${URL.REPORT_ON_STAFF}?staffId=${staffId}&startDate=${startDate}&endDate=${endDate}`;
 
         set({
-            isReportsOnStaffLoading: true,
+            isLoading: true,
         });
 
         return await fetchData({
@@ -42,7 +42,7 @@ export const useReportsOnStaffsStore = create<ReportState & ReportAction>()(set 
             }
 
             return set({
-                isReportsOnStaffLoading: false,
+                isLoading: false,
                 reportsOnStaff: res.data,
             });
         });

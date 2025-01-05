@@ -45,17 +45,18 @@ export default function StaffActions({ item }: { item: StaffProps }) {
 
     //** Functions */
     const handleViewStaff = async (id: string) => {
-        await getReportsOnStaff({
-            staffId: id,
-            startDate: getDateTime().firstDayOfMonth.toString(),
-            endDate: getDateTime().lastDayOfMonth.toString(),
-        });
-
-        await getStaffById(id).then(res => {
+        await Promise.all([
+            getReportsOnStaff({
+                staffId: id,
+                startDate: getDateTime().firstDayOfMonth.toString(),
+                endDate: getDateTime().lastDayOfMonth.toString(),
+            }),
+            getStaffById(id),
+        ]).then(([, staff]) => {
             getModal({
                 isOpen: true,
                 size: "3xl",
-                modalHeader: `${TEXT.STAFF}: ${res.name}`,
+                modalHeader: `${TEXT.STAFF}: ${staff.name}`,
                 action: ModalActionProps.UPDATE,
                 isDismissable: false,
                 modalBody: <StaffModalDetail />,

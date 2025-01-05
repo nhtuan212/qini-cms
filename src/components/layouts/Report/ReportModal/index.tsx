@@ -48,7 +48,8 @@ export default function ReportAddNew() {
     //** Stores */
     const { modal, getModal } = useModalStore();
     const { profile } = useProfileStore();
-    const { reportById, getReport, createReport, updateReport, resetReport } = useReportsStore();
+    const { isLoading, reportById, getReport, createReport, updateReport, resetReport } =
+        useReportsStore();
     const { staff } = useStaffStore();
     const { shifts } = useShiftStore();
 
@@ -141,7 +142,7 @@ export default function ReportAddNew() {
         }));
 
         switch (action) {
-            case "create":
+            case ModalActionProps.CREATE:
                 await createReport({
                     reports,
                     reportsOnStaffs,
@@ -159,10 +160,11 @@ export default function ReportAddNew() {
                 break;
         }
 
+        getReport();
+
         getModal({
             isOpen: false,
         });
-        getReport();
     };
 
     //** Effects */
@@ -467,6 +469,7 @@ export default function ReportAddNew() {
                 <div className="w-full flex justify-end gap-2">
                     <Button
                         className="bg-white text-default-900 ring-1 ring-inset ring-gray-300"
+                        isLoading={isLoading}
                         onPress={() =>
                             getModal({
                                 isOpen: false,
@@ -476,7 +479,9 @@ export default function ReportAddNew() {
                         {TEXT.CANCEL}
                     </Button>
 
-                    <Button type="submit">{TEXT.SAVE}</Button>
+                    <Button type="submit" isLoading={isLoading}>
+                        {TEXT.SAVE}
+                    </Button>
                 </div>
             </div>
         </form>

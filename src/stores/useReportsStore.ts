@@ -58,13 +58,17 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
         return await fetchData({
             endpoint,
         }).then(res => {
+            set({
+                isLoading: false,
+            });
+
             if (res?.code !== 200) {
                 return set({
                     reports: res?.message,
                 });
             }
+
             return set({
-                isLoading: false,
                 reports: res.data,
                 reportPagination: res.pagination,
             });
@@ -79,6 +83,10 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
         return await fetchData({
             endpoint: `${URL.REPORT}/${id}`,
         }).then(res => {
+            set({
+                isLoading: false,
+            });
+
             if (res?.code !== 200) {
                 return set({
                     reportById: res?.message,
@@ -86,7 +94,6 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
             }
 
             return set({
-                isLoading: false,
                 reportById: res.data[0],
             });
         });
@@ -99,6 +106,10 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
         reports: ReportProps;
         reportsOnStaffs: ReportProps;
     }) => {
+        set({
+            isLoading: true,
+        });
+
         const body = JSON.stringify({
             ...reports,
             reportsOnStaffs,
@@ -111,6 +122,10 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
                 body,
             },
         }).then(res => {
+            set({
+                isLoading: false,
+            });
+
             if (res?.code !== STATUS_CODE.OK) {
                 return {
                     code: res?.code,
@@ -123,23 +138,43 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
     },
 
     updateReport: async ({ id, reports }: { id: string; reports: ReportProps }) => {
+        set({
+            isLoading: true,
+        });
+
         return await fetchData({
             endpoint: `${URL.REPORT}/${id}`,
             options: {
                 method: "PUT",
                 body: JSON.stringify({ ...reports }),
             },
-        }).then(res => res);
+        }).then(res => {
+            set({
+                isLoading: false,
+            });
+
+            return res;
+        });
     },
 
     deleteReport: async (id: string) => {
+        set({
+            isLoading: true,
+        });
+
         return await fetchData({
             endpoint: URL.REPORT,
             options: {
                 method: "DELETE",
                 body: JSON.stringify({ id }),
             },
-        }).then(res => res);
+        }).then(res => {
+            set({
+                isLoading: false,
+            });
+
+            return res;
+        });
     },
 
     resetReport: () => {

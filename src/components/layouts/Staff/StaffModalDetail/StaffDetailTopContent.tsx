@@ -13,8 +13,7 @@ import { CalendarDate } from "@internationalized/date";
 export default function TargetTopContent() {
     //** Stores */
     const { staffById } = useStaffStore();
-    const { getReportsOnStaff, reportsOnStaff, isReportsOnStaffLoading } =
-        useReportsOnStaffsStore();
+    const { getReportsOnStaff, reportsOnStaff, isLoading } = useReportsOnStaffsStore();
 
     //** States */
     const [dateValue, setDateValue] = useState<RangeValue<CalendarDate>>({
@@ -23,8 +22,8 @@ export default function TargetTopContent() {
     });
 
     //** Variables */
-    const totalTarget = !isReportsOnStaffLoading ? sumArray(reportsOnStaff, "target") : 0;
-    const totalTimeWorked = !isReportsOnStaffLoading ? sumArray(reportsOnStaff, "timeWorked") : 0;
+    const totalTarget = !isLoading ? sumArray(reportsOnStaff, "target") : 0;
+    const totalTimeWorked = !isLoading ? sumArray(reportsOnStaff, "timeWorked") : 0;
 
     //** Functions */
     const handleFilterReports = () => {
