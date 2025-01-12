@@ -26,4 +26,6 @@ export const timeSheet = [
     { id: 25, value: "21:00" },
     { id: 26, value: "21:30" },
     { id: 27, value: "22:00" },
+    { id: 28, value: "22:30" },
+    { id: 29, value: "23:00" },
 ];
