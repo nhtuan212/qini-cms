@@ -61,7 +61,7 @@ export default function Header() {
                 />
                 <NavbarBrand>
                     <Link href={ROUTE.HOME} className="flex items-center ml-4 lg:ml-0">
-                        <Logo width="64" height="58" className="w-[1.5rem] h-[1.5rem]" />
+                        <Logo className="w-16 h-16" />
                         <span className="ml-2">{process.env.NEXT_PUBLIC_SITE_NAME}</span>
                     </Link>
                 </NavbarBrand>

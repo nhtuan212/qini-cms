@@ -18,7 +18,7 @@ export default function Profile() {
                 <div className="w-8 h-8 cursor-pointer">
                     <ImageComponent
                         className="rounded-full border border-primary"
-                        src="/assets/logo.png"
+                        src="/assets/logo.svg"
                         alt=""
                     />
                 </div>
