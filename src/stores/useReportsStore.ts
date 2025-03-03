@@ -25,7 +25,15 @@ type ReportAction = {
         code: number;
         message: string;
     }>;
-    updateReport: ({ id, reports }: { id: string; reports: ReportProps }) => Promise<{
+    updateReport: ({
+        id,
+        reports,
+        reportsOnStaffs,
+    }: {
+        id: string;
+        reports: ReportProps;
+        reportsOnStaffs?: ReportProps;
+    }) => Promise<{
         code: number;
         message: string;
     }>;
@@ -137,16 +145,29 @@ export const useReportsStore = create<ReportState & ReportAction>()(set => ({
         });
     },
 
-    updateReport: async ({ id, reports }: { id: string; reports: ReportProps }) => {
+    updateReport: async ({
+        id,
+        reports,
+        reportsOnStaffs,
+    }: {
+        id: string;
+        reports: ReportProps;
+        reportsOnStaffs?: ReportProps;
+    }) => {
         set({
             isLoading: true,
+        });
+
+        const body = JSON.stringify({
+            ...reports,
+            reportsOnStaffs,
         });
 
         return await fetchData({
             endpoint: `${URL.REPORT}/${id}`,
             options: {
                 method: "PUT",
-                body: JSON.stringify({ ...reports }),
+                body,
             },
         }).then(res => {
             set({

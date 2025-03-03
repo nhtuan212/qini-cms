@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Input from "@/components/Input";
 import ErrorMessage from "@/components/ErrorMessage";
 import Button from "@/components/Button";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaffStore } from "@/stores/useStaffStore";
@@ -23,16 +23,12 @@ export default function StaffModal() {
     //** Spread syntax */
     const { action } = modal;
 
-    //** States */
-    const [error, setError] = useState("");
-
     //** React hook form */
     const defaultValues = {
         name: action === ModalActionProps.UPDATE ? staffById.name : "",
     };
 
     const {
-        control,
         register,
         handleSubmit,
         reset,
@@ -46,18 +42,14 @@ export default function StaffModal() {
     const onSubmit = async (data: FormValues) => {
         switch (action) {
             case ModalActionProps.CREATE:
-                return createStaff(data).then(res => {
-                    if (res.code !== 200) return setError(res.message);
-
+                return createStaff(data).then(() => {
                     handleCloseModal();
                 });
             case ModalActionProps.UPDATE:
                 return updateStaff({
                     id: staffById.id,
                     bodyParams: data,
-                }).then(res => {
-                    if (res.code !== 200) return setError(res.message);
-
+                }).then(() => {
                     handleCloseModal();
                 });
             default:
@@ -67,7 +59,6 @@ export default function StaffModal() {
 
     //** Functions */
     const resetForm = () => {
-        setError("");
         reset({
             name: "",
         });
@@ -89,28 +80,16 @@ export default function StaffModal() {
     }, [setValue, action, staffById]);
 
     return (
-        <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-            <div className="w-full">
-                <Controller
-                    name={"name"}
-                    control={control}
-                    rules={{ required: true }}
-                    render={() => (
-                        <>
-                            <Input
-                                className="w-full"
-                                startContent={<UserCircleIcon className="w-6" />}
-                                placeholder={TEXT.NAME}
-                                {...register("name", {
-                                    required: `${TEXT.NAME} ${TEXT.IS_REQUIRED}`,
-                                })}
-                                errorMessage={<ErrorMessage errors={errors} name={"name"} />}
-                            />
-                            {error && <p className="errorMessage">{error}</p>}
-                        </>
-                    )}
-                />
-            </div>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+            <Input
+                startContent={<UserCircleIcon className="w-6" />}
+                placeholder={TEXT.NAME}
+                {...register("name", {
+                    required: `${TEXT.NAME} ${TEXT.IS_REQUIRED}`,
+                })}
+                isInvalid={!!errors.name}
+                errorMessage={<ErrorMessage errors={errors} name={"name"} />}
+            />
 
             <div className="flex flex-row-reverse gap-2">
                 <Button type="submit">{TEXT.SAVE}</Button>

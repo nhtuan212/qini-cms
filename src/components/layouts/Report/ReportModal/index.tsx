@@ -153,6 +153,7 @@ export default function ReportAddNew() {
                 await updateReport({
                     id: reportById.id,
                     reports,
+                    reportsOnStaffs,
                 });
                 break;
 
@@ -171,9 +172,15 @@ export default function ReportAddNew() {
     useEffect(() => {
         setAmountValue({
             ...amountValue,
-            cash: amountValue.revenue - amountValue.transfer - amountValue.deduction,
+            ...(amountValue.revenue && {
+                cash: amountValue.revenue - amountValue.transfer - amountValue.deduction,
+            }),
         });
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [amountValue.revenue, amountValue.transfer, amountValue.cash, amountValue.deduction]);
+
+    useEffect(() => {
         return () => {
             setAmountValue({
                 revenue: 0,
@@ -182,9 +189,7 @@ export default function ReportAddNew() {
                 deduction: 0,
             });
         };
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [amountValue.revenue, amountValue.transfer, amountValue.cash, amountValue.deduction]);
+    }, []);
 
     useEffect(() => {
         if (!modal.isOpen) {
@@ -437,6 +442,7 @@ export default function ReportAddNew() {
                         isInvalid={!!errors.cash}
                         {...register("cash", {
                             required: `${TEXT.CASH} ${TEXT.IS_REQUIRED}`,
+
                             onChange: e => {
                                 setAmountValue({
                                     ...amountValue,
