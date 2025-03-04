@@ -93,7 +93,7 @@ export default function RevenueColumns() {
         },
         {
             key: TEXT.NAME,
-            className: "flex-initial min-w-20",
+            className: "flex-initial min-w-28",
             name: TEXT.NAME,
             content: (params: ReportProps) => {
                 const staff = params.row.reportsOnStaffs.map(
