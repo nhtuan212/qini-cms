@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import Link from "next/link";
 import StaffModal from "./StaffModal";
 import StaffActions from "./StaffActions";
 import Button from "@/components/Button";
@@ -53,7 +54,14 @@ export default function Staff() {
                                     className="flex flex-col justify-between h-36 p-3 border rounded shadow-md"
                                 >
                                     <div className="flex justify-between items-center">
-                                        <p className="text-lg">{item.name}</p>
+                                        <Link
+                                            href={`nhan-vien/${item.id}`}
+                                            className="text-lg"
+                                            target="_blank"
+                                        >
+                                            {item.name}
+                                        </Link>
+
                                         {(profile.role === ROLE.ADMIN ||
                                             profile.role === ROLE.REPORT) && (
                                             <StaffActions item={item} />

@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import StaffModal from "./StaffModal";
-import StaffModalDetail from "./StaffModalDetail";
+import StaffModalDetail from "./StaffDetail/StaffModalDetail";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";

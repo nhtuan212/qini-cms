@@ -1,15 +1,16 @@
 "use client";
 
 import React from "react";
+import Table from "@/components/Table";
 import StaffDetailColumns from "./StaffDetailColumns";
 import StaffDetailTopContent from "./StaffDetailTopContent";
-import Table from "@/components/Table";
 import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 
 export default function StaffModalDetail() {
     //** Stores */
-    const { reportsOnStaff, isLoading } = useReportsOnStaffsStore();
+    const { isLoading, reportsOnStaff } = useReportsOnStaffsStore();
 
+    //** Render */
     return (
         <Table
             className="[&>.tableContainer]:h-[40rem]"
