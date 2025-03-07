@@ -52,11 +52,10 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                 endDate: getDateTime().lastDayOfMonth.toString(),
             }),
             getStaffById(id),
-        ]).then(([, staff]) => {
+        ]).then(() => {
             getModal({
                 isOpen: true,
                 size: "3xl",
-                modalHeader: `${TEXT.STAFF}: ${staff.name}`,
                 action: ModalActionProps.UPDATE,
                 isDismissable: false,
                 modalBody: <StaffModalDetail />,

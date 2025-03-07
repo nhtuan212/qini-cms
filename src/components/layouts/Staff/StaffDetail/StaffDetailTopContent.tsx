@@ -13,7 +13,7 @@ import { CalendarDate } from "@internationalized/date";
 export default function TargetTopContent() {
     //** Stores */
     const { staffById } = useStaffStore();
-    const { getReportsOnStaff, reportsOnStaff, isLoading } = useReportsOnStaffsStore();
+    const { isLoading, reportsOnStaff, getReportsOnStaff } = useReportsOnStaffsStore();
 
     //** States */
     const [dateValue, setDateValue] = useState<RangeValue<CalendarDate>>({
@@ -36,37 +36,41 @@ export default function TargetTopContent() {
 
     //** Render */
     return (
-        <div className="flex justify-between flex-wrap gap-3">
-            <div>
-                <div>
-                    {`${TEXT.TOTAL_TARGET}: `}
-                    <b className="text-primary">{currencyFormat(totalTarget)}</b>
-                </div>
-                <div>
-                    {`${TEXT.TIME_SHEET}: `}
-                    <b className="text-primary">{totalTimeWorked}</b>
-                </div>
-            </div>
-            <div className="flex-1 flex flex-wrap gap-4 xs:justify-end items-center">
-                <DateRangePicker
-                    label={TEXT.DATE_PICKER}
-                    className="w-fit"
-                    value={dateValue}
-                    onChange={(newValue: any) =>
-                        setDateValue({
-                            start: newValue?.start,
-                            end: newValue?.end,
-                        })
-                    }
-                    onKeyUp={e => {
-                        if (e.key === "Enter") {
-                            handleFilterReports();
-                        }
-                    }}
-                />
+        <>
+            <div className="title">{staffById.name}</div>
 
-                <Button onPress={() => handleFilterReports()}>{TEXT.SUBMIT}</Button>
+            <div className="flex justify-between flex-wrap gap-3">
+                <div>
+                    <div>
+                        {`${TEXT.TOTAL_TARGET}: `}
+                        <b className="text-primary">{currencyFormat(totalTarget)}</b>
+                    </div>
+                    <div>
+                        {`${TEXT.TIME_SHEET}: `}
+                        <b className="text-primary">{totalTimeWorked}</b>
+                    </div>
+                </div>
+                <div className="flex-1 flex flex-wrap gap-4 xs:justify-end items-center">
+                    <DateRangePicker
+                        label={TEXT.DATE_PICKER}
+                        className="w-fit"
+                        value={dateValue}
+                        onChange={(newValue: any) =>
+                            setDateValue({
+                                start: newValue?.start,
+                                end: newValue?.end,
+                            })
+                        }
+                        onKeyUp={e => {
+                            if (e.key === "Enter") {
+                                handleFilterReports();
+                            }
+                        }}
+                    />
+
+                    <Button onPress={() => handleFilterReports()}>{TEXT.SUBMIT}</Button>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
