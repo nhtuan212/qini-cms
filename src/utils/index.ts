@@ -1,7 +1,16 @@
 "use client";
 
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { getLocalTimeZone, startOfMonth, today } from "@internationalized/date";
+
+/**
+ * Extends dayjs with UTC plugin to enable UTC mode functionality.
+ * This allows for UTC date-time handling and conversions across the application.
+ * The UTC plugin must be installed before using UTC-related features of dayjs.
+ * So if you’re in a timezone ahead of UTC (like Japan, Thailand, etc.), the converted time may fall into the next day.
+ */
+dayjs.extend(utc);
 
 export const wrongTimeSheet = ({
     checkIn,
@@ -31,7 +40,7 @@ export const convertAmountToNumber = (amount: string) => {
 export const formatDate = (date: Date | null, format: string = "DD/MM/YYYY") => {
     if (!date) return dayjs().format(format);
 
-    return dayjs(date).format(format);
+    return dayjs.utc(date).format(format);
 };
 
 export const getDateTime = () => {
