@@ -89,32 +89,43 @@ export default function TargetTopContent() {
                             />
                         </div>
 
-                        <div className="flex-1 flex flex-col gap-4">
-                            <div>
-                                <div className="flex justify-between">
-                                    {`${TEXT.TOTAL_TARGET} (0.01%): `}
-                                    <b className="text-primary">{currencyFormat(totalTarget)}</b>
-                                </div>
+                        <div className="flex-1 flex flex-col justify-between gap-4">
+                            <div className="flex-1 flex flex-col justify-end gap-2">
+                                {totalTarget > 0 && (
+                                    <div className="flex justify-between">
+                                        {`${TEXT.TOTAL_TARGET} (0.01%): `}
+                                        <b className="text-primary">
+                                            {currencyFormat(totalTarget)}
+                                        </b>
+                                    </div>
+                                )}
                                 <div className="flex justify-between">
                                     {`${TEXT.TIME_SHEET}: `}
                                     <b className="text-primary">{totalTimeWorked}</b>
                                 </div>
                             </div>
                             <div>
-                                <div className="flex-1 flex justify-between">
-                                    {`Tổng lương: `}
-                                    <b className="text-primary">{currencyFormat(totalSalary)}</b>
-                                </div>
-                                <div className="flex-1 flex justify-between">
-                                    {`Tiền thưởng doanh số: `}
-                                    <b className="text-primary">
-                                        {currencyFormat(
-                                            roundToThousand(
-                                                Number((totalTarget * 0.01).toFixed(0)),
-                                            ),
-                                        )}
-                                    </b>
-                                </div>
+                                {totalTarget > 0 && (
+                                    <>
+                                        <div className="flex-1 flex justify-between">
+                                            {`Tổng lương: `}
+                                            <b className="text-primary">
+                                                {currencyFormat(totalSalary)}
+                                            </b>
+                                        </div>
+
+                                        <div className="flex-1 flex justify-between">
+                                            {`Tiền thưởng doanh số: `}
+                                            <b className="text-primary">
+                                                {currencyFormat(
+                                                    roundToThousand(
+                                                        Number((totalTarget * 0.01).toFixed(0)),
+                                                    ),
+                                                )}
+                                            </b>
+                                        </div>
+                                    </>
+                                )}
                                 <div className="flex-1 flex justify-between">
                                     {`Thực nhận:`}
                                     <b className="text-primary">
