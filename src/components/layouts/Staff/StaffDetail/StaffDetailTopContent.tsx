@@ -6,13 +6,16 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
+import { useProfileStore } from "@/stores/useProfileStore";
 import { TEXT } from "@/constants/text";
 import { currencyFormat, getDateTime, roundToThousand, sumArray } from "@/utils";
 import { RangeValue } from "@nextui-org/react";
 import { CalendarDate } from "@internationalized/date";
+import { ROLE } from "@/constants";
 
 export default function TargetTopContent() {
     //** Stores */
+    const { profile } = useProfileStore();
     const { staffById } = useStaffStore();
     const { isLoading, reportsOnStaff, getReportsOnStaff } = useReportsOnStaffsStore();
 
@@ -65,67 +68,73 @@ export default function TargetTopContent() {
                     <Button onPress={() => handleFilterReports()}>{TEXT.SUBMIT}</Button>
                 </div>
 
-                <div className="flex justify-between gap-8">
-                    <div className="flex-1 flex flex-col gap-2">
-                        <Input
-                            label={"Lương: "}
-                            size="sm"
-                            value={currencyFormat(salary) as string}
-                            onValueChange={e => {
-                                setSalary(Number(e.replace(/\D/g, "")));
-                            }}
-                        />
-                        <Input
-                            label={"Thưởng nóng: "}
-                            size="sm"
-                            value={currencyFormat(bonus) as string}
-                            onValueChange={e => {
-                                setBonus(Number(e.replace(/\D/g, "")));
-                            }}
-                        />
-                    </div>
-
-                    <div className="flex-1 flex flex-col gap-4">
-                        <div>
-                            <div className="flex justify-between">
-                                {`${TEXT.TOTAL_TARGET} (0.01%): `}
-                                <b className="text-primary">{currencyFormat(totalTarget)}</b>
-                            </div>
-                            <div className="flex justify-between">
-                                {`${TEXT.TIME_SHEET}: `}
-                                <b className="text-primary">{totalTimeWorked}</b>
-                            </div>
+                {profile.role === ROLE.ADMIN && (
+                    <div className="flex justify-between gap-8">
+                        <div className="flex-1 flex flex-col gap-2">
+                            <Input
+                                label={"Lương: "}
+                                size="sm"
+                                value={currencyFormat(salary) as string}
+                                onValueChange={e => {
+                                    setSalary(Number(e.replace(/\D/g, "")));
+                                }}
+                            />
+                            <Input
+                                label={"Thưởng nóng: "}
+                                size="sm"
+                                value={currencyFormat(bonus) as string}
+                                onValueChange={e => {
+                                    setBonus(Number(e.replace(/\D/g, "")));
+                                }}
+                            />
                         </div>
-                        <div>
-                            <div className="flex-1 flex justify-between">
-                                {`Tổng lương: `}
-                                <b className="text-primary">{currencyFormat(totalSalary)}</b>
+
+                        <div className="flex-1 flex flex-col gap-4">
+                            <div>
+                                <div className="flex justify-between">
+                                    {`${TEXT.TOTAL_TARGET} (0.01%): `}
+                                    <b className="text-primary">{currencyFormat(totalTarget)}</b>
+                                </div>
+                                <div className="flex justify-between">
+                                    {`${TEXT.TIME_SHEET}: `}
+                                    <b className="text-primary">{totalTimeWorked}</b>
+                                </div>
                             </div>
-                            <div className="flex-1 flex justify-between">
-                                {`Tiền thưởng doanh số: `}
-                                <b className="text-primary">
-                                    {currencyFormat(
-                                        roundToThousand(Number((totalTarget * 0.01).toFixed(0))),
-                                    )}
-                                </b>
-                            </div>
-                            <div className="flex-1 flex justify-between">
-                                {`Thực nhận:`}
-                                <b className="text-primary">
-                                    {currencyFormat(
-                                        roundToThousand(
-                                            Number(
-                                                (totalSalary + totalTarget * 0.01 + bonus).toFixed(
-                                                    0,
+                            <div>
+                                <div className="flex-1 flex justify-between">
+                                    {`Tổng lương: `}
+                                    <b className="text-primary">{currencyFormat(totalSalary)}</b>
+                                </div>
+                                <div className="flex-1 flex justify-between">
+                                    {`Tiền thưởng doanh số: `}
+                                    <b className="text-primary">
+                                        {currencyFormat(
+                                            roundToThousand(
+                                                Number((totalTarget * 0.01).toFixed(0)),
+                                            ),
+                                        )}
+                                    </b>
+                                </div>
+                                <div className="flex-1 flex justify-between">
+                                    {`Thực nhận:`}
+                                    <b className="text-primary">
+                                        {currencyFormat(
+                                            roundToThousand(
+                                                Number(
+                                                    (
+                                                        totalSalary +
+                                                        totalTarget * 0.01 +
+                                                        bonus
+                                                    ).toFixed(0),
                                                 ),
                                             ),
-                                        ),
-                                    )}
-                                </b>
+                                        )}
+                                    </b>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </>
     );
