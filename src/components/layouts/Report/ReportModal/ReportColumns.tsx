@@ -5,7 +5,7 @@ import ReportModal from ".";
 import ReportDetailModal from "../ReportDetailModal";
 import ConfirmModal from "@/components/ConfirmModal";
 import Button from "@/components/Button";
-import { Tooltip } from "@nextui-org/react";
+import { Tooltip } from "@heroui/react";
 import { CheckCircleIcon, EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { CheckCircleIcon as CheckCircleIconActive } from "@heroicons/react/24/solid";
 import { ReportProps, useReportsStore } from "@/stores/useReportsStore";

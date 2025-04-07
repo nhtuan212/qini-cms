@@ -7,7 +7,7 @@ import {
     DropdownMenu as DropdownMenuNextUI,
     DropdownItem as DropdownItemNextUI,
     DropdownProps,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 const Dropdown = ({ ...props }: DropdownProps) => {
     return <DropdownNextUI>{props.children}</DropdownNextUI>;

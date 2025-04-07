@@ -266,9 +266,7 @@ export default function ReportAddNew() {
                                 isDisabled={action === ModalActionProps.UPDATE}
                             >
                                 {staff.map((item: StaffProps) => (
-                                    <SelectItem key={item.id} value={item.name}>
-                                        {item.name}
-                                    </SelectItem>
+                                    <SelectItem key={item.id}>{item.name}</SelectItem>
                                 ))}
                             </Select>
                             <Select
@@ -293,9 +291,7 @@ export default function ReportAddNew() {
                                 isDisabled={action === ModalActionProps.UPDATE}
                             >
                                 {timeSheet.map(item => (
-                                    <SelectItem key={item.value} value={item.value}>
-                                        {item.value}
-                                    </SelectItem>
+                                    <SelectItem key={item.value}>{item.value}</SelectItem>
                                 ))}
                             </Select>
                             <Select
@@ -332,9 +328,7 @@ export default function ReportAddNew() {
                                 isDisabled={action === ModalActionProps.UPDATE}
                             >
                                 {timeSheet.map(item => (
-                                    <SelectItem key={item.value} value={item.value}>
-                                        {item.value}
-                                    </SelectItem>
+                                    <SelectItem key={item.value}>{item.value}</SelectItem>
                                 ))}
                             </Select>
                             {index > 0 && action !== ModalActionProps.UPDATE && (

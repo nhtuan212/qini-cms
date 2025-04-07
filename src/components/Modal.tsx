@@ -11,7 +11,7 @@ import {
     ModalHeaderProps,
     ModalBodyProps,
     ModalFooterProps,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 const Modal = ({ ...props }: ModalProps) => {
     return (

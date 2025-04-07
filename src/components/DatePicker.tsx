@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { DatePicker as DatePickerNextUI, DatePickerProps } from "@nextui-org/react";
+import { DatePicker as DatePickerNextUI, DatePickerProps } from "@heroui/react";
 
 type DatePickerType = {
     errorMessage?: string;

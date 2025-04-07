@@ -6,7 +6,7 @@ import {
     InputProps,
     Textarea as TextareaNextUI,
     TextAreaProps,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 const Input = React.forwardRef(
     (

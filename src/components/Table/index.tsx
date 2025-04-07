@@ -3,7 +3,7 @@
 import React from "react";
 import Table from "./Table";
 import TableProvider from "./TableProvider";
-import { PaginationProps } from "@nextui-org/react";
+import { PaginationProps } from "@heroui/react";
 
 export type TableProps = {
     loading?: boolean;

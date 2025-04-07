@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ModalProps } from "@nextui-org/react";
+import { ModalProps } from "@heroui/react";
 import { ModalActionProps } from "@/lib/types";
 
 type UseModalProps = {

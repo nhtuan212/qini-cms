@@ -1,5 +1,6 @@
 {
     // Remove Unknown at rule @tailwind
     "css.customData": [".vscode/tailwind.json"],
-    "cSpell.words": ["clickaway", "datepicker", "Dismissable", "khóa", "nextui", "qini"]
+
+    "cSpell.words": ["clickaway", "datepicker", "Dismissable", "heroui", "khóa", "qini"]
 }

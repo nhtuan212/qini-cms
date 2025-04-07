@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button as ButtonNextUI, ButtonProps } from "@nextui-org/react";
+import { Button as ButtonNextUI, ButtonProps } from "@heroui/react";
 
 const Button = React.forwardRef(({ ...props }: ButtonProps, ref: React.Ref<HTMLButtonElement>) => {
     return (

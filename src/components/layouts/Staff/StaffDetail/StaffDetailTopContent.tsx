@@ -9,7 +9,7 @@ import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { TEXT } from "@/constants/text";
 import { currencyFormat, getDateTime, roundToThousand, sumArray } from "@/utils";
-import { RangeValue } from "@nextui-org/react";
+import { RangeValue } from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";
 import { ROLE } from "@/constants";
 
@@ -45,7 +45,6 @@ export default function TargetTopContent() {
     return (
         <>
             <div className="title">{staffById.name}</div>
-
             <div className="flex flex-col gap-4">
                 <div className="flex-1 flex flex-wrap gap-4 items-center">
                     <DateRangePicker

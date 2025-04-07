@@ -16,7 +16,7 @@ import {
     NavbarMenuToggle,
     NavbarMenu,
     NavbarMenuItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useMenuStore } from "@/stores/useMenuStore";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import { MENU } from "@/config/menu";

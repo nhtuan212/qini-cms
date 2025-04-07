@@ -1,11 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-    Select as SelectNextUI,
-    SelectItem as SelectItemNextUI,
-    SelectProps,
-} from "@nextui-org/react";
+import { Select as SelectNextUI, SelectItem as SelectItemNextUI, SelectProps } from "@heroui/react";
 
 const Select = React.forwardRef(({ ...props }: SelectProps, ref: React.Ref<HTMLSelectElement>) => {
     return (
