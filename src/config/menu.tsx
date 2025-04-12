@@ -5,6 +5,11 @@ import { TEXT } from "@/constants/text";
 
 export const MENU = [
     {
+        url: ROUTE.TARGET,
+        label: TEXT.TARGET,
+        icon: <DocumentTextIcon className="w-5" />,
+    },
+    {
         url: ROUTE.REPORT,
         label: TEXT.REPORT,
         icon: <DocumentTextIcon className="w-5" />,

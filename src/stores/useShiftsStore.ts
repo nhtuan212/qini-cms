@@ -2,19 +2,19 @@ import { URL } from "@/config/urls";
 import { fetchData } from "@/utils/fetch";
 import { create } from "zustand";
 
-type ShiftState = {
-    shifts: [];
+export type ShiftProps = {
+    [key: string]: any;
 };
 
 type ShiftAction = {
     getShifts: () => void;
 };
 
-const initialState: ShiftState = {
+const initialState: ShiftProps = {
     shifts: [],
 };
 
-export const useShiftStore = create<ShiftState & ShiftAction>()(set => ({
+export const useShiftStore = create<ShiftProps & ShiftAction>()(set => ({
     ...initialState,
 
     // Actions

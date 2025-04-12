@@ -24,6 +24,7 @@ export const STAFF = {
 export const URL = {
     HOME: "/",
     LOGIN: "/login",
+    TARGET: "/target",
     REPORT: "/report",
     REPORT_ON_STAFF: "/report-on-staff",
     USER: "/user",

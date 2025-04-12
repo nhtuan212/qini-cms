@@ -16,7 +16,7 @@ export const TEXT = {
     USERNAME_PASSWORD_INVALID: "Username or password is invalid",
     REMEMBER_ME: "Remember me",
     FORGOT_PASSWORD: "Forgot password ?",
-    IS_REQUIRED: "không được để trống",
+    IS_REQUIRED: "Không được để trống",
     ADD_NEW: "Thêm mới",
     ADD_REPORT: "Thêm báo cáo",
     EDIT_REPORT: "Cập nhật báo cáo",
@@ -39,6 +39,7 @@ export const TEXT = {
     CHECK_OUT: "Giờ ra",
     CHECK_OUR_LARGE_THAN_CHECK_IN: "Giờ ra phải lớn hơn giờ vào",
     TOTAL_TARGET: "Tổng doanh số",
+    ADD_TARGET: "Thêm mới doanh số",
     TARGET: "Doanh số",
     TARGET_OF: "Doanh số của",
     REVENUE: "Doanh thu",
@@ -72,4 +73,5 @@ export const TEXT = {
     SUBMIT: "Xác nhận",
     AMOUNT: "Số tiền",
     PAID: "Đã thu tiền",
+    CANCEL_SEARCH: "Huỷ tìm kiếm",
 };
