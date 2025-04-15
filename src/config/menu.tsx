@@ -10,11 +10,6 @@ export const MENU = [
         icon: <DocumentTextIcon className="w-5" />,
     },
     {
-        url: ROUTE.REPORT,
-        label: TEXT.REPORT,
-        icon: <DocumentTextIcon className="w-5" />,
-    },
-    {
         url: ROUTE.STAFF,
         label: TEXT.STAFF,
         icon: <UserCircleIcon className="w-5" />,

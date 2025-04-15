@@ -63,21 +63,6 @@ export const isEmpty = (data: Array<string | number> | object) => {
 };
 
 /**
- * Sums the values of a specified field in an array of objects.
- *
- * @param array - The array of objects to sum.
- * @param field - The field in each object whose values should be summed.
- * @returns The sum of the values of the specified field in the array.
- */
-export const sumArray = (array: any[], field: string): number => {
-    if (!array?.length) return 0;
-
-    return array.reduce((accumulator, item) => {
-        return accumulator + item[field];
-    }, 0);
-};
-
-/**
  * Creates a debounced function that delays the invocation of the provided function until after a specified wait time has elapsed since the last time the debounced function was invoked.
  *
  * @param func - The function to debounce.

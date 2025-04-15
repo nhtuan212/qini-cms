@@ -122,7 +122,9 @@ export default function TargetModal() {
                         {TEXT.CANCEL}
                     </Button>
 
-                    <Button type="submit">{TEXT.SAVE}</Button>
+                    <Button isLoading={isLoading} type="submit">
+                        {TEXT.SAVE}
+                    </Button>
                 </div>
             </div>
         </form>

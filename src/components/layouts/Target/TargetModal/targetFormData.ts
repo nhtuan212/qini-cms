@@ -5,7 +5,7 @@ import { formatDate } from "@/utils";
 export const transformTargetFormData = (target: TargetProps) => {
     const shifts: Record<string, any> = {};
 
-    const name = target.name || `Doanh số ngày ${formatDate(new Date())}`;
+    const name = "Doanh số";
     const targetAt = target.targetAt
         ? parseDate(formatDate(target.targetAt, "YYYY-MM-DD"))
         : today(getLocalTimeZone());

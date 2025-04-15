@@ -25,7 +25,6 @@ type StaffAction = {
         bodyParams: StaffProps;
     }) => Promise<StaffProps>;
     deleteStaff: (id: StaffProps["id"]) => Promise<void>;
-    resetStaff: () => Promise<void>;
 };
 
 const initialState: StaffState = {
@@ -149,12 +148,6 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
             }
 
             return set({ staff: res.data });
-        });
-    },
-
-    resetStaff: async () => {
-        set({
-            staffById: initialState.staffById,
         });
     },
 }));

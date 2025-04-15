@@ -1,8 +1,7 @@
 export const URL = {
     LOGIN: "/login",
-    REPORT: "/report",
     TARGET: "/target",
-    REPORT_ON_STAFF: "/report-on-staff",
+    TARGET_STAFF: "/target-staff",
     USER: "/user",
     STAFF: "/staff",
     SHIFT: "/shift",

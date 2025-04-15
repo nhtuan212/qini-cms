@@ -12,6 +12,9 @@ type TargetState = {
     isLoading?: boolean;
     targets: TargetProps[];
     targetById: TargetProps;
+    targetPagination?: {
+        [key: string]: any;
+    };
 };
 
 type TargetAction = {
@@ -60,6 +63,7 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
 
             return set({
                 targets: res.data.map((item: TargetProps) => convertKeysToCamelCase(item)),
+                targetPagination: res.pagination,
             });
         });
     },
@@ -81,8 +85,6 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
                     targetById: res?.message,
                 });
             }
-
-            console.log({ data: res.data });
 
             set({
                 targetById: convertKeysToCamelCase(res.data),
@@ -108,17 +110,11 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
                 isLoading: false,
             });
 
-            const newData = {
-                id: res.data[0].id,
-                name: res.data[0].name,
-                targetAt: res.data[0].target_at,
-            };
-
             set(state => ({
-                targets: [convertKeysToCamelCase(newData), ...state.targets],
+                targets: [convertKeysToCamelCase(res.data), ...state.targets],
             }));
 
-            return convertKeysToCamelCase(res.data);
+            return res;
         });
     },
 
@@ -145,13 +141,14 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
             });
 
             if (res?.code !== STATUS_CODE.OK) {
-                return console.error("Error updating target");
+                return console.error("Error updating target", res);
             }
 
-            set(state => {
-                state.getTarget();
-                return state;
-            });
+            set(state => ({
+                targets: state.targets.map((item: TargetProps) =>
+                    item.id === id ? convertKeysToCamelCase(res.data) : item,
+                ),
+            }));
 
             return res;
         });

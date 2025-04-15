@@ -66,7 +66,7 @@ export default function TargetColumn() {
                         });
                     }}
                 >
-                    {params.row.name}
+                    {`${params.row.name} ngày ${formatDate(params.row.targetAt)}`}
                 </Button>
             ),
         },

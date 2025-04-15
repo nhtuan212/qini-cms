@@ -16,7 +16,7 @@ export default auth(req => {
         switch (req.nextUrl.pathname) {
             case "/":
             case "/login":
-                return Response.redirect(new URL("/bao-cao", req.url));
+                return Response.redirect(new URL("/target", req.url));
             default:
                 break;
         }

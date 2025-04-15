@@ -9,9 +9,7 @@ export default function StaffDetailColumns() {
         {
             key: "createAt",
             name: TEXT.DATE,
-            content: (params: any) => (
-                <div>{`${formatDate(params.row.createAt)} - ${params.row.report.shift.name}`}</div>
-            ),
+            content: (params: any) => formatDate(params.row.targetAt),
         },
         {
             key: "timeSheet",
@@ -21,12 +19,12 @@ export default function StaffDetailColumns() {
         {
             key: "timeNumber",
             name: TEXT.TIME_NUMBER,
-            content: (params: any) => <div>{params.row.timeWorked}</div>,
+            content: (params: any) => params.row.workingHours,
         },
         {
             key: "target",
             name: TEXT.TARGET,
-            content: (params: any) => <div>{currencyFormat(params.row.target)}</div>,
+            content: (params: any) => currencyFormat(params.row.target),
         },
     ];
 

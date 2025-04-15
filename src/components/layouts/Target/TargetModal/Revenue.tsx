@@ -117,7 +117,7 @@ export default function Revenue({ ...props }: RevenueProps) {
                         placeholder={TEXT.NOTE}
                         {...field}
                         value={field.value || ""}
-                        isInvalid={!!errors?.[shiftId]?.description}
+                        isInvalid={!!errors.shifts?.[shiftId]?.description && deduction}
                         errorMessage={
                             <ErrorMessage errors={errors} name={`shifts.${shiftId}.description`} />
                         }
