@@ -10,8 +10,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
-import { ROLE } from "@/constants";
-import { TEXT } from "@/constants/text";
+import { ROLE, TEXT } from "@/constants";
 
 export default function Staff() {
     //** Stores */

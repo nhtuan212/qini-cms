@@ -10,8 +10,7 @@ import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
 import { useTargetStore } from "@/stores/useTargetStore";
 import { formatDate } from "@/utils";
-import { URL } from "@/constants";
-import { TEXT } from "@/constants/text";
+import { URL, TEXT } from "@/constants";
 
 export default function TargetTopContent() {
     const router = useRouter();

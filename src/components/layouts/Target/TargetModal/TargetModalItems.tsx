@@ -10,10 +10,10 @@ import { Select, SelectItem } from "@/components/Select";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { ShiftProps } from "@/stores/useShiftsStore";
+import { useTargetStore } from "@/stores/useTargetStore";
 import { Controller, useFieldArray } from "react-hook-form";
 import { isEmpty, parseTimeString } from "@/utils";
-import { TEXT } from "@/constants/text";
-import { useTargetStore } from "@/stores/useTargetStore";
+import { TEXT } from "@/constants";
 
 type TargetModalItemsProps = {
     shift: ShiftProps;

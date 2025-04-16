@@ -8,8 +8,7 @@ import { RangeValue } from "@heroui/react";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useTargetStaffStore } from "@/stores/useTargetStaffStore";
 import { CalendarDate } from "@internationalized/date";
-import { ROLE } from "@/constants";
-import { TEXT } from "@/constants/text";
+import { ROLE, TEXT } from "@/constants";
 import { currencyFormat, getDateTime, roundToThousand, snakeCaseQueryString } from "@/utils";
 
 export default function TargetTopContent() {

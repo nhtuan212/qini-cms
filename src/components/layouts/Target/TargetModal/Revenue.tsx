@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Input, { NumberInput } from "@/components/Input";
 import { Controller, useWatch } from "react-hook-form";
-import { TEXT } from "@/constants/text";
+import { TEXT } from "@/constants";
 import ErrorMessage from "@/components/ErrorMessage";
 
 type RevenueProps = {

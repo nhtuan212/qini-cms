@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import clsx from "clsx";
-import { TEXT } from "@/constants/text";
+import { TEXT } from "@/constants";
 
 //** Interfaces */
 interface ImageProps extends Omit<React.ComponentProps<typeof Image>, "src"> {

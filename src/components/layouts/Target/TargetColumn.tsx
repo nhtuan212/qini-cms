@@ -10,8 +10,7 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { currencyFormat, formatDate } from "@/utils";
-import { ROLE } from "@/constants";
-import { TEXT } from "@/constants/text";
+import { ROLE, TEXT } from "@/constants";
 import { ModalActionProps } from "@/lib/types";
 
 export default function TargetColumn() {

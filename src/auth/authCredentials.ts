@@ -1,8 +1,7 @@
 import Credentials from "next-auth/providers/credentials";
 import { CredentialsSignin } from "next-auth";
 import { fetchData } from "@/utils/fetch";
-import { STATUS_CODE, URL } from "@/constants";
-import { TEXT } from "@/constants/text";
+import { STATUS_CODE, TEXT, URL } from "@/constants";
 
 class InvalidLogin401 extends CredentialsSignin {
     code = TEXT.USERNAME_PASSWORD_INVALID;

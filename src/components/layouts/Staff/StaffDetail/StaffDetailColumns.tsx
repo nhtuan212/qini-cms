@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { TEXT } from "@/constants/text";
+import { TEXT } from "@/constants";
 import { currencyFormat, formatDate } from "@/utils";
 
 export default function StaffDetailColumns() {

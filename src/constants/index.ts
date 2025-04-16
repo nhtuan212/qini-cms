@@ -1,3 +1,7 @@
+import { TEXT } from "./text";
+
+export { TEXT };
+
 export const STATUS_CODE = {
     OK: 200,
     CREATED: 201,

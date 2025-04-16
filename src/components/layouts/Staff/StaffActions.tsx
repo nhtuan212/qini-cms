@@ -15,11 +15,10 @@ import {
 import { useProfileStore } from "@/stores/useProfileStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { ROLE } from "@/constants";
-import { TEXT } from "@/constants/text";
-import { getDateTime, snakeCaseQueryString } from "@/utils";
-import { ModalActionProps } from "@/lib/types";
 import { useTargetStaffStore } from "@/stores/useTargetStaffStore";
+import { getDateTime, snakeCaseQueryString } from "@/utils";
+import { ROLE, TEXT } from "@/constants";
+import { ModalActionProps } from "@/lib/types";
 
 export default function StaffActions({ item }: { item: StaffProps }) {
     //** Destructuring */

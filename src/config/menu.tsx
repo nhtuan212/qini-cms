@@ -1,7 +1,7 @@
 import React from "react";
 import { DocumentTextIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { ROUTE } from "./routes";
-import { TEXT } from "@/constants/text";
+import { TEXT } from "@/constants";
 
 export const MENU = [
     {
