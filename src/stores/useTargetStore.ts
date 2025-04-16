@@ -110,6 +110,10 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
                 isLoading: false,
             });
 
+            if (res?.code === STATUS_CODE.OK) {
+                return console.error("Error creating target", res);
+            }
+
             set(state => ({
                 targets: [convertKeysToCamelCase(res.data), ...state.targets],
             }));
