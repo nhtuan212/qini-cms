@@ -1,4 +1,4 @@
-import { baseUrl } from "@/config/routes";
+import { BASE_URL } from "@/constants";
 
 export const fetchData = async ({
     endpoint,
@@ -7,7 +7,7 @@ export const fetchData = async ({
     endpoint: string | URL;
     options?: RequestInit;
 }): Promise<any> => {
-    const url = `${baseUrl}${endpoint}`;
+    const url = `${BASE_URL}${endpoint}`;
 
     return await fetch(url, {
         headers: {

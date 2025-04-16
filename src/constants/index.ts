@@ -2,6 +2,8 @@ import { TEXT } from "./text";
 
 export { TEXT };
 
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 export const STATUS_CODE = {
     OK: 200,
     CREATED: 201,
@@ -29,7 +31,15 @@ export const URL = {
     HOME: "/",
     LOGIN: "/login",
     TARGET: "/target",
+    TARGET_STAFF: "/target-staff",
     USER: "/user",
     STAFF: "/staff",
     SHIFT: "/shift",
+};
+
+export const ROUTE = {
+    HOME: "/",
+    LOGIN: "/login",
+    TARGET: "/target",
+    STAFF: "/nhan-vien",
 };

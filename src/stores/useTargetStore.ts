@@ -1,8 +1,7 @@
-import { URL } from "@/config/urls";
 import { create } from "zustand";
 import { convertKeysToCamelCase, convertKeysToSnakeCase } from "@/utils";
 import { fetchData } from "@/utils/fetch";
-import { STATUS_CODE } from "@/constants";
+import { URL, STATUS_CODE } from "@/constants";
 
 export type TargetProps = {
     [key: string]: any;

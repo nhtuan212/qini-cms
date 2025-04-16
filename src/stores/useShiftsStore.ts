@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { URL } from "@/config/urls";
 import { convertKeysToCamelCase } from "@/utils";
 import { fetchData } from "@/utils/fetch";
+import { URL } from "@/constants";
 
 export type ShiftProps = {
     [key: string]: any;

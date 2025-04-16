@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ROUTE } from "@/config/routes";
+import { ROUTE } from "@/constants";
 
 export default function ErrorPage() {
     return (

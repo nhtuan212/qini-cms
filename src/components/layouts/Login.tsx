@@ -9,8 +9,7 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { signIn } from "next-auth/react";
-import { ROUTE } from "@/config/routes";
-import { TEXT } from "@/constants";
+import { ROUTE, TEXT } from "@/constants";
 
 export default function Login() {
     //** Variables */

@@ -1,6 +1,6 @@
-import { URL } from "@/config/urls";
-import { fetchData } from "@/utils/fetch";
 import { create } from "zustand";
+import { fetchData } from "@/utils/fetch";
+import { URL } from "@/constants";
 
 export type StaffProps = {
     [key: string]: any;

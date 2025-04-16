@@ -20,7 +20,7 @@ import {
 import { useMenuStore } from "@/stores/useMenuStore";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import { MENU } from "@/config/menu";
-import { ROUTE } from "@/config/routes";
+import { ROUTE } from "@/constants";
 
 export default function Header() {
     const pathname = usePathname();

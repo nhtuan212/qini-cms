@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { fetchData } from "@/utils/fetch";
-import { URL } from "@/config/urls";
 import { convertKeysToCamelCase } from "@/utils";
+import { fetchData } from "@/utils/fetch";
+import { URL } from "@/constants";
 
 export type TargetStaffProps = {
     [key: string]: any;
