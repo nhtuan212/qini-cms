@@ -54,7 +54,7 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
                 isLoading: false,
             });
 
-            if (res?.code !== 200) {
+            if (res?.code !== STATUS_CODE.OK) {
                 return set({
                     targets: res?.message,
                 });
@@ -109,7 +109,7 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
                 isLoading: false,
             });
 
-            if (res?.code === STATUS_CODE.OK) {
+            if (res?.code !== STATUS_CODE.OK) {
                 return console.error("Error creating target", res);
             }
 
