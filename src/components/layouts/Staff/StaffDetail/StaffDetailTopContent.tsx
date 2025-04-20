@@ -42,7 +42,7 @@ export default function TargetTopContent() {
     //** Render */
     return (
         <>
-            <div className="title">{targetByStaffId.name || ""}</div>
+            <div className="title">{targetByStaffId.staffName}</div>
             <div className="flex flex-col gap-4">
                 <div className="flex-1 flex flex-wrap gap-4 items-center">
                     <DateRangePicker
