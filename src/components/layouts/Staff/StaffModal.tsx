@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { TEXT } from "@/constants/text";
+import { TEXT } from "@/constants";
 import { ModalActionProps } from "@/lib/types";
 
 type FormValues = {

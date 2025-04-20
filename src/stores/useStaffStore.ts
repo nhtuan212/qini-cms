@@ -1,6 +1,6 @@
-import { URL } from "@/config/urls";
-import { fetchData } from "@/utils/fetch";
 import { create } from "zustand";
+import { fetchData } from "@/utils/fetch";
+import { URL } from "@/constants";
 
 export type StaffProps = {
     [key: string]: any;
@@ -25,7 +25,6 @@ type StaffAction = {
         bodyParams: StaffProps;
     }) => Promise<StaffProps>;
     deleteStaff: (id: StaffProps["id"]) => Promise<void>;
-    resetStaff: () => Promise<void>;
 };
 
 const initialState: StaffState = {
@@ -149,12 +148,6 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
             }
 
             return set({ staff: res.data });
-        });
-    },
-
-    resetStaff: async () => {
-        set({
-            staffById: initialState.staffById,
         });
     },
 }));

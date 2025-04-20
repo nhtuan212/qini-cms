@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import StaffModal from "./StaffModal";
-import StaffModalDetail from "./StaffDetail/StaffModalDetail";
+import StaffModalDetail from "./StaffDetail";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
@@ -13,12 +13,11 @@ import {
     TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { ROLE } from "@/constants";
-import { TEXT } from "@/constants/text";
-import { getDateTime } from "@/utils";
+import { useTargetStaffStore } from "@/stores/useTargetStaffStore";
+import { getDateTime, snakeCaseQueryString } from "@/utils";
+import { ROLE, TEXT } from "@/constants";
 import { ModalActionProps } from "@/lib/types";
 
 export default function StaffActions({ item }: { item: StaffProps }) {
@@ -28,8 +27,8 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getStaff, getStaffById, deleteStaff, resetStaff } = useStaffStore();
-    const { getReportsOnStaff } = useReportsOnStaffsStore();
+    const { getStaff, getStaffById, deleteStaff } = useStaffStore();
+    const { getTargetByStaffId } = useTargetStaffStore();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -45,28 +44,26 @@ export default function StaffActions({ item }: { item: StaffProps }) {
 
     //** Functions */
     const handleViewStaff = async (id: string) => {
-        await Promise.all([
-            getReportsOnStaff({
+        await getTargetByStaffId(
+            snakeCaseQueryString({
                 staffId: id,
                 startDate: getDateTime().firstDayOfMonth.toString(),
                 endDate: getDateTime().lastDayOfMonth.toString(),
             }),
-            getStaffById(id),
-        ]).then(() => {
-            getModal({
-                isOpen: true,
-                size: "3xl",
-                action: ModalActionProps.UPDATE,
-                isDismissable: false,
-                modalBody: <StaffModalDetail />,
-            });
+        );
+
+        await getModal({
+            isOpen: true,
+            size: "5xl",
+            modalBody: <StaffModalDetail />,
+            isDismissable: false,
         });
     };
 
     const handleUpdateStaff = async (id: string) => {
         await getStaffById(id);
 
-        getModal({
+        await getModal({
             isOpen: true,
             modalHeader: TEXT.UPDATE_STAFF,
             action: ModalActionProps.UPDATE,
@@ -92,13 +89,6 @@ export default function StaffActions({ item }: { item: StaffProps }) {
             ),
         });
     };
-
-    //** Effects */
-    useEffect(() => {
-        return () => {
-            resetStaff();
-        };
-    }, [resetStaff]);
 
     //** Render */
     return (

@@ -6,7 +6,7 @@ import { signOut } from "next-auth/react";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
 import { ArrowRightStartOnRectangleIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { TEXT } from "@/constants/text";
+import { TEXT } from "@/constants";
 
 export default function Profile() {
     //** Store */

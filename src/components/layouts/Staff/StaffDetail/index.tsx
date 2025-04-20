@@ -1,37 +1,21 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
+import Table from "@/components/Table";
 import StaffDetailColumns from "./StaffDetailColumns";
 import StaffDetailTopContent from "./StaffDetailTopContent";
-import Table from "@/components/Table";
-import { useStaffStore } from "@/stores/useStaffStore";
-import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
-import { getDateTime } from "@/utils";
-import { useParams } from "next/navigation";
+import { useTargetStaffStore } from "@/stores/useTargetStaffStore";
 
 export default function StaffModalDetail() {
-    const { slug } = useParams();
-
     //** Stores */
-    const { getStaffById } = useStaffStore();
-    const { isLoading, reportsOnStaff, getReportsOnStaff } = useReportsOnStaffsStore();
+    const { isLoading, targetByStaffId } = useTargetStaffStore();
 
-    //** Effects */
-    useEffect(() => {
-        getReportsOnStaff({
-            staffId: slug,
-            startDate: getDateTime().firstDayOfMonth.toString(),
-            endDate: getDateTime().lastDayOfMonth.toString(),
-        });
-
-        getStaffById(slug);
-    }, [getReportsOnStaff, getStaffById, slug]);
-
+    //** Render */
     return (
         <Table
-            className="[&>.tableContainer]:h-full"
+            className="[&>.tableContainer]:h-[40rem]"
             columns={StaffDetailColumns()}
-            rows={reportsOnStaff}
+            rows={targetByStaffId.shifts}
             loading={isLoading}
             topContent={<StaffDetailTopContent />}
         />

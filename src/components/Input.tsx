@@ -3,23 +3,24 @@
 import React from "react";
 import {
     Input as InputNextUI,
+    TimeInput as TimeInputHeroUI,
+    NumberInput as NumberInputHeroUI,
     InputProps,
     Textarea as TextareaNextUI,
     TextAreaProps,
+    TimeInputProps,
+    NumberInputProps,
 } from "@heroui/react";
 
 const Input = React.forwardRef(
-    (
-        { variant = "bordered", radius = "sm", ...props }: InputProps | TextAreaProps,
-        ref: React.Ref<HTMLInputElement>,
-    ) => {
+    ({ ...props }: InputProps | TextAreaProps, ref: React.Ref<HTMLInputElement>) => {
         const renderInput = () => {
             if (props.type === "textarea") {
                 return (
                     <TextareaNextUI
                         ref={ref as React.Ref<HTMLTextAreaElement>}
-                        variant={variant}
-                        radius={radius}
+                        variant="bordered"
+                        radius="sm"
                         {...(props as TextAreaProps)}
                     />
                 );
@@ -28,8 +29,9 @@ const Input = React.forwardRef(
             return (
                 <InputNextUI
                     ref={ref}
-                    variant={variant}
-                    radius={radius}
+                    size="sm"
+                    variant="bordered"
+                    radius="sm"
                     {...(props as InputProps)}
                 />
             );
@@ -37,6 +39,36 @@ const Input = React.forwardRef(
 
         //** Render */
         return renderInput();
+    },
+);
+
+export const TimeInput = React.forwardRef(
+    ({ ...props }: TimeInputProps, ref: React.Ref<HTMLInputElement>) => {
+        return (
+            <TimeInputHeroUI
+                label="Event Time"
+                ref={ref}
+                size="sm"
+                variant={"bordered"}
+                hourCycle={24}
+                {...props}
+            />
+        );
+    },
+);
+
+export const NumberInput = React.forwardRef(
+    ({ ...props }: NumberInputProps, ref: React.Ref<HTMLInputElement>) => {
+        return (
+            <NumberInputHeroUI
+                aria-label="Number input"
+                ref={ref}
+                size="sm"
+                variant="bordered"
+                hideStepper
+                {...props}
+            />
+        );
     },
 );
 

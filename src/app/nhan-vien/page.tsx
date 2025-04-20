@@ -1,6 +1,6 @@
 import React from "react";
 import Staff from "@/components/layouts/Staff";
 
-export default function ReportPage() {
+export default function StaffPage() {
     return <Staff />;
 }

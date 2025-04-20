@@ -2,14 +2,8 @@
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { getLocalTimeZone, startOfMonth, today } from "@internationalized/date";
+import { getLocalTimeZone, startOfMonth, Time, today } from "@internationalized/date";
 
-/**
- * Extends dayjs with UTC plugin to enable UTC mode functionality.
- * This allows for UTC date-time handling and conversions across the application.
- * The UTC plugin must be installed before using UTC-related features of dayjs.
- * So if you’re in a timezone ahead of UTC (like Japan, Thailand, etc.), the converted time may fall into the next day.
- */
 dayjs.extend(utc);
 
 export const wrongTimeSheet = ({
@@ -37,8 +31,8 @@ export const convertAmountToNumber = (amount: string) => {
     return parseFloat(amount.replace(/[^0-9]/g, ""));
 };
 
-export const formatDate = (date: Date | null, format: string = "DD/MM/YYYY") => {
-    if (!date) return dayjs().format(format);
+export const formatDate = (date: Date | string | number | null, format: string = "DD/MM/YYYY") => {
+    if (!date) return "undefined";
 
     return dayjs.utc(date).format(format);
 };
@@ -66,21 +60,6 @@ export const isEmpty = (data: Array<string | number> | object) => {
     }
 
     return Object.keys(data).length === 0;
-};
-
-/**
- * Sums the values of a specified field in an array of objects.
- *
- * @param array - The array of objects to sum.
- * @param field - The field in each object whose values should be summed.
- * @returns The sum of the values of the specified field in the array.
- */
-export const sumArray = (array: any[], field: string): number => {
-    if (!array?.length) return 0;
-
-    return array.reduce((accumulator, item) => {
-        return accumulator + item[field];
-    }, 0);
 };
 
 /**
@@ -144,6 +123,75 @@ export function convertObjectToSearchQuery(obj: object): string {
     return `?${params.toString()}`;
 }
 
+/**
+ * Converts a string from snake_case to camelCase.
+ *
+ * @param str - The string to convert.
+ * @returns The converted string.
+ */
+const toCamelCase = (str: string) => {
+    return str.replace(/([-_][a-z])/gi, $1 => {
+        return $1.toUpperCase().replace("-", "").replace("_", "");
+    });
+};
+
+const toSnakeCase = (str: string) => str.replace(/([A-Z])/g, "_$1").toLowerCase();
+
+export const convertKeysToCamelCase = (obj: {
+    [key: string]: any;
+}): Array<{ [key: string]: any }> | { [key: string]: any } => {
+    if (Array.isArray(obj)) {
+        return obj.map(item => convertKeysToCamelCase(item));
+    } else if (typeof obj === "object" && obj !== null) {
+        const newObj: { [key: string]: any } = {};
+        for (const key in obj) {
+            newObj[toCamelCase(key)] = convertKeysToCamelCase((obj as { [key: string]: any })[key]);
+        }
+        return newObj;
+    } else {
+        return obj;
+    }
+};
+
+export const convertKeysToSnakeCase = (
+    obj: object,
+): Array<{ [key: string]: any }> | { [key: string]: any } => {
+    if (Array.isArray(obj)) {
+        return obj.map(item => convertKeysToSnakeCase(item));
+    } else if (typeof obj === "object" && obj !== null) {
+        const newObj: { [key: string]: any } = {};
+        for (const key in obj) {
+            newObj[key.replace(/[A-Z]/g, g => `_${g.toLowerCase()}`)] = convertKeysToSnakeCase(
+                (obj as { [key: string]: any })[key],
+            );
+        }
+        return newObj;
+    } else {
+        return obj;
+    }
+};
+
 export const roundToThousand = (number: number) => {
     return Math.round(number / 1000) * 1000;
+};
+
+export const parseTimeString = (timeString: string) => {
+    if (!timeString) return new Time(0, 0);
+
+    const [hours, minutes] = timeString.split(":");
+    return new Time(Number(hours), Number(minutes));
+};
+
+export const snakeCaseQueryString = (
+    params: URLSearchParams | Record<string, any>,
+    prefix: "?" | "&" = "?",
+): string => {
+    const entries =
+        params instanceof URLSearchParams ? Object.fromEntries(params.entries()) : params;
+
+    const snakeEntries = Object.entries(entries).map(([key, value]) => [toSnakeCase(key), value]);
+
+    const queryString = new URLSearchParams(snakeEntries).toString();
+
+    return queryString ? `${prefix}${queryString}` : "";
 };

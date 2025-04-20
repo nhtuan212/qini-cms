@@ -1,12 +1,11 @@
 import React from "react";
 import { DocumentTextIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import { ROUTE } from "./routes";
-import { TEXT } from "@/constants/text";
+import { ROUTE, TEXT } from "@/constants";
 
 export const MENU = [
     {
-        url: ROUTE.REPORT,
-        label: TEXT.REPORT,
+        url: ROUTE.TARGET,
+        label: TEXT.TARGET,
         icon: <DocumentTextIcon className="w-5" />,
     },
     {

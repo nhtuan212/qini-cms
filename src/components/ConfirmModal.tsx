@@ -1,8 +1,8 @@
 import React from "react";
 import Button from "@/components/Button";
 import { useModalStore } from "@/stores/useModalStore";
-import { TEXT } from "@/constants/text";
 import { debounce } from "@/utils";
+import { TEXT } from "@/constants";
 
 function ConfirmModal({
     onConfirm,

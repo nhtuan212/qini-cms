@@ -1,20 +1,21 @@
-import { URL } from "@/config/urls";
-import { fetchData } from "@/utils/fetch";
 import { create } from "zustand";
+import { convertKeysToCamelCase } from "@/utils";
+import { fetchData } from "@/utils/fetch";
+import { URL } from "@/constants";
 
-type ShiftState = {
-    shifts: [];
+export type ShiftProps = {
+    [key: string]: any;
 };
 
 type ShiftAction = {
     getShifts: () => void;
 };
 
-const initialState: ShiftState = {
+const initialState: ShiftProps = {
     shifts: [],
 };
 
-export const useShiftStore = create<ShiftState & ShiftAction>()(set => ({
+export const useShiftStore = create<ShiftProps & ShiftAction>()(set => ({
     ...initialState,
 
     // Actions
@@ -23,7 +24,7 @@ export const useShiftStore = create<ShiftState & ShiftAction>()(set => ({
             endpoint: URL.SHIFT,
         }).then(res => {
             if (res?.code === 200) {
-                return set({ shifts: res.data });
+                return set({ shifts: convertKeysToCamelCase(res.data) });
             }
             return set({
                 shifts: res?.message,

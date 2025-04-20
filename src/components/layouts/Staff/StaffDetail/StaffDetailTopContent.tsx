@@ -4,20 +4,17 @@ import React, { useState } from "react";
 import DateRangePicker from "@/components/DateRangePicker";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import { useStaffStore } from "@/stores/useStaffStore";
-import { useReportsOnStaffsStore } from "@/stores/useReportsOnStaffsStore";
-import { useProfileStore } from "@/stores/useProfileStore";
-import { TEXT } from "@/constants/text";
-import { currencyFormat, getDateTime, roundToThousand, sumArray } from "@/utils";
 import { RangeValue } from "@heroui/react";
+import { useProfileStore } from "@/stores/useProfileStore";
+import { useTargetStaffStore } from "@/stores/useTargetStaffStore";
 import { CalendarDate } from "@internationalized/date";
-import { ROLE } from "@/constants";
+import { ROLE, TEXT } from "@/constants";
+import { currencyFormat, getDateTime, roundToThousand, snakeCaseQueryString } from "@/utils";
 
 export default function TargetTopContent() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { staffById } = useStaffStore();
-    const { isLoading, reportsOnStaff, getReportsOnStaff } = useReportsOnStaffsStore();
+    const { targetByStaffId, getTargetByStaffId } = useTargetStaffStore();
 
     //** States */
     const [dateValue, setDateValue] = useState<RangeValue<CalendarDate>>({
@@ -28,23 +25,24 @@ export default function TargetTopContent() {
     const [bonus, setBonus] = useState<number>(0);
 
     //** Variables */
-    const totalTarget = !isLoading ? sumArray(reportsOnStaff, "target") : 0;
-    const totalTimeWorked = !isLoading ? sumArray(reportsOnStaff, "timeWorked") : 0;
-    const totalSalary = totalTimeWorked * salary;
+    const { totalTarget, totalWorkingHours } = targetByStaffId;
+    const totalSalary = totalWorkingHours * salary;
 
     //** Functions */
-    const handleFilterReports = () => {
-        getReportsOnStaff({
-            staffId: staffById.id,
-            startDate: dateValue.start.toString(),
-            endDate: dateValue.end.toString(),
-        });
+    const handleFilterTargets = () => {
+        getTargetByStaffId(
+            snakeCaseQueryString({
+                staffId: targetByStaffId.staffId,
+                startDate: dateValue.start.toString(),
+                endDate: dateValue.end.toString(),
+            }),
+        );
     };
 
     //** Render */
     return (
         <>
-            <div className="title">{staffById.name}</div>
+            <div className="title">{targetByStaffId.name || ""}</div>
             <div className="flex flex-col gap-4">
                 <div className="flex-1 flex flex-wrap gap-4 items-center">
                     <DateRangePicker
@@ -59,12 +57,12 @@ export default function TargetTopContent() {
                         }
                         onKeyUp={e => {
                             if (e.key === "Enter") {
-                                handleFilterReports();
+                                handleFilterTargets();
                             }
                         }}
                     />
 
-                    <Button onPress={() => handleFilterReports()}>{TEXT.SUBMIT}</Button>
+                    <Button onPress={() => handleFilterTargets()}>{TEXT.SUBMIT}</Button>
                 </div>
 
                 {profile.role === ROLE.ADMIN && (
@@ -100,7 +98,7 @@ export default function TargetTopContent() {
                                 )}
                                 <div className="flex justify-between">
                                     {`${TEXT.TIME_SHEET}: `}
-                                    <b className="text-primary">{totalTimeWorked}</b>
+                                    <b className="text-primary">{totalWorkingHours}</b>
                                 </div>
                             </div>
                             <div>

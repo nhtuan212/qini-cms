@@ -8,7 +8,14 @@ type DatePickerType = {
 } & DatePickerProps;
 
 const DatePicker = React.forwardRef<HTMLElement, DatePickerType>(({ ...props }, ref) => {
-    return <DatePickerNextUI ref={ref} variant={props.variant || "bordered"} {...props} />;
+    return (
+        <DatePickerNextUI
+            aria-label="Date picker"
+            ref={ref}
+            variant={props.variant || "bordered"}
+            {...props}
+        />
+    );
 });
 
 export default DatePicker;
