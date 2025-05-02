@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import TargetModal from "./TargetModal";
 import Button from "@/components/Button";
 import DateRangePicker from "@/components/DateRangePicker";
@@ -11,9 +11,11 @@ import { useModalStore } from "@/stores/useModalStore";
 import { useTargetStore } from "@/stores/useTargetStore";
 import { formatDate } from "@/utils";
 import { URL, TEXT } from "@/constants";
+import { parseDate } from "@internationalized/date";
 
 export default function TargetTopContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     //** Stores */
     const { getModal } = useModalStore();
@@ -39,6 +41,19 @@ export default function TargetTopContent() {
         router.push(URL.TARGET);
         setDateRange(null);
     };
+
+    //** Effects */
+    useEffect(() => {
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
+
+        if (startDate && endDate) {
+            setDateRange({
+                start: parseDate(startDate),
+                end: parseDate(endDate),
+            });
+        }
+    }, [searchParams]);
 
     //** Render */
     return (
