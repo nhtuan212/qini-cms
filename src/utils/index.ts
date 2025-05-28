@@ -2,6 +2,7 @@
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import "dayjs/locale/vi";
 import { getLocalTimeZone, startOfMonth, Time, today } from "@internationalized/date";
 
 dayjs.extend(utc);
@@ -31,10 +32,14 @@ export const convertAmountToNumber = (amount: string) => {
     return parseFloat(amount.replace(/[^0-9]/g, ""));
 };
 
-export const formatDate = (date: Date | string | number | null, format: string = "DD/MM/YYYY") => {
+export const formatDate = (
+    date: Date | string | number | null,
+    format: string = "DD/MM/YYYY",
+    locale: string = "vi",
+) => {
     if (!date) return "undefined";
 
-    return dayjs.utc(date).format(format);
+    return dayjs.utc(date).locale(locale).format(format);
 };
 
 export const getDateTime = () => {

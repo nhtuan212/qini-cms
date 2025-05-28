@@ -41,5 +41,6 @@ export const ROUTE = {
     HOME: "/",
     LOGIN: "/login",
     TARGET: "/target",
-    STAFF: "/nhan-vien",
+    ATTENDANCE: "/attendance",
+    STAFF: "/staff",
 };

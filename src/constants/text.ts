@@ -28,7 +28,8 @@ export const TEXT = {
     DATE: "Ngày",
     MONTH: "Tháng",
     ADD_DATE: "Ngày tạo",
-    TIME_SHEET: "Giờ làm việc",
+    ATTENDANCE: "Chấm công",
+    WORKING_HOURS: "Giờ làm việc",
     TIME_NUMBER: "Số giờ",
     TIME_RANGE: "Khoảng thời gian",
     CHECK_IN: "Giờ vào",
@@ -70,4 +71,8 @@ export const TEXT = {
     AMOUNT: "Số tiền",
     PAID: "Đã thu tiền",
     CANCEL_SEARCH: "Huỷ tìm kiếm",
+    ATTENDANCE_SYSTEM: "Hệ thống chấm công",
+    HISTORY: "Lịch sử",
+    STATISTICS: "Thống kê",
+    CHECK_IN_TODAY: "Chấm công hôm nay",
 };

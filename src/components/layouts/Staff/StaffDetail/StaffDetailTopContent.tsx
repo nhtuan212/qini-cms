@@ -97,7 +97,7 @@ export default function TargetTopContent() {
                                     </div>
                                 )}
                                 <div className="flex justify-between">
-                                    {`${TEXT.TIME_SHEET}: `}
+                                    {`${TEXT.WORKING_HOURS}: `}
                                     <b className="text-primary">{totalWorkingHours}</b>
                                 </div>
                             </div>

@@ -13,7 +13,7 @@ export default function StaffDetailColumns() {
         },
         {
             key: "timeSheet",
-            name: TEXT.TIME_SHEET,
+            name: TEXT.WORKING_HOURS,
             content: (params: any) => <div>{`${params.row.checkIn} - ${params.row.checkOut}`}</div>,
         },
         {
