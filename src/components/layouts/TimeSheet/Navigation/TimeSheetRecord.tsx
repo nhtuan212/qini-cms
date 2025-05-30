@@ -7,7 +7,7 @@ import { ClockIcon } from "@heroicons/react/24/outline";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 
-export default function RecordTimeSheet() {
+export default function TimeSheetRecord() {
     //** Stores */
     const { staffById } = useStaffStore();
 

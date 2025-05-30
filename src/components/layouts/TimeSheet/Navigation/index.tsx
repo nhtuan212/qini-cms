@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
-import RecordTimeSheet from "./RecordTimeSheet";
+import TimeSheetRecord from "./TimeSheetRecord";
 import { CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { TEXT } from "@/constants";
 
@@ -17,7 +17,7 @@ export default function AttendanceNavigation() {
             label: TEXT.TIME_SHEET,
             icon: ClockIcon,
             value: "record",
-            component: <RecordTimeSheet />,
+            component: <TimeSheetRecord />,
         },
         {
             label: TEXT.HISTORY,
