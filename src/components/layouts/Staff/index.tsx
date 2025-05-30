@@ -4,9 +4,12 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import StaffModal from "./StaffModal";
 import StaffActions from "./StaffActions";
+import TimeSheet from "../TimeSheet";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import Card from "@/components/Card";
+import PasswordInput from "@/components/PasswordInput";
+import { ClockIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
@@ -16,13 +19,36 @@ export default function Staff() {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { isLoading, staff, getStaff } = useStaffStore();
+    const { isLoading, staff, getStaff, getStaffById } = useStaffStore();
 
     //** Effects */
     useEffect(() => {
         getStaff();
     }, [getStaff]);
 
+    //** Functions */
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, staff: StaffProps) => {
+        const value = (e.target as HTMLInputElement).value;
+
+        if (value.length === 0) {
+            return null;
+        }
+
+        if (e.key === "Enter") {
+            getStaffById(staff.id).then(res => {
+                getModal({
+                    isOpen: true,
+                    isDismissable: false,
+                    size: "2xl",
+                    modalHeader: <h3 className="text-2xl font-bold text-gray-800">{res.name}</h3>,
+                    modalBody: <TimeSheet />,
+                    modalFooter: <></>,
+                });
+            });
+        }
+    };
+
+    //** Render */
     return (
         <>
             {isLoading && <Loading />}
@@ -46,27 +72,49 @@ export default function Staff() {
                 <div className="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-2">
                     {staff &&
                         staff.length > 0 &&
-                        staff?.map((item: StaffProps) => {
+                        staff?.map((staff: StaffProps) => {
                             return (
-                                <div
-                                    key={item.id}
-                                    className="flex flex-col justify-between h-36 p-3 border rounded shadow-md"
+                                <Card
+                                    key={staff.id}
+                                    className="flex flex-col justify-between h-36 bg-gray-50 p-3 border rounded-lg shadow-md"
                                 >
                                     <div className="flex justify-between items-center">
                                         <Link
-                                            href={`nhan-vien/${item.id}`}
+                                            href={`nhan-vien/${staff.id}`}
                                             className="text-lg"
                                             target="_blank"
                                         >
-                                            {item.name}
+                                            {staff.name}
                                         </Link>
 
                                         {(profile.role === ROLE.ADMIN ||
                                             profile.role === ROLE.REPORT) && (
-                                            <StaffActions item={item} />
+                                            <StaffActions item={staff} />
                                         )}
                                     </div>
-                                </div>
+
+                                    <Button
+                                        variant="flat"
+                                        color="success"
+                                        className="w-full"
+                                        startContent={<ClockIcon className="w-5 h-5" />}
+                                        onPress={() => {
+                                            getModal({
+                                                isOpen: true,
+                                                modalHeader: staff.name,
+                                                modalBody: (
+                                                    <div className="pb-4">
+                                                        <PasswordInput
+                                                            onKeyDown={e => handleKeyDown(e, staff)}
+                                                        />
+                                                    </div>
+                                                ),
+                                            });
+                                        }}
+                                    >
+                                        {TEXT.TIME_SHEET}
+                                    </Button>
+                                </Card>
                             );
                         })}
                 </div>

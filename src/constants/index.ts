@@ -35,12 +35,13 @@ export const URL = {
     USER: "/user",
     STAFF: "/staff",
     SHIFT: "/shift",
+    TIME_SHEET: "/time-sheet",
 };
 
 export const ROUTE = {
     HOME: "/",
     LOGIN: "/login",
     TARGET: "/target",
-    ATTENDANCE: "/attendance",
+    TIME_SHEET: "/time-sheet",
     STAFF: "/staff",
 };

@@ -200,3 +200,28 @@ export const snakeCaseQueryString = (
 
     return queryString ? `${prefix}${queryString}` : "";
 };
+
+export const formatTime = (time?: string, includeSeconds: boolean = false) => {
+    const formatOptions: Intl.DateTimeFormatOptions = {
+        timeZone: "Asia/Ho_Chi_Minh",
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+    };
+
+    if (includeSeconds) {
+        formatOptions.second = "2-digit";
+    }
+
+    return new Date(time || new Date().toISOString()).toLocaleTimeString("vi-VN", formatOptions);
+};
+
+// IP Validation utilities
+export {
+    validateUserIP,
+    getUserIP,
+    isIPAllowed,
+    DEFAULT_ALLOWED_IPS,
+    DEFAULT_IP_ERROR_MESSAGE,
+    type IPValidationConfig,
+} from "./ipValidation";

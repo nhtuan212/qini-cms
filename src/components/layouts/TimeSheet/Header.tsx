@@ -3,20 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { TEXT } from "@/constants";
+import { formatTime } from "@/utils";
 
 export default function AttendanceHeader() {
     //** States */
     const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
     //** Functions */
-    const formatTime = (date: Date) => {
-        return date.toLocaleTimeString("vi-VN", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-        });
-    };
-
     const formatDate = (date: Date) => {
         return date.toLocaleDateString("vi-VN", {
             weekday: "long",
@@ -49,13 +42,13 @@ export default function AttendanceHeader() {
                     </div>
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800">
-                            {TEXT.ATTENDANCE_SYSTEM}
+                            {TEXT.TIME_SHEET_SYSTEM}
                         </h1>
                     </div>
                 </div>
                 <div className="text-right">
                     <div className="text-3xl font-mono font-bold text-primary">
-                        {currentTime ? formatTime(currentTime) : "--:--:--"}
+                        {currentTime ? formatTime(currentTime.toISOString(), true) : "--:--:--"}
                     </div>
                     <div className="text-gray-600">
                         {currentTime ? formatDate(currentTime) : "Loading..."}

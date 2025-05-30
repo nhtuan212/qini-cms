@@ -3,31 +3,26 @@
 import React, { useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
-import CheckIn from "./CheckIn";
-import { Bars3Icon, CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
+import RecordTimeSheet from "./RecordTimeSheet";
+import { CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { TEXT } from "@/constants";
 
 export default function AttendanceNavigation() {
     //** States */
-    const [activeTab, setActiveTab] = useState("checkIn");
+    const [activeTab, setActiveTab] = useState("record");
 
     //** Variables */
     const tabs = [
         {
-            label: TEXT.ATTENDANCE,
+            label: TEXT.TIME_SHEET,
             icon: ClockIcon,
-            value: "checkIn",
-            component: <CheckIn />,
+            value: "record",
+            component: <RecordTimeSheet />,
         },
         {
             label: TEXT.HISTORY,
             icon: CalendarIcon,
             value: "history",
-        },
-        {
-            label: TEXT.STATISTICS,
-            icon: Bars3Icon,
-            value: "statistics",
         },
     ];
 
