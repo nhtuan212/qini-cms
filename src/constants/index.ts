@@ -3,6 +3,7 @@ import { TEXT } from "./text";
 export { TEXT };
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+export const RSA_PUBLIC_KEY = process.env.NEXT_PUBLIC_RSA_PUBLIC_KEY || "";
 
 export const STATUS_CODE = {
     OK: 200,

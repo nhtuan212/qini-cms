@@ -225,3 +225,6 @@ export {
     DEFAULT_IP_ERROR_MESSAGE,
     type IPValidationConfig,
 } from "./ipValidation";
+
+// Crypto
+export { encryptPasswordRSA, generateRSAKeyPair } from "./crypto";

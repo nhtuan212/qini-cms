@@ -4,15 +4,17 @@ import React, { useEffect } from "react";
 import Input from "@/components/Input";
 import ErrorMessage from "@/components/ErrorMessage";
 import Button from "@/components/Button";
+import PasswordInput from "@/components/PasswordInput";
 import { useForm } from "react-hook-form";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { TEXT } from "@/constants";
+import { encryptPasswordRSA } from "@/utils";
 import { ModalActionProps } from "@/lib/types";
 
 type FormValues = {
     name: string;
+    password: string;
 };
 
 export default function StaffModal() {
@@ -26,6 +28,7 @@ export default function StaffModal() {
     //** React hook form */
     const defaultValues = {
         name: action === ModalActionProps.UPDATE ? staffById.name : "",
+        password: "",
     };
 
     const {
@@ -40,15 +43,20 @@ export default function StaffModal() {
     });
 
     const onSubmit = async (data: FormValues) => {
+        const result = {
+            name: data.name,
+            ...(data.password && { password: encryptPasswordRSA(data.password) }),
+        };
+
         switch (action) {
             case ModalActionProps.CREATE:
-                return createStaff(data).then(() => {
+                return createStaff(result).then(() => {
                     handleCloseModal();
                 });
             case ModalActionProps.UPDATE:
                 return updateStaff({
                     id: staffById.id,
-                    bodyParams: data,
+                    bodyParams: result,
                 }).then(() => {
                     handleCloseModal();
                 });
@@ -58,17 +66,12 @@ export default function StaffModal() {
     };
 
     //** Functions */
-    const resetForm = () => {
-        reset({
-            name: "",
-        });
-    };
-
     const handleCloseModal = () => {
         getModal({
             isOpen: false,
         });
-        resetForm();
+
+        reset();
         getStaff();
     };
 
@@ -82,13 +85,25 @@ export default function StaffModal() {
     return (
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
             <Input
-                startContent={<UserCircleIcon className="w-6" />}
-                placeholder={TEXT.NAME}
+                label={TEXT.NAME}
+                placeholder={TEXT.ENTER_NAME}
                 {...register("name", {
                     required: `${TEXT.NAME} ${TEXT.IS_REQUIRED}`,
                 })}
                 isInvalid={!!errors.name}
                 errorMessage={<ErrorMessage errors={errors} name={"name"} />}
+            />
+
+            <PasswordInput
+                variant="bordered"
+                {...register("password", {
+                    required:
+                        action === ModalActionProps.CREATE
+                            ? `${TEXT.PASSWORD} ${TEXT.IS_REQUIRED}`
+                            : false,
+                })}
+                isInvalid={!!errors.password}
+                errorMessage={<ErrorMessage errors={errors} name={"password"} />}
             />
 
             <div className="flex flex-row-reverse gap-2">

@@ -4,11 +4,10 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import StaffModal from "./StaffModal";
 import StaffActions from "./StaffActions";
-import TimeSheet from "../TimeSheet";
+import ValidateStaffPassword from "./ValidateStaffPassword";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import Card from "@/components/Card";
-import PasswordInput from "@/components/PasswordInput";
 import { ClockIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
@@ -19,34 +18,12 @@ export default function Staff() {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { isLoading, staff, getStaff, getStaffById } = useStaffStore();
+    const { isLoading, staff, getStaff } = useStaffStore();
 
     //** Effects */
     useEffect(() => {
         getStaff();
     }, [getStaff]);
-
-    //** Functions */
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, staff: StaffProps) => {
-        const value = (e.target as HTMLInputElement).value;
-
-        if (value.length === 0) {
-            return null;
-        }
-
-        if (e.key === "Enter") {
-            getStaffById(staff.id).then(res => {
-                getModal({
-                    isOpen: true,
-                    isDismissable: false,
-                    size: "2xl",
-                    modalHeader: <h3 className="text-2xl font-bold text-gray-800">{res.name}</h3>,
-                    modalBody: <TimeSheet />,
-                    modalFooter: <></>,
-                });
-            });
-        }
-    };
 
     //** Render */
     return (
@@ -68,6 +45,7 @@ export default function Staff() {
                     <PlusIcon className="w-5 ml-2" />
                 </Button>
             </div>
+
             <div className="flex flex-col justify-center mt-4">
                 <div className="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-2">
                     {staff &&
@@ -102,13 +80,8 @@ export default function Staff() {
                                             getModal({
                                                 isOpen: true,
                                                 modalHeader: staff.name,
-                                                modalBody: (
-                                                    <div className="pb-4">
-                                                        <PasswordInput
-                                                            onKeyDown={e => handleKeyDown(e, staff)}
-                                                        />
-                                                    </div>
-                                                ),
+                                                modalBody: <ValidateStaffPassword staff={staff} />,
+                                                modalFooter: <></>,
                                             });
                                         }}
                                     >

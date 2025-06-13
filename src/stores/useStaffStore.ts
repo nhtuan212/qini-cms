@@ -8,6 +8,7 @@ export type StaffProps = {
 
 type StaffState = {
     isLoading?: boolean;
+    isValidatePasswordLoading?: boolean;
     staff: StaffProps[];
     staffById: StaffProps;
 };
@@ -25,6 +26,7 @@ type StaffAction = {
         bodyParams: StaffProps;
     }) => Promise<StaffProps>;
     deleteStaff: (id: StaffProps["id"]) => Promise<void>;
+    validateStaffPassword: (id: StaffProps["id"], password: string) => Promise<StaffProps>;
 };
 
 const initialState: StaffState = {
@@ -149,5 +151,47 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
 
             return set({ staff: res.data });
         });
+    },
+
+    validateStaffPassword: async (id, password) => {
+        set({
+            isValidatePasswordLoading: true,
+        });
+
+        return await fetchData({
+            endpoint: `${URL.STAFF}/${id}/validate-password`,
+            options: {
+                method: "POST",
+                body: JSON.stringify({ password }),
+            },
+        })
+            .then(res => {
+                set({
+                    isValidatePasswordLoading: false,
+                });
+
+                if (res?.code === 200) {
+                    return {
+                        isValid: true,
+                        code: res.code,
+                        staff: res.data,
+                    };
+                }
+
+                return {
+                    isValid: false,
+                    message: res?.message || "Invalid password",
+                };
+            })
+            .catch(err => {
+                set({
+                    isValidatePasswordLoading: false,
+                });
+
+                return {
+                    isValid: false,
+                    message: err.message,
+                };
+            });
     },
 }));

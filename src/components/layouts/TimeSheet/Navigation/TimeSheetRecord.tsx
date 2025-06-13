@@ -15,7 +15,7 @@ export default function TimeSheetRecord() {
     const [error, setError] = useState("");
 
     //** Variables */
-    const { timeSheetByStaffId, recordTimeSheet, getTimeSheet, cleanUpTimeSheet } =
+    const { isLoading, timeSheetByStaffId, recordTimeSheet, getTimeSheet, cleanUpTimeSheet } =
         useTimeSheetStore();
 
     //** Functions */
@@ -69,6 +69,7 @@ export default function TimeSheetRecord() {
                     color="success"
                     size="lg"
                     className="w-full"
+                    isLoading={isLoading}
                     onPress={handleRecordTimeSheet}
                 >
                     {`${TEXT.CHECK_IN} / ${TEXT.CHECK_OUT}`}
