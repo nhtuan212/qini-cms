@@ -2,10 +2,13 @@
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
 import "dayjs/locale/vi";
 import { getLocalTimeZone, startOfMonth, Time, today } from "@internationalized/date";
 
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const wrongTimeSheet = ({
     checkIn,
@@ -36,10 +39,11 @@ export const formatDate = (
     date: Date | string | number | null,
     format: string = "DD/MM/YYYY",
     locale: string = "vi",
+    timeZone: string = "Asia/Ho_Chi_Minh",
 ) => {
     if (!date) return "undefined";
 
-    return dayjs.utc(date).locale(locale).format(format);
+    return dayjs.utc(date).tz(timeZone).locale(locale).format(format);
 };
 
 export const getDateTime = () => {

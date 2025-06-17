@@ -1,14 +1,16 @@
 import { create } from "zustand";
-import { convertKeysToCamelCase, convertKeysToSnakeCase, formatTime } from "@/utils";
+import { convertKeysToCamelCase, convertKeysToSnakeCase, formatDate, formatTime } from "@/utils";
 import { fetchData } from "@/utils/fetch";
 import { URL, STATUS_CODE } from "@/constants";
 
-export interface TimeSheetRecord {
+export interface TimeSheetRecordProps {
     id?: string;
-    staffId?: string;
+    staffId: string;
+    shiftId: string;
     date?: string;
     checkIn?: string;
     checkOut?: string;
+    shiftName?: string;
     workingHours?: string;
     createdAt?: string;
     updatedAt?: string;
@@ -16,20 +18,23 @@ export interface TimeSheetRecord {
 
 interface TimeSheetState {
     isLoading: boolean;
-    timeSheets: TimeSheetRecord[];
-    timeSheetByStaffId: TimeSheetRecord;
+    timeSheets: TimeSheetRecordProps[];
+    timeSheetByStaffId: TimeSheetRecordProps[];
     pagination?: {
         [key: string]: any;
     };
 }
 
 interface TimeSheetActions {
-    recordTimeSheet: (params: { staffId: string }) => Promise<TimeSheetRecord>;
+    recordTimeSheet: (params: {
+        staffId: string;
+        shiftId: string;
+    }) => Promise<TimeSheetRecordProps>;
     getTimeSheet: (params?: { staffId?: string; date?: string }) => Promise<void>;
     updateTimeSheet: (params: {
         id: string;
-        bodyParams: Partial<TimeSheetRecord>;
-    }) => Promise<TimeSheetRecord>;
+        bodyParams: Partial<TimeSheetRecordProps>;
+    }) => Promise<TimeSheetRecordProps>;
     deleteTimeSheet: (id: string) => Promise<void>;
     cleanUpTimeSheet: () => void;
 }
@@ -37,81 +42,71 @@ interface TimeSheetActions {
 const initialState: TimeSheetState = {
     isLoading: false,
     timeSheets: [],
-    timeSheetByStaffId: {
-        checkIn: "N/A",
-        checkOut: "N/A",
-        workingHours: "0",
-    },
+    timeSheetByStaffId: [],
 };
 
 export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((set, get) => ({
     ...initialState,
 
-    // Record time sheet - handles both first click (POST) and subsequent clicks (PUT)
-    recordTimeSheet: async ({ staffId }) => {
+    recordTimeSheet: async ({ staffId, shiftId }) => {
         set({ isLoading: true });
 
-        const currentDate = new Date().toISOString().split("T")[0];
+        const currentDate = formatDate(new Date(), "YYYY-MM-DD");
 
-        // First, fetch current records from server to handle page refresh
+        const existingRecord = get().timeSheetByStaffId.find(
+            record =>
+                record.staffId === staffId &&
+                record.shiftId === shiftId &&
+                record.date &&
+                formatDate(record.date, "YYYY-MM-DD") === currentDate,
+        );
+
+        if (existingRecord) {
+            return await get().updateTimeSheet({
+                id: existingRecord.id!,
+                bodyParams: {
+                    shiftId,
+                    checkOut: formatTime(),
+                },
+            });
+        }
+
+        const recordData = {
+            staffId,
+            shiftId,
+            date: new Date().toISOString(),
+            checkIn: formatTime(),
+        };
+
         return await fetchData({
-            endpoint: `${URL.TIME_SHEET}?staffId=${staffId}&date=${currentDate}`,
-        }).then(async serverResponse => {
-            // Check if record exists on server for today
-            const existingRecord = serverResponse?.data?.find(
-                (record: any) =>
-                    new Date(record.date).toISOString().split("T")[0] === currentDate &&
-                    record.staff_id === staffId,
-            );
+            endpoint: URL.TIME_SHEET,
+            options: {
+                method: "POST",
+                body: JSON.stringify(convertKeysToSnakeCase(recordData)),
+            },
+        }).then(res => {
+            set({ isLoading: false });
 
-            // If record exists on server, update it (subsequent click)
-            if (existingRecord?.id) {
-                return await get().updateTimeSheet({
-                    id: existingRecord.id,
-                    bodyParams: {
-                        checkOut: formatTime(),
-                    },
-                });
+            if (res?.code !== STATUS_CODE.OK) {
+                throw new Error(res?.message || "Record failed");
             }
 
-            // If no record exists, create new one (first click)
-            const recordData = {
-                staffId,
-                date: new Date().toISOString(),
-                checkIn: formatTime(),
-            };
+            const newRecord = convertKeysToCamelCase(res.data) as TimeSheetRecordProps;
 
-            return await fetchData({
-                endpoint: URL.TIME_SHEET,
-                options: {
-                    method: "POST",
-                    body: JSON.stringify(convertKeysToSnakeCase(recordData)),
-                },
-            }).then(rs => {
-                set({ isLoading: false });
+            set(state => ({
+                timeSheets: [newRecord, ...state.timeSheets],
+                timeSheetByStaffId: [newRecord, ...state.timeSheetByStaffId],
+            }));
 
-                if (rs?.code !== STATUS_CODE.OK) {
-                    throw new Error(rs?.message || "Record failed");
-                }
-
-                const newRecord = convertKeysToCamelCase(rs.data) as TimeSheetRecord;
-
-                set(state => ({
-                    timeSheets: [newRecord, ...state.timeSheets],
-                    timeSheetByStaffId: newRecord,
-                }));
-
-                return newRecord;
-            });
+            return newRecord;
         });
     },
 
-    // Get time sheets - all or filtered by staffId/date
     getTimeSheet: async params => {
         set({ isLoading: true });
 
         const queryParams = new URLSearchParams();
-        if (params?.staffId) queryParams.append("staffId", params.staffId);
+        if (params?.staffId) queryParams.append("staff_id", params.staffId);
         if (params?.date) queryParams.append("date", params.date);
 
         const endpoint = `${URL.TIME_SHEET}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
@@ -126,31 +121,28 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
             }
 
             if (params?.staffId) {
-                const foundRecord = res.data.find((item: TimeSheetRecord) => {
-                    const record = convertKeysToCamelCase(item) as TimeSheetRecord;
-                    const recordDate = new Date(record.date || "").toISOString().split("T")[0];
-                    const targetDate = params.date || new Date().toISOString().split("T")[0];
-
-                    return record.staffId === params.staffId && recordDate === targetDate;
+                const foundRecord: TimeSheetRecordProps[] = res.data.filter((item: any) => {
+                    const record = convertKeysToCamelCase(item) as TimeSheetRecordProps;
+                    return record.staffId === params.staffId;
                 });
 
                 return set({
-                    timeSheetByStaffId: foundRecord
-                        ? (convertKeysToCamelCase(foundRecord) as TimeSheetRecord)
-                        : initialState.timeSheetByStaffId,
+                    timeSheetByStaffId: foundRecord.map(
+                        item => convertKeysToCamelCase(item) as TimeSheetRecordProps,
+                    ),
                 });
             }
 
             return set({
                 timeSheets: res.data.map(
-                    (item: any) => convertKeysToCamelCase(item) as TimeSheetRecord,
+                    (item: any) => convertKeysToCamelCase(item) as TimeSheetRecordProps,
                 ),
+
                 pagination: res.pagination,
             });
         });
     },
 
-    // Update time sheet record
     updateTimeSheet: async ({ id, bodyParams }) => {
         set({ isLoading: true });
 
@@ -167,20 +159,18 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                 throw new Error(rs?.message || "Failed to update time sheet");
             }
 
-            const updatedRecord = convertKeysToCamelCase(rs.data) as TimeSheetRecord;
+            const updatedRecord = convertKeysToCamelCase(rs.data) as TimeSheetRecordProps;
 
             set(state => ({
-                timeSheets: state.timeSheets.map(record =>
-                    record.id === id ? updatedRecord : record,
+                timeSheetByStaffId: state.timeSheetByStaffId.map(item =>
+                    item.id === updatedRecord.id ? updatedRecord : item,
                 ),
-                timeSheetByStaffId: updatedRecord,
             }));
 
             return updatedRecord;
         });
     },
 
-    // Delete time sheet record
     deleteTimeSheet: async id => {
         set({ isLoading: true });
 
@@ -202,7 +192,6 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
         });
     },
 
-    // Clean up time sheet by staff id
     cleanUpTimeSheet: () => {
         set({ timeSheetByStaffId: initialState.timeSheetByStaffId });
     },

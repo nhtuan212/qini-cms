@@ -2,7 +2,7 @@
 
 import React from "react";
 import StaffModal from "./StaffModal";
-import StaffModalDetail from "./StaffDetail";
+import ValidateStaffPassword from "./ValidateStaffPassword";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
@@ -15,8 +15,6 @@ import {
 import { useProfileStore } from "@/stores/useProfileStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { useTargetStaffStore } from "@/stores/useTargetStaffStore";
-import { getDateTime, snakeCaseQueryString } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
 import { ModalActionProps } from "@/lib/types";
 
@@ -27,8 +25,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getStaff, getStaffById, deleteStaff } = useStaffStore();
-    const { getTargetByStaffId } = useTargetStaffStore();
+    const { staff, getStaff, getStaffById, deleteStaff } = useStaffStore();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -44,19 +41,15 @@ export default function StaffActions({ item }: { item: StaffProps }) {
 
     //** Functions */
     const handleViewStaff = async (id: string) => {
-        await getTargetByStaffId(
-            snakeCaseQueryString({
-                staffId: id,
-                startDate: getDateTime().firstDayOfMonth.toString(),
-                endDate: getDateTime().lastDayOfMonth.toString(),
-            }),
-        );
+        const currentStaff = staff.find(staff => staff.id === id);
 
-        await getModal({
+        if (!currentStaff) return null;
+
+        getModal({
             isOpen: true,
-            size: "5xl",
-            modalBody: <StaffModalDetail />,
-            isDismissable: false,
+            modalHeader: currentStaff.name,
+            modalBody: <ValidateStaffPassword staff={currentStaff} validateType="detail" />,
+            modalFooter: <></>,
         });
     };
 

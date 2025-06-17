@@ -80,7 +80,12 @@ export default function Staff() {
                                             getModal({
                                                 isOpen: true,
                                                 modalHeader: staff.name,
-                                                modalBody: <ValidateStaffPassword staff={staff} />,
+                                                modalBody: (
+                                                    <ValidateStaffPassword
+                                                        staff={staff}
+                                                        validateType="time-sheet"
+                                                    />
+                                                ),
                                                 modalFooter: <></>,
                                             });
                                         }}

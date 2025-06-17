@@ -25,6 +25,7 @@ export const TEXT = {
     TRANSFER: "Chuyển khoản",
     TOTAL: "Tổng cộng",
     WORK_SHIFT: "Ca",
+    WORK_SHIFT_SELECT: "Chọn ca làm việc",
     SUBMIT_SHIFT: "Chốt ca",
     DATE: "Ngày",
     MONTH: "Tháng",
