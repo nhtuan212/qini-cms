@@ -1,15 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import TimeSheetRecord from "./TimeSheetRecord";
+import TimeSheetHistory from "./TimeSheetHistory";
 import { CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { useStaffStore } from "@/stores/useStaffStore";
+import { useShiftStore } from "@/stores/useShiftsStore";
+import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { TEXT } from "@/constants";
+import { formatDate } from "@/utils";
 
 export default function AttendanceNavigation() {
     //** States */
     const [activeTab, setActiveTab] = useState("record");
+
+    //** Stores */
+    const { staffById } = useStaffStore();
+    const { getShifts } = useShiftStore();
+    const { getTimeSheet, cleanUpTimeSheet } = useTimeSheetStore();
 
     //** Variables */
     const tabs = [
@@ -23,8 +33,22 @@ export default function AttendanceNavigation() {
             label: TEXT.HISTORY,
             icon: CalendarIcon,
             value: "history",
+            component: <TimeSheetHistory />,
         },
     ];
+
+    //** Effects */
+    useEffect(() => {
+        getTimeSheet({ staffId: staffById.id, date: formatDate(new Date(), "YYYY-MM-DD") });
+
+        return () => {
+            cleanUpTimeSheet();
+        };
+    }, [cleanUpTimeSheet, getTimeSheet, staffById.id]);
+
+    useEffect(() => {
+        getShifts();
+    }, [getShifts]);
 
     //** Render */
     return (

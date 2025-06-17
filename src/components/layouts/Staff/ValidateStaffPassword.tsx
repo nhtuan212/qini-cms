@@ -80,7 +80,7 @@ export default function ValidateStaffPassword({
         await getModal({
             isOpen: true,
             isDismissable: false,
-            size: "2xl",
+            size: "3xl",
             modalHeader: <h3 className="text-2xl font-bold text-gray-800">{staff.name}</h3>,
             modalBody: <TimeSheet />,
             modalFooter: <></>,

@@ -80,4 +80,5 @@ export const TEXT = {
     ERROR: "Đã có lỗi xảy ra. Vui lòng thử lại.",
     INVALID_PASSWORD: "Mật khẩu không đúng",
     PASSWORD_VALIDATION_FAILED: "Xác thực mật khẩu thất bại",
+    TIME_SHEET_HISTORY: "Lịch sử chấm công",
 };

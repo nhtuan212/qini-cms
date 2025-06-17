@@ -3,38 +3,26 @@ import { convertKeysToCamelCase, convertKeysToSnakeCase, formatDate, formatTime 
 import { fetchData } from "@/utils/fetch";
 import { URL, STATUS_CODE } from "@/constants";
 
-export interface TimeSheetRecordProps {
-    id?: string;
-    staffId: string;
-    shiftId: string;
-    date?: string;
-    checkIn?: string;
-    checkOut?: string;
-    shiftName?: string;
-    workingHours?: string;
-    createdAt?: string;
-    updatedAt?: string;
+export interface TimeSheetProps {
+    [key: string]: any;
 }
 
 interface TimeSheetState {
     isLoading: boolean;
-    timeSheets: TimeSheetRecordProps[];
-    timeSheetByStaffId: TimeSheetRecordProps[];
+    timeSheets: TimeSheetProps[];
+    timeSheetByStaffId: TimeSheetProps[];
     pagination?: {
         [key: string]: any;
     };
 }
 
 interface TimeSheetActions {
-    recordTimeSheet: (params: {
-        staffId: string;
-        shiftId: string;
-    }) => Promise<TimeSheetRecordProps>;
+    recordTimeSheet: (params: { staffId: string; shiftId: string }) => Promise<TimeSheetProps>;
     getTimeSheet: (params?: { staffId?: string; date?: string }) => Promise<void>;
     updateTimeSheet: (params: {
         id: string;
-        bodyParams: Partial<TimeSheetRecordProps>;
-    }) => Promise<TimeSheetRecordProps>;
+        bodyParams: Partial<TimeSheetProps>;
+    }) => Promise<TimeSheetProps>;
     deleteTimeSheet: (id: string) => Promise<void>;
     cleanUpTimeSheet: () => void;
 }
@@ -91,7 +79,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                 throw new Error(res?.message || "Record failed");
             }
 
-            const newRecord = convertKeysToCamelCase(res.data) as TimeSheetRecordProps;
+            const newRecord = convertKeysToCamelCase(res.data) as TimeSheetProps;
 
             set(state => ({
                 timeSheets: [newRecord, ...state.timeSheets],
@@ -121,21 +109,21 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
             }
 
             if (params?.staffId) {
-                const foundRecord: TimeSheetRecordProps[] = res.data.filter((item: any) => {
-                    const record = convertKeysToCamelCase(item) as TimeSheetRecordProps;
+                const foundRecord: TimeSheetProps[] = res.data.filter((item: any) => {
+                    const record = convertKeysToCamelCase(item) as TimeSheetProps;
                     return record.staffId === params.staffId;
                 });
 
                 return set({
                     timeSheetByStaffId: foundRecord.map(
-                        item => convertKeysToCamelCase(item) as TimeSheetRecordProps,
+                        item => convertKeysToCamelCase(item) as TimeSheetProps,
                     ),
                 });
             }
 
             return set({
                 timeSheets: res.data.map(
-                    (item: any) => convertKeysToCamelCase(item) as TimeSheetRecordProps,
+                    (item: any) => convertKeysToCamelCase(item) as TimeSheetProps,
                 ),
 
                 pagination: res.pagination,
@@ -159,7 +147,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                 throw new Error(rs?.message || "Failed to update time sheet");
             }
 
-            const updatedRecord = convertKeysToCamelCase(rs.data) as TimeSheetRecordProps;
+            const updatedRecord = convertKeysToCamelCase(rs.data) as TimeSheetProps;
 
             set(state => ({
                 timeSheetByStaffId: state.timeSheetByStaffId.map(item =>

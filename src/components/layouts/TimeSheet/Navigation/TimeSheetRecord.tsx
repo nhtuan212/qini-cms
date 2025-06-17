@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { Select, SelectItem } from "@/components/Select";
@@ -6,7 +6,7 @@ import {
     ArrowRightEndOnRectangleIcon,
     ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import { TimeSheetRecordProps, useTimeSheetStore } from "@/stores/useTimeSheetStore";
+import { TimeSheetProps, useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
 import { ShiftProps } from "@/stores/useShiftsStore";
@@ -16,7 +16,7 @@ import { formatDate, isEmpty, validateUserIP } from "@/utils";
 export default function TimeSheetRecord() {
     //** Stores */
     const { staffById } = useStaffStore();
-    const { shifts, getShifts } = useShiftStore();
+    const { shifts } = useShiftStore();
 
     //** States */
     const [error, setError] = useState("");
@@ -24,8 +24,7 @@ export default function TimeSheetRecord() {
     const [shiftError, setShiftError] = useState<string | null>(null);
 
     //** Variables */
-    const { isLoading, timeSheetByStaffId, recordTimeSheet, getTimeSheet, cleanUpTimeSheet } =
-        useTimeSheetStore();
+    const { isLoading, timeSheetByStaffId, recordTimeSheet } = useTimeSheetStore();
 
     //** Functions */
     const handleRecordTimeSheet = async () => {
@@ -44,7 +43,7 @@ export default function TimeSheetRecord() {
             return;
         }
 
-        const bodyParams: Pick<TimeSheetRecordProps, "staffId" | "shiftId"> = {
+        const bodyParams: Pick<TimeSheetProps, "staffId" | "shiftId"> = {
             staffId: staffById.id,
             shiftId: selectedShift,
         };
@@ -55,19 +54,6 @@ export default function TimeSheetRecord() {
                 setError(TEXT.ERROR);
             });
     };
-
-    //** Effects */
-    useEffect(() => {
-        getTimeSheet({ staffId: staffById.id, date: formatDate(new Date(), "YYYY-MM-DD") });
-
-        return () => {
-            cleanUpTimeSheet();
-        };
-    }, [getTimeSheet, cleanUpTimeSheet, staffById.id]);
-
-    useEffect(() => {
-        getShifts();
-    }, [getShifts]);
 
     //** Render */
     return (
