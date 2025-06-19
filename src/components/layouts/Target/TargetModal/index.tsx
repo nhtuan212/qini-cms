@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { transformTargetFormData } from "./targetFormData";
-import TargetModalItems from "./TargetModalItems";
+import { useTransformTargetFormData } from "./useTransformTargetFormData";
+import TargetItems from "./TargetItems";
 import DatePicker from "@/components/DatePicker";
 import Button from "@/components/Button";
 import { ShiftProps, useShiftStore } from "@/stores/useShiftsStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { TEXT } from "@/constants/text";
 import { ModalActionProps } from "@/lib/types";
 import { isEmpty } from "@/utils";
@@ -23,9 +23,10 @@ export default function TargetModal() {
     const { action } = modal;
 
     //** React hook form */
+    const transformedData = useTransformTargetFormData(targetById);
     const defaultValues = useMemo(() => {
-        return transformTargetFormData(targetById);
-    }, [targetById]);
+        return transformedData;
+    }, [transformedData]);
 
     const {
         control,
@@ -35,6 +36,11 @@ export default function TargetModal() {
         clearErrors,
         formState: { errors },
     } = useForm<TargetProps>({ values: defaultValues });
+
+    const { fields } = useFieldArray({
+        control,
+        name: "targetShift",
+    });
 
     const onSubmit = (data: TargetProps) => {
         const result = {
@@ -93,11 +99,12 @@ export default function TargetModal() {
 
                 {!isEmpty(shifts) && (
                     <div className="grid md:grid-cols-2 gap-4">
-                        {shifts.map((shift: ShiftProps) => {
+                        {fields.map((field: ShiftProps, index) => {
                             return (
-                                <TargetModalItems
-                                    key={shift.id}
-                                    shift={shift}
+                                <TargetItems
+                                    key={field.id}
+                                    nestIndex={index}
+                                    shift={field}
                                     control={control}
                                     errors={errors}
                                     getValues={getValues}

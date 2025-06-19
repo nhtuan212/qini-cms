@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import { convertKeysToCamelCase, convertKeysToSnakeCase, formatDate, formatTime } from "@/utils";
 import { fetchData } from "@/utils/fetch";
-import { URL, STATUS_CODE } from "@/constants";
+import { URL, STATUS_CODE, TEXT } from "@/constants";
+import { useTargetStore } from "@/stores/useTargetStore";
+import { ShiftProps, useShiftStore } from "./useShiftsStore";
 
 export interface TimeSheetProps {
     [key: string]: any;
@@ -50,13 +52,63 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
         );
 
         if (existingRecord) {
-            return await get().updateTimeSheet({
-                id: existingRecord.id!,
-                bodyParams: {
-                    shiftId,
-                    checkOut: formatTime(),
-                },
-            });
+            return get()
+                .updateTimeSheet({
+                    id: existingRecord.id!,
+                    bodyParams: {
+                        shiftId,
+                        checkOut: formatTime(),
+                    },
+                })
+                .then(res => {
+                    set({ isLoading: false });
+
+                    if (res?.code && res?.code !== STATUS_CODE.OK) {
+                        throw new Error(res?.message || "Failed to update time sheet");
+                    }
+
+                    //** Update target */
+                    const todayTarget = useTargetStore
+                        .getState()
+                        .targets.find(
+                            target =>
+                                target.targetAt &&
+                                formatDate(target.targetAt, "YYYY-MM-DD") === currentDate,
+                        );
+
+                    if (!todayTarget) {
+                        throw new Error("Target not found");
+                    }
+
+                    const updateTarget = {
+                        name: todayTarget?.name,
+                        targetAt: todayTarget?.targetAt,
+                        targetShift: todayTarget?.targetShift.map((shiftItem: any) => {
+                            if (shiftItem.shiftId === shiftId) {
+                                return {
+                                    ...shiftItem,
+                                    targetStaff: shiftItem.targetStaff.map((staffItem: any) => {
+                                        if (staffItem.staffId === staffId) {
+                                            return {
+                                                ...staffItem,
+                                                checkOut: res.checkOut || formatTime(),
+                                            };
+                                        }
+                                        return staffItem;
+                                    }),
+                                };
+                            }
+                            return shiftItem;
+                        }),
+                    };
+
+                    useTargetStore.getState().updateTarget({
+                        id: todayTarget.id,
+                        bodyParams: updateTarget,
+                    });
+
+                    return res;
+                });
         }
 
         const recordData = {
@@ -66,6 +118,35 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
             checkIn: formatTime(),
         };
 
+        //** Create target */
+        const shifts = useShiftStore.getState().shifts;
+
+        const newTarget = {
+            name: TEXT.TARGET,
+            targetAt: currentDate,
+            targetShift: shifts.map((shift: ShiftProps) => {
+                if (shift.id === shiftId) {
+                    return {
+                        ...shift,
+                        shift_id: shiftId,
+                        target_staff: [
+                            {
+                                staff_id: staffId,
+                                check_in: formatTime(),
+                            },
+                        ],
+                    };
+                }
+                return {
+                    ...shift,
+                    shift_id: shift.id,
+                    target_staff: [],
+                };
+            }),
+        };
+        useTargetStore.getState().createTarget(newTarget);
+
+        //** Create time sheet */
         return await fetchData({
             endpoint: URL.TIME_SHEET,
             options: {
@@ -79,7 +160,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                 throw new Error(res?.message || "Record failed");
             }
 
-            const newRecord = convertKeysToCamelCase(res.data) as TimeSheetProps;
+            const newRecord = convertKeysToCamelCase(res.data);
 
             set(state => ({
                 timeSheets: [newRecord, ...state.timeSheets],

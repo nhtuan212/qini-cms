@@ -7,39 +7,41 @@ import { TEXT } from "@/constants";
 import ErrorMessage from "@/components/ErrorMessage";
 
 type RevenueProps = {
+    fieldName: string;
+    nestIndex: number;
     control: any;
     errors: any;
-    shiftId: string;
     setValue: any;
     clearErrors: any;
 };
 
 export default function Revenue({ ...props }: RevenueProps) {
     //** Variables */
-    const { shiftId, control, errors, setValue, clearErrors } = props;
+    const { fieldName, nestIndex, control, errors, setValue, clearErrors } = props;
 
     //** React hook form */
-    const revenue = useWatch({ control, name: `shifts.${shiftId}.revenue` });
-    const transfer = useWatch({ control, name: `shifts.${shiftId}.transfer` });
-    const deduction = useWatch({ control, name: `shifts.${shiftId}.deduction` });
+    const revenue = useWatch({ control, name: `${fieldName}.revenue` });
+    const transfer = useWatch({ control, name: `${fieldName}.transfer` });
+    const deduction = useWatch({ control, name: `${fieldName}.deduction` });
 
     //** Effects */
     useEffect(() => {
         const r = parseFloat(revenue) || 0;
         const t = parseFloat(transfer) || 0;
         const d = parseFloat(deduction) || 0;
-        setValue(`shifts.${shiftId}.revenue`, r);
-        setValue(`shifts.${shiftId}.transfer`, t);
-        setValue(`shifts.${shiftId}.deduction`, d);
-        setValue(`shifts.${shiftId}.cash`, r - t - d);
-    }, [revenue, transfer, deduction, setValue, shiftId]);
+
+        setValue(`${fieldName}.revenue`, r);
+        setValue(`${fieldName}.transfer`, t);
+        setValue(`${fieldName}.deduction`, d);
+        setValue(`${fieldName}.cash`, r - t - d);
+    }, [revenue, transfer, deduction, setValue, fieldName]);
 
     //** Render */
     return (
         <div className="grid sm:grid-cols-3 grid-cols gap-2">
             <Controller
                 control={control}
-                name={`shifts.${shiftId}.revenue`}
+                name={`${fieldName}.revenue`}
                 render={({ field }) => (
                     <NumberInput
                         className="sm:col-span-3"
@@ -54,7 +56,7 @@ export default function Revenue({ ...props }: RevenueProps) {
 
             <Controller
                 control={control}
-                name={`shifts.${shiftId}.transfer`}
+                name={`${fieldName}.transfer`}
                 render={({ field }) => (
                     <NumberInput
                         label={TEXT.TRANSFER}
@@ -67,7 +69,7 @@ export default function Revenue({ ...props }: RevenueProps) {
             />
             <Controller
                 control={control}
-                name={`shifts.${shiftId}.deduction`}
+                name={`${fieldName}.deduction`}
                 render={({ field }) => (
                     <NumberInput
                         label={TEXT.DEDUCTION}
@@ -79,7 +81,7 @@ export default function Revenue({ ...props }: RevenueProps) {
 
                             if (!value) {
                                 field.onChange(0);
-                                clearErrors(`shifts.${shiftId}.description`);
+                                clearErrors(`${fieldName}.description`);
                             }
                         }}
                     />
@@ -87,7 +89,7 @@ export default function Revenue({ ...props }: RevenueProps) {
             />
             <Controller
                 control={control}
-                name={`shifts.${shiftId}.cash`}
+                name={`${fieldName}.cash`}
                 render={({ field }) => (
                     <NumberInput
                         label={TEXT.CASH}
@@ -101,7 +103,7 @@ export default function Revenue({ ...props }: RevenueProps) {
 
             <Controller
                 control={control}
-                name={`shifts.${shiftId}.description`}
+                name={`${fieldName}.description`}
                 rules={{
                     validate: value => {
                         if (!value && deduction > 0) {
@@ -117,9 +119,9 @@ export default function Revenue({ ...props }: RevenueProps) {
                         placeholder={TEXT.NOTE}
                         {...field}
                         value={field.value || ""}
-                        isInvalid={!!errors.shifts?.[shiftId]?.description && deduction}
+                        isInvalid={!!errors?.targetShift?.[nestIndex]?.description}
                         errorMessage={
-                            <ErrorMessage errors={errors} name={`shifts.${shiftId}.description`} />
+                            <ErrorMessage errors={errors} name={`${fieldName}.description`} />
                         }
                     />
                 )}

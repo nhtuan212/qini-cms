@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { twMerge } from "tailwind-merge";
 import Revenue from "./Revenue";
 import Button from "@/components/Button";
@@ -10,12 +10,12 @@ import { Select, SelectItem } from "@/components/Select";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { ShiftProps } from "@/stores/useShiftsStore";
-import { useTargetStore } from "@/stores/useTargetStore";
 import { Controller, useFieldArray } from "react-hook-form";
-import { isEmpty, parseTimeString } from "@/utils";
+import { parseTimeString } from "@/utils";
 import { TEXT } from "@/constants";
 
-type TargetModalItemsProps = {
+type TargetItemsProps = {
+    nestIndex: number;
     shift: ShiftProps;
     control: any;
     errors: any;
@@ -24,36 +24,22 @@ type TargetModalItemsProps = {
     clearErrors: any;
 };
 
-export default function TargetModalItems({ ...props }: TargetModalItemsProps) {
+export default function TargetItems({ ...props }: TargetItemsProps) {
     //** Stores */
     const { staff } = useStaffStore();
-    const { targetById } = useTargetStore();
 
     //** Variables */
-    const { shift, control, errors, getValues, setValue, clearErrors } = props;
+    const { shift, control, errors, getValues, setValue, clearErrors, nestIndex } = props;
 
     //** React hook form */
-    const fieldName = `shifts.${shift.id}.staffs`;
-    const { fields, append, remove } = useFieldArray({
+    const fieldName = `targetShift.${nestIndex}.targetStaff`;
+    const {
+        fields: targetStaff,
+        append,
+        remove,
+    } = useFieldArray({
         control,
         name: fieldName,
-    });
-
-    //** Effects */
-    useEffect(() => {
-        if (isEmpty(fields)) {
-            targetById.targetShift?.map((item: ShiftProps) => {
-                if (item.shiftId === shift.id) {
-                    item.targetStaff.map((staff: StaffProps) => {
-                        append({
-                            staffId: staff.staffId,
-                            checkIn: staff.checkIn,
-                            checkOut: staff.checkOut,
-                        });
-                    });
-                }
-            });
-        }
     });
 
     //** Render */
@@ -65,20 +51,20 @@ export default function TargetModalItems({ ...props }: TargetModalItemsProps) {
                     className="ml-auto"
                     variant="bordered"
                     startContent={<PlusIcon className="w-5 h-5" />}
-                    onPress={() =>
+                    onPress={() => {
                         append({
                             staffId: "",
                             checkIn: shift.checkIn,
                             checkOut: shift.checkOut,
-                        })
-                    }
+                        });
+                    }}
                 >
                     {TEXT.ADD_STAFF}
                 </Button>
             </div>
 
             <div className="min-h-44 flex flex-col gap-4">
-                {fields.map((field, index) => {
+                {targetStaff.map((field, index) => {
                     return (
                         <div
                             key={field.id}
@@ -97,12 +83,14 @@ export default function TargetModalItems({ ...props }: TargetModalItemsProps) {
                                             selectedKeys={[field.value]}
                                             onChange={field.onChange}
                                             isInvalid={
-                                                !!errors?.shifts?.[shift.id]?.staffs?.[index]
-                                                    ?.staffId
+                                                !!errors?.targetShift?.[nestIndex]?.targetStaff?.[
+                                                    index
+                                                ]?.staffId
                                             }
                                             errorMessage={
-                                                errors?.shifts?.[shift.id]?.staffs?.[index]
-                                                    ?.staffId && (
+                                                errors?.targetShift?.[nestIndex]?.targetStaff?.[
+                                                    index
+                                                ]?.staffId && (
                                                     <ErrorMessage
                                                         errors={errors}
                                                         name={`${fieldName}.${index}.staffId`}
@@ -164,10 +152,11 @@ export default function TargetModalItems({ ...props }: TargetModalItemsProps) {
                                         }}
                                         isRequired={true}
                                         isInvalid={
-                                            !!errors?.shifts?.[shift.id]?.staffs?.[index]?.checkIn
+                                            !!errors?.targetShift?.[nestIndex]?.targetStaff?.[index]
+                                                ?.checkIn
                                         }
                                         errorMessage={
-                                            errors?.shifts?.[shift.id]?.staffs?.[index]
+                                            errors?.targetShift?.[nestIndex]?.targetStaff?.[index]
                                                 ?.checkIn && (
                                                 <ErrorMessage
                                                     errors={errors}
@@ -225,10 +214,11 @@ export default function TargetModalItems({ ...props }: TargetModalItemsProps) {
                                         }}
                                         isRequired={true}
                                         isInvalid={
-                                            !!errors?.shifts?.[shift.id]?.staffs?.[index]?.checkOut
+                                            !!errors?.targetShift?.[nestIndex]?.targetStaff?.[index]
+                                                ?.checkOut
                                         }
                                         errorMessage={
-                                            errors?.shifts?.[shift.id]?.staffs?.[index]
+                                            errors?.targetShift?.[nestIndex]?.targetStaff?.[index]
                                                 ?.checkOut && (
                                                 <ErrorMessage
                                                     errors={errors}
@@ -256,9 +246,10 @@ export default function TargetModalItems({ ...props }: TargetModalItemsProps) {
 
             {shift.isTarget && (
                 <Revenue
+                    fieldName={`targetShift.${nestIndex}`}
+                    nestIndex={nestIndex}
                     control={control}
                     errors={errors}
-                    shiftId={shift.id}
                     setValue={setValue}
                     clearErrors={clearErrors}
                 />
