@@ -6,7 +6,6 @@ import RecordTimeSheet from "./RecordTimeSheet";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { ClockIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
 import { useTargetStore } from "@/stores/useTargetStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
@@ -18,10 +17,9 @@ export default function AttendanceNavigation() {
     const [activeTab, setActiveTab] = useState("record");
 
     //** Stores */
-    const { staffById } = useStaffStore();
     const { getShifts } = useShiftStore();
     const { getTarget } = useTargetStore();
-    const { getTimeSheet, cleanUpTimeSheet } = useTimeSheetStore();
+    const { cleanUpTimeSheet } = useTimeSheetStore();
 
     //** Variables */
     const tabs = [
@@ -41,13 +39,10 @@ export default function AttendanceNavigation() {
 
     //** Effects */
     useEffect(() => {
-        staffById.id &&
-            getTimeSheet({ staffId: staffById.id, date: formatDate(new Date(), "YYYY-MM-DD") });
-
         return () => {
             cleanUpTimeSheet();
         };
-    }, [getTimeSheet, cleanUpTimeSheet, staffById.id]);
+    }, [cleanUpTimeSheet]);
 
     useEffect(() => {
         getShifts();

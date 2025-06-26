@@ -21,9 +21,9 @@
     },
     "dependencies": {
         "@heroicons/react": "^2.2.0",
-        "@heroui/react": "2.7.6",
+        "@heroui/react": "^2.7.11",
         "@hookform/error-message": "^2.0.1",
-        "@internationalized/date": "3.7.0",
+        "@internationalized/date": "3.8.2",
         "autoprefixer": "^10.4.20",
         "dayjs": "^1.11.13",
         "framer-motion": "^11.15.0",

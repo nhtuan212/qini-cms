@@ -134,10 +134,10 @@ export default function RecordTimeSheet() {
                         className="w-full"
                         isLoading={isLoading}
                         startContent={<ArrowRightEndOnRectangleIcon className="w-5 h-5" />}
-                        // isDisabled={
-                        //     !!personalTimeSheet.find(item => item.shiftId === selectedShift)
-                        //         ?.checkIn
-                        // }
+                        isDisabled={
+                            !!personalTimeSheet.find(item => item.shiftId === selectedShift)
+                                ?.checkIn
+                        }
                         onPress={handleRecordTimeSheet}
                     >
                         {TEXT.CHECK_IN}
@@ -149,10 +149,11 @@ export default function RecordTimeSheet() {
                         className="w-full"
                         isLoading={isLoading}
                         endContent={<ArrowRightStartOnRectangleIcon className="w-5 h-5" />}
-                        // isDisabled={
-                        //     !!personalTimeSheet.find(item => item.shiftId === selectedShift)
-                        //         ?.checkOut
-                        // }
+                        isDisabled={
+                            !!personalTimeSheet.find(item => item.shiftId === selectedShift)
+                                ?.checkOut ||
+                            !personalTimeSheet.find(item => item.shiftId === selectedShift)?.checkIn
+                        }
                         onPress={handleRecordTimeSheet}
                     >
                         {TEXT.CHECK_OUT}
@@ -168,7 +169,7 @@ export default function RecordTimeSheet() {
                 {!isEmpty(personalTimeSheet) &&
                     personalTimeSheet.map((item, index) => (
                         <div key={index}>
-                            <div className="grid grid-cols-4 gap-2 text-sm">
+                            <div className="grid grid-cols-5 items-center gap-2 text-sm">
                                 <div>
                                     <span className="text-gray-600">{`${TEXT.WORK_SHIFT}:`}</span>
                                     <span className="ml-2 font-medium">{item.shiftName}</span>
@@ -186,12 +187,17 @@ export default function RecordTimeSheet() {
                                     <span className="ml-2 font-medium">
                                         {item.workingHours || "0"}
                                     </span>
+                                </div>
+                                <div className="ml-auto">
                                     <Button
-                                        color="danger"
                                         size="sm"
+                                        variant="light"
+                                        color="default"
+                                        isIconOnly
                                         onPress={() => deleteTimeSheet(item.id)}
-                                        startContent={<TrashIcon className="w-4 h-4" />}
-                                    />
+                                    >
+                                        <TrashIcon className="w-4 h-4" />
+                                    </Button>
                                 </div>
                             </div>
                         </div>
