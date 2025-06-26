@@ -4,12 +4,12 @@ import React from "react";
 import { TEXT } from "@/constants";
 import { formatCurrency, formatDate } from "@/utils";
 
-export default function StaffDetailColumns() {
+export default function useStaffDetailColumns() {
     const columns = [
         {
             key: "createAt",
             name: TEXT.DATE,
-            content: (params: any) => formatDate(params.row.targetAt),
+            content: (params: any) => formatDate(params.row.date),
         },
         {
             key: "timeSheet",

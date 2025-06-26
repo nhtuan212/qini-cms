@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import StaffDetail from "../../Staff/StaffDetail";
+import RecordTimeSheet from "./RecordTimeSheet";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
-import RecordTimeSheet from "./RecordTimeSheet";
 import { ClockIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
@@ -34,14 +35,14 @@ export default function AttendanceNavigation() {
             label: TEXT.TARGET,
             icon: CurrencyDollarIcon,
             value: "detail",
-            // component: <StaffDetail />,
+            component: <StaffDetail />,
         },
     ];
 
     //** Effects */
     useEffect(() => {
         staffById.id &&
-            getTimeSheet({ staffId: staffById.id, targetAt: formatDate(new Date(), "YYYY-MM-DD") });
+            getTimeSheet({ staffId: staffById.id, date: formatDate(new Date(), "YYYY-MM-DD") });
 
         return () => {
             cleanUpTimeSheet();

@@ -28,7 +28,7 @@ interface TimeSheetActions {
         shiftId: string;
         targetShiftId: string;
     }) => Promise<void>;
-    getTimeSheet: (params?: { staffId?: string; targetAt?: string }) => Promise<void>;
+    getTimeSheet: (params?: { staffId?: string; date?: string }) => Promise<void>;
     createTimeSheet: (params: {
         staffId: string;
         shiftId?: string;
@@ -85,7 +85,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
 
         const queryParams = new URLSearchParams();
         if (params?.staffId) queryParams.append("staff_id", params.staffId);
-        if (params?.targetAt) queryParams.append("target_at", params.targetAt);
+        if (params?.date) queryParams.append("date", params.date);
 
         const endpoint = `${URL.TIME_SHEET}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 

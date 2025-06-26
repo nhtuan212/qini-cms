@@ -33,7 +33,7 @@ export default function RecordTimeSheet() {
         return timeSheetByStaffId.filter(
             item =>
                 item.staffId === staffById.id &&
-                formatDate(item.targetAt, "YYYY-MM-DD") === formatDate(new Date(), "YYYY-MM-DD"),
+                formatDate(item.date, "YYYY-MM-DD") === formatDate(new Date(), "YYYY-MM-DD"),
         );
     }, [timeSheetByStaffId, staffById.id]);
 
@@ -164,7 +164,7 @@ export default function RecordTimeSheet() {
 
             {/* Today's Summary */}
             <Card className="bg-primary-50 p-4 border border-primary-200">
-                <h4 className="font-semibold text-gray-800 mb-3">Tóm tắt hôm nay</h4>
+                <h4 className="font-semibold text-gray-800 mb-3">{TEXT.TODAY_SUMMARY}</h4>
                 {!isEmpty(personalTimeSheet) &&
                     personalTimeSheet.map((item, index) => (
                         <div key={index}>
