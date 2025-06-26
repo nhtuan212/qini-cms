@@ -2,7 +2,7 @@
 
 import React from "react";
 import { TEXT } from "@/constants";
-import { currencyFormat, formatDate } from "@/utils";
+import { formatCurrency, formatDate } from "@/utils";
 
 export default function StaffDetailColumns() {
     const columns = [
@@ -24,7 +24,7 @@ export default function StaffDetailColumns() {
         {
             key: "target",
             name: TEXT.TARGET,
-            content: (params: any) => currencyFormat(params.row.target),
+            content: (params: any) => formatCurrency(params.row.target),
         },
     ];
 

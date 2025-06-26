@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { convertKeysToCamelCase, convertKeysToSnakeCase } from "@/utils";
 import { fetchData } from "@/utils/fetch";
+import { TargetShiftProps } from "./useTargetShiftStore";
 import { URL, STATUS_CODE } from "@/constants";
 
 export type TargetProps = {
@@ -27,8 +28,10 @@ type TargetAction = {
         bodyParams: { [key: string]: any };
     }) => Promise<TargetProps>;
     createTarget: (bodyParams: TargetProps) => Promise<TargetProps>;
-    deleteTarget: (id: TargetProps["id"]) => Promise<void>;
+    deleteTarget: (id: TargetProps["id"]) => Promise<TargetProps>;
     emptyTargetById: () => void;
+
+    updateTargetShiftInTargets: (updatedTargetShift: TargetShiftProps) => void;
 };
 
 const initialState: TargetState = {
@@ -93,7 +96,7 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
         });
     },
 
-    createTarget: async bodyParams => {
+    createTarget: async (bodyParams: TargetProps) => {
         set({
             isLoading: true,
         });
@@ -110,14 +113,15 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
             });
 
             if (res?.code !== STATUS_CODE.OK) {
-                return console.error("Error creating target", res);
+                console.error("Error creating target", res);
+                throw new Error(res);
             }
 
             set(state => ({
                 targets: [convertKeysToCamelCase(res.data), ...state.targets],
             }));
 
-            return res;
+            return convertKeysToCamelCase(res.data);
         });
     },
 
@@ -147,9 +151,24 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
                 return console.error("Error updating target", res);
             }
 
+            const updatedTarget: TargetProps = convertKeysToCamelCase(res.data);
+
+            const sum = (field: string) =>
+                Array.isArray(updatedTarget.targetShift)
+                    ? updatedTarget.targetShift.reduce(
+                          (acc, shift) => acc + (Number(shift[field]) || 0),
+                          0,
+                      )
+                    : 0;
+
+            updatedTarget.revenue = sum("revenue");
+            updatedTarget.transfer = sum("transfer");
+            updatedTarget.deduction = sum("deduction");
+            updatedTarget.cash = sum("cash");
+
             set(state => ({
                 targets: state.targets.map((item: TargetProps) =>
-                    item.id === id ? convertKeysToCamelCase(res.data) : item,
+                    item.id === id ? updatedTarget : item,
                 ),
             }));
 
@@ -186,4 +205,18 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
     },
 
     emptyTargetById: () => set({ targetById: {} }),
+
+    updateTargetShiftInTargets: (updatedTargetShift: TargetShiftProps) =>
+        set(state => ({
+            targets: state.targets.map(target => ({
+                ...target,
+                targetShift: Array.isArray(target.targetShift)
+                    ? target.targetShift.map(shift =>
+                          shift.id === updatedTargetShift.id
+                              ? { ...shift, ...updatedTargetShift }
+                              : shift,
+                      )
+                    : target.targetShift,
+            })),
+        })),
 }));

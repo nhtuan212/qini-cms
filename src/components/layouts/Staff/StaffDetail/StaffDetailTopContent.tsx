@@ -6,15 +6,15 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { RangeValue } from "@heroui/react";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { useTargetStaffStore } from "@/stores/useTargetStaffStore";
 import { CalendarDate } from "@internationalized/date";
 import { ROLE, TEXT } from "@/constants";
-import { currencyFormat, getDateTime, roundToThousand, snakeCaseQueryString } from "@/utils";
+import { formatCurrency, getDateTime, roundToThousand } from "@/utils";
+import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 
 export default function TargetTopContent() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { targetByStaffId, getTargetByStaffId } = useTargetStaffStore();
+    const { timeSheetByStaffId } = useTimeSheetStore();
 
     //** States */
     const [dateValue, setDateValue] = useState<RangeValue<CalendarDate>>({
@@ -25,24 +25,26 @@ export default function TargetTopContent() {
     const [bonus, setBonus] = useState<number>(0);
 
     //** Variables */
-    const { totalTarget, totalWorkingHours } = targetByStaffId;
+    // const { totalTarget, totalWorkingHours } = timeSheetByStaffId;
+    const totalTarget = 0;
+    const totalWorkingHours = 0;
     const totalSalary = totalWorkingHours * salary;
+
+    console.log({ timeSheetByStaffId });
 
     //** Functions */
     const handleFilterTargets = () => {
-        getTargetByStaffId(
-            snakeCaseQueryString({
-                staffId: targetByStaffId.staffId,
-                startDate: dateValue.start.toString(),
-                endDate: dateValue.end.toString(),
-            }),
-        );
+        console.log({ dateValue, timeSheetByStaffId });
+
+        // getTimeSheet({
+        //     staffId: timeSheetByStaffId.id,
+        // });
     };
 
     //** Render */
     return (
         <>
-            <div className="title">{targetByStaffId.staffName}</div>
+            {/* <div className="title">{timeSheetByStaffId.staffName}</div> */}
             <div className="flex flex-col gap-4">
                 <div className="flex-1 flex flex-wrap gap-4 items-center">
                     <DateRangePicker
@@ -71,7 +73,7 @@ export default function TargetTopContent() {
                             <Input
                                 label={"Lương: "}
                                 size="sm"
-                                value={currencyFormat(salary) as string}
+                                value={formatCurrency(salary) as string}
                                 onValueChange={e => {
                                     setSalary(Number(e.replace(/\D/g, "")));
                                 }}
@@ -79,7 +81,7 @@ export default function TargetTopContent() {
                             <Input
                                 label={"Thưởng nóng: "}
                                 size="sm"
-                                value={currencyFormat(bonus) as string}
+                                value={formatCurrency(bonus) as string}
                                 onValueChange={e => {
                                     setBonus(Number(e.replace(/\D/g, "")));
                                 }}
@@ -92,7 +94,7 @@ export default function TargetTopContent() {
                                     <div className="flex justify-between">
                                         {`${TEXT.TOTAL_TARGET} (0.01%): `}
                                         <b className="text-primary">
-                                            {currencyFormat(totalTarget)}
+                                            {formatCurrency(totalTarget)}
                                         </b>
                                     </div>
                                 )}
@@ -107,14 +109,14 @@ export default function TargetTopContent() {
                                         <div className="flex-1 flex justify-between">
                                             {`Tổng lương: `}
                                             <b className="text-primary">
-                                                {currencyFormat(totalSalary)}
+                                                {formatCurrency(totalSalary)}
                                             </b>
                                         </div>
 
                                         <div className="flex-1 flex justify-between">
                                             {`Tiền thưởng doanh số: `}
                                             <b className="text-primary">
-                                                {currencyFormat(
+                                                {formatCurrency(
                                                     roundToThousand(
                                                         Number((totalTarget * 0.01).toFixed(0)),
                                                     ),
@@ -126,7 +128,7 @@ export default function TargetTopContent() {
                                 <div className="flex-1 flex justify-between">
                                     {`Thực nhận:`}
                                     <b className="text-primary">
-                                        {currencyFormat(
+                                        {formatCurrency(
                                             roundToThousand(
                                                 Number(
                                                     (

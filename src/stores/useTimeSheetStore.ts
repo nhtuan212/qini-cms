@@ -1,9 +1,13 @@
 import { create } from "zustand";
-import { convertKeysToCamelCase, convertKeysToSnakeCase, formatDate, formatTime } from "@/utils";
+import {
+    calculateWorkingHours,
+    convertKeysToCamelCase,
+    convertKeysToSnakeCase,
+    formatDate,
+    formatTime,
+} from "@/utils";
 import { fetchData } from "@/utils/fetch";
-import { URL, STATUS_CODE, TEXT } from "@/constants";
-import { useTargetStore } from "@/stores/useTargetStore";
-import { ShiftProps, useShiftStore } from "./useShiftsStore";
+import { URL, STATUS_CODE } from "@/constants";
 
 export interface TimeSheetProps {
     [key: string]: any;
@@ -19,8 +23,17 @@ interface TimeSheetState {
 }
 
 interface TimeSheetActions {
-    recordTimeSheet: (params: { staffId: string; shiftId: string }) => Promise<TimeSheetProps>;
-    getTimeSheet: (params?: { staffId?: string; date?: string }) => Promise<void>;
+    recordTimeSheet: (params: {
+        staffId: string;
+        shiftId: string;
+        targetShiftId: string;
+    }) => Promise<void>;
+    getTimeSheet: (params?: { staffId?: string; targetAt?: string }) => Promise<void>;
+    createTimeSheet: (params: {
+        staffId: string;
+        shiftId?: string;
+        targetShiftId?: string;
+    }) => Promise<TimeSheetProps>;
     updateTimeSheet: (params: {
         id: string;
         bodyParams: Partial<TimeSheetProps>;
@@ -38,136 +51,32 @@ const initialState: TimeSheetState = {
 export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((set, get) => ({
     ...initialState,
 
-    recordTimeSheet: async ({ staffId, shiftId }) => {
+    recordTimeSheet: async ({ staffId, shiftId, targetShiftId }) => {
         set({ isLoading: true });
 
         const currentDate = formatDate(new Date(), "YYYY-MM-DD");
+        const timeSheets = get().timeSheetByStaffId;
 
-        const existingRecord = get().timeSheetByStaffId.find(
+        const currentTimeSheet = timeSheets.find(
             record =>
                 record.staffId === staffId &&
                 record.shiftId === shiftId &&
-                record.date &&
-                formatDate(record.date, "YYYY-MM-DD") === currentDate,
+                record.targetShiftId === targetShiftId &&
+                formatDate(record.targetAt, "YYYY-MM-DD") === currentDate,
         );
 
-        if (existingRecord) {
-            return get()
-                .updateTimeSheet({
-                    id: existingRecord.id!,
-                    bodyParams: {
-                        shiftId,
-                        checkOut: formatTime(),
-                    },
-                })
-                .then(res => {
-                    set({ isLoading: false });
+        const handleTarget = currentTimeSheet
+            ? get().updateTimeSheet({
+                  id: currentTimeSheet.id,
+                  bodyParams: {
+                      checkOut: formatTime(),
+                      workingHours: calculateWorkingHours(currentTimeSheet.checkIn, formatTime()),
+                  },
+              })
+            : get().createTimeSheet({ staffId, shiftId, targetShiftId });
 
-                    if (res?.code && res?.code !== STATUS_CODE.OK) {
-                        throw new Error(res?.message || "Failed to update time sheet");
-                    }
-
-                    //** Update target */
-                    const todayTarget = useTargetStore
-                        .getState()
-                        .targets.find(
-                            target =>
-                                target.targetAt &&
-                                formatDate(target.targetAt, "YYYY-MM-DD") === currentDate,
-                        );
-
-                    if (!todayTarget) {
-                        throw new Error("Target not found");
-                    }
-
-                    const updateTarget = {
-                        name: todayTarget?.name,
-                        targetAt: todayTarget?.targetAt,
-                        targetShift: todayTarget?.targetShift.map((shiftItem: any) => {
-                            if (shiftItem.shiftId === shiftId) {
-                                return {
-                                    ...shiftItem,
-                                    targetStaff: shiftItem.targetStaff.map((staffItem: any) => {
-                                        if (staffItem.staffId === staffId) {
-                                            return {
-                                                ...staffItem,
-                                                checkOut: res.checkOut || formatTime(),
-                                            };
-                                        }
-                                        return staffItem;
-                                    }),
-                                };
-                            }
-                            return shiftItem;
-                        }),
-                    };
-
-                    useTargetStore.getState().updateTarget({
-                        id: todayTarget.id,
-                        bodyParams: updateTarget,
-                    });
-
-                    return res;
-                });
-        }
-
-        const recordData = {
-            staffId,
-            shiftId,
-            date: new Date().toISOString(),
-            checkIn: formatTime(),
-        };
-
-        //** Create target */
-        const shifts = useShiftStore.getState().shifts;
-
-        const newTarget = {
-            name: TEXT.TARGET,
-            targetAt: currentDate,
-            targetShift: shifts.map((shift: ShiftProps) => {
-                if (shift.id === shiftId) {
-                    return {
-                        ...shift,
-                        shift_id: shiftId,
-                        target_staff: [
-                            {
-                                staff_id: staffId,
-                                check_in: formatTime(),
-                            },
-                        ],
-                    };
-                }
-                return {
-                    ...shift,
-                    shift_id: shift.id,
-                    target_staff: [],
-                };
-            }),
-        };
-        useTargetStore.getState().createTarget(newTarget);
-
-        //** Create time sheet */
-        return await fetchData({
-            endpoint: URL.TIME_SHEET,
-            options: {
-                method: "POST",
-                body: JSON.stringify(convertKeysToSnakeCase(recordData)),
-            },
-        }).then(res => {
-            set({ isLoading: false });
-
-            if (res?.code !== STATUS_CODE.OK) {
-                throw new Error(res?.message || "Record failed");
-            }
-
-            const newRecord = convertKeysToCamelCase(res.data);
-
-            set(state => ({
-                timeSheets: [newRecord, ...state.timeSheets],
-                timeSheetByStaffId: [newRecord, ...state.timeSheetByStaffId],
-            }));
-
-            return newRecord;
+        return await handleTarget.then(() => {
+            return set({ isLoading: false });
         });
     },
 
@@ -176,7 +85,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
 
         const queryParams = new URLSearchParams();
         if (params?.staffId) queryParams.append("staff_id", params.staffId);
-        if (params?.date) queryParams.append("date", params.date);
+        if (params?.targetAt) queryParams.append("target_at", params.targetAt);
 
         const endpoint = `${URL.TIME_SHEET}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
@@ -212,7 +121,41 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
         });
     },
 
-    updateTimeSheet: async ({ id, bodyParams }) => {
+    createTimeSheet: async ({ staffId, shiftId, targetShiftId }: TimeSheetProps) => {
+        const recordData = {
+            staffId,
+            shiftId,
+            targetShiftId,
+            checkIn: formatTime(),
+        };
+
+        return await fetchData({
+            endpoint: URL.TIME_SHEET,
+            options: {
+                method: "POST",
+                body: JSON.stringify(convertKeysToSnakeCase(recordData)),
+            },
+        }).then(res => {
+            set({ isLoading: false });
+
+            if (res?.code !== STATUS_CODE.OK) {
+                throw new Error(res?.message || "Record failed");
+            }
+
+            const newRecord = {
+                ...convertKeysToCamelCase(res.data),
+            };
+
+            set(state => ({
+                timeSheets: [...state.timeSheets, newRecord],
+                timeSheetByStaffId: [...state.timeSheetByStaffId, newRecord],
+            }));
+
+            return newRecord;
+        });
+    },
+
+    updateTimeSheet: async ({ id, bodyParams }: { id: string; bodyParams: TimeSheetProps }) => {
         set({ isLoading: true });
 
         return await fetchData({
@@ -257,6 +200,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
 
             set(state => ({
                 timeSheets: state.timeSheets.filter(record => record.id !== id),
+                timeSheetByStaffId: state.timeSheetByStaffId.filter(record => record.id !== id),
             }));
         });
     },

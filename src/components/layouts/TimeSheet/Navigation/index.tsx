@@ -3,15 +3,14 @@
 import React, { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
-import TimeSheetRecord from "./TimeSheetRecord";
-import TimeSheetHistory from "./TimeSheetHistory";
-import { CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
+import RecordTimeSheet from "./RecordTimeSheet";
+import { ClockIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useTargetStore } from "@/stores/useTargetStore";
+import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
+import { formatDate, snakeCaseQueryString } from "@/utils";
 import { TEXT } from "@/constants";
-import { formatDate } from "@/utils";
 
 export default function AttendanceNavigation() {
     //** States */
@@ -20,8 +19,8 @@ export default function AttendanceNavigation() {
     //** Stores */
     const { staffById } = useStaffStore();
     const { getShifts } = useShiftStore();
-    const { getTimeSheet, cleanUpTimeSheet } = useTimeSheetStore();
     const { getTarget } = useTargetStore();
+    const { getTimeSheet, cleanUpTimeSheet } = useTimeSheetStore();
 
     //** Variables */
     const tabs = [
@@ -29,31 +28,30 @@ export default function AttendanceNavigation() {
             label: TEXT.TIME_SHEET,
             icon: ClockIcon,
             value: "record",
-            component: <TimeSheetRecord />,
+            component: <RecordTimeSheet />,
         },
         {
-            label: TEXT.HISTORY,
-            icon: CalendarIcon,
-            value: "history",
-            component: <TimeSheetHistory />,
+            label: TEXT.TARGET,
+            icon: CurrencyDollarIcon,
+            value: "detail",
+            // component: <StaffDetail />,
         },
     ];
 
     //** Effects */
     useEffect(() => {
-        getTimeSheet({ staffId: staffById.id });
+        staffById.id &&
+            getTimeSheet({ staffId: staffById.id, targetAt: formatDate(new Date(), "YYYY-MM-DD") });
 
         return () => {
             cleanUpTimeSheet();
         };
-    }, [cleanUpTimeSheet, getTimeSheet, staffById.id]);
+    }, [getTimeSheet, cleanUpTimeSheet, staffById.id]);
 
     useEffect(() => {
         getShifts();
-
-        // Get target to check when user check in
-        getTarget(`?date=${formatDate(new Date(), "YYYY-MM-DD")}&staff_id=${staffById.id}`);
-    }, [getShifts, getTarget, staffById.id]);
+        getTarget(snakeCaseQueryString({ target_at: formatDate(new Date(), "YYYY-MM-DD") }));
+    }, [getShifts, getTarget]);
 
     //** Render */
     return (

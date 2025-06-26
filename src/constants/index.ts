@@ -32,17 +32,18 @@ export const URL = {
     HOME: "/",
     LOGIN: "/login",
     TARGET: "/target",
-    TARGET_STAFF: "/target-staff",
+    TARGET_SHIFT: "/target-shift",
+    TIME_SHEET: "/time-sheet",
     USER: "/user",
     STAFF: "/staff",
     SHIFT: "/shift",
-    TIME_SHEET: "/time-sheet",
 };
 
 export const ROUTE = {
     HOME: "/",
     LOGIN: "/login",
     TARGET: "/target",
+    TARGET_SHIFT: "/target-shift",
     TIME_SHEET: "/time-sheet",
     STAFF: "/staff",
 };

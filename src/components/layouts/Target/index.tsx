@@ -1,33 +1,22 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import TargetColumn from "./TargetColumn";
-import TargetTopContent from "./TargetTopContent";
-import Table from "@/components/Table";
+import React, { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import TargetList from "./TargetList";
+import { CalendarIcon } from "@heroicons/react/24/outline";
 import { useShiftStore } from "@/stores/useShiftsStore";
-import { twMerge } from "tailwind-merge";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useTargetStore } from "@/stores/useTargetStore";
-import { convertObjectToSearchQuery, snakeCaseQueryString } from "@/utils";
+import { snakeCaseQueryString } from "@/utils";
+import { TEXT } from "@/constants";
 
 export default function Target() {
-    const router = useRouter();
     const searchParams = useSearchParams();
 
     //** Stores */
-    const { isLoading: isLoadingTarget, targets, targetPagination, getTarget } = useTargetStore();
-    const { isLoading: isLoadingShift, getShifts } = useShiftStore();
-    const { isLoading: isLoadingStaff, getStaff } = useStaffStore();
-
-    //** Variables */
-    const currentSearch = useMemo(
-        () => ({
-            ...Object.fromEntries(searchParams.entries()),
-            page: searchParams.get("page") || "1",
-        }),
-        [searchParams],
-    );
+    const { targets, getTarget } = useTargetStore();
+    const { getShifts } = useShiftStore();
+    const { getStaff } = useStaffStore();
 
     //** Effects */
     useEffect(() => {
@@ -43,23 +32,13 @@ export default function Target() {
 
     //** Render */
     return (
-        <Table
-            className={twMerge(
-                "[&>.tableContainer]:h-[85vh]",
-                "[&_.bodyCell]:border-b [&_.bodyCell]:border-primary",
-            )}
-            loading={isLoadingTarget || isLoadingShift || isLoadingStaff}
-            rows={targets}
-            columns={TargetColumn()}
-            topContent={<TargetTopContent />}
-            paginationMode={{
-                total: targetPagination?.total,
-                page: targetPagination?.page,
-                rowsPerPage: targetPagination?.rowsPerPage,
-                onChange: page => {
-                    router.push(convertObjectToSearchQuery({ ...currentSearch, page }));
-                },
-            }}
-        />
+        <div className="flex flex-col gap-y-4 rounded-xl">
+            <h2 className="flex items-center gap-x-2 py-4">
+                <CalendarIcon className="w-6 h-6" />
+                {TEXT.LIST_TARGET}
+            </h2>
+
+            <TargetList targets={targets} />
+        </div>
     );
 }

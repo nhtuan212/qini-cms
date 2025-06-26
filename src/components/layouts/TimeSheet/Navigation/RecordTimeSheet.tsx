@@ -5,16 +5,18 @@ import { Select, SelectItem } from "@/components/Select";
 import {
     ArrowRightEndOnRectangleIcon,
     ArrowRightStartOnRectangleIcon,
+    TrashIcon,
 } from "@heroicons/react/24/outline";
-import { TimeSheetProps, useTimeSheetStore } from "@/stores/useTimeSheetStore";
+import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
+import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { useShiftStore } from "@/stores/useShiftsStore";
-import { ShiftProps } from "@/stores/useShiftsStore";
+import { useShiftStore, ShiftProps } from "@/stores/useShiftsStore";
 import { TEXT } from "@/constants";
 import { formatDate, isEmpty, validateUserIP } from "@/utils";
 
-export default function TimeSheetRecord() {
+export default function RecordTimeSheet() {
     //** Stores */
+    const { targets } = useTargetStore();
     const { staffById } = useStaffStore();
     const { shifts } = useShiftStore();
 
@@ -24,13 +26,14 @@ export default function TimeSheetRecord() {
     const [shiftError, setShiftError] = useState<string | null>(null);
 
     //** Variables */
-    const { isLoading, timeSheetByStaffId, recordTimeSheet } = useTimeSheetStore();
+    const { isLoading, timeSheetByStaffId, recordTimeSheet, deleteTimeSheet } = useTimeSheetStore();
+    const { createTarget } = useTargetStore();
 
     const personalTimeSheet = useMemo(() => {
         return timeSheetByStaffId.filter(
             item =>
                 item.staffId === staffById.id &&
-                formatDate(item.date, "YYYY-MM-DD") === formatDate(new Date(), "YYYY-MM-DD"),
+                formatDate(item.targetAt, "YYYY-MM-DD") === formatDate(new Date(), "YYYY-MM-DD"),
         );
     }, [timeSheetByStaffId, staffById.id]);
 
@@ -51,12 +54,40 @@ export default function TimeSheetRecord() {
             return;
         }
 
-        const bodyParams: Pick<TimeSheetProps, "staffId" | "shiftId"> = {
+        let targetShiftId = null;
+        const todayTarget = targets.find(target => {
+            return (
+                formatDate(target.targetAt, "YYYY-MM-DD") === formatDate(new Date(), "YYYY-MM-DD")
+            );
+        });
+
+        if (!todayTarget) {
+            const target = await createTarget({
+                name: TEXT.TARGET,
+                targetAt: formatDate(new Date(), "YYYY-MM-DD"),
+            });
+
+            targetShiftId = target.targetShift.find(
+                (shift: TargetProps["targetShift"]) => shift.shiftId === selectedShift,
+            )?.id;
+        } else {
+            const targetShift = todayTarget.targetShift.find(
+                (shift: TargetProps["targetShift"]) => shift.shiftId === selectedShift,
+            );
+
+            targetShiftId = targetShift ? targetShift.id : null;
+        }
+
+        if (!targetShiftId) {
+            setError(TEXT.ERROR);
+            return;
+        }
+
+        await recordTimeSheet({
             staffId: staffById.id,
             shiftId: selectedShift,
-        };
-
-        await recordTimeSheet(bodyParams)
+            targetShiftId,
+        })
             .then(res => res)
             .catch(error => {
                 console.error({ error });
@@ -103,10 +134,10 @@ export default function TimeSheetRecord() {
                         className="w-full"
                         isLoading={isLoading}
                         startContent={<ArrowRightEndOnRectangleIcon className="w-5 h-5" />}
-                        isDisabled={
-                            !!personalTimeSheet.find(item => item.shiftId === selectedShift)
-                                ?.checkIn
-                        }
+                        // isDisabled={
+                        //     !!personalTimeSheet.find(item => item.shiftId === selectedShift)
+                        //         ?.checkIn
+                        // }
                         onPress={handleRecordTimeSheet}
                     >
                         {TEXT.CHECK_IN}
@@ -118,10 +149,10 @@ export default function TimeSheetRecord() {
                         className="w-full"
                         isLoading={isLoading}
                         endContent={<ArrowRightStartOnRectangleIcon className="w-5 h-5" />}
-                        isDisabled={
-                            !!personalTimeSheet.find(item => item.shiftId === selectedShift)
-                                ?.checkOut
-                        }
+                        // isDisabled={
+                        //     !!personalTimeSheet.find(item => item.shiftId === selectedShift)
+                        //         ?.checkOut
+                        // }
                         onPress={handleRecordTimeSheet}
                     >
                         {TEXT.CHECK_OUT}
@@ -135,8 +166,8 @@ export default function TimeSheetRecord() {
             <Card className="bg-primary-50 p-4 border border-primary-200">
                 <h4 className="font-semibold text-gray-800 mb-3">Tóm tắt hôm nay</h4>
                 {!isEmpty(personalTimeSheet) &&
-                    personalTimeSheet.map(item => (
-                        <div key={item.id}>
+                    personalTimeSheet.map((item, index) => (
+                        <div key={index}>
                             <div className="grid grid-cols-4 gap-2 text-sm">
                                 <div>
                                     <span className="text-gray-600">{`${TEXT.WORK_SHIFT}:`}</span>
@@ -152,7 +183,15 @@ export default function TimeSheetRecord() {
                                 </div>
                                 <div>
                                     <span className="text-gray-600">{`${TEXT.WORKING_HOURS}:`}</span>
-                                    <span className="ml-2 font-medium">{item.workingHours}</span>
+                                    <span className="ml-2 font-medium">
+                                        {item.workingHours || "0"}
+                                    </span>
+                                    <Button
+                                        color="danger"
+                                        size="sm"
+                                        onPress={() => deleteTimeSheet(item.id)}
+                                        startContent={<TrashIcon className="w-4 h-4" />}
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -2,16 +2,10 @@
 
 import React from "react";
 import StaffModal from "./StaffModal";
-import ValidateStaffPassword from "./ValidateStaffPassword";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
-import {
-    EllipsisVerticalIcon,
-    EyeIcon,
-    PencilSquareIcon,
-    TrashIcon,
-} from "@heroicons/react/24/outline";
+import { EllipsisVerticalIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
@@ -25,7 +19,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { staff, getStaff, getStaffById, deleteStaff } = useStaffStore();
+    const { getStaff, getStaffById, deleteStaff } = useStaffStore();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -40,19 +34,6 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     }
 
     //** Functions */
-    const handleViewStaff = async (id: string) => {
-        const currentStaff = staff.find(staff => staff.id === id);
-
-        if (!currentStaff) return null;
-
-        getModal({
-            isOpen: true,
-            modalHeader: currentStaff.name,
-            modalBody: <ValidateStaffPassword staff={currentStaff} validateType="detail" />,
-            modalFooter: <></>,
-        });
-    };
-
     const handleUpdateStaff = async (id: string) => {
         await getStaffById(id);
 
@@ -92,14 +73,6 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                 </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="Staff actions" disabledKeys={disabledKeys}>
-                <DropdownItem
-                    key="detail"
-                    startContent={<EyeIcon className="w-5" />}
-                    textValue={TEXT.DETAIL}
-                    onPress={() => handleViewStaff(id)}
-                >
-                    {TEXT.DETAIL}
-                </DropdownItem>
                 <DropdownItem
                     key="edit"
                     startContent={<PencilSquareIcon className="w-5" />}

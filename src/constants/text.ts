@@ -4,6 +4,9 @@ export const TEXT = {
     },
 
     STAFF: "Nhân viên",
+    UPDATE(name?: string): string {
+        return `Cập nhật ${name}`;
+    },
     UPDATE_STAFF: "Cập nhật nhân viên",
     LOGIN_YOUR_ACCOUNT: "Login in to your account",
     LOGIN: "Login",
@@ -25,6 +28,7 @@ export const TEXT = {
     TRANSFER: "Chuyển khoản",
     TOTAL: "Tổng cộng",
     WORK_SHIFT: "Ca",
+    DETAIL_SHIFT: "Chi tiết các ca làm việc",
     WORK_SHIFT_SELECT: "Chọn ca làm việc",
     SUBMIT_SHIFT: "Chốt ca",
     DATE: "Ngày",
@@ -41,6 +45,7 @@ export const TEXT = {
     ADD_TARGET: "Thêm mới doanh số",
     TARGET: "Doanh số",
     TARGET_OF: "Doanh số của",
+    LIST_TARGET: "Danh sách target",
     REVENUE: "Doanh thu",
     REVENUE_GREATER_THAN_ZERO: "Doanh thu phải lớn hơn 0",
     CANCEL: "Huỷ",
