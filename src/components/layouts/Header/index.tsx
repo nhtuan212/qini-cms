@@ -18,6 +18,7 @@ import {
     NavbarMenuItem,
 } from "@heroui/react";
 import { useMenuStore } from "@/stores/useMenuStore";
+import { useProfileStore } from "@/stores/useProfileStore";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import { MENU } from "@/config/menu";
 import { ROUTE } from "@/constants";
@@ -28,10 +29,14 @@ export default function Header() {
     //** Store */
     const { isMobileMenuOpen, openMobileMenu } = useMenuStore();
     const { theme, setTheme } = useTheme();
+    const { profile } = useProfileStore();
 
     //** States */
     const [activeRoute, setActiveRoute] = useState("");
     const [themeMode, setThemeMode] = useState<string | undefined>("");
+
+    //** Variables */
+    const menus = MENU.filter(menu => !menu.roles || menu.roles.includes(profile?.role || ""));
 
     //** Functions */
     const onModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,9 +71,8 @@ export default function Header() {
                     </Link>
                 </NavbarBrand>
             </NavbarContent>
-
             <NavbarContent justify="end">
-                {MENU.map(menu => (
+                {menus.map(menu => (
                     <NavbarItem key={menu.url} className="hidden sm:flex">
                         <Link
                             className={clsx(
@@ -102,7 +106,7 @@ export default function Header() {
             </NavbarContent>
 
             <NavbarMenu className="gap-4">
-                {MENU.map(menu => (
+                {menus.map(menu => (
                     <NavbarMenuItem key={menu.url}>
                         <Link
                             href={menu.url}

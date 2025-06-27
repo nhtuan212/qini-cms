@@ -37,6 +37,7 @@ export const URL = {
     USER: "/user",
     STAFF: "/staff",
     SHIFT: "/shift",
+    SALARY: "/salary",
 };
 
 export const ROUTE = {
@@ -46,4 +47,5 @@ export const ROUTE = {
     TARGET_SHIFT: "/target-shift",
     TIME_SHEET: "/time-sheet",
     STAFF: "/staff",
+    SALARY: "/salary",
 };

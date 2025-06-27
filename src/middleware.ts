@@ -21,6 +21,11 @@ export default auth(req => {
                 break;
         }
     }
+
+    //** Check permission role */
+    if (req.nextUrl.pathname.startsWith("/salary") && req.auth?.user?.role !== "ADMIN") {
+        return Response.redirect(new URL("/login", req.url));
+    }
 });
 
 export const config = {

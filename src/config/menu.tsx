@@ -1,6 +1,6 @@
 import React from "react";
-import { DocumentTextIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import { ROUTE, TEXT } from "@/constants";
+import { BanknotesIcon, DocumentTextIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { ROLE, ROUTE, TEXT } from "@/constants";
 
 export const MENU = [
     {
@@ -12,5 +12,11 @@ export const MENU = [
         url: ROUTE.STAFF,
         label: TEXT.STAFF,
         icon: <UserCircleIcon className="w-5" />,
+    },
+    {
+        url: ROUTE.SALARY,
+        label: TEXT.SALARY,
+        icon: <BanknotesIcon className="w-5" />,
+        roles: [ROLE.ADMIN],
     },
 ];
