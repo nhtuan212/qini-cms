@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { Select, SelectItem } from "@/components/Select";
@@ -26,16 +26,9 @@ export default function RecordTimeSheet() {
     const [shiftError, setShiftError] = useState<string | null>(null);
 
     //** Variables */
-    const { isLoading, timeSheetByStaffId, recordTimeSheet, deleteTimeSheet } = useTimeSheetStore();
+    const { isLoading, timeSheetByStaffId, getTimeSheet, recordTimeSheet, deleteTimeSheet } =
+        useTimeSheetStore();
     const { createTarget } = useTargetStore();
-
-    const personalTimeSheet = useMemo(() => {
-        return timeSheetByStaffId.filter(
-            item =>
-                item.staffId === staffById.id &&
-                formatDate(item.date, "YYYY-MM-DD") === formatDate(new Date(), "YYYY-MM-DD"),
-        );
-    }, [timeSheetByStaffId, staffById.id]);
 
     //** Functions */
     const handleRecordTimeSheet = async () => {
@@ -95,6 +88,14 @@ export default function RecordTimeSheet() {
             });
     };
 
+    //** Effects */
+    useEffect(() => {
+        getTimeSheet({
+            staffId: staffById.id,
+            startDate: formatDate(new Date(), "YYYY-MM-DD"),
+        });
+    }, [getTimeSheet, staffById.id]);
+
     //** Render */
     return (
         <div className="space-y-6">
@@ -135,7 +136,7 @@ export default function RecordTimeSheet() {
                         isLoading={isLoading}
                         startContent={<ArrowRightEndOnRectangleIcon className="w-5 h-5" />}
                         isDisabled={
-                            !!personalTimeSheet.find(item => item.shiftId === selectedShift)
+                            !!timeSheetByStaffId.find(item => item.shiftId === selectedShift)
                                 ?.checkIn
                         }
                         onPress={handleRecordTimeSheet}
@@ -150,9 +151,10 @@ export default function RecordTimeSheet() {
                         isLoading={isLoading}
                         endContent={<ArrowRightStartOnRectangleIcon className="w-5 h-5" />}
                         isDisabled={
-                            !!personalTimeSheet.find(item => item.shiftId === selectedShift)
+                            !!timeSheetByStaffId.find(item => item.shiftId === selectedShift)
                                 ?.checkOut ||
-                            !personalTimeSheet.find(item => item.shiftId === selectedShift)?.checkIn
+                            !timeSheetByStaffId.find(item => item.shiftId === selectedShift)
+                                ?.checkIn
                         }
                         onPress={handleRecordTimeSheet}
                     >
@@ -166,8 +168,8 @@ export default function RecordTimeSheet() {
             {/* Today's Summary */}
             <Card className="bg-primary-50 p-4 border border-primary-200">
                 <h4 className="font-semibold text-gray-800 mb-3">{TEXT.TODAY_SUMMARY}</h4>
-                {!isEmpty(personalTimeSheet) &&
-                    personalTimeSheet.map((item, index) => (
+                {!isEmpty(timeSheetByStaffId) &&
+                    timeSheetByStaffId.map((item, index) => (
                         <div key={index}>
                             <div className="grid grid-cols-5 items-center gap-2 text-sm">
                                 <div>

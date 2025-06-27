@@ -3,6 +3,7 @@ import { convertKeysToCamelCase, convertKeysToSnakeCase } from "@/utils";
 import { fetchData } from "@/utils/fetch";
 import { TargetShiftProps } from "./useTargetShiftStore";
 import { URL, STATUS_CODE } from "@/constants";
+import { TimeSheetProps } from "./useTimeSheetStore";
 
 export type TargetProps = {
     [key: string]: any;
@@ -32,6 +33,8 @@ type TargetAction = {
     emptyTargetById: () => void;
 
     updateTargetShiftInTargets: (updatedTargetShift: TargetShiftProps) => void;
+    updateTimeSheetInTargets: (updatedTimeSheet: TimeSheetProps | TimeSheetProps[]) => void;
+    removeTimeSheetFromTargets: (timeSheetId: string) => void;
 };
 
 const initialState: TargetState = {
@@ -216,6 +219,40 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
                               ? { ...shift, ...updatedTargetShift }
                               : shift,
                       )
+                    : target.targetShift,
+            })),
+        })),
+
+    updateTimeSheetInTargets: (updatedTimeSheet: TimeSheetProps | TimeSheetProps[]) =>
+        set(state => ({
+            targets: state.targets.map(target => ({
+                ...target,
+                targetShift: target.targetShift.map((shift: TargetShiftProps) =>
+                    Array.isArray(updatedTimeSheet)
+                        ? updatedTimeSheet.some(
+                              (timeSheet: TimeSheetProps) => timeSheet.targetShiftId === shift.id,
+                          )
+                            ? { ...shift, timeSheet: [...shift.timeSheet, ...updatedTimeSheet] }
+                            : shift
+                        : shift,
+                ),
+            })),
+        })),
+
+    removeTimeSheetFromTargets: (timeSheetId: string) =>
+        set(state => ({
+            targets: state.targets.map(target => ({
+                ...target,
+                timeSheet: Array.isArray(target.timeSheet)
+                    ? target.timeSheet.filter((ts: any) => ts.id !== timeSheetId)
+                    : target.timeSheet,
+                targetShift: Array.isArray(target.targetShift)
+                    ? target.targetShift.map(shift => ({
+                          ...shift,
+                          timeSheet: Array.isArray(shift.timeSheet)
+                              ? shift.timeSheet.filter((ts: any) => ts.id !== timeSheetId)
+                              : shift.timeSheet,
+                      }))
                     : target.targetShift,
             })),
         })),

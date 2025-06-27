@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useTargetStore } from "./useTargetStore";
 import {
     calculateWorkingHours,
     convertKeysToCamelCase,
@@ -33,11 +34,9 @@ interface TimeSheetActions {
         startDate?: string;
         endDate?: string;
     }) => Promise<void>;
-    createTimeSheet: (params: {
-        staffId: string;
-        shiftId?: string;
-        targetShiftId?: string;
-    }) => Promise<TimeSheetProps>;
+    createTimeSheet: (
+        params: TimeSheetProps | TimeSheetProps[],
+    ) => Promise<TimeSheetProps | TimeSheetProps[]>;
     updateTimeSheet: (params: {
         id: string;
         bodyParams: Partial<TimeSheetProps>;
@@ -126,13 +125,15 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
         });
     },
 
-    createTimeSheet: async ({ staffId, shiftId, targetShiftId }: TimeSheetProps) => {
-        const recordData = {
-            staffId,
-            shiftId,
-            targetShiftId,
-            checkIn: formatTime(),
-        };
+    createTimeSheet: async (params: TimeSheetProps | TimeSheetProps[]) => {
+        const recordData = Array.isArray(params)
+            ? params
+            : {
+                  staffId: params.staffId,
+                  shiftId: params.shiftId,
+                  targetShiftId: params.targetShiftId,
+                  checkIn: params.checkIn || formatTime(),
+              };
 
         return await fetchData({
             endpoint: URL.TIME_SHEET,
@@ -147,16 +148,16 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                 throw new Error(res?.message || "Record failed");
             }
 
-            const newRecord = {
-                ...convertKeysToCamelCase(res.data),
-            };
+            const newRecord = convertKeysToCamelCase(res.data);
 
             set(state => ({
                 timeSheets: [...state.timeSheets, newRecord],
                 timeSheetByStaffId: [...state.timeSheetByStaffId, newRecord],
             }));
 
-            return newRecord;
+            useTargetStore.getState().updateTimeSheetInTargets(newRecord);
+
+            return Array.isArray(params) ? convertKeysToCamelCase(res.data) : newRecord;
         });
     },
 
@@ -196,17 +197,21 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
             options: {
                 method: "DELETE",
             },
-        }).then(rs => {
+        }).then(res => {
             set({ isLoading: false });
 
-            if (rs?.code !== STATUS_CODE.OK) {
-                throw new Error(rs?.message || "Failed to delete time sheet");
+            if (res?.code !== STATUS_CODE.OK) {
+                throw new Error(res?.message || "Failed to delete time sheet");
             }
 
             set(state => ({
                 timeSheets: state.timeSheets.filter(record => record.id !== id),
                 timeSheetByStaffId: state.timeSheetByStaffId.filter(record => record.id !== id),
             }));
+
+            const data = convertKeysToCamelCase(res.data) as TimeSheetProps;
+
+            useTargetStore.getState().removeTimeSheetFromTargets(data.id);
         });
     },
 

@@ -35,6 +35,7 @@ export const TEXT = {
     MONTH: "Tháng",
     ADD_DATE: "Ngày tạo",
     TIME_SHEET: "Chấm công",
+    ADD_TIME_SHEET: "Thêm chấm công",
     WORKING_HOURS: "Giờ làm việc",
     TIME_NUMBER: "Số giờ",
     TIME_RANGE: "Khoảng thời gian",

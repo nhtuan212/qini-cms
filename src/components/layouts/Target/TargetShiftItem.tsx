@@ -6,7 +6,7 @@ import Input from "@/components/Input";
 import { BanknotesIcon, CreditCardIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { TargetShiftProps, useTargetShiftStore } from "@/stores/useTargetShiftStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { formatCurrency, isEmpty } from "@/utils";
+import { formatCurrency } from "@/utils";
 import { TEXT } from "@/constants";
 
 export default function TargetShiftItem({ targetShifts }: { targetShifts: TargetShiftProps[] }) {
@@ -71,7 +71,6 @@ export default function TargetShiftItem({ targetShifts }: { targetShifts: Target
                             </div>
                         </div>
                     </div>
-
                     <div className="space-y-2">
                         {renderAmount(
                             TEXT.TRANSFER,
@@ -99,9 +98,7 @@ export default function TargetShiftItem({ targetShifts }: { targetShifts: Target
                         )}
                     </div>
 
-                    {!isEmpty(targetShift.timeSheet) && (
-                        <TimeSheetList timeSheets={targetShift.timeSheet} />
-                    )}
+                    <TimeSheetList targetShift={targetShift} timeSheets={targetShift.timeSheet} />
                 </div>
             ))}
         </div>
