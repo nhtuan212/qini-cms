@@ -5,7 +5,7 @@ import DateRangePicker from "@/components/DateRangePicker";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CalendarDate, RangeValue } from "@heroui/react";
 import { useTargetStore } from "@/stores/useTargetStore";
-import { formatDate, snakeCaseQueryString } from "@/utils";
+import { getDateTime, formatDate, snakeCaseQueryString } from "@/utils";
 import { ROUTE, TEXT } from "@/constants";
 import { parseDate } from "@internationalized/date";
 
@@ -40,7 +40,10 @@ export default function TargetFilter() {
             });
         }
 
-        setDateValue(null);
+        setDateValue({
+            start: getDateTime().firstDayOfMonth,
+            end: getDateTime().lastDayOfMonth,
+        });
     }, [searchParams]);
 
     //** Render */

@@ -8,7 +8,7 @@ import { CalendarIcon } from "@heroicons/react/24/outline";
 import { useShiftStore } from "@/stores/useShiftsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useTargetStore } from "@/stores/useTargetStore";
-import { snakeCaseQueryString } from "@/utils";
+import { getDateTime, snakeCaseQueryString } from "@/utils";
 import { TEXT } from "@/constants";
 
 export default function Target() {
@@ -26,7 +26,10 @@ export default function Target() {
     }, [getShifts, getStaff]);
 
     useEffect(() => {
-        const params = snakeCaseQueryString(searchParams);
+        const params = snakeCaseQueryString({
+            startDate: searchParams.get("start_date") || getDateTime().firstDayOfMonth,
+            endDate: searchParams.get("end_date") || getDateTime().lastDayOfMonth,
+        });
 
         getTarget(params);
     }, [searchParams, getTarget]);
