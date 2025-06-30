@@ -8,10 +8,12 @@ import { TargetShiftProps } from "@/stores/useTargetShiftStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { ROLE, TEXT } from "@/constants";
 
-export default function TimeSheetList({
+export default function TimeSheets({
+    targetAt,
     targetShift,
     timeSheets,
 }: {
+    targetAt: string;
     targetShift: TargetShiftProps;
     timeSheets: TimeSheetProps;
 }) {
@@ -43,7 +45,12 @@ export default function TimeSheetList({
                                     isOpen: true,
                                     size: "lg",
                                     modalHeader: TEXT.ADD_TIME_SHEET,
-                                    modalBody: <TimeSheetModal targetShift={targetShift} />,
+                                    modalBody: (
+                                        <TimeSheetModal
+                                            targetAt={targetAt}
+                                            targetShift={targetShift}
+                                        />
+                                    ),
                                 });
                             }}
                         />

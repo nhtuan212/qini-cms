@@ -1,5 +1,5 @@
 import React from "react";
-import TimeSheetList from "./TimeSheetList";
+import TimeSheets from "./TimeSheets";
 import TargetShiftModal from "./TargetShiftModal";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
@@ -8,8 +8,9 @@ import { TargetShiftProps, useTargetShiftStore } from "@/stores/useTargetShiftSt
 import { useModalStore } from "@/stores/useModalStore";
 import { formatCurrency } from "@/utils";
 import { TEXT } from "@/constants";
+import { TargetProps } from "@/stores/useTargetStore";
 
-export default function TargetShiftItem({ targetShifts }: { targetShifts: TargetShiftProps[] }) {
+export default function TargetShifts({ target }: { target: TargetProps }) {
     //** Stores */
     const { getModal } = useModalStore();
     const { getTargetShift } = useTargetShiftStore();
@@ -26,6 +27,7 @@ export default function TargetShiftItem({ targetShifts }: { targetShifts: Target
         );
     };
 
+    //** Render */
     return (
         <div className="relative flex flex-col gap-y-4">
             <div className="flex justify-between items-center">
@@ -35,7 +37,7 @@ export default function TargetShiftItem({ targetShifts }: { targetShifts: Target
                 </Button> */}
             </div>
 
-            {targetShifts.map(targetShift => (
+            {target.targetShift.map((targetShift: TargetShiftProps) => (
                 <div
                     key={targetShift.id}
                     className="bg-success-50 rounded-lg p-4 border border-gray-200"
@@ -98,7 +100,11 @@ export default function TargetShiftItem({ targetShifts }: { targetShifts: Target
                         )}
                     </div>
 
-                    <TimeSheetList targetShift={targetShift} timeSheets={targetShift.timeSheet} />
+                    <TimeSheets
+                        targetAt={target.targetAt}
+                        targetShift={targetShift}
+                        timeSheets={targetShift.timeSheet}
+                    />
                 </div>
             ))}
         </div>

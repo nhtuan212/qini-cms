@@ -7,13 +7,13 @@ import { RangeValue } from "@heroui/react";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { CalendarDate } from "@internationalized/date";
-import { getDateTime } from "@/utils";
+import { formatCurrency, getDateTime } from "@/utils";
 import { TEXT } from "@/constants";
 
 export default function TargetTopContent() {
     //** Stores */
     const { staffById } = useStaffStore();
-    const { getTimeSheet } = useTimeSheetStore();
+    const { timeSheetByStaffId, getTimeSheet } = useTimeSheetStore();
 
     //** States */
     const [dateValue, setDateValue] = useState<RangeValue<CalendarDate>>({
@@ -52,6 +52,16 @@ export default function TargetTopContent() {
                 />
 
                 <Button onPress={() => handleFilterTargets()}>{TEXT.SUBMIT}</Button>
+            </div>
+
+            <div className="flex-1 flex justify-between items-center">
+                <div>{TEXT.TIME_NUMBER}:</div>
+                <b>{timeSheetByStaffId.totalWorkingHours}</b>
+            </div>
+
+            <div className="flex-1 flex justify-between items-center">
+                <div>{TEXT.TOTAL_TARGET}:</div>
+                <b>{formatCurrency(timeSheetByStaffId.totalTarget)}</b>
             </div>
         </div>
     );

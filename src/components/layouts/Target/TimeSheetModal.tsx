@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
-import { Select, SelectItem } from "@/components/Select";
+import { Autocomplete, AutocompleteItem } from "@/components/AutoComplete";
 import { TimeInput } from "@/components/Input";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { TargetShiftProps } from "@/stores/useTargetShiftStore";
@@ -17,13 +17,19 @@ type TimeSheetForm = {
     timeSheets: StaffProps[];
 };
 
-export default function TimeSheetModal({ targetShift }: { targetShift: TargetShiftProps }) {
+export default function TimeSheetModal({
+    targetAt,
+    targetShift,
+}: {
+    targetAt: string;
+    targetShift: TargetShiftProps;
+}) {
     //** Stores */
     const { staff } = useStaffStore();
     const { getModal } = useModalStore();
-    const { createTimeSheet } = useTimeSheetStore();
+    const { isLoading, createTimeSheet } = useTimeSheetStore();
 
-    //** React hook form */Add commentMore actions
+    //** React hook form */
     const defaultValues: TimeSheetForm = {
         timeSheets: [
             {
@@ -55,6 +61,7 @@ export default function TimeSheetModal({ targetShift }: { targetShift: TargetShi
             checkIn: item.checkIn,
             checkOut: item.checkOut,
             workingHours: calculateWorkingHours(item.checkIn, item.checkOut),
+            date: targetAt,
         }));
 
         await createTimeSheet(result);
@@ -95,11 +102,11 @@ export default function TimeSheetModal({ targetShift }: { targetShift: TargetShi
                             }}
                             render={({ field }) => {
                                 return (
-                                    <Select
+                                    <Autocomplete
                                         label={TEXT.STAFF}
-                                        selectedKeys={[field.value]}
-                                        onChange={field.onChange}
+                                        {...field}
                                         isInvalid={!!errors?.timeSheets?.[index]?.staffId}
+                                        onSelectionChange={field.onChange}
                                         errorMessage={
                                             errors?.timeSheets?.[index]?.staffId && (
                                                 <ErrorMessage
@@ -110,9 +117,11 @@ export default function TimeSheetModal({ targetShift }: { targetShift: TargetShi
                                         }
                                     >
                                         {staff.map(item => (
-                                            <SelectItem key={item.id}>{item.name}</SelectItem>
+                                            <AutocompleteItem key={item.id}>
+                                                {item.name}
+                                            </AutocompleteItem>
                                         ))}
-                                    </Select>
+                                    </Autocomplete>
                                 );
                             }}
                         />
@@ -239,8 +248,8 @@ export default function TimeSheetModal({ targetShift }: { targetShift: TargetShi
 
                 <div className=" sticky bottom-0 w-full flex justify-end gap-2 bg-white">
                     <Button
-                        isLoading={false}
                         color="default"
+                        isLoading={isLoading}
                         onPress={() =>
                             getModal({
                                 isOpen: false,
@@ -250,7 +259,7 @@ export default function TimeSheetModal({ targetShift }: { targetShift: TargetShi
                         {TEXT.CANCEL}
                     </Button>
 
-                    <Button isLoading={false} type="submit">
+                    <Button type="submit" isLoading={isLoading}>
                         {TEXT.SAVE}
                     </Button>
                 </div>

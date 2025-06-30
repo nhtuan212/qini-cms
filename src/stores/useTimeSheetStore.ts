@@ -27,6 +27,7 @@ interface TimeSheetState {
     };
     timeSheetByStaffId: {
         data: TimeSheetProps[];
+        totalTarget: number;
         totalWorkingHours: number;
         pagination: {
             total: number;
@@ -74,6 +75,7 @@ const initialState: TimeSheetState = {
     },
     timeSheetByStaffId: {
         data: [],
+        totalTarget: 0,
         totalWorkingHours: 0,
         pagination: {
             total: 0,
@@ -145,6 +147,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                 return set({
                     timeSheetByStaffId: {
                         data: foundRecord,
+                        totalTarget: res.total_target,
                         totalWorkingHours: res.total_working_hours,
                         pagination: res.pagination,
                     },
@@ -162,6 +165,8 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
     },
 
     createTimeSheet: async (params: TimeSheetProps | TimeSheetProps[]) => {
+        set({ isLoading: true });
+
         const recordData = Array.isArray(params)
             ? params
             : {
@@ -195,6 +200,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
 
                 timeSheetByStaffId: {
                     data: [...state.timeSheetByStaffId.data, newRecord],
+                    totalTarget: state.timeSheetByStaffId.totalTarget + res.total_target,
                     totalWorkingHours:
                         state.timeSheetByStaffId.totalWorkingHours + res.total_working_hours,
                     pagination: state.timeSheetByStaffId.pagination,
@@ -230,6 +236,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                     data: state.timeSheetByStaffId.data.map(item =>
                         item.id === updatedRecord.id ? updatedRecord : item,
                     ),
+                    totalTarget: state.timeSheetByStaffId.totalTarget,
                     totalWorkingHours: state.timeSheetByStaffId.totalWorkingHours,
                     pagination: state.timeSheetByStaffId.pagination,
                 },
@@ -263,6 +270,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
 
                 timeSheetByStaffId: {
                     data: state.timeSheetByStaffId.data.filter(record => record.id !== id),
+                    totalTarget: state.timeSheetByStaffId.totalTarget,
                     totalWorkingHours: state.timeSheetByStaffId.totalWorkingHours,
                     pagination: state.timeSheetByStaffId.pagination,
                 },
