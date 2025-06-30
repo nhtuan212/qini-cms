@@ -7,5 +7,7 @@ interface CardProps {
 }
 
 export default function Card({ children, className }: CardProps) {
-    return <div className={twMerge("bg-white rounded-lg shadow-lg", className)}>{children}</div>;
+    return (
+        <div className={twMerge("bg-white rounded-lg shadow-lg p-6", className)}>{children}</div>
+    );
 }

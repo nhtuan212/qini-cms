@@ -27,7 +27,7 @@ export default function StaffModalDetail() {
         <Table
             className="[&>.tableContainer]:h-[40rem]"
             columns={useStaffDetailColumns()}
-            rows={timeSheetByStaffId}
+            rows={timeSheetByStaffId.data}
             loading={isLoading}
             topContent={<StaffDetailTopContent />}
         />

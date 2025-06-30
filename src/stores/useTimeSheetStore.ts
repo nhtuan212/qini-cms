@@ -16,8 +16,24 @@ export interface TimeSheetProps {
 
 interface TimeSheetState {
     isLoading: boolean;
-    timeSheets: TimeSheetProps[];
-    timeSheetByStaffId: TimeSheetProps[];
+    timeSheets: {
+        data: TimeSheetProps[];
+        totalWorkingHours: number;
+        pagination: {
+            total: number;
+            page: number;
+            limit: number;
+        };
+    };
+    timeSheetByStaffId: {
+        data: TimeSheetProps[];
+        totalWorkingHours: number;
+        pagination: {
+            total: number;
+            page: number;
+            limit: number;
+        };
+    };
     pagination?: {
         [key: string]: any;
     };
@@ -47,8 +63,24 @@ interface TimeSheetActions {
 
 const initialState: TimeSheetState = {
     isLoading: false,
-    timeSheets: [],
-    timeSheetByStaffId: [],
+    timeSheets: {
+        data: [],
+        totalWorkingHours: 0,
+        pagination: {
+            total: 0,
+            page: 1,
+            limit: 10,
+        },
+    },
+    timeSheetByStaffId: {
+        data: [],
+        totalWorkingHours: 0,
+        pagination: {
+            total: 0,
+            page: 1,
+            limit: 10,
+        },
+    },
 };
 
 export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((set, get) => ({
@@ -58,7 +90,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
         set({ isLoading: true });
 
         const currentDate = formatDate(new Date(), "YYYY-MM-DD");
-        const timeSheets = get().timeSheetByStaffId;
+        const timeSheets = get().timeSheetByStaffId.data;
 
         const currentTimeSheet = timeSheets.find(
             record =>
@@ -96,31 +128,35 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
         return await fetchData({ endpoint }).then(res => {
             set({ isLoading: false });
 
+            const data = res.data.map((item: TimeSheetProps) => convertKeysToCamelCase(item));
+
             if (res?.code !== STATUS_CODE.OK) {
                 return set({
-                    timeSheets: [],
+                    timeSheets: initialState.timeSheets,
                 });
             }
 
             if (params?.staffId) {
-                const foundRecord: TimeSheetProps[] = res.data.filter((item: any) => {
+                const foundRecord: TimeSheetProps[] = data.filter((item: any) => {
                     const record = convertKeysToCamelCase(item) as TimeSheetProps;
                     return record.staffId === params.staffId;
                 });
 
                 return set({
-                    timeSheetByStaffId: foundRecord.map(
-                        item => convertKeysToCamelCase(item) as TimeSheetProps,
-                    ),
+                    timeSheetByStaffId: {
+                        data: foundRecord,
+                        totalWorkingHours: res.total_working_hours,
+                        pagination: res.pagination,
+                    },
                 });
             }
 
             return set({
-                timeSheets: res.data.map(
-                    (item: any) => convertKeysToCamelCase(item) as TimeSheetProps,
-                ),
-
-                pagination: res.pagination,
+                timeSheets: {
+                    data,
+                    totalWorkingHours: res.total_working_hours,
+                    pagination: res.pagination,
+                },
             });
         });
     },
@@ -151,8 +187,18 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
             const newRecord = convertKeysToCamelCase(res.data);
 
             set(state => ({
-                timeSheets: [...state.timeSheets, newRecord],
-                timeSheetByStaffId: [...state.timeSheetByStaffId, newRecord],
+                timeSheets: {
+                    data: [...state.timeSheets.data, newRecord],
+                    totalWorkingHours: state.timeSheets.totalWorkingHours + res.total_working_hours,
+                    pagination: state.timeSheets.pagination,
+                },
+
+                timeSheetByStaffId: {
+                    data: [...state.timeSheetByStaffId.data, newRecord],
+                    totalWorkingHours:
+                        state.timeSheetByStaffId.totalWorkingHours + res.total_working_hours,
+                    pagination: state.timeSheetByStaffId.pagination,
+                },
             }));
 
             useTargetStore.getState().updateTimeSheetInTargets(newRecord);
@@ -180,9 +226,13 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
             const updatedRecord = convertKeysToCamelCase(rs.data) as TimeSheetProps;
 
             set(state => ({
-                timeSheetByStaffId: state.timeSheetByStaffId.map(item =>
-                    item.id === updatedRecord.id ? updatedRecord : item,
-                ),
+                timeSheetByStaffId: {
+                    data: state.timeSheetByStaffId.data.map(item =>
+                        item.id === updatedRecord.id ? updatedRecord : item,
+                    ),
+                    totalWorkingHours: state.timeSheetByStaffId.totalWorkingHours,
+                    pagination: state.timeSheetByStaffId.pagination,
+                },
             }));
 
             return updatedRecord;
@@ -205,8 +255,17 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
             }
 
             set(state => ({
-                timeSheets: state.timeSheets.filter(record => record.id !== id),
-                timeSheetByStaffId: state.timeSheetByStaffId.filter(record => record.id !== id),
+                timeSheets: {
+                    data: state.timeSheets.data.filter(record => record.id !== id),
+                    totalWorkingHours: state.timeSheets.totalWorkingHours - res.working_hours,
+                    pagination: state.timeSheets.pagination,
+                },
+
+                timeSheetByStaffId: {
+                    data: state.timeSheetByStaffId.data.filter(record => record.id !== id),
+                    totalWorkingHours: state.timeSheetByStaffId.totalWorkingHours,
+                    pagination: state.timeSheetByStaffId.pagination,
+                },
             }));
 
             const data = convertKeysToCamelCase(res.data) as TimeSheetProps;

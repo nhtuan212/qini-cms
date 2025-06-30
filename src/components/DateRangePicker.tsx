@@ -8,6 +8,7 @@ export default function DateRangePicker({ ...props }: DateRangePickerProps) {
         <DateRangePickerNextUI
             aria-label="dateRange"
             label={props.label || "Date Range picker"}
+            variant={props.variant || "bordered"}
             {...props}
         />
     );
