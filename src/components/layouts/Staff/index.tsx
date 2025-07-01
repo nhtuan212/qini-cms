@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Link from "next/link";
 import StaffModal from "./StaffModal";
 import StaffActions from "./StaffActions";
 import ValidateStaffPassword from "./ValidateStaffPassword";
@@ -47,7 +46,7 @@ export default function Staff() {
             </div>
 
             <div className="flex flex-col justify-center mt-4">
-                <div className="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-2">
+                <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 sm:gap-4 gap-2">
                     {staff &&
                         staff.length > 0 &&
                         staff?.map((staff: StaffProps) => {
@@ -57,13 +56,7 @@ export default function Staff() {
                                     className="flex flex-col justify-between h-36 bg-gray-50 p-3 border rounded-lg shadow-md"
                                 >
                                     <div className="flex justify-between items-center">
-                                        <Link
-                                            href={`nhan-vien/${staff.id}`}
-                                            className="text-lg"
-                                            target="_blank"
-                                        >
-                                            {staff.name}
-                                        </Link>
+                                        {staff.name}
 
                                         {(profile.role === ROLE.ADMIN ||
                                             profile.role === ROLE.REPORT) && (
@@ -73,19 +66,13 @@ export default function Staff() {
 
                                     <Button
                                         variant="flat"
-                                        color="success"
                                         className="w-full"
                                         startContent={<ClockIcon className="w-5 h-5" />}
                                         onPress={() => {
                                             getModal({
                                                 isOpen: true,
                                                 modalHeader: staff.name,
-                                                modalBody: (
-                                                    <ValidateStaffPassword
-                                                        staff={staff}
-                                                        validateType="time-sheet"
-                                                    />
-                                                ),
+                                                modalBody: <ValidateStaffPassword staff={staff} />,
                                                 modalFooter: <></>,
                                             });
                                         }}

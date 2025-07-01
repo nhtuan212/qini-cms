@@ -34,7 +34,7 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
             {targets.map(target => (
                 <div
                     key={target.id}
-                    className="relative flex flex-col gap-y-6 bg-white p-6 rounded-xl shadow-md"
+                    className="relative flex flex-col gap-y-6 bg-white p-6 rounded-xl shadow-md odd:bg-gray-100"
                 >
                     {isLoading && <Loading />}
 

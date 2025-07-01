@@ -6,20 +6,14 @@ import PasswordInput from "@/components/PasswordInput";
 import { StaffProps } from "@/stores/useStaffStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { STATUS_CODE, TEXT } from "@/constants";
+import { useProfileStore } from "@/stores/useProfileStore";
+import { STATUS_CODE, TEXT, ROLE } from "@/constants";
 import { encryptPasswordRSA } from "@/utils";
 
-type ValidateType = "detail" | "time-sheet";
-
-export default function ValidateStaffPassword({
-    staff,
-    validateType,
-}: {
-    staff: StaffProps;
-    validateType: ValidateType;
-}) {
+export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) {
     //** Stores */
     const { getModal } = useModalStore();
+    const { profile } = useProfileStore();
     const { isValidatePasswordLoading, validateStaffPassword, getStaffById } = useStaffStore();
 
     //** States */
@@ -28,6 +22,10 @@ export default function ValidateStaffPassword({
     //** Functions */
     const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         setPasswordError("");
+
+        if (profile.role === ROLE.ADMIN) {
+            return handleTimeSheet();
+        }
 
         const value = (e.target as HTMLInputElement).value;
 
@@ -44,12 +42,7 @@ export default function ValidateStaffPassword({
                     return;
                 }
 
-                switch (validateType) {
-                    case "time-sheet":
-                        return handleTimeSheet();
-                    default:
-                        break;
-                }
+                return handleTimeSheet();
             });
         }
     };
