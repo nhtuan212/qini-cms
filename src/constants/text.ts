@@ -14,6 +14,7 @@ export const TEXT = {
     USERNAME: "Username",
     ENTER_USERNAME: "Enter your username",
     PASSWORD: "Password",
+    ENTER_NEW_PASSWORD: "Nhập mật khẩu mới",
     ENTER_PASSWORD: "Nhập mật khẩu",
     USERNAME_PASSWORD_INVALID: "Username or password is invalid",
     REMEMBER_ME: "Remember me",

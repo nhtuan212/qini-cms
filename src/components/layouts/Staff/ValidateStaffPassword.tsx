@@ -78,7 +78,7 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
     return (
         <>
             <PasswordInput
-                placeholder={TEXT.ENTER_PASSWORD}
+                placeholder={staff.isFirstLogin ? TEXT.ENTER_NEW_PASSWORD : TEXT.ENTER_PASSWORD}
                 isInvalid={!!passwordError}
                 errorMessage={passwordError}
                 isDisabled={isValidatePasswordLoading}
