@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import TimeSheet from "../TimeSheet";
 import PasswordInput from "@/components/PasswordInput";
+import Button from "@/components/Button";
 import { StaffProps } from "@/stores/useStaffStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
@@ -18,41 +19,30 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
         useStaffStore();
 
     //** States */
+    const [password, setPassword] = useState<string>("");
     const [passwordError, setPasswordError] = useState<string>("");
 
     //** Functions */
-    const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = async () => {
         setPasswordError("");
+        const value = password;
 
         if (profile.role === ROLE.ADMIN) {
             return handleTimeSheet();
         }
 
-        const value = (e.target as HTMLInputElement).value;
-
         if (value.length === 0) {
             return null;
         }
 
-        if (e.key === "Enter") {
-            const encryptedPassword = encryptPasswordRSA(value);
+        const encryptedPassword = encryptPasswordRSA(value);
 
-            if (staff.isFirstLogin) {
-                return updateStaff({
-                    id: staff.id,
-                    bodyParams: { isFirstLogin: false, password: encryptedPassword },
-                }).then(res => {
-                    if (res.code && res.code !== STATUS_CODE.OK) {
-                        setPasswordError(res.message || TEXT.INVALID_PASSWORD);
-                        return;
-                    }
-
-                    return handleTimeSheet();
-                });
-            }
-
-            validateStaffPassword(staff.id, encryptedPassword).then(async res => {
-                if (!res.isValid || res.code !== STATUS_CODE.OK) {
+        if (staff.isFirstLogin) {
+            return updateStaff({
+                id: staff.id,
+                bodyParams: { isFirstLogin: false, password: encryptedPassword },
+            }).then(res => {
+                if (res.code && res.code !== STATUS_CODE.OK) {
                     setPasswordError(res.message || TEXT.INVALID_PASSWORD);
                     return;
                 }
@@ -60,6 +50,15 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
                 return handleTimeSheet();
             });
         }
+
+        validateStaffPassword(staff.id, encryptedPassword).then(async res => {
+            if (!res.isValid || res.code !== STATUS_CODE.OK) {
+                setPasswordError(res.message || TEXT.INVALID_PASSWORD);
+                return;
+            }
+
+            return handleTimeSheet();
+        });
     };
 
     const handleTimeSheet = async () => {
@@ -77,12 +76,16 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
 
     //** Render */
     return (
-        <PasswordInput
-            onKeyDown={handleKeyDown}
-            placeholder={TEXT.ENTER_PASSWORD}
-            isInvalid={!!passwordError}
-            errorMessage={passwordError}
-            isDisabled={isValidatePasswordLoading}
-        />
+        <>
+            <PasswordInput
+                placeholder={TEXT.ENTER_PASSWORD}
+                isInvalid={!!passwordError}
+                errorMessage={passwordError}
+                isDisabled={isValidatePasswordLoading}
+                onValueChange={setPassword}
+            />
+
+            <Button onPress={handleKeyDown}>{TEXT.SUBMIT}</Button>
+        </>
     );
 }
