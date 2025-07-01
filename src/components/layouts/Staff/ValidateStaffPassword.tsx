@@ -14,7 +14,8 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
     //** Stores */
     const { getModal } = useModalStore();
     const { profile } = useProfileStore();
-    const { isValidatePasswordLoading, validateStaffPassword, getStaffById } = useStaffStore();
+    const { isValidatePasswordLoading, validateStaffPassword, getStaffById, updateStaff } =
+        useStaffStore();
 
     //** States */
     const [passwordError, setPasswordError] = useState<string>("");
@@ -36,8 +37,22 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
         if (e.key === "Enter") {
             const encryptedPassword = encryptPasswordRSA(value);
 
-            await validateStaffPassword(staff.id, encryptedPassword).then(async res => {
-                if (res.code !== STATUS_CODE.OK) {
+            if (staff.isFirstLogin) {
+                return updateStaff({
+                    id: staff.id,
+                    bodyParams: { isFirstLogin: false, password: encryptedPassword },
+                }).then(res => {
+                    if (res.code && res.code !== STATUS_CODE.OK) {
+                        setPasswordError(res.message || TEXT.INVALID_PASSWORD);
+                        return;
+                    }
+
+                    return handleTimeSheet();
+                });
+            }
+
+            validateStaffPassword(staff.id, encryptedPassword).then(async res => {
+                if (!res.isValid || res.code !== STATUS_CODE.OK) {
                     setPasswordError(res.message || TEXT.INVALID_PASSWORD);
                     return;
                 }

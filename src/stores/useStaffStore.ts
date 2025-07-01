@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { fetchData } from "@/utils/fetch";
 import { URL } from "@/constants";
+import { convertKeysToCamelCase, convertKeysToSnakeCase } from "@/utils";
 
 export type StaffProps = {
     [key: string]: any;
@@ -14,7 +15,6 @@ type StaffState = {
 };
 
 type StaffAction = {
-    // Api actions
     getStaff: () => Promise<void>;
     getStaffById: (id: StaffProps["id"]) => Promise<StaffProps>;
     createStaff: (bodyParams: StaffProps) => Promise<StaffProps>;
@@ -35,10 +35,9 @@ const initialState: StaffState = {
     staffById: {} as StaffProps,
 };
 
-export const useStaffStore = create<StaffState & StaffAction>()(set => ({
+export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
     ...initialState,
 
-    // Api Actions
     getStaff: async () => {
         set({
             isLoading: true,
@@ -57,7 +56,7 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
                 });
             }
 
-            return set({ staff: res.data });
+            return set({ staff: convertKeysToCamelCase(res.data) as StaffProps[] });
         });
     },
 
@@ -112,18 +111,23 @@ export const useStaffStore = create<StaffState & StaffAction>()(set => ({
             isLoading: true,
         });
 
+        const body = JSON.stringify(convertKeysToSnakeCase(bodyParams));
+
         return await fetchData({
             endpoint: `${URL.STAFF}/${id}`,
             options: {
                 method: "PUT",
-                body: JSON.stringify(bodyParams),
+                body,
             },
         }).then(res => {
+            const data = convertKeysToCamelCase(res.data) as StaffProps;
+
             set({
                 isLoading: false,
+                staff: get().staff.map(s => (s.id === res.data.id ? res.data : s)),
             });
 
-            return res;
+            return data;
         });
     },
 
