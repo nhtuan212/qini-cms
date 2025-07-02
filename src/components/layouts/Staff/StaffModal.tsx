@@ -14,6 +14,7 @@ import { ModalActionProps } from "@/lib/types";
 
 type FormValues = {
     name: string;
+    salary: number;
     password: string;
 };
 
@@ -28,6 +29,7 @@ export default function StaffModal() {
     //** React hook form */
     const defaultValues = {
         name: action === ModalActionProps.UPDATE ? staffById.name : "",
+        salary: action === ModalActionProps.UPDATE ? staffById.salary : 0,
         password: "",
     };
 
@@ -44,7 +46,7 @@ export default function StaffModal() {
 
     const onSubmit = async (data: FormValues) => {
         const result = {
-            name: data.name,
+            ...data,
             ...(data.password && { password: encryptPasswordRSA(data.password) }),
         };
 
@@ -92,6 +94,14 @@ export default function StaffModal() {
                 })}
                 isInvalid={!!errors.name}
                 errorMessage={<ErrorMessage errors={errors} name={"name"} />}
+            />
+
+            <Input
+                label={TEXT.SALARY}
+                placeholder={TEXT.SALARY}
+                {...register("salary", {
+                    required: `${TEXT.SALARY} ${TEXT.IS_REQUIRED}`,
+                })}
             />
 
             <PasswordInput

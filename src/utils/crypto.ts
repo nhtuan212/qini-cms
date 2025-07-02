@@ -1,5 +1,14 @@
 import NodeRSA from "node-rsa";
-import { RSA_PUBLIC_KEY } from "@/constants";
+
+const RSA_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArONVr97hZdyzx2uEiHsm
+BiTmyGUc2GVF447USXEMbHn/QEom0ozMDqpbBusqFllPE/Yo7IILD9YDNvo3bQC6
+pVqUBefH35uEU8LXJZn/Boa8mer9hkl075zkEAwGClp8qTf52V8UukOtHUrwKgp4
+PHryTa0iLyuc3OKQP26nUb2+7QMoOSv+3U5JDTW7zXstqzuK1nBi0RH3NqZJw4JL
+CJ+ON0K/EsQ9HoXgHOUy0PyOYxjFx+qq3Bgpaiqzoi1blaf8hIpUDZYzqRueX6Ed
+0kkibAOrN9bG/d6Yl6pHk6hk/+c1KOk1HnkXO2h6pkoP9KV+KUmoxjKVLWGTq039
+bQIDAQAB
+-----END PUBLIC KEY-----`;
 
 /**
  * Generate RSA key pair for development/testing
