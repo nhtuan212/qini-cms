@@ -31,20 +31,16 @@ export default function TimeSheetModal({
     const { getModal } = useModalStore();
     const { isLoading, createTimeSheet, updateTimeSheet } = useTimeSheetStore();
 
+    //** Variables */
+    const isUpdate = currentTimeSheet && !isEmpty(currentTimeSheet);
+
     //** React hook form */
     const defaultValues: TimeSheetForm = {
         timeSheets: [
             {
-                staffId:
-                    currentTimeSheet && !isEmpty(currentTimeSheet) ? currentTimeSheet?.staffId : "",
-                checkIn:
-                    currentTimeSheet && !isEmpty(currentTimeSheet)
-                        ? currentTimeSheet?.checkIn
-                        : targetShift.startTime,
-                checkOut:
-                    currentTimeSheet && !isEmpty(currentTimeSheet)
-                        ? currentTimeSheet?.checkOut
-                        : targetShift.endTime,
+                staffId: isUpdate ? currentTimeSheet?.staffId : "",
+                checkIn: isUpdate ? currentTimeSheet?.checkIn : targetShift.startTime,
+                checkOut: isUpdate ? currentTimeSheet?.checkOut : targetShift.endTime,
             },
         ],
     };
@@ -91,19 +87,21 @@ export default function TimeSheetModal({
     return (
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
             <div className="max-h-[90vh] flex flex-col gap-8 overflow-auto">
-                <div className="flex justify-end">
-                    <Button
-                        onPress={() =>
-                            append({
-                                staffId: "",
-                                checkIn: targetShift.startTime,
-                                checkOut: targetShift.endTime,
-                            })
-                        }
-                    >
-                        {TEXT.ADD_TIME_SHEET}
-                    </Button>
-                </div>
+                {!isUpdate && (
+                    <div className="flex justify-end">
+                        <Button
+                            onPress={() =>
+                                append({
+                                    staffId: "",
+                                    checkIn: targetShift.startTime,
+                                    checkOut: targetShift.endTime,
+                                })
+                            }
+                        >
+                            {TEXT.ADD_TIME_SHEET}
+                        </Button>
+                    </div>
+                )}
 
                 {fields.map((field, index) => (
                     <div
@@ -148,7 +146,7 @@ export default function TimeSheetModal({
                         <Controller
                             name={`timeSheets.${index}.checkIn`}
                             rules={{
-                                required: !currentTimeSheet && TEXT.IS_REQUIRED,
+                                required: !isUpdate && TEXT.IS_REQUIRED,
 
                                 validate: (value: string) => {
                                     const checkOutTime = getValues(`timeSheets.${index}.checkOut`);
@@ -202,7 +200,7 @@ export default function TimeSheetModal({
                         <Controller
                             name={`timeSheets.${index}.checkOut`}
                             rules={{
-                                required: !currentTimeSheet && TEXT.IS_REQUIRED,
+                                required: !isUpdate && TEXT.IS_REQUIRED,
 
                                 validate: (value: string) => {
                                     const checkInTime = getValues(`timeSheets.${index}.checkIn`);
@@ -254,15 +252,17 @@ export default function TimeSheetModal({
                             )}
                         />
 
-                        <Button
-                            className={twMerge(
-                                "absolute right-0 -top-3",
-                                "min-w-6 h-6 p-0 rounded-full",
-                            )}
-                            onPress={() => remove(index)}
-                        >
-                            <XMarkIcon className="w-4" />
-                        </Button>
+                        {!isUpdate && (
+                            <Button
+                                className={twMerge(
+                                    "absolute right-0 -top-3",
+                                    "min-w-6 h-6 p-0 rounded-full",
+                                )}
+                                onPress={() => remove(index)}
+                            >
+                                <XMarkIcon className="w-4" />
+                            </Button>
+                        )}
                     </div>
                 ))}
 
