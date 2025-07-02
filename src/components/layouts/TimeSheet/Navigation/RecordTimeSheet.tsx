@@ -7,15 +7,17 @@ import {
     ArrowRightStartOnRectangleIcon,
     TrashIcon,
 } from "@heroicons/react/24/outline";
+import { useProfileStore } from "@/stores/useProfileStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore, ShiftProps } from "@/stores/useShiftsStore";
-import { TEXT } from "@/constants";
+import { ROLE, TEXT } from "@/constants";
 import { formatDate, isEmpty, validateUserIP } from "@/utils";
 
 export default function RecordTimeSheet() {
     //** Stores */
+    const { profile } = useProfileStore();
     const { targets } = useTargetStore();
     const { staffById } = useStaffStore();
     const { shifts } = useShiftStore();
@@ -164,12 +166,12 @@ export default function RecordTimeSheet() {
             </Card>
 
             {/* Today's Summary */}
-            <Card className="bg-primary-50 p-4 border border-primary-200">
+            <Card className="bg-primary-50 sm:p-4 p-2 border border-primary-200">
                 <h4 className="font-semibold text-gray-800 mb-3">{TEXT.TODAY_SUMMARY}</h4>
                 {!isEmpty(timeSheetByStaffId) &&
                     timeSheetByStaffId.data.map((item, index) => (
                         <div key={index}>
-                            <div className="grid grid-cols-5 items-center gap-2 text-sm">
+                            <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-1 items-center gap-2 text-sm">
                                 <div>
                                     <span className="text-gray-600">{`${TEXT.WORK_SHIFT}:`}</span>
                                     <span className="ml-2 font-medium">{item.shiftName}</span>
@@ -182,22 +184,26 @@ export default function RecordTimeSheet() {
                                     <span className="text-gray-600">{`${TEXT.CHECK_OUT}:`}</span>
                                     <span className="ml-2 font-medium">{item.checkOut}</span>
                                 </div>
-                                <div>
-                                    <span className="text-gray-600">{`${TEXT.WORKING_HOURS}:`}</span>
-                                    <span className="ml-2 font-medium">
-                                        {item.workingHours || "0"}
-                                    </span>
-                                </div>
-                                <div className="ml-auto">
-                                    <Button
-                                        size="sm"
-                                        variant="light"
-                                        color="default"
-                                        isIconOnly
-                                        onPress={() => deleteTimeSheet(item.id)}
-                                    >
-                                        <TrashIcon className="w-4 h-4" />
-                                    </Button>
+                                <div className="flex justify-between items-center">
+                                    <div className="flex-1">
+                                        <span className="text-gray-600">{`${TEXT.WORKING_HOURS}:`}</span>
+                                        <span className="ml-2 font-medium">
+                                            {item.workingHours || "0"}
+                                        </span>
+                                    </div>
+                                    {profile?.role === ROLE.ADMIN && (
+                                        <div className="ml-auto">
+                                            <Button
+                                                size="sm"
+                                                variant="light"
+                                                color="default"
+                                                isIconOnly
+                                                onPress={() => deleteTimeSheet(item.id)}
+                                            >
+                                                <TrashIcon className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

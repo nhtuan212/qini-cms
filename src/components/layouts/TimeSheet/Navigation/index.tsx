@@ -52,7 +52,7 @@ export default function AttendanceNavigation() {
     //** Render */
     return (
         <div className="flex flex-col gap-y-6">
-            <Card>
+            <Card className="sm:p-4 p-2">
                 <div className="flex">
                     {tabs.map(tab => (
                         <Button

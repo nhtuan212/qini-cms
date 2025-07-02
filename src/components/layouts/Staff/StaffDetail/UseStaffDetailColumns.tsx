@@ -10,6 +10,7 @@ export default function useStaffDetailColumns() {
         {
             key: "createAt",
             name: TEXT.DATE,
+            className: "min-w-24",
             content: (params: TimeSheetProps) => formatDate(params.row.date),
         },
         {
@@ -21,13 +22,13 @@ export default function useStaffDetailColumns() {
         {
             key: "timeSheet",
             name: TEXT.WORKING_HOURS,
-            className: "min-w-30",
+            className: "min-w-28",
             content: (params: TimeSheetProps) => {
                 return (
-                    <div className="w-full flex justify-between">
-                        <div>{params.row.checkIn}</div>
-                        <div>-</div>
-                        <div>{params.row.checkOut}</div>
+                    <div className="w-full flex gap-2">
+                        <div className="basis-1/2">{params.row.checkIn}</div>
+                        <div className="flex-1">-</div>
+                        <div className="basis-1/2">{params.row.checkOut}</div>
                     </div>
                 );
             },
