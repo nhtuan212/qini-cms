@@ -85,7 +85,9 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
                 onValueChange={setPassword}
             />
 
-            <Button onPress={handleKeyDown}>{TEXT.SUBMIT}</Button>
+            <Button isLoading={isValidatePasswordLoading} onPress={handleKeyDown}>
+                {TEXT.SUBMIT}
+            </Button>
         </>
     );
 }
