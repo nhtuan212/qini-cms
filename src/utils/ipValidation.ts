@@ -4,6 +4,7 @@ export interface IPValidationConfig {
 }
 
 export const DEFAULT_ALLOWED_IPS = [
+    "171.248.38.93", // Qini
     "171.248.241.167", // Qini
     "118.155.249.8", // CaAdv
     "116.111.185.110", // My home
