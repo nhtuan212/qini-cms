@@ -1,7 +1,7 @@
 import React from "react";
 import TimeSheetModal from "./TimeSheetModal";
 import Button from "@/components/Button";
-import { PlusIcon, TrashIcon, UserGroupIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, PlusIcon, TrashIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import { TimeSheetProps, useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { TargetShiftProps } from "@/stores/useTargetShiftStore";
@@ -74,16 +74,39 @@ export default function TimeSheets({
                                     </span>
 
                                     {profile.role === ROLE.ADMIN && (
-                                        <Button
-                                            size="sm"
-                                            variant="light"
-                                            color="default"
-                                            isIconOnly
-                                            startContent={<TrashIcon className="w-4 h-4" />}
-                                            onPress={() => {
-                                                deleteTimeSheet(timeSheet.id);
-                                            }}
-                                        />
+                                        <div className="flex items-center">
+                                            <Button
+                                                size="sm"
+                                                variant="light"
+                                                color="default"
+                                                isIconOnly
+                                                startContent={<PencilIcon className="w-4 h-4" />}
+                                                onPress={() => {
+                                                    getModal({
+                                                        isOpen: true,
+                                                        size: "lg",
+                                                        modalHeader: TEXT.ADD_TIME_SHEET,
+                                                        modalBody: (
+                                                            <TimeSheetModal
+                                                                currentTimeSheet={timeSheet}
+                                                                targetAt={targetAt}
+                                                                targetShift={targetShift}
+                                                            />
+                                                        ),
+                                                    });
+                                                }}
+                                            />
+                                            <Button
+                                                size="sm"
+                                                variant="light"
+                                                color="default"
+                                                isIconOnly
+                                                startContent={<TrashIcon className="w-4 h-4" />}
+                                                onPress={() => {
+                                                    deleteTimeSheet(timeSheet.id);
+                                                }}
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             </div>

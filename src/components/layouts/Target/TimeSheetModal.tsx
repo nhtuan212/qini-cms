@@ -6,11 +6,11 @@ import { TimeInput } from "@/components/Input";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { TargetShiftProps } from "@/stores/useTargetShiftStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
+import { TimeSheetProps, useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
-import { calculateWorkingHours, parseTimeString } from "@/utils";
+import { calculateWorkingHours, isEmpty, parseTimeString } from "@/utils";
 import { TEXT } from "@/constants";
 
 type TimeSheetForm = {
@@ -18,24 +18,33 @@ type TimeSheetForm = {
 };
 
 export default function TimeSheetModal({
+    currentTimeSheet,
     targetAt,
     targetShift,
 }: {
+    currentTimeSheet?: TimeSheetProps;
     targetAt: string;
     targetShift: TargetShiftProps;
 }) {
     //** Stores */
     const { staff } = useStaffStore();
     const { getModal } = useModalStore();
-    const { isLoading, createTimeSheet } = useTimeSheetStore();
+    const { isLoading, createTimeSheet, updateTimeSheet } = useTimeSheetStore();
 
     //** React hook form */
     const defaultValues: TimeSheetForm = {
         timeSheets: [
             {
-                staffId: "",
-                checkIn: targetShift.startTime,
-                checkOut: targetShift.endTime,
+                staffId:
+                    currentTimeSheet && !isEmpty(currentTimeSheet) ? currentTimeSheet?.staffId : "",
+                checkIn:
+                    currentTimeSheet && !isEmpty(currentTimeSheet)
+                        ? currentTimeSheet?.checkIn
+                        : targetShift.startTime,
+                checkOut:
+                    currentTimeSheet && !isEmpty(currentTimeSheet)
+                        ? currentTimeSheet?.checkOut
+                        : targetShift.endTime,
             },
         ],
     };
@@ -64,7 +73,14 @@ export default function TimeSheetModal({
             date: targetAt,
         }));
 
-        await createTimeSheet(result);
+        if (currentTimeSheet) {
+            await updateTimeSheet({
+                id: currentTimeSheet.id,
+                bodyParams: result[0],
+            });
+        } else {
+            await createTimeSheet(result);
+        }
 
         await getModal({
             isOpen: false,
@@ -104,6 +120,9 @@ export default function TimeSheetModal({
                                 return (
                                     <Autocomplete
                                         label={TEXT.STAFF}
+                                        defaultSelectedKey={
+                                            currentTimeSheet?.staffId || field.value
+                                        }
                                         {...field}
                                         isInvalid={!!errors?.timeSheets?.[index]?.staffId}
                                         onSelectionChange={field.onChange}
@@ -129,7 +148,7 @@ export default function TimeSheetModal({
                         <Controller
                             name={`timeSheets.${index}.checkIn`}
                             rules={{
-                                required: TEXT.IS_REQUIRED,
+                                required: !currentTimeSheet && TEXT.IS_REQUIRED,
 
                                 validate: (value: string) => {
                                     const checkOutTime = getValues(`timeSheets.${index}.checkOut`);
@@ -183,7 +202,7 @@ export default function TimeSheetModal({
                         <Controller
                             name={`timeSheets.${index}.checkOut`}
                             rules={{
-                                required: TEXT.IS_REQUIRED,
+                                required: !currentTimeSheet && TEXT.IS_REQUIRED,
 
                                 validate: (value: string) => {
                                     const checkInTime = getValues(`timeSheets.${index}.checkIn`);
@@ -206,6 +225,7 @@ export default function TimeSheetModal({
 
                                         clearErrors(`timeSheets.${index}.checkIn`);
                                     }
+
                                     return true;
                                 },
                             }}

@@ -242,6 +242,8 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                 },
             }));
 
+            useTargetStore.getState().updateTimeSheetInTargets(updatedRecord);
+
             return updatedRecord;
         });
     },

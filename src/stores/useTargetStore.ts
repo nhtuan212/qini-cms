@@ -223,19 +223,24 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
             })),
         })),
 
-    updateTimeSheetInTargets: (updatedTimeSheet: TimeSheetProps | TimeSheetProps[]) =>
+    updateTimeSheetInTargets: (updatedTimeSheet: TimeSheetProps) =>
         set(state => ({
             targets: state.targets.map(target => ({
                 ...target,
-                targetShift: target.targetShift.map((shift: TargetShiftProps) =>
-                    Array.isArray(updatedTimeSheet)
-                        ? updatedTimeSheet.some(
-                              (timeSheet: TimeSheetProps) => timeSheet.targetShiftId === shift.id,
-                          )
-                            ? { ...shift, timeSheet: [...shift.timeSheet, ...updatedTimeSheet] }
-                            : shift
-                        : shift,
-                ),
+                targetShift: target.targetShift.map((shift: TargetShiftProps) => {
+                    return shift.timeSheet.some(
+                        (timeSheet: TimeSheetProps) => timeSheet.id === updatedTimeSheet.id,
+                    )
+                        ? {
+                              ...shift,
+                              timeSheet: shift.timeSheet.map((timeSheet: TimeSheetProps) =>
+                                  timeSheet.id === updatedTimeSheet.id
+                                      ? { ...timeSheet, ...updatedTimeSheet }
+                                      : timeSheet,
+                              ),
+                          }
+                        : shift;
+                }),
             })),
         })),
 
