@@ -143,7 +143,7 @@ export default function TableBody({ ...props }: TableBodyProps) {
     }
 
     return (
-        <div className="min-w-full w-fit min-h-96">
+        <div className="min-w-full w-fit min-h-fit">
             {loading && renderLoading()}
             {rowsData?.map((row: any, index: number) => {
                 return (

@@ -98,17 +98,19 @@ export default function RecordTimeSheet() {
 
     //** Render */
     return (
-        <div className="space-y-6">
+        <div className="sm:space-y-6 space-y-2">
             {/* Current Status */}
-            <div className="text-center space-y-2">
-                <h2 className="text-2xl font-bold text-gray-800">{TEXT.CHECK_IN_TODAY}</h2>
-                <p className="text-gray-600">
+            <div className="text-center sm:space-y-2">
+                <h2 className="sm:text-2xl text-lg font-bold text-gray-800">
+                    {TEXT.CHECK_IN_TODAY}
+                </h2>
+                <p className="sm:text-base text-sm text-gray-600">
                     {formatDate(new Date(), "dddd, DD MMMM, YYYY", "vi")}
                 </p>
             </div>
 
             {/* Check In/Out Group */}
-            <Card className="flex flex-col items-center justify-center gap-y-4 bg-success-50 p-4 border-2 border-success-200">
+            <Card className="flex flex-col items-center justify-center sm:gap-y-4 gap-y-2 bg-success-50 sm:p-4 p-2 border-2 border-success-200">
                 <Select
                     label={TEXT.WORK_SHIFT_SELECT}
                     color="primary"
@@ -130,9 +132,9 @@ export default function RecordTimeSheet() {
 
                 <div className="w-full flex gap-x-2">
                     <Button
+                        className="w-full sm:h-12 h-10 sm:p-4 p-2"
                         color="success"
                         size="lg"
-                        className="w-full"
                         isLoading={isLoading}
                         startContent={<ArrowRightEndOnRectangleIcon className="w-5 h-5" />}
                         isDisabled={
@@ -145,9 +147,9 @@ export default function RecordTimeSheet() {
                     </Button>
 
                     <Button
+                        className="w-full sm:h-12 h-10 sm:p-4 p-2"
                         color="danger"
                         size="lg"
-                        className="w-full"
                         isLoading={isLoading}
                         endContent={<ArrowRightStartOnRectangleIcon className="w-5 h-5" />}
                         isDisabled={

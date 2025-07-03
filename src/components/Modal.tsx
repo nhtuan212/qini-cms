@@ -15,7 +15,16 @@ import {
 
 const Modal = ({ ...props }: ModalProps) => {
     return (
-        <ModalNextUI size={props.size || "2xl"} radius={props.radius || "md"} {...props}>
+        <ModalNextUI
+            size={props.size || "2xl"}
+            radius={props.radius || "md"}
+            placement={props.placement || "center"}
+            classNames={{
+                header: "sm:px-6 sm:py-6 px-2 py-2",
+                body: "sm:px-6 px-2",
+            }}
+            {...props}
+        >
             <ModalContent>{props.children}</ModalContent>
         </ModalNextUI>
     );

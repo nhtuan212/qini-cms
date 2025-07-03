@@ -88,7 +88,7 @@ export default function Table({ ...props }: TableProps) {
     //** Render */
     return (
         <div className={twMerge("relative rounded-md p-3 shadow-md", className)}>
-            <div className="tableContainer min-h-[38rem] flex flex-col gap-4">
+            <div className="tableContainer min-h-fit flex flex-col gap-4">
                 {topContent && topContent}
 
                 <div className="h-full overflow-scroll" ref={ref}>

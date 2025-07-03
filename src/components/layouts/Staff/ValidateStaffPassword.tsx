@@ -68,7 +68,9 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
             isOpen: true,
             isDismissable: false,
             size: "3xl",
-            modalHeader: <h3 className="text-2xl font-bold text-gray-800">{staff.name}</h3>,
+            modalHeader: (
+                <h3 className="sm:text-2xl text-lg font-bold text-gray-800">{staff.name}</h3>
+            ),
             modalBody: <TimeSheet />,
             modalFooter: <></>,
         });

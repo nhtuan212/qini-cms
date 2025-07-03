@@ -51,25 +51,29 @@ export default function AttendanceNavigation() {
 
     //** Render */
     return (
-        <div className="flex flex-col gap-y-6">
+        <div className="flex flex-col sm:gap-y-4 gap-y-2">
             <Card className="sm:p-4 p-2">
                 <div className="flex">
                     {tabs.map(tab => (
                         <Button
                             key={tab.value}
-                            className={"h-auto flex-col flex-1 py-4 px-6 gap-1 font-medium"}
+                            className={
+                                "h-auto flex-col flex-1 sm:py-4 py-2 sm:px-6 px-2 gap-1 font-medium"
+                            }
                             variant={activeTab === tab.value ? "flat" : "light"}
                             size="lg"
                             onPress={() => setActiveTab(tab.value)}
                         >
-                            <tab.icon className="h-6 w-6" />
-                            {tab.label}
+                            <tab.icon className="sm:h-6 sm:w-6 h-4 w-4" />
+                            <p className="sm:text-base text-sm">{tab.label}</p>
                         </Button>
                     ))}
                 </div>
             </Card>
 
-            <Card className="p-4">{tabs.find(tab => tab.value === activeTab)?.component}</Card>
+            <Card className="sm:p-4 p-2">
+                {tabs.find(tab => tab.value === activeTab)?.component}
+            </Card>
         </div>
     );
 }

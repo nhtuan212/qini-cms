@@ -31,7 +31,6 @@ export default function StaffModalDetail({ staff }: { staff?: StaffProps }) {
     //** Render */
     return (
         <Table
-            className="[&>.tableContainer]:h-[40rem]"
             columns={useStaffDetailColumns()}
             rows={timeSheetByStaffId.data}
             loading={isLoading}
