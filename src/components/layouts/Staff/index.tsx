@@ -4,10 +4,11 @@ import React, { useEffect } from "react";
 import StaffModal from "./StaffModal";
 import StaffActions from "./StaffActions";
 import ValidateStaffPassword from "./ValidateStaffPassword";
+import StaffDetail from "./StaffDetail";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import Card from "@/components/Card";
-import { ClockIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { BanknotesIcon, ClockIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
@@ -53,7 +54,7 @@ export default function Staff() {
                             return (
                                 <Card
                                     key={staff.id}
-                                    className="flex flex-col justify-between h-36 bg-gray-50 p-3 border rounded-lg shadow-md"
+                                    className="h-36 flex flex-col justify-between gap-4 bg-gray-50 p-3 border rounded-lg shadow-md"
                                 >
                                     <div className="flex justify-between items-center">
                                         {staff.name}
@@ -63,22 +64,45 @@ export default function Staff() {
                                             <StaffActions item={staff} />
                                         )}
                                     </div>
+                                    <div className="flex items-center flex-wrap gap-2">
+                                        {(profile.role === ROLE.ADMIN ||
+                                            profile.role === ROLE.MANAGER) && (
+                                            <Button
+                                                variant="flat"
+                                                color="success"
+                                                className="flex-1"
+                                                startContent={<BanknotesIcon className="w-5 h-5" />}
+                                                onPress={() => {
+                                                    getModal({
+                                                        isOpen: true,
+                                                        modalHeader: staff.name,
+                                                        modalBody: <StaffDetail staff={staff} />,
+                                                        modalFooter: <></>,
+                                                    });
+                                                }}
+                                            >
+                                                {TEXT.TARGET}
+                                            </Button>
+                                        )}
 
-                                    <Button
-                                        variant="flat"
-                                        className="w-full"
-                                        startContent={<ClockIcon className="w-5 h-5" />}
-                                        onPress={() => {
-                                            getModal({
-                                                isOpen: true,
-                                                modalHeader: staff.name,
-                                                modalBody: <ValidateStaffPassword staff={staff} />,
-                                                modalFooter: <></>,
-                                            });
-                                        }}
-                                    >
-                                        {TEXT.TIME_SHEET}
-                                    </Button>
+                                        <Button
+                                            variant="flat"
+                                            className="flex-1"
+                                            startContent={<ClockIcon className="w-5 h-5" />}
+                                            onPress={() => {
+                                                getModal({
+                                                    isOpen: true,
+                                                    modalHeader: staff.name,
+                                                    modalBody: (
+                                                        <ValidateStaffPassword staff={staff} />
+                                                    ),
+                                                    modalFooter: <></>,
+                                                });
+                                            }}
+                                        >
+                                            {TEXT.TIME_SHEET}
+                                        </Button>
+                                    </div>
                                 </Card>
                             );
                         })}

@@ -25,8 +25,8 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     const disabledKeys: string[] = [];
 
     switch (profile.role) {
-        case ROLE.USER:
         case ROLE.REPORT:
+        case ROLE.MANAGER:
             disabledKeys.push("edit", "delete");
             break;
         default:

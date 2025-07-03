@@ -5,12 +5,12 @@ import Table from "@/components/Table";
 import useStaffDetailColumns from "./UseStaffDetailColumns";
 import StaffDetailTopContent from "./StaffDetailTopContent";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
+import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { formatDate, getDateTime } from "@/utils";
-import { useStaffStore } from "@/stores/useStaffStore";
 
-export default function StaffModalDetail() {
+export default function StaffModalDetail({ staff }: { staff?: StaffProps }) {
     //** Stores */
-    const { staffById } = useStaffStore();
+    const { staffById, getStaffById } = useStaffStore();
     const { isLoading, timeSheetByStaffId, getTimeSheet } = useTimeSheetStore();
 
     //** Effects */
@@ -21,6 +21,12 @@ export default function StaffModalDetail() {
             endDate: formatDate(new Date(), "YYYY-MM-DD"),
         });
     }, [getTimeSheet, staffById]);
+
+    useEffect(() => {
+        if (staff) {
+            getStaffById(staff.id);
+        }
+    }, [getStaffById, staff]);
 
     //** Render */
     return (

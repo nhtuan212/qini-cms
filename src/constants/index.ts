@@ -18,7 +18,7 @@ export const STATUS_CODE = {
 
 export const ROLE = {
     ADMIN: "ADMIN",
-    USER: "USER",
+    MANAGER: "MANAGER",
     REPORT: "REPORT",
 };
 
