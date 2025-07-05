@@ -3,10 +3,16 @@ import TimeSheets from "./TimeSheets";
 import TargetShiftModal from "./TargetShiftModal";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import { BanknotesIcon, CreditCardIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import {
+    ArrowPathIcon,
+    BanknotesIcon,
+    CreditCardIcon,
+    PencilSquareIcon,
+} from "@heroicons/react/24/outline";
 import { TargetShiftProps, useTargetShiftStore } from "@/stores/useTargetShiftStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { formatCurrency } from "@/utils";
+import { useInvoiceStore } from "@/stores/useInvoice";
+import { formatCurrency, formatDate } from "@/utils";
 import { TEXT } from "@/constants";
 import { TargetProps } from "@/stores/useTargetStore";
 
@@ -14,6 +20,7 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
     //** Stores */
     const { getModal } = useModalStore();
     const { getTargetShift } = useTargetShiftStore();
+    const { getInvoice } = useInvoiceStore();
 
     //** Functions */
     const renderAmount = (name: string, value: number, icon: React.ReactNode) => {
@@ -69,6 +76,28 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                                     }}
                                 >
                                     <PencilSquareIcon className="w-4 h-4 text-gray-400" />
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    variant="light"
+                                    isIconOnly
+                                    isDisabled={true}
+                                    onPress={() => {
+                                        getInvoice({
+                                            soldById: targetShift.kiotId,
+                                            targetAt: formatDate(target.targetAt, "YYYY-MM-DD"),
+                                        }).then(invoice => {
+                                            // updateTargetShift({
+                                            //     id: targetShift.id,
+                                            //     bodyParams: invoice,
+                                            // });
+
+                                            console.log("invoice", invoice);
+                                        });
+                                    }}
+                                >
+                                    <ArrowPathIcon className="w-4 h-4 text-gray-400" />
                                 </Button>
                             </div>
                         </div>

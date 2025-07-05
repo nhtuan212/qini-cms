@@ -36,21 +36,27 @@ export default function SalaryCalculator() {
         instantBonus: 0,
     };
 
-    const { control, handleSubmit, setValue, getValues } = useForm<FormSalary>({
+    const { control, handleSubmit, setValue, getValues, watch } = useForm<FormSalary>({
         values: defaultValues,
     });
+
+    // Use watch to get live values for form fields
+    const watchedStaffId = watch("staffId");
+    const watchedSalary = watch("salary");
+    const watchedInstantBonus = watch("instantBonus");
+    const watchedDateRange = watch("dateRange");
 
     const onSubmit = (data: FormSalary) => {
         console.log(data);
     };
 
     //** Variables */
-    const staffId = getValues("staffId");
+    const staffId = watchedStaffId;
     const staffName = staff.find(staff => staff.id === staffId)?.name;
-    const salary = getValues("salary") || 0;
-    const instantBonus = getValues("instantBonus") || 0;
-    const startDate = getValues("dateRange").start.toString();
-    const endDate = getValues("dateRange").end.toString();
+    const salary = watchedSalary || 0;
+    const instantBonus = watchedInstantBonus || 0;
+    const startDate = watchedDateRange.start.toString();
+    const endDate = watchedDateRange.end.toString();
     const totalWorkingHours = timeSheetByStaffId.totalWorkingHours || 0;
     const totalSalary = totalWorkingHours * salary + instantBonus || 0;
 
@@ -78,7 +84,7 @@ export default function SalaryCalculator() {
                     <b>{formatCurrency(salary)}</b>
                 </div>
 
-                {getValues("instantBonus") > 0 && (
+                {instantBonus > 0 && (
                     <div className="flex justify-between items-center">
                         <p className="text-gray-500">{TEXT.INSTANT_BONUS}</p>
                         <b>{formatCurrency(instantBonus)}</b>

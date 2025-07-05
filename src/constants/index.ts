@@ -37,6 +37,7 @@ export const URL = {
     STAFF: "/staff",
     SHIFT: "/shift",
     SALARY: "/salary",
+    INVOICE: "/invoice",
 };
 
 export const ROUTE = {
