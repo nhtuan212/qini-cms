@@ -9,20 +9,46 @@ import {
     CreditCardIcon,
     PencilSquareIcon,
 } from "@heroicons/react/24/outline";
+import { useProfileStore } from "@/stores/useProfileStore";
 import { TargetShiftProps, useTargetShiftStore } from "@/stores/useTargetShiftStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useInvoiceStore } from "@/stores/useInvoice";
-import { formatCurrency, formatDate } from "@/utils";
-import { TEXT } from "@/constants";
 import { TargetProps } from "@/stores/useTargetStore";
+import { formatCurrency, formatDate } from "@/utils";
+import { ROLE, TEXT } from "@/constants";
 
 export default function TargetShifts({ target }: { target: TargetProps }) {
     //** Stores */
+    const { profile } = useProfileStore();
     const { getModal } = useModalStore();
     const { getTargetShift, updateTargetShift } = useTargetShiftStore();
     const { getInvoice } = useInvoiceStore();
 
     //** Functions */
+    const isWithinShiftTime = (
+        userRole: string | undefined,
+        startTime: string,
+        endTime: string,
+    ) => {
+        if (userRole === ROLE.ADMIN) return true;
+        if (!startTime || !endTime) return false;
+
+        const now = new Date();
+        const [startHour, startMinute] = startTime.split(":").map(Number);
+        const [endHour, endMinute] = endTime.split(":").map(Number);
+        const start = new Date(now);
+        const end = new Date(now);
+
+        start.setHours(startHour, startMinute, 0, 0);
+        end.setHours(endHour, endMinute, 0, 0);
+
+        // Adjust window: 30 min before start, 30 min after end
+        const startWindow = new Date(start.getTime() - 30 * 60 * 1000);
+        const endWindow = new Date(end.getTime() + 30 * 60 * 1000);
+        return now >= startWindow && now <= endWindow;
+    };
+
+    //** Render */
     const renderAmount = (name: string, value: number, icon: React.ReactNode) => {
         return (
             <div className="flex items-center justify-between text-sm">
@@ -34,7 +60,6 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
         );
     };
 
-    //** Render */
     return (
         <div className="relative flex flex-col gap-y-4">
             <div className="flex justify-between items-center">
@@ -74,6 +99,13 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                                             modalBody: <TargetShiftModal />,
                                         });
                                     }}
+                                    isDisabled={
+                                        !isWithinShiftTime(
+                                            profile?.role,
+                                            targetShift.startTime,
+                                            targetShift.endTime,
+                                        )
+                                    }
                                 >
                                     <PencilSquareIcon className="w-4 h-4 text-gray-400" />
                                 </Button>
@@ -93,6 +125,13 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                                             bodyParams: invoices,
                                         });
                                     }}
+                                    isDisabled={
+                                        !isWithinShiftTime(
+                                            profile?.role,
+                                            targetShift.startTime,
+                                            targetShift.endTime,
+                                        )
+                                    }
                                 >
                                     <ArrowPathIcon className="w-4 h-4 text-gray-400" />
                                 </Button>

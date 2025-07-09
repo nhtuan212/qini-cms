@@ -34,7 +34,9 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
     };
 
     return (
-        <div className="flex flex-col gap-y-4">
+        <div className="relative min-h-screen flex flex-col gap-y-4">
+            {isLoadingTarget && <Loading />}
+
             {targets.map(target => (
                 <div
                     key={target.id}
