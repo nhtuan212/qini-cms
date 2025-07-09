@@ -19,7 +19,7 @@ import { TargetProps } from "@/stores/useTargetStore";
 export default function TargetShifts({ target }: { target: TargetProps }) {
     //** Stores */
     const { getModal } = useModalStore();
-    const { getTargetShift } = useTargetShiftStore();
+    const { getTargetShift, updateTargetShift } = useTargetShiftStore();
     const { getInvoice } = useInvoiceStore();
 
     //** Functions */
@@ -82,18 +82,15 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                                     size="sm"
                                     variant="light"
                                     isIconOnly
-                                    isDisabled={true}
-                                    onPress={() => {
-                                        getInvoice({
+                                    onPress={async () => {
+                                        const invoices = await getInvoice({
                                             soldById: targetShift.kiotId,
                                             targetAt: formatDate(target.targetAt, "YYYY-MM-DD"),
-                                        }).then(invoice => {
-                                            // updateTargetShift({
-                                            //     id: targetShift.id,
-                                            //     bodyParams: invoice,
-                                            // });
+                                        }).then(invoice => invoice);
 
-                                            console.log("invoice", invoice);
+                                        await updateTargetShift({
+                                            id: targetShift.id,
+                                            bodyParams: invoices,
                                         });
                                     }}
                                 >
@@ -106,6 +103,11 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                         {renderAmount(
                             TEXT.TRANSFER,
                             targetShift.transfer,
+                            <CreditCardIcon className="w-4 h-4" />,
+                        )}
+                        {renderAmount(
+                            TEXT.POINT,
+                            targetShift.point,
                             <CreditCardIcon className="w-4 h-4" />,
                         )}
                         {renderAmount(

@@ -17,6 +17,7 @@ export default function TargetShiftModal() {
     const defaultValues = {
         revenue: targetShift.revenue || 0,
         transfer: targetShift.transfer || 0,
+        point: targetShift.point || 0,
         deduction: targetShift.deduction || 0,
         cash: targetShift.cash || 0,
         description: targetShift.description || "",
@@ -33,7 +34,7 @@ export default function TargetShiftModal() {
 
     const watchedValues = useWatch({
         control,
-        name: ["revenue", "transfer", "deduction"],
+        name: ["revenue", "transfer", "point", "deduction"],
     });
 
     //** Functions */
@@ -52,21 +53,22 @@ export default function TargetShiftModal() {
     useEffect(() => {
         const r = parseFloat(watchedValues[0]) || 0;
         const t = parseFloat(watchedValues[1]) || 0;
-        const d = parseFloat(watchedValues[2]) || 0;
+        const p = parseFloat(watchedValues[2]) || 0;
+        const d = parseFloat(watchedValues[3]) || 0;
 
-        setValue("cash", r - t - d);
+        setValue("cash", r - t - p - d);
     }, [watchedValues, setValue]);
 
     //** Render */
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid sm:grid-cols-3 grid-cols gap-2">
+            <div className="grid sm:grid-cols-2 grid-cols gap-2">
                 <Controller
                     control={control}
                     name="revenue"
                     render={({ field }) => (
                         <NumberInput
-                            className="sm:col-span-3"
+                            className="col-span-2"
                             label={TEXT.REVENUE}
                             minValue={0}
                             defaultValue={0}
@@ -89,6 +91,24 @@ export default function TargetShiftModal() {
                         />
                     )}
                 />
+
+                <Controller
+                    control={control}
+                    name="point"
+                    render={({ field }) => (
+                        <NumberInput
+                            label={TEXT.POINT}
+                            variant="flat"
+                            color="secondary"
+                            minValue={0}
+                            defaultValue={0}
+                            value={field.value || 0}
+                            isReadOnly={true}
+                            onValueChange={field.onChange}
+                        />
+                    )}
+                />
+
                 <Controller
                     control={control}
                     name="deduction"
@@ -109,6 +129,7 @@ export default function TargetShiftModal() {
                         />
                     )}
                 />
+
                 <Controller
                     control={control}
                     name="cash"
@@ -136,7 +157,7 @@ export default function TargetShiftModal() {
                     }}
                     render={({ field }) => (
                         <Input
-                            className="sm:col-span-3"
+                            className="sm:col-span-2"
                             type="textarea"
                             placeholder={TEXT.NOTE}
                             {...field}

@@ -5,18 +5,22 @@ import Button from "@/components/Button";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
 import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
+import { useTargetShiftStore } from "@/stores/useTargetShiftStore";
+import { useInvoiceStore } from "@/stores/useInvoice";
 import { formatCurrency, formatDate } from "@/utils";
 import { TEXT } from "@/constants";
 
 export default function TargetList({ targets }: { targets: TargetProps[] }) {
     //** Stores */
-    const { isLoading } = useTargetStore();
+    const { isLoading: isLoadingTarget } = useTargetStore();
+    const { isLoading: isLoadingTargetShift } = useTargetShiftStore();
+    const { isLoading: isLoadingInvoice } = useInvoiceStore();
 
     //** States */
     const [openTargetId, setOpenTargetId] = useState<string | null>(null);
 
-    //** Render */
-    if (isLoading) return <Loading />;
+    //** Variables */
+    const isLoading = isLoadingTarget || isLoadingTargetShift || isLoadingInvoice;
 
     const renderTarget = (name: string, value: number) => {
         return (
@@ -37,7 +41,6 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
                     className="relative flex flex-col gap-y-6 bg-white p-6 rounded-xl shadow-md odd:bg-gray-100"
                 >
                     {isLoading && <Loading />}
-
                     <div className="flex items-center gap-x-2">
                         <Button
                             size="sm"
