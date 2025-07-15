@@ -40,10 +40,10 @@ export default function RecordTimeSheet() {
         }
 
         // Validate location
-        const location = await getCurrentLocation();
-        const locationVerification = verifyLocation(location.lat, location.lng);
+        const { lat, lng } = await getCurrentLocation();
+        const locationVerification = verifyLocation(lat, lng);
 
-        if (!locationVerification.isValid) {
+        if (!locationVerification.isValid && profile?.role !== ROLE.ADMIN) {
             setError(locationVerification.message);
             return;
         }
