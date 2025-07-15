@@ -252,15 +252,8 @@ export const calculateWorkingHours = (checkIn: string | null, checkOut: string |
     return workingHours;
 };
 
-// IP Validation utilities
-export {
-    validateUserIP,
-    getUserIP,
-    isIPAllowed,
-    DEFAULT_ALLOWED_IPS,
-    DEFAULT_IP_ERROR_MESSAGE,
-    type IPValidationConfig,
-} from "./ipValidation";
-
 // Crypto
 export { encryptPasswordRSA, generateRSAKeyPair } from "./crypto";
+
+// Location
+export { verifyLocation, getCurrentLocation } from "./location";

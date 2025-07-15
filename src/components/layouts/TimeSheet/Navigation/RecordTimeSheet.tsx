@@ -13,7 +13,7 @@ import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore, ShiftProps } from "@/stores/useShiftsStore";
 import { ROLE, TEXT } from "@/constants";
-import { formatDate, isEmpty, validateUserIP } from "@/utils";
+import { formatDate, getCurrentLocation, isEmpty, verifyLocation } from "@/utils";
 
 export default function RecordTimeSheet() {
     //** Stores */
@@ -39,11 +39,12 @@ export default function RecordTimeSheet() {
             return;
         }
 
-        // Validate IP address using common utility
-        const ipValidation = await validateUserIP();
+        // Validate location
+        const location = await getCurrentLocation();
+        const locationVerification = verifyLocation(location.lat, location.lng);
 
-        if (!ipValidation.isValid) {
-            setError(ipValidation.error || "IP validation failed");
+        if (!locationVerification.isValid) {
+            setError(locationVerification.message);
             return;
         }
 
