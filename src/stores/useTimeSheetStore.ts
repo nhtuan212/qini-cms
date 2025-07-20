@@ -46,11 +46,13 @@ interface TimeSheetActions {
         shiftId: string;
         targetShiftId: string;
     }) => Promise<void>;
-    getTimeSheet: (params?: {
-        staffId?: string;
-        startDate?: string;
-        endDate?: string;
-    }) => Promise<void>;
+    getTimeSheetByStaffId: (
+        staffId: string,
+        params: {
+            startDate?: string;
+            endDate?: string;
+        },
+    ) => Promise<void>;
     createTimeSheet: (
         params: TimeSheetProps | TimeSheetProps[],
     ) => Promise<TimeSheetProps | TimeSheetProps[]>;
@@ -117,47 +119,25 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
         });
     },
 
-    getTimeSheet: async params => {
+    getTimeSheetByStaffId: async (staffId, params) => {
         set({ isLoading: true });
 
         const queryParams = new URLSearchParams();
-        if (params?.staffId) queryParams.append("staff_id", params.staffId);
-        if (params?.startDate) queryParams.append("start_date", params.startDate);
-        if (params?.endDate) queryParams.append("end_date", params.endDate);
+        if (params?.startDate) queryParams.append("startDate", params.startDate);
+        if (params?.endDate) queryParams.append("endDate", params.endDate);
 
-        const endpoint = `${URL.TIME_SHEET}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+        const endpoint = `${URL.TIME_SHEET}${URL.STAFF}/${staffId}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
         return await fetchData({ endpoint }).then(res => {
             set({ isLoading: false });
 
             const data = res.data.map((item: TimeSheetProps) => convertKeysToCamelCase(item));
 
-            if (res?.code !== STATUS_CODE.OK) {
-                return set({
-                    timeSheets: initialState.timeSheets,
-                });
-            }
-
-            if (params?.staffId) {
-                const foundRecord: TimeSheetProps[] = data.filter((item: any) => {
-                    const record = convertKeysToCamelCase(item) as TimeSheetProps;
-                    return record.staffId === params.staffId;
-                });
-
-                return set({
-                    timeSheetByStaffId: {
-                        data: foundRecord,
-                        totalTarget: res.total_target,
-                        totalWorkingHours: res.total_working_hours,
-                        pagination: res.pagination,
-                    },
-                });
-            }
-
             return set({
-                timeSheets: {
+                timeSheetByStaffId: {
                     data,
-                    totalWorkingHours: res.total_working_hours,
+                    totalTarget: res.totalTarget,
+                    totalWorkingHours: res.totalWorkingHours,
                     pagination: res.pagination,
                 },
             });

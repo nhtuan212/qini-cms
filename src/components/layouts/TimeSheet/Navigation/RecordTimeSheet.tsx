@@ -26,8 +26,13 @@ export default function RecordTimeSheet() {
     const [error, setError] = useState("");
     const [selectedShift, setSelectedShift] = useState<string | null>(null);
     const [shiftError, setShiftError] = useState<string | null>(null);
-    const { isLoading, timeSheetByStaffId, getTimeSheet, recordTimeSheet, deleteTimeSheet } =
-        useTimeSheetStore();
+    const {
+        isLoading,
+        timeSheetByStaffId,
+        getTimeSheetByStaffId,
+        recordTimeSheet,
+        deleteTimeSheet,
+    } = useTimeSheetStore();
     const { createTarget } = useTargetStore();
 
     //** Functions */
@@ -91,11 +96,10 @@ export default function RecordTimeSheet() {
 
     //** Effects */
     useEffect(() => {
-        getTimeSheet({
-            staffId: staffById.id,
+        getTimeSheetByStaffId(staffById.id, {
             startDate: formatDate(new Date(), "YYYY-MM-DD"),
         });
-    }, [getTimeSheet, staffById.id]);
+    }, [getTimeSheetByStaffId, staffById.id]);
 
     //** Render */
     return (

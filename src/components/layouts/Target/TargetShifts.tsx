@@ -69,7 +69,7 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                 </Button> */}
             </div>
 
-            {target.targetShift.map((targetShift: TargetShiftProps) => (
+            {target.targetShifts.map((targetShift: TargetShiftProps) => (
                 <div
                     key={targetShift.id}
                     className="bg-success-50 rounded-lg p-4 border border-gray-200"
@@ -173,7 +173,7 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                     <TimeSheets
                         targetAt={target.targetAt}
                         targetShift={targetShift}
-                        timeSheets={targetShift.timeSheet}
+                        timeSheets={targetShift.timeSheets}
                     />
                 </div>
             ))}

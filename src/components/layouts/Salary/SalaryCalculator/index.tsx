@@ -23,7 +23,7 @@ interface FormSalary {
 export default function SalaryCalculator() {
     //** Stores */
     const { staff, getStaff } = useStaffStore();
-    const { isLoading, timeSheetByStaffId, getTimeSheet } = useTimeSheetStore();
+    const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId } = useTimeSheetStore();
 
     //** React hook form */
     const defaultValues = {
@@ -57,8 +57,6 @@ export default function SalaryCalculator() {
     const instantBonus = watchedInstantBonus || 0;
     const startDate = watchedDateRange.start.toString();
     const endDate = watchedDateRange.end.toString();
-    const totalWorkingHours = timeSheetByStaffId.totalWorkingHours || 0;
-    const totalSalary = totalWorkingHours * salary + instantBonus || 0;
 
     //** Effects */
     useEffect(() => {
@@ -67,34 +65,46 @@ export default function SalaryCalculator() {
 
     //** Render */
     const renderSalaryDetail = () => {
+        const totalSalary = timeSheetByStaffId.totalWorkingHours * salary + instantBonus || 0;
+        const totalBonus = Math.floor(timeSheetByStaffId.totalTarget * 0.01) || 0;
+
         return (
             <div className="relative space-y-2">
                 {isLoading && <Loading />}
 
-                <div className="flex justify-between items-center">
+                <Card className="flex justify-between items-center p-2 shadow-none">
                     <p className="text-gray-500">{TEXT.STAFF_INFORMATION}</p>
                     <b>
                         {staffName &&
-                            `${staffName} - ${formatDate(startDate, "DD/MM/YYYY")} - ${formatDate(endDate, "DD/MM/YYYY")} (${timeSheetByStaffId.totalWorkingHours}h)`}
+                            `${staffName} - ${formatDate(startDate, "DD/MM/YYYY")} - ${formatDate(endDate, "DD/MM/YYYY")}`}
                     </b>
-                </div>
+                </Card>
 
-                <div className="flex justify-between items-center">
-                    <p className="text-gray-500">{TEXT.SALARY}</p>
-                    <b>{formatCurrency(salary)}</b>
-                </div>
+                <Card className="flex justify-between items-center p-2 shadow-none">
+                    <p className="text-gray-500">{`${TEXT.WORKING_HOURS} (${timeSheetByStaffId.totalWorkingHours}h x ${formatCurrency(salary)})`}</p>
+                    <b>{formatCurrency(totalSalary)}</b>
+                </Card>
+
+                <Card className="flex justify-between items-center p-2 shadow-none">
+                    <p className="text-gray-500">{`${TEXT.TARGET} (${formatCurrency(
+                        timeSheetByStaffId.totalTarget,
+                    )} * 0.01)`}</p>
+                    <b>{formatCurrency(totalBonus)}</b>
+                </Card>
 
                 {instantBonus > 0 && (
-                    <div className="flex justify-between items-center">
+                    <Card className="flex justify-between items-center p-2 shadow-none">
                         <p className="text-gray-500">{TEXT.INSTANT_BONUS}</p>
                         <b>{formatCurrency(instantBonus)}</b>
-                    </div>
+                    </Card>
                 )}
 
-                <div className="flex justify-between items-center">
-                    <p className="text-gray-500">{TEXT.TOTAL}</p>
-                    <b>{formatCurrency(totalSalary)}</b>
-                </div>
+                <Card className="flex justify-between items-center bg-primary p-2 text-white rounded-lg">
+                    <p className="text-lg font-semibold">{TEXT.TOTAL}</p>
+                    <b className="text-lg font-semibold">
+                        {formatCurrency(totalSalary + totalBonus)}
+                    </b>
+                </Card>
             </div>
         );
     };
@@ -118,8 +128,7 @@ export default function SalaryCalculator() {
                                 onSelectionChange={value => {
                                     const staffId = new Set(value).values().next().value as string;
 
-                                    getTimeSheet({
-                                        staffId,
+                                    getTimeSheetByStaffId(staffId, {
                                         startDate: formatDate(startDate, "YYYY-MM-DD"),
                                         endDate: formatDate(endDate, "YYYY-MM-DD"),
                                     });
@@ -143,8 +152,7 @@ export default function SalaryCalculator() {
                                     if (!value) return null;
                                     setValue("dateRange", value as RangeValue<CalendarDate>);
 
-                                    getTimeSheet({
-                                        staffId: getValues("staffId"),
+                                    getTimeSheetByStaffId(getValues("staffId"), {
                                         startDate: formatDate(value.start.toString(), "YYYY-MM-DD"),
                                         endDate: formatDate(value.end.toString(), "YYYY-MM-DD"),
                                     });
@@ -175,8 +183,7 @@ export default function SalaryCalculator() {
                                 onValueChange={value => {
                                     setValue("instantBonus", value);
 
-                                    getTimeSheet({
-                                        staffId: getValues("staffId"),
+                                    getTimeSheetByStaffId(getValues("staffId"), {
                                         startDate: formatDate(startDate, "YYYY-MM-DD"),
                                         endDate: formatDate(endDate, "YYYY-MM-DD"),
                                     });
