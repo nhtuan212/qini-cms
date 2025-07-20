@@ -1,12 +1,6 @@
 import { create } from "zustand";
 import { useTargetStore } from "./useTargetStore";
-import {
-    calculateWorkingHours,
-    convertKeysToCamelCase,
-    convertKeysToSnakeCase,
-    formatDate,
-    formatTime,
-} from "@/utils";
+import { calculateWorkingHours, convertKeysToCamelCase, formatDate, formatTime } from "@/utils";
 import { fetchData } from "@/utils/fetch";
 import { URL, STATUS_CODE } from "@/constants";
 
@@ -160,7 +154,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
             endpoint: URL.TIME_SHEET,
             options: {
                 method: "POST",
-                body: JSON.stringify(convertKeysToSnakeCase(recordData)),
+                body: JSON.stringify(recordData),
             },
         }).then(res => {
             set({ isLoading: false });
@@ -200,7 +194,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
             endpoint: `${URL.TIME_SHEET}/${id}`,
             options: {
                 method: "PUT",
-                body: JSON.stringify(convertKeysToSnakeCase(bodyParams)),
+                body: JSON.stringify(bodyParams),
             },
         }).then(rs => {
             set({ isLoading: false });

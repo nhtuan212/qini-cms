@@ -66,11 +66,11 @@ export default function RecordTimeSheet() {
                 targetAt: formatDate(new Date(), "YYYY-MM-DD"),
             });
 
-            targetShiftId = target.targetShift.find(
+            targetShiftId = target.targetShifts.find(
                 (shift: TargetProps["targetShift"]) => shift.shiftId === selectedShift,
             )?.id;
         } else {
-            const targetShift = todayTarget.targetShift.find(
+            const targetShift = todayTarget.targetShifts.find(
                 (shift: TargetProps["targetShift"]) => shift.shiftId === selectedShift,
             );
 
