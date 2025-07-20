@@ -137,10 +137,9 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
         });
 
         return await fetchData({
-            endpoint: URL.STAFF,
+            endpoint: `${URL.STAFF}/${id}`,
             options: {
                 method: "DELETE",
-                body: JSON.stringify({ id }),
             },
         }).then(res => {
             set({
@@ -153,7 +152,11 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
                 });
             }
 
-            return set({ staff: res.data });
+            set({
+                staff: get().staff.filter(s => s.id !== id),
+            });
+
+            return res;
         });
     },
 

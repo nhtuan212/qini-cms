@@ -19,7 +19,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getStaff, getStaffById, deleteStaff } = useStaffStore();
+    const { getStaffById, deleteStaff } = useStaffStore();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -55,8 +55,6 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                 <ConfirmModal
                     onConfirm={async () => {
                         await deleteStaff(id);
-                        await getStaff();
-
                         getModal({ isOpen: false });
                     }}
                 />
