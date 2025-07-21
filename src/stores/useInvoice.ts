@@ -37,7 +37,7 @@ export const useInvoiceStore = create<InvoiceProps & InvoiceAction>()(set => ({
                 isLoading: false,
             });
 
-            if (res?.statusCode !== STATUS_CODE.OK) {
+            if (res?.code !== STATUS_CODE.OK) {
                 return set({
                     invoice: res?.message,
                 });
