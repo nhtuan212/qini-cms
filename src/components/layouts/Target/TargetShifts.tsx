@@ -21,7 +21,7 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getTargetShift, updateTargetShift } = useTargetShiftStore();
+    const { getTargetShiftById, updateTargetShift } = useTargetShiftStore();
     const { getInvoice } = useInvoiceStore();
 
     //** Functions */
@@ -92,7 +92,7 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                                     color="default"
                                     isIconOnly
                                     onPress={async () => {
-                                        await getTargetShift(targetShift.id);
+                                        await getTargetShiftById(targetShift.id);
                                         await getModal({
                                             isOpen: true,
                                             modalHeader: TEXT.UPDATE(targetShift.shiftName),
