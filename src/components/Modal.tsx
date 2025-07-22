@@ -20,9 +20,11 @@ const Modal = ({ ...props }: ModalProps) => {
             radius={props.radius || "md"}
             placement={props.placement || "center"}
             classNames={{
-                header: "sm:px-6 sm:py-6 px-2 py-2",
-                body: "sm:px-6 px-2",
+                backdrop: "bg-black/50 backdrop-blur-sm",
             }}
+            isDismissable={props.isDismissable !== false}
+            // Mobile-specific props
+            scrollBehavior="inside"
             {...props}
         >
             <ModalContent>{props.children}</ModalContent>
