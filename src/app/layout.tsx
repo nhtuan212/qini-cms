@@ -1,5 +1,5 @@
 import React from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { auth } from "@/auth";
 import Provider from "@/components/Provider";
@@ -20,12 +20,13 @@ const geistMono = localFont({
 export const metadata: Metadata = {
     title: "Qini",
     description: "Qini fashion",
-    viewport: {
-        width: "device-width",
-        initialScale: 1,
-        maximumScale: 1,
-        userScalable: false,
-    },
+};
+
+export const viewport: Viewport = {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
