@@ -1,5 +1,5 @@
 import React from "react";
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { auth } from "@/auth";
 import Provider from "@/components/Provider";
@@ -26,13 +26,6 @@ export const metadata: Metadata = {
         maximumScale: 1,
         userScalable: false,
     },
-};
-
-export const viewport: Viewport = {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
