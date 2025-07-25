@@ -11,22 +11,23 @@ import { formatDate, getDateTime } from "@/utils";
 export default function StaffModalDetail({ staff }: { staff?: StaffProps }) {
     //** Stores */
     const { staffById, getStaffById } = useStaffStore();
-    const { isLoading, timeSheetByStaffId, getTimeSheet } = useTimeSheetStore();
+    const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId } = useTimeSheetStore();
 
     //** Effects */
-    useEffect(() => {
-        getTimeSheet({
-            staffId: staffById?.id,
-            startDate: formatDate(getDateTime().firstDayOfMonth.toString(), "YYYY-MM-DD"),
-            endDate: formatDate(new Date(), "YYYY-MM-DD"),
-        });
-    }, [getTimeSheet, staffById]);
-
     useEffect(() => {
         if (staff) {
             getStaffById(staff.id);
         }
     }, [getStaffById, staff]);
+
+    useEffect(() => {
+        if (staffById?.id) {
+            getTimeSheetByStaffId(staffById?.id, {
+                startDate: formatDate(getDateTime().firstDayOfMonth.toString(), "YYYY-MM-DD"),
+                endDate: formatDate(new Date(), "YYYY-MM-DD"),
+            });
+        }
+    }, [getTimeSheetByStaffId, staffById]);
 
     //** Render */
     return (

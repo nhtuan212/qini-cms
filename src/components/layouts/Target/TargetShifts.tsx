@@ -21,7 +21,7 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getTargetShift, updateTargetShift } = useTargetShiftStore();
+    const { getTargetShiftById, updateTargetShift } = useTargetShiftStore();
     const { getInvoice } = useInvoiceStore();
 
     //** Functions */
@@ -69,7 +69,7 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                 </Button> */}
             </div>
 
-            {target.targetShift.map((targetShift: TargetShiftProps) => (
+            {target.targetShifts.map((targetShift: TargetShiftProps) => (
                 <div
                     key={targetShift.id}
                     className="bg-success-50 rounded-lg p-4 border border-gray-200"
@@ -92,7 +92,7 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                                     color="default"
                                     isIconOnly
                                     onPress={async () => {
-                                        await getTargetShift(targetShift.id);
+                                        await getTargetShiftById(targetShift.id);
                                         await getModal({
                                             isOpen: true,
                                             modalHeader: TEXT.UPDATE(targetShift.shiftName),
@@ -173,7 +173,7 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                     <TimeSheets
                         targetAt={target.targetAt}
                         targetShift={targetShift}
-                        timeSheets={targetShift.timeSheet}
+                        timeSheets={targetShift.timeSheets}
                     />
                 </div>
             ))}

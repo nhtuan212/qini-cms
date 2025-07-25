@@ -205,6 +205,20 @@ export const snakeCaseQueryString = (
     return queryString ? `${prefix}${queryString}` : "";
 };
 
+export const camelCaseQueryString = (
+    params: URLSearchParams | Record<string, any>,
+    prefix: "?" | "&" = "?",
+): string => {
+    const entries =
+        params instanceof URLSearchParams ? Object.fromEntries(params.entries()) : params;
+
+    const camelEntries = Object.entries(entries).map(([key, value]) => [toCamelCase(key), value]);
+
+    const queryString = new URLSearchParams(camelEntries).toString();
+
+    return queryString ? `${prefix}${queryString}` : "";
+};
+
 export const formatTime = (time?: string, includeSeconds: boolean = false) => {
     const formatOptions: Intl.DateTimeFormatOptions = {
         timeZone: "Asia/Ho_Chi_Minh",

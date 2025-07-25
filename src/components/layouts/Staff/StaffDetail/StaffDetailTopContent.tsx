@@ -13,7 +13,7 @@ import { TEXT } from "@/constants";
 export default function TargetTopContent() {
     //** Stores */
     const { staffById } = useStaffStore();
-    const { timeSheetByStaffId, getTimeSheet } = useTimeSheetStore();
+    const { timeSheetByStaffId, getTimeSheetByStaffId } = useTimeSheetStore();
 
     //** States */
     const [dateValue, setDateValue] = useState<RangeValue<CalendarDate>>({
@@ -23,8 +23,7 @@ export default function TargetTopContent() {
 
     //** Functions */
     const handleFilterTargets = () => {
-        getTimeSheet({
-            staffId: staffById.id,
+        getTimeSheetByStaffId(staffById.id, {
             startDate: dateValue.start.toString(),
             endDate: dateValue.end.toString(),
         });

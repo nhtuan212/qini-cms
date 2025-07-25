@@ -27,7 +27,7 @@ export default function Header() {
     const pathname = usePathname();
 
     //** Store */
-    const { isMobileMenuOpen, openMobileMenu } = useMenuStore();
+    const { isMenuOpen, setIsMenuOpen } = useMenuStore();
     const { theme, setTheme } = useTheme();
     const { profile } = useProfileStore();
 
@@ -57,11 +57,12 @@ export default function Header() {
             classNames={{
                 wrapper: "container max-w-[auto]",
             }}
-            onMenuOpenChange={() => openMobileMenu(!isMobileMenuOpen)}
+            isMenuOpen={isMenuOpen}
+            onMenuOpenChange={() => setIsMenuOpen(!isMenuOpen)}
         >
             <NavbarContent>
                 <NavbarMenuToggle
-                    aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+                    aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                     className="sm:hidden"
                 />
                 <NavbarBrand>
@@ -115,6 +116,7 @@ export default function Header() {
                                 activeRoute === menu.url && "text-primary",
                             )}
                             color="primary"
+                            onClick={() => setIsMenuOpen(false)}
                         >
                             {menu.icon && <span className="mr-1">{menu.icon}</span>}
                             {menu.label}

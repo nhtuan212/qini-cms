@@ -14,7 +14,7 @@ type TargetShiftState = {
 };
 
 type TargetShiftAction = {
-    getTargetShift: (params?: string) => Promise<void>;
+    getTargetShiftById: (id?: string) => Promise<void>;
     updateTargetShift: (params: { id: string; bodyParams: TargetShiftProps }) => Promise<void>;
 };
 
@@ -26,7 +26,7 @@ const initialState: TargetShiftState = {
 export const useTargetShiftStore = create<TargetShiftState & TargetShiftAction>()(set => ({
     ...initialState,
 
-    getTargetShift: async (id?: string) => {
+    getTargetShiftById: async (id?: string) => {
         set({
             isLoading: true,
         });

@@ -75,6 +75,7 @@ export default function Staff() {
                                                 onPress={() => {
                                                     getModal({
                                                         isOpen: true,
+                                                        size: "3xl",
                                                         modalHeader: staff.name,
                                                         modalBody: <StaffDetail staff={staff} />,
                                                         modalFooter: <></>,

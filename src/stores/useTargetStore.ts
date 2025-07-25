@@ -157,8 +157,8 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
             const updatedTarget: TargetProps = convertKeysToCamelCase(res.data);
 
             const sum = (field: string) =>
-                Array.isArray(updatedTarget.targetShift)
-                    ? updatedTarget.targetShift.reduce(
+                Array.isArray(updatedTarget.targetShifts)
+                    ? updatedTarget.targetShifts.reduce(
                           (acc, shift) => acc + (Number(shift[field]) || 0),
                           0,
                       )
@@ -213,13 +213,13 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
         set(state => ({
             targets: state.targets.map(target => ({
                 ...target,
-                targetShift: Array.isArray(target.targetShift)
-                    ? target.targetShift.map(shift =>
+                targetShifts: Array.isArray(target.targetShifts)
+                    ? target.targetShifts.map(shift =>
                           shift.id === updatedTargetShift.id
                               ? { ...shift, ...updatedTargetShift }
                               : shift,
                       )
-                    : target.targetShift,
+                    : target.targetShifts,
             })),
         })),
 
@@ -227,19 +227,19 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
         set(state => ({
             targets: state.targets.map(target => ({
                 ...target,
-                targetShift: target.targetShift.map((shift: TargetShiftProps) =>
+                targetShifts: target.targetShifts.map((shift: TargetShiftProps) =>
                     Array.isArray(updatedTimeSheet)
                         ? updatedTimeSheet.some(
                               (timeSheet: TimeSheetProps) => timeSheet.targetShiftId === shift.id,
                           )
-                            ? { ...shift, timeSheet: [...shift.timeSheet, ...updatedTimeSheet] }
+                            ? { ...shift, timeSheets: [...shift.timeSheets, ...updatedTimeSheet] }
                             : shift
-                        : shift.timeSheet.some(
+                        : shift.timeSheets.some(
                                 (timeSheet: TimeSheetProps) => timeSheet.id === updatedTimeSheet.id,
                             )
                           ? {
                                 ...shift,
-                                timeSheet: shift.timeSheet.map((timeSheet: TimeSheetProps) =>
+                                timeSheets: shift.timeSheets.map((timeSheet: TimeSheetProps) =>
                                     timeSheet.id === updatedTimeSheet.id
                                         ? { ...timeSheet, ...updatedTimeSheet }
                                         : timeSheet,
@@ -252,19 +252,19 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
 
     removeTimeSheetFromTargets: (timeSheetId: string) =>
         set(state => ({
-            targets: state.targets.map(target => ({
+            targets: state.targets.map((target: TargetProps) => ({
                 ...target,
-                timeSheet: Array.isArray(target.timeSheet)
-                    ? target.timeSheet.filter((ts: any) => ts.id !== timeSheetId)
-                    : target.timeSheet,
-                targetShift: Array.isArray(target.targetShift)
-                    ? target.targetShift.map(shift => ({
+                timeSheets: Array.isArray(target.timeSheets)
+                    ? target.timeSheets.filter((ts: any) => ts.id !== timeSheetId)
+                    : target.timeSheets,
+                targetShifts: Array.isArray(target.targetShifts)
+                    ? target.targetShifts.map(shift => ({
                           ...shift,
-                          timeSheet: Array.isArray(shift.timeSheet)
-                              ? shift.timeSheet.filter((ts: any) => ts.id !== timeSheetId)
-                              : shift.timeSheet,
+                          timeSheets: Array.isArray(shift.timeSheets)
+                              ? shift.timeSheets.filter((ts: any) => ts.id !== timeSheetId)
+                              : shift.timeSheets,
                       }))
-                    : target.targetShift,
+                    : target.targetShifts,
             })),
         })),
 }));

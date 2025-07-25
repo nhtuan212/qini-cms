@@ -157,7 +157,7 @@ export default function TargetShiftModal() {
                     }}
                     render={({ field }) => (
                         <Input
-                            className="sm:col-span-2"
+                            className="col-span-2"
                             type="textarea"
                             placeholder={TEXT.NOTE}
                             {...field}
