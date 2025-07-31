@@ -4,7 +4,7 @@ import Button from "@/components/Button";
 import DateRangePicker from "@/components/DateRangePicker";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CalendarDate, RangeValue } from "@heroui/react";
-import { getDateTime, formatDate, snakeCaseQueryString } from "@/utils";
+import { getDateTime, formatDate, camelCaseQueryString } from "@/utils";
 import { ROUTE, TEXT } from "@/constants";
 import { parseDate } from "@internationalized/date";
 
@@ -20,7 +20,7 @@ export default function TargetFilter() {
         if (!dateValue) return null;
 
         router.push(
-            snakeCaseQueryString({
+            camelCaseQueryString({
                 startDate: dateValue.start.toString(),
                 endDate: dateValue.end.toString(),
             }),
@@ -29,10 +29,10 @@ export default function TargetFilter() {
 
     //** Effects */
     useEffect(() => {
-        if (searchParams.get("start_date") && searchParams.get("end_date")) {
+        if (searchParams.get("startDate") && searchParams.get("endDate")) {
             return setDateValue({
-                start: parseDate(formatDate(searchParams.get("start_date"), "YYYY-MM-DD")),
-                end: parseDate(formatDate(searchParams.get("end_date"), "YYYY-MM-DD")),
+                start: parseDate(formatDate(searchParams.get("startDate"), "YYYY-MM-DD")),
+                end: parseDate(formatDate(searchParams.get("endDate"), "YYYY-MM-DD")),
             });
         }
 

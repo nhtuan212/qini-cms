@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { Select, SelectItem } from "@/components/Select";
@@ -101,6 +101,44 @@ export default function RecordTimeSheet() {
         });
     }, [getTimeSheetByStaffId, staffById.id]);
 
+    // Function to check if a shift is currently active based on start/end times
+    const isShiftActive = (shift: ShiftProps): boolean => {
+        if (!shift.startTime || !shift.endTime) {
+            // In the case is active for "Noi bo" shift
+            return true;
+        }
+
+        const currentTime = new Date();
+        const currentTimeString = formatDate(currentTime, "HH:mm");
+
+        // Convert times to minutes for easier comparison
+        const currentMinutes =
+            parseInt(currentTimeString.split(":")[0]) * 60 +
+            parseInt(currentTimeString.split(":")[1]);
+        const startMinutes =
+            parseInt(shift.startTime.split(":")[0]) * 60 + parseInt(shift.startTime.split(":")[1]);
+        const endMinutes =
+            parseInt(shift.endTime.split(":")[0]) * 60 + parseInt(shift.endTime.split(":")[1]);
+
+        // Handle shifts that span midnight (e.g., 22:00 to 06:00)
+        if (endMinutes < startMinutes) {
+            // Shift spans midnight - active if current time is after start OR before end
+            return currentMinutes >= startMinutes || currentMinutes <= endMinutes;
+        } else {
+            // Normal shift within same day - active if current time is between start and end
+            return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+        }
+    };
+
+    // Get disabledKeys for HeroUI Select component - disable inactive shifts
+    const disabledKeys = useMemo(() => {
+        const inactiveShiftIds = shifts
+            .filter((shift: ShiftProps) => !isShiftActive(shift))
+            .map((shift: ShiftProps) => shift.id);
+
+        return inactiveShiftIds;
+    }, [shifts]);
+
     //** Render */
     return (
         <div className="sm:space-y-6 space-y-2">
@@ -119,6 +157,7 @@ export default function RecordTimeSheet() {
                 <Select
                     label={TEXT.WORK_SHIFT_SELECT}
                     color="primary"
+                    disabledKeys={disabledKeys}
                     isInvalid={!!shiftError}
                     errorMessage={shiftError}
                     classNames={{
@@ -131,7 +170,9 @@ export default function RecordTimeSheet() {
                     }}
                 >
                     {shifts.map((shift: ShiftProps) => (
-                        <SelectItem key={shift.id}>{shift.name}</SelectItem>
+                        <SelectItem key={shift.id}>
+                            {`${shift.name} ${shift.startTime && shift.endTime && `(${shift.startTime} - ${shift.endTime})`}`}
+                        </SelectItem>
                     ))}
                 </Select>
 

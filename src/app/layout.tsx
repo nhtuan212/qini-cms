@@ -27,7 +27,6 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
     title: "Qini",
     description: "Qini fashion",
-    viewport,
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
