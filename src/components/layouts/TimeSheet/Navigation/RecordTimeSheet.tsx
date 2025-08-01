@@ -101,7 +101,7 @@ export default function RecordTimeSheet() {
         });
     }, [getTimeSheetByStaffId, staffById.id]);
 
-    // Function to check if a shift is currently active based on start/end times
+    // Function to check if a shift is currently active based on start/end times with 30-minute buffer
     const isShiftActive = (shift: ShiftProps): boolean => {
         if (!shift.startTime || !shift.endTime) {
             // In the case is active for "Noi bo" shift
@@ -120,13 +120,25 @@ export default function RecordTimeSheet() {
         const endMinutes =
             parseInt(shift.endTime.split(":")[0]) * 60 + parseInt(shift.endTime.split(":")[1]);
 
+        // Add 30-minute buffer (30 minutes = 30)
+        const bufferMinutes = 30;
+        const startWithBuffer = startMinutes - bufferMinutes;
+        const endWithBuffer = endMinutes + bufferMinutes;
+
         // Handle shifts that span midnight (e.g., 22:00 to 06:00)
         if (endMinutes < startMinutes) {
-            // Shift spans midnight - active if current time is after start OR before end
-            return currentMinutes >= startMinutes || currentMinutes <= endMinutes;
+            // Shift spans midnight - active if current time is after (start - buffer) OR before (end + buffer)
+            const adjustedStartWithBuffer =
+                startWithBuffer < 0 ? startWithBuffer + 1440 : startWithBuffer; // 1440 = 24 hours in minutes
+            const adjustedEndWithBuffer =
+                endWithBuffer > 1440 ? endWithBuffer - 1440 : endWithBuffer;
+
+            return (
+                currentMinutes >= adjustedStartWithBuffer || currentMinutes <= adjustedEndWithBuffer
+            );
         } else {
-            // Normal shift within same day - active if current time is between start and end
-            return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+            // Normal shift within same day - active if current time is between (start - buffer) and (end + buffer)
+            return currentMinutes >= startWithBuffer && currentMinutes <= endWithBuffer;
         }
     };
 
