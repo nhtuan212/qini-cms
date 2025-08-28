@@ -44,6 +44,16 @@ export default function RecordTimeSheet() {
             return;
         }
 
+        // Validate shift compatibility with staff target status
+        const selectedShiftData = shifts.find((shift: ShiftProps) => shift.id === selectedShift);
+        if (selectedShiftData) {
+            // If staff has isTarget: false, only allow shifts with isTarget: false
+            if (staffById.isTarget === false && selectedShiftData.isTarget !== false) {
+                setError("This shift is not compatible with your target status");
+                return;
+            }
+        }
+
         // Validate location
         const { lat, lng } = await getCurrentLocation();
         const locationVerification = verifyLocation(lat, lng);
@@ -142,14 +152,27 @@ export default function RecordTimeSheet() {
         }
     };
 
-    // Get disabledKeys for HeroUI Select component - disable inactive shifts
+    // Get disabledKeys for HeroUI Select component - disable inactive shifts and incompatible target shifts
     const disabledKeys = useMemo(() => {
-        const inactiveShiftIds = shifts
-            .filter((shift: ShiftProps) => !isShiftActive(shift))
+        const disabledShiftIds = shifts
+            .filter((shift: ShiftProps) => {
+                // Disable if shift is not active
+                if (!isShiftActive(shift)) {
+                    return true;
+                }
+
+                // If staff has isTarget: false, only allow shifts with isTarget: false
+                if (staffById.isTarget === false) {
+                    return shift.isTarget !== false;
+                }
+
+                // If staff has isTarget: true, allow all shifts
+                return false;
+            })
             .map((shift: ShiftProps) => shift.id);
 
-        return inactiveShiftIds;
-    }, [shifts]);
+        return disabledShiftIds;
+    }, [shifts, staffById.isTarget]);
 
     //** Render */
     return (
