@@ -3,7 +3,7 @@ import Card from "@/components/Card";
 import Button from "@/components/Button";
 import DateRangePicker from "@/components/DateRangePicker";
 import { Select, SelectItem } from "@/components/Select";
-import { NumberInput } from "@/components/Input";
+import Input, { NumberInput } from "@/components/Input";
 import Loading from "@/components/Loading";
 import { CurrencyDollarIcon, DocumentCheckIcon, UserIcon } from "@heroicons/react/24/outline";
 import { CalendarDate, RangeValue } from "@heroui/react";
@@ -18,6 +18,7 @@ interface FormSalary {
     dateRange: RangeValue<CalendarDate>;
     salary: number;
     instantBonus: number;
+    note: string;
 }
 
 export default function SalaryCalculator() {
@@ -34,9 +35,10 @@ export default function SalaryCalculator() {
         },
         salary: 25000,
         instantBonus: 0,
+        note: "",
     };
 
-    const { control, handleSubmit, setValue, getValues, watch } = useForm<FormSalary>({
+    const { control, handleSubmit, setValue, getValues, watch, register } = useForm<FormSalary>({
         values: defaultValues,
     });
 
@@ -45,6 +47,7 @@ export default function SalaryCalculator() {
     const watchedSalary = watch("salary");
     const watchedInstantBonus = watch("instantBonus");
     const watchedDateRange = watch("dateRange");
+    const watchedNote = watch("note");
 
     const onSubmit = (data: FormSalary) => {
         console.log(data);
@@ -57,6 +60,7 @@ export default function SalaryCalculator() {
     const instantBonus = watchedInstantBonus || 0;
     const startDate = watchedDateRange.start.toString();
     const endDate = watchedDateRange.end.toString();
+    const note = watchedNote || "";
 
     //** Effects */
     useEffect(() => {
@@ -72,20 +76,17 @@ export default function SalaryCalculator() {
             <div className="relative space-y-2">
                 {isLoading && <Loading />}
 
-                <Card className="flex justify-between items-center p-2 shadow-none">
+                <Card className="flex justify-between items-center p-2 shadow-none flex-wrap">
                     <p className="text-gray-500">{TEXT.STAFF_INFORMATION}</p>
-                    <b>
-                        {staffName &&
-                            `${staffName} - ${formatDate(startDate, "DD/MM/YYYY")} - ${formatDate(endDate, "DD/MM/YYYY")}`}
-                    </b>
+                    <b>{staffName}</b>
                 </Card>
 
-                <Card className="flex justify-between items-center p-2 shadow-none">
+                <Card className="flex justify-between items-center p-2 shadow-none flex-wrap">
                     <p className="text-gray-500">{`${TEXT.WORKING_HOURS} (${timeSheetByStaffId.totalWorkingHours}h x ${formatCurrency(salary)})`}</p>
                     <b>{formatCurrency(totalSalary)}</b>
                 </Card>
 
-                <Card className="flex justify-between items-center p-2 shadow-none">
+                <Card className="flex justify-between items-center p-2 shadow-none flex-wrap">
                     <p className="text-gray-500">{`${TEXT.TARGET} (${formatCurrency(
                         timeSheetByStaffId.totalTarget,
                     )} * 0.01)`}</p>
@@ -93,8 +94,11 @@ export default function SalaryCalculator() {
                 </Card>
 
                 {instantBonus > 0 && (
-                    <Card className="flex justify-between items-center p-2 shadow-none">
-                        <p className="text-gray-500">{TEXT.INSTANT_BONUS}</p>
+                    <Card className="flex justify-between items-center p-2 shadow-none flex-wrap">
+                        <div>
+                            <p className="text-gray-500">{TEXT.INSTANT_BONUS}:</p>
+                            {note && <span className="pl-4 text-sm">{note}</span>}
+                        </div>
                         <b>{formatCurrency(instantBonus)}</b>
                     </Card>
                 )}
@@ -191,13 +195,22 @@ export default function SalaryCalculator() {
                             />
                         )}
                     />
+
+                    <Input label={TEXT.NOTE} type="textarea" {...register("note")} />
                 </Card>
 
                 <Card className="flex flex-col gap-4">
-                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                        <CurrencyDollarIcon className="w-5 h-5" />
-                        {TEXT.SALARY_DETAIL}
-                    </h3>
+                    <div className="flex justify-between items-center flex-wrap gap-2">
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <CurrencyDollarIcon className="w-5 h-5" />
+                            {TEXT.SALARY_DETAIL}
+                        </h3>
+
+                        <b className="ml-auto">
+                            {formatDate(startDate, "DD/MM/YYYY")} -{" "}
+                            {formatDate(endDate, "DD/MM/YYYY")}
+                        </b>
+                    </div>
 
                     {renderSalaryDetail()}
                 </Card>
