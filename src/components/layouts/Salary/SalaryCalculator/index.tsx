@@ -207,8 +207,7 @@ export default function SalaryCalculator() {
                         </h3>
 
                         <b className="ml-auto">
-                            {formatDate(startDate, "DD/MM/YYYY")} -{" "}
-                            {formatDate(endDate, "DD/MM/YYYY")}
+                            {`${formatDate(startDate, "DD/MM/YYYY")} - ${formatDate(endDate, "DD/MM/YYYY")}`}
                         </b>
                     </div>
 
