@@ -30,6 +30,12 @@ export default auth(req => {
             case "/":
             case "/login":
                 return Response.redirect(new URL("/target", req.url));
+            case "/target":
+                // Redirect to staff page for STAFF role
+                if (req.auth.user?.role === ROLE.STAFF) {
+                    return Response.redirect(new URL("/staff", req.url));
+                }
+                break;
             default:
                 break;
         }
