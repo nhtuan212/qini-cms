@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import DateRangePicker from "@/components/DateRangePicker";
@@ -25,6 +25,18 @@ export default function SalaryCalculator() {
     //** Stores */
     const { staff, getStaff } = useStaffStore();
     const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId } = useTimeSheetStore();
+
+    //** Variables */
+    const orderedStaffByActive = useMemo(() => {
+        return staff.sort((a, b) => {
+            // First priority: active staff before inactive
+            if (a.isActive && !b.isActive) return -1;
+            if (!a.isActive && b.isActive) return 1;
+
+            // Second priority: sort by updatedAt desc within same active status
+            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        });
+    }, [staff]);
 
     //** React hook form */
     const defaultValues = {
@@ -55,7 +67,12 @@ export default function SalaryCalculator() {
 
     //** Variables */
     const staffId = watchedStaffId;
-    const staffName = staff.find(staff => staff.id === staffId)?.name;
+    const selectedStaff = orderedStaffByActive.find(staff => staff.id === staffId);
+    const staffName = selectedStaff
+        ? selectedStaff.isActive
+            ? selectedStaff.name
+            : `${selectedStaff.name} (${TEXT.OFF_FROM} ${formatDate(selectedStaff.updatedAt)})`
+        : "";
     const salary = watchedSalary || 0;
     const instantBonus = watchedInstantBonus || 0;
     const startDate = watchedDateRange.start.toString();
@@ -115,7 +132,7 @@ export default function SalaryCalculator() {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-4">
+            <div className="max-w-xl mx-auto flex flex-col gap-4">
                 <Card className="flex flex-col gap-4">
                     <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                         <UserIcon className="w-5 h-5" />
@@ -138,8 +155,10 @@ export default function SalaryCalculator() {
                                     });
                                 }}
                             >
-                                {staff.map(staff => (
-                                    <SelectItem key={staff.id}>{staff.name}</SelectItem>
+                                {orderedStaffByActive.map(staff => (
+                                    <SelectItem
+                                        key={staff.id}
+                                    >{`${staff.name} ${staff.isActive ? "" : `(${TEXT.OFF_FROM} ${formatDate(staff.updatedAt)})`}`}</SelectItem>
                                 ))}
                             </Select>
                         )}

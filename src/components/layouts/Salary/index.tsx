@@ -9,31 +9,29 @@ import { TEXT } from "@/constants/text";
 
 export default function Salary() {
     return (
-        <div>
-            <Tabs>
-                <Tab
-                    key="calculate-salary"
-                    title={
-                        <div className="flex items-center gap-2">
-                            <CalculatorIcon className="h-4 w-4" />
-                            <span>{TEXT.CALCULATE_SALARY}</span>
-                        </div>
-                    }
-                >
-                    <SalaryCalculator />
-                </Tab>
-                <Tab
-                    key="payroll-month"
-                    title={
-                        <div className="flex items-center gap-2">
-                            <DocumentChartBarIcon className="h-4 w-4" />
-                            <span>{TEXT.PAYROLL_MONTH}</span>
-                        </div>
-                    }
-                >
-                    <SalaryPanel />
-                </Tab>
-            </Tabs>
-        </div>
+        <Tabs>
+            <Tab
+                key="calculate-salary"
+                title={
+                    <div className="flex items-center gap-2">
+                        <CalculatorIcon className="h-4 w-4" />
+                        <span>{TEXT.CALCULATE_SALARY}</span>
+                    </div>
+                }
+            >
+                <SalaryCalculator />
+            </Tab>
+            <Tab
+                key="payroll-month"
+                title={
+                    <div className="flex items-center gap-2">
+                        <DocumentChartBarIcon className="h-4 w-4" />
+                        <span>{TEXT.PAYROLL_MONTH}</span>
+                    </div>
+                }
+            >
+                <SalaryPanel />
+            </Tab>
+        </Tabs>
     );
 }
