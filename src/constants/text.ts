@@ -82,6 +82,7 @@ export const TEXT = {
     NOTE_HAVE_DEDUCTION: "Nhập ghi chú khi có số tiền khấu trừ",
     DATE_PICKER: "Chọn ngày",
     CONFIRM_DELETE: "Bạn có chắc chắn muốn xoá ?",
+    CONFIRM_IN_ACTIVE: "Bạn có chắc chắn muốn ngưng hoạt động ?",
     SUBMIT: "Xác nhận",
     AMOUNT: "Số tiền",
     PAID: "Đã thu tiền",
@@ -96,4 +97,7 @@ export const TEXT = {
     TIME_SHEET_HISTORY: "Lịch sử chấm công",
     TODAY_SUMMARY: "Tóm tắt hôm nay",
     POINT: "Điểm",
+    ACTIVE: "Hoạt động",
+    IN_ACTIVE: "Ngưng hoạt động",
+    OFF_FROM: "Nghỉ việc từ",
 };

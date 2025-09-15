@@ -5,7 +5,12 @@ import StaffModal from "./StaffModal";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
-import { EllipsisVerticalIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+    EllipsisVerticalIcon,
+    PauseCircleIcon,
+    PencilSquareIcon,
+    TrashIcon,
+} from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
@@ -19,7 +24,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getStaffById, deleteStaff } = useStaffStore();
+    const { getStaffById, deleteStaff, inActiveStaff } = useStaffStore();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -27,7 +32,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     switch (profile.role) {
         case ROLE.REPORT:
         case ROLE.MANAGER:
-            disabledKeys.push("edit", "delete");
+            disabledKeys.push("edit", "inActive", "delete");
             break;
         default:
             break;
@@ -43,6 +48,22 @@ export default function StaffActions({ item }: { item: StaffProps }) {
             action: ModalActionProps.UPDATE,
             isDismissable: false,
             modalBody: <StaffModal />,
+        });
+    };
+
+    const handleInActiveStaff = (id: string) => {
+        getModal({
+            isOpen: true,
+            action: ModalActionProps.UPDATE,
+            modalHeader: TEXT.CONFIRM_IN_ACTIVE,
+            modalBody: (
+                <ConfirmModal
+                    onConfirm={async () => {
+                        await inActiveStaff(id);
+                        getModal({ isOpen: false });
+                    }}
+                />
+            ),
         });
     };
 
@@ -78,6 +99,14 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                     onPress={() => handleUpdateStaff(id)}
                 >
                     {TEXT.EDIT}
+                </DropdownItem>
+                <DropdownItem
+                    key="inActive"
+                    startContent={<PauseCircleIcon className="w-5" />}
+                    textValue={TEXT.IN_ACTIVE}
+                    onPress={() => handleInActiveStaff(id)}
+                >
+                    {TEXT.IN_ACTIVE}
                 </DropdownItem>
                 <DropdownItem
                     key="delete"
