@@ -61,6 +61,7 @@ export const TEXT = {
     EDIT: "Sửa",
     DELETE: "Xoá",
     SALARY: "Tiền lương",
+    SALARY_PERIOD: "Kỳ lương",
     CALCULATE_SALARY: "Tính lương",
     SALARY_DETAIL: "Chi tiết lương",
     SALARY_GREATER_THAN_ZERO: "Tiền lương phải lớn hơn 0",
@@ -74,7 +75,7 @@ export const TEXT = {
     SALARY_EACH_TIME: " ương mỗi giờ",
     SALARY_BY_TIME: "Lương theo giờ",
     SALARY_BY_PERFORMANCE: "Lương hiệu suất",
-    INSTANT_BONUS: "Thưởng nóng",
+    BONUS: "Thưởng nóng",
     COPY: "Copy",
     NUMBER_IS_REQUIRED: "Chỉ được nhập số",
     NO_PERMISSION: "Bạn không có quyền truy cập",
@@ -100,4 +101,5 @@ export const TEXT = {
     ACTIVE: "Hoạt động",
     IN_ACTIVE: "Ngưng hoạt động",
     OFF_FROM: "Nghỉ việc từ",
+    SALARY_CREATED: "Lương đã được tạo thành công",
 };

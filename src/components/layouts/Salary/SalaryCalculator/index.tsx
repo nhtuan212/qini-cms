@@ -9,7 +9,10 @@ import { CurrencyDollarIcon, DocumentCheckIcon, UserIcon } from "@heroicons/reac
 import { CalendarDate, RangeValue } from "@heroui/react";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
+import { useSalaryStore } from "@/stores/useSalaryStore";
+import { useAlertStore } from "@/stores/useAlertStore";
 import { Controller, useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 import { formatCurrency, formatDate, getDateTime } from "@/utils";
 import { TEXT } from "@/constants/text";
 
@@ -17,14 +20,16 @@ interface FormSalary {
     staffId: string;
     dateRange: RangeValue<CalendarDate>;
     salary: number;
-    instantBonus: number;
-    note: string;
+    bonus: number;
+    description: string;
 }
 
 export default function SalaryCalculator() {
     //** Stores */
     const { staff, getStaff } = useStaffStore();
     const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId } = useTimeSheetStore();
+    const { isLoading: isLoadingSalary, createSalary } = useSalaryStore();
+    const { getAlert } = useAlertStore();
 
     //** Variables */
     const orderedStaffByActive = useMemo(() => {
@@ -46,23 +51,37 @@ export default function SalaryCalculator() {
             end: getDateTime().lastDayOfMonth,
         },
         salary: 25000,
-        instantBonus: 0,
-        note: "",
+        bonus: 0,
+        description: "",
     };
 
-    const { control, handleSubmit, setValue, getValues, watch, register } = useForm<FormSalary>({
-        values: defaultValues,
-    });
+    const { control, handleSubmit, setValue, getValues, watch, register, reset } =
+        useForm<FormSalary>({
+            values: defaultValues,
+        });
 
     // Use watch to get live values for form fields
     const watchedStaffId = watch("staffId");
     const watchedSalary = watch("salary");
-    const watchedInstantBonus = watch("instantBonus");
+    const watchedBonus = watch("bonus");
     const watchedDateRange = watch("dateRange");
-    const watchedNote = watch("note");
+    const watchedDescription = watch("description");
 
     const onSubmit = (data: FormSalary) => {
-        console.log(data);
+        const result = {
+            ...data,
+            name: `${TEXT.SALARY_PERIOD} ${formatDate(data.dateRange.start.toString(), "DD/MM/YYYY")} - ${formatDate(data.dateRange.end.toString(), "DD/MM/YYYY")}`,
+        };
+
+        createSalary(result).then(() => {
+            getAlert({
+                isOpen: true,
+                type: "success",
+                title: TEXT.SALARY_CREATED,
+            });
+
+            reset(defaultValues);
+        });
     };
 
     //** Variables */
@@ -74,10 +93,10 @@ export default function SalaryCalculator() {
             : `${selectedStaff.name} (${TEXT.OFF_FROM} ${formatDate(selectedStaff.updatedAt)})`
         : "";
     const salary = watchedSalary || 0;
-    const instantBonus = watchedInstantBonus || 0;
+    const bonus = watchedBonus || 0;
     const startDate = watchedDateRange.start.toString();
     const endDate = watchedDateRange.end.toString();
-    const note = watchedNote || "";
+    const description = watchedDescription || "";
 
     //** Effects */
     useEffect(() => {
@@ -86,7 +105,7 @@ export default function SalaryCalculator() {
 
     //** Render */
     const renderSalaryDetail = () => {
-        const totalSalary = timeSheetByStaffId.totalWorkingHours * salary + instantBonus || 0;
+        const totalSalary = timeSheetByStaffId.totalWorkingHours * salary + bonus || 0;
         const totalBonus = Math.floor(timeSheetByStaffId.totalTarget * 0.01) || 0;
 
         return (
@@ -110,13 +129,13 @@ export default function SalaryCalculator() {
                     <b>{formatCurrency(totalBonus)}</b>
                 </Card>
 
-                {instantBonus > 0 && (
+                {bonus > 0 && (
                     <Card className="flex justify-between items-center p-2 shadow-none flex-wrap">
                         <div>
-                            <p className="text-gray-500">{TEXT.INSTANT_BONUS}:</p>
-                            {note && <span className="pl-4 text-sm">{note}</span>}
+                            <p className="text-gray-500">{TEXT.BONUS}:</p>
+                            {description && <span className="pl-4 text-sm">{description}</span>}
                         </div>
-                        <b>{formatCurrency(instantBonus)}</b>
+                        <b>{formatCurrency(bonus)}</b>
                     </Card>
                 )}
 
@@ -142,17 +161,38 @@ export default function SalaryCalculator() {
                     <Controller
                         control={control}
                         name="staffId"
-                        render={({ field }) => (
+                        rules={{
+                            required: {
+                                value: true,
+                                message: TEXT.IS_REQUIRED,
+                            },
+                        }}
+                        render={({ field, formState: { errors } }) => (
                             <Select
                                 label={TEXT.SELECT_STAFF}
-                                {...field}
+                                selectedKeys={[field.value]}
+                                isInvalid={!!errors?.staffId}
+                                errorMessage={<ErrorMessage errors={errors} name={"staffId"} />}
                                 onSelectionChange={value => {
-                                    const staffId = new Set(value).values().next().value as string;
+                                    const staffId = value.currentKey as string;
+
+                                    // Update the form with the selected staff's salary
+                                    const selectedStaff = orderedStaffByActive.find(
+                                        staff => staff.id === staffId,
+                                    );
+
+                                    // Update the form with the selected staff's salary
+                                    setValue(
+                                        "salary",
+                                        selectedStaff?.salary || defaultValues.salary,
+                                    );
 
                                     getTimeSheetByStaffId(staffId, {
                                         startDate: formatDate(startDate, "YYYY-MM-DD"),
                                         endDate: formatDate(endDate, "YYYY-MM-DD"),
                                     });
+
+                                    field.onChange(staffId);
                                 }}
                             >
                                 {orderedStaffByActive.map(staff => (
@@ -197,14 +237,14 @@ export default function SalaryCalculator() {
                     />
 
                     <Controller
-                        name="instantBonus"
+                        name="bonus"
                         control={control}
                         render={({ field }) => (
                             <NumberInput
-                                label={TEXT.INSTANT_BONUS}
+                                label={TEXT.BONUS}
                                 value={field.value || 0}
                                 onValueChange={value => {
-                                    setValue("instantBonus", value);
+                                    setValue("bonus", value);
 
                                     getTimeSheetByStaffId(getValues("staffId"), {
                                         startDate: formatDate(startDate, "YYYY-MM-DD"),
@@ -215,7 +255,7 @@ export default function SalaryCalculator() {
                         )}
                     />
 
-                    <Input label={TEXT.NOTE} type="textarea" {...register("note")} />
+                    <Input label={TEXT.NOTE} type="textarea" {...register("description")} />
                 </Card>
 
                 <Card className="flex flex-col gap-4">
@@ -239,7 +279,7 @@ export default function SalaryCalculator() {
                         className="w-full"
                         size="lg"
                         startContent={<DocumentCheckIcon className="w-5 h-5" />}
-                        isDisabled={isLoading}
+                        isDisabled={isLoading || isLoadingSalary}
                     >
                         {TEXT.SUBMIT}
                     </Button>
