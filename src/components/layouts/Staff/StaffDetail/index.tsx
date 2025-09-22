@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import Table from "@/components/Table";
-import useStaffDetailColumns from "./UseStaffDetailColumns";
+import useStaffDetailColumns from "./useStaffDetailColumns";
 import StaffDetailTopContent from "./StaffDetailTopContent";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";

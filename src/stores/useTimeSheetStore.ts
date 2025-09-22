@@ -23,6 +23,8 @@ interface TimeSheetState {
         data: TimeSheetProps[];
         totalTarget: number;
         totalWorkingHours: number;
+        staffName: string;
+        salary: number;
         pagination: {
             total: number;
             page: number;
@@ -46,7 +48,7 @@ interface TimeSheetActions {
             startDate?: string;
             endDate?: string;
         },
-    ) => Promise<void>;
+    ) => Promise<TimeSheetProps>;
     createTimeSheet: (
         params: TimeSheetProps | TimeSheetProps[],
     ) => Promise<TimeSheetProps | TimeSheetProps[]>;
@@ -73,6 +75,8 @@ const initialState: TimeSheetState = {
         data: [],
         totalTarget: 0,
         totalWorkingHours: 0,
+        staffName: "",
+        salary: 0,
         pagination: {
             total: 0,
             page: 1,
@@ -127,14 +131,18 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
 
             const data = res.data.map((item: TimeSheetProps) => convertKeysToCamelCase(item));
 
-            return set({
+            set({
                 timeSheetByStaffId: {
                     data,
                     totalTarget: res.totalTarget,
                     totalWorkingHours: res.totalWorkingHours,
+                    staffName: res.staffName,
+                    salary: res.salary,
                     pagination: res.pagination,
                 },
             });
+
+            return convertKeysToCamelCase(res.data);
         });
     },
 
@@ -177,6 +185,8 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                     totalTarget: state.timeSheetByStaffId.totalTarget + res.total_target,
                     totalWorkingHours:
                         state.timeSheetByStaffId.totalWorkingHours + res.total_working_hours,
+                    staffName: state.timeSheetByStaffId.staffName,
+                    salary: state.timeSheetByStaffId.salary,
                     pagination: state.timeSheetByStaffId.pagination,
                 },
             }));
@@ -212,6 +222,8 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                     ),
                     totalTarget: state.timeSheetByStaffId.totalTarget,
                     totalWorkingHours: state.timeSheetByStaffId.totalWorkingHours,
+                    staffName: state.timeSheetByStaffId.staffName,
+                    salary: state.timeSheetByStaffId.salary,
                     pagination: state.timeSheetByStaffId.pagination,
                 },
             }));
@@ -248,6 +260,8 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                     data: state.timeSheetByStaffId.data.filter(record => record.id !== id),
                     totalTarget: state.timeSheetByStaffId.totalTarget,
                     totalWorkingHours: state.timeSheetByStaffId.totalWorkingHours,
+                    staffName: state.timeSheetByStaffId.staffName,
+                    salary: state.timeSheetByStaffId.salary,
                     pagination: state.timeSheetByStaffId.pagination,
                 },
             }));

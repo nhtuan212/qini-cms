@@ -5,6 +5,7 @@ import { TEXT } from "@/constants";
 import { formatCurrency, formatDate } from "@/utils";
 import { TimeSheetProps } from "@/stores/useTimeSheetStore";
 
+//** Custom hook */
 export default function useStaffDetailColumns() {
     const columns = [
         {

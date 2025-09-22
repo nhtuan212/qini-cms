@@ -22,8 +22,6 @@ const Modal = ({ ...props }: ModalProps) => {
             classNames={{
                 header: "sm:px-6 sm:py-6 px-2 py-2",
                 body: "sm:px-6 px-2",
-                // Add mobile-specific styles to prevent layout issues
-                base: "max-h-[90vh] sm:max-w-[80vw] sm:max-w-fit",
                 wrapper: "p-4",
                 // Ensure proper mobile display
                 backdrop: "bg-black/50 backdrop-blur-sm",

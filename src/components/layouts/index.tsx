@@ -36,14 +36,14 @@ export default function MainLayout({
                 isOpen={modal.isOpen}
                 size={modal.size}
                 isDismissable={modal.isDismissable}
-                onOpenChange={(isOpen: boolean) => getModal({ isOpen })}
+                onOpenChange={(isOpen: boolean) => getModal({ isOpen, size: modal.size })}
                 onClose={() => {
                     modal.onClose && modal.onClose();
                 }}
             >
                 <ModalHeader>{modal.modalHeader && modal.modalHeader}</ModalHeader>
                 {modal.modalBody && <ModalBody>{modal.modalBody}</ModalBody>}
-                {modal.modalFooter && <ModalFooter>{modal.modalFooter}</ModalFooter>}
+                <ModalFooter>{modal.modalFooter}</ModalFooter>
             </Modal>
 
             <Alert

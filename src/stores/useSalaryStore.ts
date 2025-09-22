@@ -10,6 +10,7 @@ export type SalaryProps = {
 type SalaryAction = {
     getSalaries: () => void;
     createSalary: (bodyParams: any) => Promise<void>;
+    deleteSalary: (id: string) => Promise<void>;
 };
 
 const initialState: SalaryProps = {
@@ -56,13 +57,40 @@ export const useSalaryStore = create<SalaryProps & SalaryAction>()(set => ({
                 isLoading: false,
             });
 
-            if (res?.code === STATUS_CODE.OK) {
-                return set({ salaries: convertKeysToCamelCase(res.data) });
+            if (res?.code !== STATUS_CODE.OK) {
+                return set({
+                    salaries: res?.message,
+                });
             }
 
-            return set({
-                salaries: res?.message,
+            return set(state => ({
+                salaries: [convertKeysToCamelCase(res.data), ...state.salaries],
+            }));
+        });
+    },
+
+    deleteSalary: async id => {
+        set({
+            isLoading: true,
+        });
+
+        return await fetchData({
+            endpoint: `${URL.SALARY}/${id}`,
+            options: { method: "DELETE" },
+        }).then(res => {
+            set({
+                isLoading: false,
             });
+
+            if (res?.code !== STATUS_CODE.OK) {
+                return set({
+                    salaries: res?.message,
+                });
+            }
+
+            return set(state => ({
+                salaries: state.salaries.filter((salary: SalaryProps) => salary.id !== id),
+            }));
         });
     },
 }));

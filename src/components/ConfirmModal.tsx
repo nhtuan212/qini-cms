@@ -17,7 +17,7 @@ function ConfirmModal({
     //** Render */
     return (
         <div className="flex flex-col gap-4">
-            {content}
+            {content || TEXT.CONFIRM_DELETE}
 
             <div className="flex justify-end gap-2">
                 <Button
