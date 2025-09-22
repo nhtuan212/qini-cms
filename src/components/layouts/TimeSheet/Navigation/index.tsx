@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from "react";
 import StaffDetail from "../../Staff/StaffDetail";
 import RecordTimeSheet from "./RecordTimeSheet";
+import Salary from "../../Salary";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
-import { ClockIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
+import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
 import { useTargetStore } from "@/stores/useTargetStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
@@ -17,6 +19,7 @@ export default function AttendanceNavigation() {
     const [activeTab, setActiveTab] = useState("record");
 
     //** Stores */
+    const { staffById } = useStaffStore();
     const { getShifts } = useShiftStore();
     const { getTarget } = useTargetStore();
     const { cleanUpTimeSheet } = useTimeSheetStore();
@@ -31,9 +34,15 @@ export default function AttendanceNavigation() {
         },
         {
             label: TEXT.TARGET,
-            icon: CurrencyDollarIcon,
+            icon: GiftIcon,
             value: "detail",
             component: <StaffDetail />,
+        },
+        {
+            label: TEXT.SALARY,
+            icon: CurrencyDollarIcon,
+            value: "salary",
+            component: <Salary staffById={staffById} />,
         },
     ];
 

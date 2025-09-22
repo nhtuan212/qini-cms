@@ -8,9 +8,10 @@ export type SalaryProps = {
 };
 
 type SalaryAction = {
-    getSalaries: () => void;
+    getSalaries: (staffId?: string) => void;
     createSalary: (bodyParams: any) => Promise<void>;
     deleteSalary: (id: string) => Promise<void>;
+    cleanUpSalary: () => void;
 };
 
 const initialState: SalaryProps = {
@@ -22,13 +23,13 @@ export const useSalaryStore = create<SalaryProps & SalaryAction>()(set => ({
     ...initialState,
 
     // Actions
-    getSalaries: async () => {
+    getSalaries: async staffId => {
         set({
             isLoading: true,
         });
 
         return await fetchData({
-            endpoint: URL.SALARY,
+            endpoint: `${URL.SALARY}${staffId ? `/staff/${staffId}` : ""}`,
         }).then(res => {
             set({
                 isLoading: false,
@@ -91,6 +92,12 @@ export const useSalaryStore = create<SalaryProps & SalaryAction>()(set => ({
             return set(state => ({
                 salaries: state.salaries.filter((salary: SalaryProps) => salary.id !== id),
             }));
+        });
+    },
+
+    cleanUpSalary: () => {
+        set({
+            salaries: [],
         });
     },
 }));
