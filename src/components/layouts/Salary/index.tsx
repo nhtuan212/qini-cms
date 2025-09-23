@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import SalaryTopContent from "./SalaryTopContent";
 import useSalaryColumn from "./useSalaryColumn";
+import { SalaryTotal } from "./SalaryForm/SalaryReview";
 import Table from "@/components/Table";
 import Accordion, { AccordionItem } from "@/components/Accordion";
 import { useProfileStore } from "@/stores/useProfileStore";
@@ -10,9 +12,10 @@ import { StaffProps } from "@/stores/useStaffStore";
 import { SalaryProps, useSalaryStore } from "@/stores/useSalaryStore";
 import { formatCurrency, formatDate, isEmpty } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
-import { SalaryTotal } from "./SalaryForm/SalaryReview";
 
 export default function Salary({ staffById }: { staffById?: StaffProps }) {
+    const searchParams = useSearchParams();
+
     //** Stores */
     const { profile } = useProfileStore();
     const { isLoading, salaries, getSalaries, cleanUpSalary } = useSalaryStore();
@@ -23,12 +26,20 @@ export default function Salary({ staffById }: { staffById?: StaffProps }) {
     //** Effects */
     useEffect(() => {
         if (staffById && !isEmpty(staffById)) {
-            getSalaries(staffById.id);
+            getSalaries({ staffId: staffById.id });
+            return;
+        }
+
+        if (searchParams.get("startDate") && searchParams.get("endDate")) {
+            getSalaries({
+                startDate: searchParams.get("startDate"),
+                endDate: searchParams.get("endDate"),
+            });
             return;
         }
 
         getSalaries();
-    }, [getSalaries, staffById]);
+    }, [getSalaries, staffById, searchParams]);
 
     useEffect(() => {
         return () => {
