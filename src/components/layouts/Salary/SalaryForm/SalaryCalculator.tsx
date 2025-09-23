@@ -13,7 +13,7 @@ import { useStaffStore } from "@/stores/useStaffStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useSalaryStore } from "@/stores/useSalaryStore";
 import { useAlertStore } from "@/stores/useAlertStore";
-import { formatDate } from "@/utils";
+import { formatDate, calculateWorkingDaysInRange, calculateWorkingDays } from "@/utils";
 import { TEXT } from "@/constants";
 import { FormSalaryProps } from ".";
 import {
@@ -47,7 +47,7 @@ export default function SalaryCalculator({
     handleSubmit,
 }: SalaryCalculatorProps) {
     //** Stores */
-    const { staff } = useStaffStore();
+    const { staff, getStaffById } = useStaffStore();
     const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId, cleanUpTimeSheet } =
         useTimeSheetStore();
     const { isLoading: isLoadingSalary, createSalary } = useSalaryStore();
@@ -73,11 +73,21 @@ export default function SalaryCalculator({
     const onSubmit = (data: FormSalaryProps) => {
         const target = Math.floor(timeSheetByStaffId.totalTarget * 0.01);
 
+        // Calculate working days for non-target staff
+        const monthlyWorkingDays = calculateWorkingDaysInRange(
+            data.dateRange.start.toString(),
+            data.dateRange.end.toString(),
+        );
+
+        const actualWorkingDays = calculateWorkingDays(timeSheetByStaffId.data); // Ngày công thực tế từ timesheet
+
         const result = {
             ...data,
             name: TEXT.SALARY_PERIOD,
             target,
             workingHours: timeSheetByStaffId.totalWorkingHours,
+            monthlyWorkingDays,
+            actualWorkingDays,
             startDate: data.dateRange.start.toString(),
             endDate: data.dateRange.end.toString(),
         };
@@ -121,11 +131,13 @@ export default function SalaryCalculator({
                             onSelectionChange={value => {
                                 const staffId = value.currentKey as string;
 
+                                getStaffById(staffId).then(res => {
+                                    setValue("salary", res.salary || 25000);
+                                });
+
                                 getTimeSheetByStaffId(staffId, {
                                     startDate: formatDate(startDate, "YYYY-MM-DD"),
                                     endDate: formatDate(endDate, "YYYY-MM-DD"),
-                                }).then(res => {
-                                    setValue("salary", res.salary || 25000);
                                 });
 
                                 field.onChange(staffId);

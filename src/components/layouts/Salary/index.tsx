@@ -57,7 +57,7 @@ export default function Salary({ staffById }: { staffById?: StaffProps }) {
                         title={`${TEXT.SALARY_PERIOD}: ${formatDate(salary.startDate)} - ${formatDate(salary.endDate)}`}
                         subtitle={<b>{formatCurrency(salary.totalSalary)}</b>}
                     >
-                        <SalaryTotal {...salary} />
+                        <SalaryTotal staffById={staffById} {...salary} />
                     </AccordionItem>
                 ))}
             </Accordion>

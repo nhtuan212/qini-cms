@@ -271,3 +271,10 @@ export { encryptPasswordRSA, generateRSAKeyPair } from "./crypto";
 
 // Location
 export { verifyLocation, getCurrentLocation } from "./location";
+
+// Working Days
+export {
+    calculateWorkingDays,
+    calculateWorkingDaysInMonth,
+    calculateWorkingDaysInRange,
+} from "./workingDays";

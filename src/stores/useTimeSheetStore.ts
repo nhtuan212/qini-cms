@@ -48,7 +48,7 @@ interface TimeSheetActions {
             startDate?: string;
             endDate?: string;
         },
-    ) => Promise<TimeSheetProps>;
+    ) => Promise<void>;
     createTimeSheet: (
         params: TimeSheetProps | TimeSheetProps[],
     ) => Promise<TimeSheetProps | TimeSheetProps[]>;
@@ -131,7 +131,7 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
 
             const data = res.data.map((item: TimeSheetProps) => convertKeysToCamelCase(item));
 
-            set({
+            return set({
                 timeSheetByStaffId: {
                     data,
                     totalTarget: res.totalTarget,
@@ -141,8 +141,6 @@ export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((se
                     pagination: res.pagination,
                 },
             });
-
-            return convertKeysToCamelCase(res.data);
         });
     },
 
