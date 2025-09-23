@@ -10,7 +10,7 @@ import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CalendarDate, RangeValue } from "@heroui/react";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { camelCaseQueryString, getDateTime } from "@/utils";
+import { camelCaseQueryString } from "@/utils";
 import { ROLE, ROUTE, TEXT } from "@/constants";
 
 export default function SalaryTopContent() {
@@ -22,10 +22,7 @@ export default function SalaryTopContent() {
     const { getModal } = useModalStore();
 
     //** States */
-    const [dateValue, setDateValue] = useState<RangeValue<CalendarDate>>({
-        start: getDateTime().firstDayOfMonth,
-        end: getDateTime().lastDayOfMonth,
-    });
+    const [dateValue, setDateValue] = useState<RangeValue<CalendarDate> | null>(null);
 
     //** Render */
     return (
@@ -35,7 +32,7 @@ export default function SalaryTopContent() {
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-x-2">
                     <DateRangePicker
-                        className="max-w-sm"
+                        className="w-sm"
                         value={dateValue}
                         onChange={newValue => {
                             setDateValue({
@@ -50,17 +47,22 @@ export default function SalaryTopContent() {
                             isIconOnly
                             variant="light"
                             color="default"
-                            onPress={() => router.push(ROUTE.SALARY)}
+                            onPress={() => {
+                                router.push(ROUTE.SALARY);
+                                setDateValue(null);
+                            }}
                             startContent={<XMarkIcon className="w-4 h-4" />}
                         />
                     )}
 
                     <Button
                         onPress={() => {
+                            if (!dateValue) return;
+
                             router.push(
                                 camelCaseQueryString({
-                                    startDate: dateValue.start.toString(),
-                                    endDate: dateValue.end.toString(),
+                                    startDate: dateValue?.start.toString(),
+                                    endDate: dateValue?.end.toString(),
                                 }),
                             );
                         }}
