@@ -1,21 +1,22 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Input from "@/components/Input";
-import ErrorMessage from "@/components/ErrorMessage";
+import StaffConfigSalary from "./StaffConfigSalary";
+import StaffConfigInformation from "./StaffConfigInformation";
 import Button from "@/components/Button";
-import PasswordInput from "@/components/PasswordInput";
 import { useForm } from "react-hook-form";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { TEXT } from "@/constants";
 import { encryptPasswordRSA } from "@/utils";
 import { ModalActionProps } from "@/lib/types";
+import { TEXT } from "@/constants";
 
-type FormValues = {
+export type FormStaffProps = {
     name: string;
     salary: number;
     password: string;
+    salaryType: string;
+    isTarget: boolean;
 };
 
 export default function StaffModal() {
@@ -28,23 +29,26 @@ export default function StaffModal() {
 
     //** React hook form */
     const defaultValues = {
-        name: action === ModalActionProps.UPDATE ? staffById.name : "",
-        salary: action === ModalActionProps.UPDATE ? staffById.salary : 0,
+        name: staffById.name || "",
+        salary: staffById.salary || 0,
         password: "",
+        salaryType: staffById.salaryType || "",
+        isTarget: staffById.isTarget || false,
     };
 
     const {
-        register,
+        control,
         handleSubmit,
         reset,
         setValue,
+        watch,
         formState: { errors },
-    } = useForm<FormValues>({
+    } = useForm<FormStaffProps>({
         values: defaultValues,
         criteriaMode: "all",
     });
 
-    const onSubmit = async (data: FormValues) => {
+    const onSubmit = async (data: FormStaffProps) => {
         const result = {
             ...data,
             ...(data.password && { password: encryptPasswordRSA(data.password) }),
@@ -85,36 +89,11 @@ export default function StaffModal() {
     }, [setValue, action, staffById]);
 
     return (
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-            <Input
-                label={TEXT.NAME}
-                placeholder={TEXT.ENTER_NAME}
-                {...register("name", {
-                    required: `${TEXT.NAME} ${TEXT.IS_REQUIRED}`,
-                })}
-                isInvalid={!!errors.name}
-                errorMessage={<ErrorMessage errors={errors} name={"name"} />}
-            />
-
-            <Input
-                label={TEXT.SALARY}
-                placeholder={TEXT.SALARY}
-                {...register("salary", {
-                    required: `${TEXT.SALARY} ${TEXT.IS_REQUIRED}`,
-                })}
-            />
-
-            <PasswordInput
-                variant="bordered"
-                {...register("password", {
-                    required:
-                        action === ModalActionProps.CREATE
-                            ? `${TEXT.PASSWORD} ${TEXT.IS_REQUIRED}`
-                            : false,
-                })}
-                isInvalid={!!errors.password}
-                errorMessage={<ErrorMessage errors={errors} name={"password"} />}
-            />
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid sm:grid-cols-2 gap-4">
+                <StaffConfigInformation control={control} errors={errors} />
+                <StaffConfigSalary control={control} watch={watch} />
+            </div>
 
             <div className="flex flex-row-reverse gap-2">
                 <Button type="submit">{TEXT.SAVE}</Button>

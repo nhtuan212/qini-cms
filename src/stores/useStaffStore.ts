@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { fetchData } from "@/utils/fetch";
 import { STATUS_CODE, URL } from "@/constants";
-import { convertKeysToCamelCase, convertKeysToSnakeCase } from "@/utils";
+import { convertKeysToCamelCase } from "@/utils";
 
 export type StaffProps = {
     [key: string]: any;
@@ -112,13 +112,11 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
             isLoading: true,
         });
 
-        const body = JSON.stringify(convertKeysToSnakeCase(bodyParams));
-
         return await fetchData({
             endpoint: `${URL.STAFF}/${id}`,
             options: {
                 method: "PUT",
-                body,
+                body: JSON.stringify(bodyParams),
             },
         }).then(res => {
             const data = convertKeysToCamelCase(res.data) as StaffProps;

@@ -50,6 +50,7 @@ export default function Staff() {
                     onPress={() =>
                         getModal({
                             isOpen: true,
+                            size: "3xl",
                             modalHeader: TEXT.ADD_STAFF,
                             modalBody: <StaffModal />,
                         })

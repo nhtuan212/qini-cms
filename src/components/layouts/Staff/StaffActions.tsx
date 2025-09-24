@@ -6,6 +6,7 @@ import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
 import {
+    ArrowPathRoundedSquareIcon,
     EllipsisVerticalIcon,
     PauseCircleIcon,
     PencilSquareIcon,
@@ -44,6 +45,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
 
         await getModal({
             isOpen: true,
+            size: "3xl",
             modalHeader: TEXT.UPDATE_STAFF,
             action: ModalActionProps.UPDATE,
             isDismissable: false,
@@ -107,6 +109,14 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                     onPress={() => handleInActiveStaff(id)}
                 >
                     {TEXT.IN_ACTIVE}
+                </DropdownItem>
+                <DropdownItem
+                    key="resetPassword"
+                    startContent={<ArrowPathRoundedSquareIcon className="w-5" />}
+                    textValue={TEXT.RESET_PASSWORD}
+                    onPress={() => {}}
+                >
+                    {TEXT.RESET_PASSWORD}
                 </DropdownItem>
                 <DropdownItem
                     key="delete"
