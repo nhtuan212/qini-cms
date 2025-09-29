@@ -1,23 +1,22 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import SalaryTopContent from "./SalaryTopContent";
 import useSalaryColumn from "./useSalaryColumn";
-import { SalaryTotal } from "./SalaryForm/SalaryReview";
+import SalaryTotal, { SalaryTotalProps } from "./SalaryTotal";
+import { Accordion, AccordionItem } from "@/components/Accordion";
 import Table from "@/components/Table";
-import Accordion, { AccordionItem } from "@/components/Accordion";
-import { useProfileStore } from "@/stores/useProfileStore";
 import { StaffProps } from "@/stores/useStaffStore";
 import { SalaryProps, useSalaryStore } from "@/stores/useSalaryStore";
 import { formatCurrency, formatDate, isEmpty } from "@/utils";
-import { ROLE, TEXT } from "@/constants";
+import { ROUTE, TEXT } from "@/constants";
 
 export default function Salary({ staffById }: { staffById?: StaffProps }) {
+    const pathname = usePathname();
     const searchParams = useSearchParams();
 
     //** Stores */
-    const { profile } = useProfileStore();
     const { isLoading, salaries, getSalaries, cleanUpSalary } = useSalaryStore();
 
     //** Always call hooks at the top level */
@@ -48,7 +47,7 @@ export default function Salary({ staffById }: { staffById?: StaffProps }) {
     }, [cleanUpSalary]);
 
     //** Render */
-    if (profile.role !== ROLE.ADMIN) {
+    if (pathname !== ROUTE.SALARY) {
         return (
             <Accordion>
                 {salaries.map((salary: SalaryProps) => (
@@ -57,12 +56,13 @@ export default function Salary({ staffById }: { staffById?: StaffProps }) {
                         title={`${TEXT.SALARY_PERIOD}: ${formatDate(salary.startDate)} - ${formatDate(salary.endDate)}`}
                         subtitle={<b>{formatCurrency(salary.totalSalary)}</b>}
                     >
-                        <SalaryTotal staffById={staffById} {...salary} />
+                        <SalaryTotal {...(salary as SalaryTotalProps)} />
                     </AccordionItem>
                 ))}
             </Accordion>
         );
     }
+
     return (
         <Table
             rows={salaries}

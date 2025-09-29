@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import SalaryTotal, { SalaryTotalProps } from "./SalaryTotal";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -8,7 +9,6 @@ import { SalaryProps, useSalaryStore } from "@/stores/useSalaryStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { formatCurrency, formatDate } from "@/utils";
 import { TEXT } from "@/constants";
-import { SalaryTotal } from "./SalaryForm/SalaryReview";
 
 //** Custom hook */
 export default function useSalaryColumn() {
@@ -71,7 +71,7 @@ export default function useSalaryColumn() {
             name: "",
             className: "min-w-24",
             content: (params: SalaryProps) => (
-                <div className="flex items-center gap-x-2">
+                <div className="flex justify-end items-center gap-x-2">
                     <Button
                         isIconOnly
                         size="sm"
@@ -80,7 +80,7 @@ export default function useSalaryColumn() {
                             getModal({
                                 isOpen: true,
                                 modalHeader: params.row.staffName,
-                                modalBody: <SalaryTotal {...params.row} />,
+                                modalBody: <SalaryTotal {...(params.row as SalaryTotalProps)} />,
                             })
                         }
                     />

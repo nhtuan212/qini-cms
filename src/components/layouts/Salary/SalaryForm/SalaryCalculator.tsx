@@ -13,9 +13,15 @@ import { useStaffStore } from "@/stores/useStaffStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useSalaryStore } from "@/stores/useSalaryStore";
 import { useAlertStore } from "@/stores/useAlertStore";
-import { formatDate, calculateWorkingDaysInRange, calculateWorkingDays } from "@/utils";
+import {
+    formatDate,
+    calculateWorkingDaysInRange,
+    calculateWorkingDays,
+    calculateWorkingHoursWithBreak,
+} from "@/utils";
 import { TEXT } from "@/constants";
 import { FormSalaryProps } from ".";
+import { SalaryTypeProps } from "@/lib/types";
 import {
     Control,
     Controller,
@@ -47,7 +53,7 @@ export default function SalaryCalculator({
     handleSubmit,
 }: SalaryCalculatorProps) {
     //** Stores */
-    const { staff, getStaffById } = useStaffStore();
+    const { staff, staffById, getStaffById } = useStaffStore();
     const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId, cleanUpTimeSheet } =
         useTimeSheetStore();
     const { isLoading: isLoadingSalary, createSalary } = useSalaryStore();
@@ -70,23 +76,24 @@ export default function SalaryCalculator({
     const startDate = dateRangeWatched.start.toString();
     const endDate = dateRangeWatched.end.toString();
 
+    //** Functions */
     const onSubmit = (data: FormSalaryProps) => {
         const target = Math.floor(timeSheetByStaffId.totalTarget * 0.01);
 
         // Calculate working days for non-target staff
-        const monthlyWorkingDays = calculateWorkingDaysInRange(
+        const workingDays = calculateWorkingDaysInRange(
             data.dateRange.start.toString(),
             data.dateRange.end.toString(),
         );
-
         const actualWorkingDays = calculateWorkingDays(timeSheetByStaffId.data); // Ngày công thực tế từ timesheet
+        const { totalWorkingHours } = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
 
         const result = {
             ...data,
             name: TEXT.SALARY_PERIOD,
             target,
-            workingHours: timeSheetByStaffId.totalWorkingHours,
-            monthlyWorkingDays,
+            workingHours: totalWorkingHours,
+            workingDays,
             actualWorkingDays,
             startDate: data.dateRange.start.toString(),
             endDate: data.dateRange.end.toString(),
@@ -135,18 +142,25 @@ export default function SalaryCalculator({
                                     setValue("salary", res.salary || 25000);
                                 });
 
+                                // Keep the same date range to calculate salary when change staff
                                 getTimeSheetByStaffId(staffId, {
                                     startDate: formatDate(startDate, "YYYY-MM-DD"),
                                     endDate: formatDate(endDate, "YYYY-MM-DD"),
                                 });
 
                                 field.onChange(staffId);
+
+                                reset({
+                                    staffId: getValues("staffId"),
+                                    salary: getValues("salary"),
+                                    dateRange: getValues("dateRange"),
+                                });
                             }}
                         >
                             {orderedStaffByActive.map(staff => (
-                                <SelectItem
-                                    key={staff.id}
-                                >{`${staff.name} ${staff.isActive ? "" : `(${TEXT.OFF_FROM} ${formatDate(staff.updatedAt)})`}`}</SelectItem>
+                                <SelectItem key={staff.id}>
+                                    {`${staff.name} ${staff.isActive ? "" : `(${TEXT.OFF_FROM} ${formatDate(staff.updatedAt)})`}`}
+                                </SelectItem>
                             ))}
                         </Select>
                     )}
@@ -186,6 +200,34 @@ export default function SalaryCalculator({
                         />
                     )}
                 />
+
+                {staffById.salaryType === SalaryTypeProps.MONTHLY && (
+                    <Controller
+                        name="lunchAllowancePerDay"
+                        control={control}
+                        render={({ field }) => (
+                            <NumberInput
+                                label={`${TEXT.SALARY_BY_LUNCH} (Mỗi ngày)`}
+                                value={field.value || 0}
+                                onValueChange={field.onChange}
+                            />
+                        )}
+                    />
+                )}
+
+                {staffById.salaryType === SalaryTypeProps.MONTHLY && (
+                    <Controller
+                        name="gasolineAllowancePerDay"
+                        control={control}
+                        render={({ field }) => (
+                            <NumberInput
+                                label={`${TEXT.SALARY_BY_TRANSPORT} (Mỗi ngày)`}
+                                value={field.value || 0}
+                                onValueChange={field.onChange}
+                            />
+                        )}
+                    />
+                )}
 
                 <Controller
                     name="bonus"

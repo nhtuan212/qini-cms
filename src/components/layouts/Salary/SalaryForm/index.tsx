@@ -1,24 +1,28 @@
 import React, { useEffect } from "react";
-import SalaryReview from "./SalaryReview";
+import SalaryHourlyReview from "./SalaryHourlyReview";
 import SalaryCalculator from "./SalaryCalculator";
+import SalaryMonthlyReview from "./SalaryMonthlyReview";
 import Loading from "@/components/Loading";
 import { CalendarDate, RangeValue } from "@heroui/react";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useForm } from "react-hook-form";
 import { getDateTime } from "@/utils";
+import { SalaryTypeProps } from "@/lib/types";
 
 export interface FormSalaryProps {
     staffId: string;
     dateRange: RangeValue<CalendarDate>;
     salary: number;
+    lunchAllowancePerDay: number;
+    gasolineAllowancePerDay: number;
     bonus: number;
     description: string;
 }
 
 export default function SalaryForm() {
     //** Stores */
-    const { isLoading, getStaff } = useStaffStore();
+    const { isLoading, staffById, getStaff } = useStaffStore();
     const { isLoading: isLoadingTimeSheet } = useTimeSheetStore();
 
     //** React hook form */
@@ -29,6 +33,8 @@ export default function SalaryForm() {
             end: getDateTime().lastDayOfMonth,
         },
         salary: 0,
+        lunchAllowancePerDay: 0,
+        gasolineAllowancePerDay: 0,
         bonus: 0,
         description: "",
     };
@@ -44,11 +50,19 @@ export default function SalaryForm() {
     }, [getStaff]);
 
     //** Render */
+    const renderSalaryReview = () => {
+        if (staffById.salaryType === SalaryTypeProps.HOURLY) {
+            return <SalaryHourlyReview watch={watch} />;
+        }
+
+        return <SalaryMonthlyReview watch={watch} />;
+    };
+
     return (
-        <div className="flex">
+        <div className="grid md:grid-cols-2 gap-4">
             {(isLoading || isLoadingTimeSheet) && <Loading />}
 
-            <div className="flex-1">
+            <div>
                 <SalaryCalculator
                     control={control}
                     setValue={setValue}
@@ -60,9 +74,7 @@ export default function SalaryForm() {
                 />
             </div>
 
-            <div className="flex-1">
-                <SalaryReview watch={watch} />
-            </div>
+            <div>{renderSalaryReview()}</div>
         </div>
     );
 }

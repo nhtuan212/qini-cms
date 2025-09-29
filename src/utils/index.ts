@@ -278,3 +278,10 @@ export {
     calculateWorkingDaysInMonth,
     calculateWorkingDaysInRange,
 } from "./workingDays";
+
+// Working Hours with Break
+export {
+    calculateWorkingHoursWithBreak,
+    calculateDailyWorkingHoursWithBreak,
+    formatWorkingHoursBreakdown,
+} from "./workingHoursWithBreak";
