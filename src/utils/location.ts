@@ -21,13 +21,13 @@ export const ALLOWED_LOCATIONS: LocationBounds[] = [
         lng: 106.76264095290371,
         radiusMeters: 100,
     },
-    // {
-    //     id: "location-2",
-    //     name: "CaAdv",
-    //     lat: 10.782565871848758,
-    //     lng: 106.69742843582436,
-    //     radiusMeters: 50,
-    // },
+    {
+        id: "location-2",
+        name: "CaAdv",
+        lat: 10.782565871848758,
+        lng: 106.69742843582436,
+        radiusMeters: 50,
+    },
 ];
 
 const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
