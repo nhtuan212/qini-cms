@@ -4,6 +4,7 @@ import {
     calculateWorkingDaysInRange,
     calculateWorkingHoursWithBreak,
     formatCurrency,
+    getDateTime,
 } from "@/utils";
 import { TEXT } from "@/constants";
 import { SalaryTypeProps } from "@/lib/types";
@@ -45,6 +46,8 @@ export default function SalaryTotal(props: SalaryTotalProps) {
     const actualWorkingDays = timeSheetByStaffId.data.length;
     const target = targetProps * 100;
 
+    let workingMonth = 0;
+    let workingDays = 0;
     let calculatedSalary = 0;
     let total = 0;
     let totalLunch = 0;
@@ -58,10 +61,14 @@ export default function SalaryTotal(props: SalaryTotalProps) {
 
     switch (salaryType) {
         case SalaryTypeProps.MONTHLY: {
-            const workingDays = calculateWorkingDaysInRange(startDate, endDate);
+            workingMonth = calculateWorkingDaysInRange(
+                getDateTime().firstDayOfMonth.toString(),
+                getDateTime().lastDayOfMonth.toString(),
+            );
+            workingDays = calculateWorkingDaysInRange(startDate, endDate);
             const { totalWorkingHours } = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
 
-            const hourlySalaryRate = salary / (workingDays * 7.5);
+            const hourlySalaryRate = salary / (workingMonth * 7.5);
             const calculatedTotal = Math.floor(hourlySalaryRate * totalWorkingHours);
 
             totalLunch = lunchAllowancePerDay * workingDays;
@@ -115,7 +122,7 @@ export default function SalaryTotal(props: SalaryTotalProps) {
                     </p>
                     <span className="text-sm">
                         {salaryType === SalaryTypeProps.MONTHLY
-                            ? `${formatCurrency(salary)} / ${calculateWorkingDaysInRange(startDate, endDate)} / 7.5h * ${workingHours}h (Trừ ${totalBreakHours}h nghỉ)`
+                            ? `${formatCurrency(salary)} / ${workingMonth} / 7.5h * ${workingHours}h (Trừ ${totalBreakHours}h nghỉ)`
                             : `${formatCurrency(salary)} * ${workingHours}h`}
                     </span>
                 </div>

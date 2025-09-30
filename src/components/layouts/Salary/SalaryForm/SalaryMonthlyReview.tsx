@@ -8,6 +8,7 @@ import {
     calculateWorkingDaysInRange,
     formatCurrency,
     calculateWorkingHoursWithBreak,
+    getDateTime,
 } from "@/utils";
 import { TEXT } from "@/constants";
 import { FormSalaryProps } from ".";
@@ -69,8 +70,8 @@ export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps)
                         <p className="text-gray-500">{TEXT.STAFF_STANDARD_WORKING_DAYS}</p>
                         <b>
                             {calculateWorkingDaysInRange(
-                                dateRange.start.toString(),
-                                dateRange.end.toString(),
+                                getDateTime().firstDayOfMonth.toString(),
+                                getDateTime().lastDayOfMonth.toString(),
                             )}
                         </b>
                     </div>
