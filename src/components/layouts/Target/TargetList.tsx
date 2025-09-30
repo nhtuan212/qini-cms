@@ -35,14 +35,13 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
 
     return (
         <div className="relative min-h-screen flex flex-col gap-y-4">
-            {isLoadingTarget && <Loading />}
+            {isLoading && <Loading />}
 
             {targets.map(target => (
                 <div
                     key={target.id}
                     className="relative flex flex-col gap-y-6 bg-white p-6 rounded-xl shadow-md odd:bg-gray-100"
                 >
-                    {isLoading && <Loading />}
                     <div className="flex items-center gap-x-2">
                         <Button
                             size="sm"
