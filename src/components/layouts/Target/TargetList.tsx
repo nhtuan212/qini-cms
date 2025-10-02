@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import TargetShifts from "./TargetShifts";
 import Loading from "@/components/Loading";
 import Button from "@/components/Button";
@@ -11,6 +11,9 @@ import { formatCurrency, formatDate } from "@/utils";
 import { TEXT } from "@/constants";
 
 export default function TargetList({ targets }: { targets: TargetProps[] }) {
+    //** Refs */
+    const targetRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
     //** Stores */
     const { isLoading: isLoadingTarget } = useTargetStore();
     const { isLoading: isLoadingTargetShift } = useTargetShiftStore();
@@ -22,6 +25,23 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
     //** Variables */
     const isLoading = isLoadingTarget || isLoadingTargetShift || isLoadingInvoice;
 
+    //** Functions */
+    const handleToggleTarget = (targetId: string) => {
+        const newOpenTargetId = openTargetId === targetId ? null : targetId;
+        setOpenTargetId(newOpenTargetId);
+
+        // Scroll to the target div when opening
+        if (newOpenTargetId && targetRefs.current[targetId]) {
+            setTimeout(() => {
+                targetRefs.current[targetId]?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }, 100); // Small delay to ensure the content is rendered
+        }
+    };
+
+    //** Render */
     const renderTarget = (name: string, value: number) => {
         return (
             <div className="flex-1 flex items-center gap-x-2">
@@ -40,6 +60,9 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
             {targets.map(target => (
                 <div
                     key={target.id}
+                    ref={el => {
+                        targetRefs.current[target.id] = el;
+                    }}
                     className="relative flex flex-col gap-y-6 bg-white p-6 rounded-xl shadow-md odd:bg-gray-100"
                 >
                     <div className="flex items-center gap-x-2">
@@ -48,9 +71,7 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
                             variant="light"
                             color="default"
                             isIconOnly
-                            onPress={() =>
-                                setOpenTargetId(openTargetId === target.id ? null : target.id)
-                            }
+                            onPress={() => handleToggleTarget(target.id)}
                         >
                             <ChevronRightIcon
                                 className={twMerge(
