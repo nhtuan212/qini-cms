@@ -1,3 +1,5 @@
+import { getNonWorkingDaysInRange } from "./vietnamHolidays";
+
 /**
  * Calculates unique working days from timesheet data, excluding Sundays
  * @param timeSheetData - Array of timesheet records with date property
@@ -39,25 +41,11 @@ export const calculateWorkingDaysInMonth = (year: number, month: number): number
 };
 
 /**
- * Calculates working days for a date range (total days minus Sundays)
+ * Calculates working days for a date range excluding Vietnamese holidays and Sundays
  * @param startDate - Start date string (YYYY-MM-DD format)
  * @param endDate - End date string (YYYY-MM-DD format)
- * @returns Number of working days in the date range (excluding Sundays)
+ * @returns Number of working days in the date range (excluding Sundays and holidays)
  */
 export const calculateWorkingDaysInRange = (startDate: string, endDate: string): number => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    let workingDays = 0;
-    const currentDate = new Date(start);
-
-    while (currentDate <= end) {
-        if (currentDate.getDay() !== 0) {
-            // Not Sunday
-            workingDays++;
-        }
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return workingDays;
+    return getNonWorkingDaysInRange(startDate, endDate);
 };

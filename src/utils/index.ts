@@ -56,6 +56,27 @@ export const getDateTime = () => {
 };
 
 /**
+ * Gets the first and last day of a month based on a given date in Vietnam timezone
+ * @param dateString - Date string in YYYY-MM-DD format
+ * @returns Object with firstDayOfMonth and lastDayOfMonth
+ */
+export const getMonthRangeFromDate = (dateString: string) => {
+    // Parse the date in Vietnam timezone
+    const date = dayjs.utc(dateString).tz("Asia/Ho_Chi_Minh");
+    const year = date.year();
+    const month = date.month(); // dayjs month is 0-based
+
+    // Create first and last day of the month in Vietnam timezone
+    const firstDay = dayjs.utc().tz("Asia/Ho_Chi_Minh").year(year).month(month).date(1);
+    const lastDay = dayjs.utc().tz("Asia/Ho_Chi_Minh").year(year).month(month).endOf("month");
+
+    return {
+        firstDayOfMonth: firstDay.format("YYYY-MM-DD"),
+        lastDayOfMonth: lastDay.format("YYYY-MM-DD"),
+    };
+};
+
+/**
  * Checks if the provided data is empty.
  *
  * @param data - The data to check, which can be an array of strings or numbers, or an object.
@@ -285,3 +306,10 @@ export {
     calculateDailyWorkingHoursWithBreak,
     formatWorkingHoursBreakdown,
 } from "./workingHoursWithBreak";
+
+// Vietnam Holidays
+export {
+    isVietnamHoliday,
+    getVietnamHolidaysForYear,
+    getNonWorkingDaysInRange,
+} from "./vietnamHolidays";

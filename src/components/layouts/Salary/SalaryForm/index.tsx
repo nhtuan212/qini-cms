@@ -14,6 +14,7 @@ export interface FormSalaryProps {
     staffId: string;
     dateRange: RangeValue<CalendarDate>;
     salary: number;
+    paidLeave: number;
     lunchAllowancePerDay: number;
     gasolineAllowancePerDay: number;
     bonus: number;
@@ -33,6 +34,7 @@ export default function SalaryForm() {
             end: getDateTime().lastDayOfMonth,
         },
         salary: 0,
+        paidLeave: 0,
         lunchAllowancePerDay: 0,
         gasolineAllowancePerDay: 0,
         bonus: 0,

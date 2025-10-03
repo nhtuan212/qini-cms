@@ -8,7 +8,7 @@ import {
     calculateWorkingDaysInRange,
     formatCurrency,
     calculateWorkingHoursWithBreak,
-    getDateTime,
+    getMonthRangeFromDate,
 } from "@/utils";
 import { TEXT } from "@/constants";
 import { FormSalaryProps } from ".";
@@ -24,6 +24,7 @@ export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps)
 
     //** Variables */
     const salary = watch("salary");
+    const paidLeave = watch("paidLeave") || 0;
     const bonus = watch("bonus") || 0;
     const description = watch("description");
     const dateRange = watch("dateRange");
@@ -34,6 +35,9 @@ export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps)
     const { totalWorkingHours, totalBreakHours } = calculateWorkingHoursWithBreak(
         timeSheetByStaffId.data,
     );
+
+    // Get month range from the selected date range
+    const monthRange = getMonthRangeFromDate(dateRange.start.toString());
 
     //** Effects */
     useEffect(() => {
@@ -70,8 +74,8 @@ export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps)
                         <p className="text-gray-500">{TEXT.STAFF_STANDARD_WORKING_DAYS}</p>
                         <b>
                             {calculateWorkingDaysInRange(
-                                getDateTime().firstDayOfMonth.toString(),
-                                getDateTime().lastDayOfMonth.toString(),
+                                monthRange.firstDayOfMonth,
+                                monthRange.lastDayOfMonth,
                             )}
                         </b>
                     </div>
@@ -92,6 +96,7 @@ export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps)
                 <SalaryTotal
                     salary={salary}
                     salaryType={SalaryTypeProps.MONTHLY}
+                    paidLeave={paidLeave}
                     lunchAllowancePerDay={lunchAllowancePerDay}
                     gasolineAllowancePerDay={gasolineAllowancePerDay}
                     workingHours={totalWorkingHours}

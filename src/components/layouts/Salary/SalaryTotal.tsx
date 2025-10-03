@@ -4,7 +4,7 @@ import {
     calculateWorkingDaysInRange,
     calculateWorkingHoursWithBreak,
     formatCurrency,
-    getDateTime,
+    getMonthRangeFromDate,
 } from "@/utils";
 import { TEXT } from "@/constants";
 import { SalaryTypeProps } from "@/lib/types";
@@ -13,6 +13,7 @@ import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 export interface SalaryTotalProps {
     staffId?: string;
     salary: number;
+    paidLeave?: number;
     lunchAllowancePerDay?: number;
     gasolineAllowancePerDay?: number;
     workingHours: number;
@@ -34,6 +35,7 @@ export default function SalaryTotal(props: SalaryTotalProps) {
         salary,
         lunchAllowancePerDay = 0,
         gasolineAllowancePerDay = 0,
+        paidLeave = 0,
         workingHours,
         target: targetProps,
         bonus,
@@ -62,8 +64,8 @@ export default function SalaryTotal(props: SalaryTotalProps) {
     switch (salaryType) {
         case SalaryTypeProps.MONTHLY: {
             workingMonth = calculateWorkingDaysInRange(
-                getDateTime().firstDayOfMonth.toString(),
-                getDateTime().lastDayOfMonth.toString(),
+                getMonthRangeFromDate(startDate).firstDayOfMonth,
+                getMonthRangeFromDate(endDate).lastDayOfMonth,
             );
             workingDays = calculateWorkingDaysInRange(startDate, endDate);
             const { totalWorkingHours } = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
@@ -71,8 +73,8 @@ export default function SalaryTotal(props: SalaryTotalProps) {
             const hourlySalaryRate = salary / (workingMonth * 7.5);
             const calculatedTotal = Math.floor(hourlySalaryRate * totalWorkingHours);
 
-            totalLunch = lunchAllowancePerDay * workingDays;
-            totalTransport = gasolineAllowancePerDay * workingDays;
+            totalLunch = lunchAllowancePerDay * (workingDays - paidLeave);
+            totalTransport = gasolineAllowancePerDay * (workingDays - paidLeave);
             totalBonus = totalLunch + totalTransport + bonus;
 
             calculatedSalary = calculatedTotal >= salary ? salary : calculatedTotal;
@@ -130,6 +132,13 @@ export default function SalaryTotal(props: SalaryTotalProps) {
                 <b>{formatCurrency(calculatedSalary)}</b>
             </Card>
 
+            {paidLeave > 0 && (
+                <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
+                    <p>{TEXT.PAID_LEAVE}</p>
+                    <b>{paidLeave}</b>
+                </Card>
+            )}
+
             {target > 0 && (
                 <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
                     <div className="text-gray-500">
@@ -157,16 +166,19 @@ export default function SalaryTotal(props: SalaryTotalProps) {
 
             {bonus > 0 && (
                 <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
-                    <div className="text-gray-500">
-                        <p>{TEXT.BONUS}</p>
-                        {description && (
-                            <p className="text-xs text-gray-600 mt-1 whitespace-pre-line">
-                                {description}
-                            </p>
-                        )}
-                    </div>
-
+                    <p>{TEXT.BONUS}</p>
                     <b>{formatCurrency(bonus)}</b>
+                </Card>
+            )}
+
+            {description && (
+                <Card className="border p-2">
+                    <div>
+                        <p>{TEXT.NOTE}:</p>
+                        <p className="text-xs text-gray-600 mt-1 whitespace-pre-line">
+                            {description}
+                        </p>
+                    </div>
                 </Card>
             )}
 

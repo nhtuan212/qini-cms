@@ -44,6 +44,12 @@ export default function useSalaryColumn() {
             content: (params: SalaryProps) => params.row.workingHours,
         },
         {
+            key: TEXT.PAID_LEAVE,
+            name: TEXT.PAID_LEAVE,
+            className: "min-w-24",
+            content: (params: SalaryProps) => params.row.paidLeave,
+        },
+        {
             key: TEXT.TARGET,
             name: TEXT.TARGET,
             className: "min-w-24",
@@ -52,19 +58,21 @@ export default function useSalaryColumn() {
         {
             key: TEXT.BONUS,
             name: TEXT.BONUS,
-            content: (params: SalaryProps) => (
-                <>
-                    <p>{formatCurrency(params.row.bonus)}</p>
-                    <p className="text-xs text-gray-600 mt-1 whitespace-pre-line">
-                        {params.row.description}
-                    </p>
-                </>
-            ),
+            className: "min-w-28",
+            content: (params: SalaryProps) => formatCurrency(params.row.bonus),
         },
         {
             key: TEXT.TOTAL,
             name: TEXT.TOTAL,
-            content: (params: SalaryProps) => <b>{formatCurrency(params.row.totalSalary)}</b>,
+            className: "min-w-44",
+            content: (params: SalaryProps) => (
+                <>
+                    <b>{formatCurrency(params.row.totalSalary)}</b>
+                    <div className="text-xs text-gray-600 mt-1 whitespace-pre-line">
+                        {params.row.description}
+                    </div>
+                </>
+            ),
         },
         {
             key: "action",

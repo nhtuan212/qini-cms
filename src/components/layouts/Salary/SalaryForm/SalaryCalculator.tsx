@@ -66,8 +66,14 @@ export default function SalaryCalculator({
             if (a.isActive && !b.isActive) return -1;
             if (!a.isActive && b.isActive) return 1;
 
-            // Second priority: sort by updatedAt desc within same active status
-            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+            // Second priority: different sorting based on active status
+            if (a.isActive && b.isActive) {
+                // Inactive staff: sort by name alphabetically
+                return a.name.localeCompare(b.name);
+            } else {
+                // Active staff: sort by updatedAt desc (most recent first)
+                return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+            }
         });
     }, [staff]);
 
@@ -80,7 +86,7 @@ export default function SalaryCalculator({
     const onSubmit = (data: FormSalaryProps) => {
         const target = Math.floor(timeSheetByStaffId.totalTarget * 0.01);
 
-        // Calculate working days for non-target staff
+        // Calculate working days for non-target staff (excluding holidays)
         const workingDays = calculateWorkingDaysInRange(
             data.dateRange.start.toString(),
             data.dateRange.end.toString(),
@@ -107,7 +113,11 @@ export default function SalaryCalculator({
             });
 
             cleanUpTimeSheet();
-            reset();
+            reset({
+                staffId: getValues("staffId"),
+                salary: getValues("salary"),
+                dateRange: getValues("dateRange"),
+            });
         });
     };
 
@@ -171,6 +181,7 @@ export default function SalaryCalculator({
                     name="dateRange"
                     render={() => (
                         <DateRangePicker
+                            label={TEXT.DATE_PICKER}
                             className="w-full"
                             value={getValues("dateRange")}
                             onChange={value => {
@@ -202,31 +213,43 @@ export default function SalaryCalculator({
                 />
 
                 {staffById.salaryType === SalaryTypeProps.MONTHLY && (
-                    <Controller
-                        name="lunchAllowancePerDay"
-                        control={control}
-                        render={({ field }) => (
-                            <NumberInput
-                                label={`${TEXT.SALARY_BY_LUNCH} (Mỗi ngày)`}
-                                value={field.value || 0}
-                                onValueChange={field.onChange}
-                            />
-                        )}
-                    />
-                )}
+                    <>
+                        <Controller
+                            name="paidLeave"
+                            control={control}
+                            render={({ field }) => (
+                                <NumberInput
+                                    label={TEXT.PAID_LEAVE}
+                                    value={field.value || 0}
+                                    onValueChange={field.onChange}
+                                />
+                            )}
+                        />
 
-                {staffById.salaryType === SalaryTypeProps.MONTHLY && (
-                    <Controller
-                        name="gasolineAllowancePerDay"
-                        control={control}
-                        render={({ field }) => (
-                            <NumberInput
-                                label={`${TEXT.SALARY_BY_TRANSPORT} (Mỗi ngày)`}
-                                value={field.value || 0}
-                                onValueChange={field.onChange}
-                            />
-                        )}
-                    />
+                        <Controller
+                            name="lunchAllowancePerDay"
+                            control={control}
+                            render={({ field }) => (
+                                <NumberInput
+                                    label={`${TEXT.SALARY_BY_LUNCH} (Mỗi ngày)`}
+                                    value={field.value || 0}
+                                    onValueChange={field.onChange}
+                                />
+                            )}
+                        />
+
+                        <Controller
+                            name="gasolineAllowancePerDay"
+                            control={control}
+                            render={({ field }) => (
+                                <NumberInput
+                                    label={`${TEXT.SALARY_BY_TRANSPORT} (Mỗi ngày)`}
+                                    value={field.value || 0}
+                                    onValueChange={field.onChange}
+                                />
+                            )}
+                        />
+                    </>
                 )}
 
                 <Controller
@@ -237,7 +260,7 @@ export default function SalaryCalculator({
                             label={TEXT.BONUS}
                             value={field.value || 0}
                             onValueChange={value => {
-                                setValue("bonus", value);
+                                setValue("bonus", value || 0);
                                 trigger("description");
                             }}
                         />

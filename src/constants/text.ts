@@ -9,6 +9,7 @@ export const TEXT = {
     },
     ALLOWANCE: "Phụ cấp",
     DAY: "Ngày",
+    PAID_LEAVE: "Nghỉ phép",
     HOUR: "Giờ",
     UPDATE_STAFF: "Cập nhật nhân viên",
     LOGIN_YOUR_ACCOUNT: "Login in to your account",
