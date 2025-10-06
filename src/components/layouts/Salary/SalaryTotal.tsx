@@ -106,7 +106,7 @@ export default function SalaryTotal(props: SalaryTotalProps) {
         <div className="space-y-4">
             <h3 className="flex items-center gap-2 font-semibold">{TEXT.TOTAL}</h3>
 
-            {totalWorkingHours > 0 && (
+            {salaryType === SalaryTypeProps.MONTHLY && totalWorkingHours > 0 && (
                 <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
                     <p>{TEXT.ACTUAL_WORKING_DAYS}</p>
                     <div className="text-right">

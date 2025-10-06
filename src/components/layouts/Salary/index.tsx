@@ -54,7 +54,7 @@ export default function Salary({ staffById }: { staffById?: StaffProps }) {
                     <AccordionItem
                         key={salary.id}
                         title={`${TEXT.SALARY_PERIOD}: ${formatDate(salary.startDate)} - ${formatDate(salary.endDate)}`}
-                        subtitle={<b>{formatCurrency(salary.totalSalary)}</b>}
+                        subtitle={<b>{formatCurrency(salary.total)}</b>}
                     >
                         <SalaryTotal {...(salary as SalaryTotalProps)} />
                     </AccordionItem>
@@ -68,6 +68,7 @@ export default function Salary({ staffById }: { staffById?: StaffProps }) {
             rows={salaries}
             columns={columns}
             loading={isLoading}
+            className="[&>.tableContainer]:min-h-[45rem]"
             topContent={<SalaryTopContent />}
         />
     );

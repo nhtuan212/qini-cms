@@ -71,7 +71,7 @@ export default function SalaryHourlyReview({ watch }: SalaryHourlyReviewProps) {
                     salary={salary}
                     salaryType={SalaryTypeProps.HOURLY}
                     workingHours={timeSheetByStaffId.totalWorkingHours}
-                    target={timeSheetByStaffId.totalTarget}
+                    target={timeSheetByStaffId.totalTarget * 0.01}
                     bonus={bonus}
                     description={description}
                     startDate={dateRange.start.toString()}
