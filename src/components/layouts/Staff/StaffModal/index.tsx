@@ -14,7 +14,7 @@ import { TEXT } from "@/constants";
 export type FormStaffProps = {
     name: string;
     salary: number;
-    password: string;
+    password?: string;
     salaryType: string;
     isTarget: boolean;
 };
@@ -31,7 +31,6 @@ export default function StaffModal() {
     const defaultValues = {
         name: staffById.name || "",
         salary: staffById.salary || 0,
-        password: "",
         salaryType: staffById.salaryType || "",
         isTarget: staffById.isTarget || false,
     };
@@ -51,7 +50,9 @@ export default function StaffModal() {
     const onSubmit = async (data: FormStaffProps) => {
         const result = {
             ...data,
-            ...(data.password && { password: encryptPasswordRSA(data.password) }),
+            ...(data.password && {
+                password: encryptPasswordRSA(data.password),
+            }),
         };
 
         switch (action) {

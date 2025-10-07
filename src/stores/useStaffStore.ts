@@ -8,8 +8,8 @@ export type StaffProps = {
 };
 
 type StaffState = {
-    isLoading?: boolean;
-    isValidatePasswordLoading?: boolean;
+    isLoading: boolean;
+    isValidatePasswordLoading: boolean;
     staff: StaffProps[];
     staffById: StaffProps;
 };
@@ -32,6 +32,7 @@ type StaffAction = {
 
 const initialState: StaffState = {
     isLoading: false,
+    isValidatePasswordLoading: false,
     staff: [],
     staffById: {} as StaffProps,
 };
