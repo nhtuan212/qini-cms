@@ -71,7 +71,7 @@ export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps)
                     </div>
 
                     <div className="flex justify-between items-center gap-2">
-                        <p className="text-gray-500">{TEXT.STAFF_STANDARD_WORKING_DAYS}</p>
+                        <p className="text-gray-500">{TEXT.WORKING_MONTH}</p>
                         <b>
                             {calculateWorkingDaysInRange(
                                 monthRange.firstDayOfMonth,

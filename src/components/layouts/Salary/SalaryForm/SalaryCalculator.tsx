@@ -89,11 +89,11 @@ export default function SalaryCalculator({
 
         // Calculate working days for non-target staff (excluding holidays)
         const monthRange = getMonthRangeFromDate(data.dateRange.start.toString());
-        const workingDays = calculateWorkingDaysInRange(
+        const workingMonth = calculateWorkingDaysInRange(
             monthRange.firstDayOfMonth,
             monthRange.lastDayOfMonth,
         );
-        const actualWorkingDays = calculateWorkingDays(timeSheetByStaffId.data);
+        const workingDay = calculateWorkingDays(timeSheetByStaffId.data);
         const { totalWorkingHours } = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
 
         const result = {
@@ -101,8 +101,8 @@ export default function SalaryCalculator({
             name: TEXT.SALARY_PERIOD,
             target,
             workingHours: totalWorkingHours,
-            workingDays,
-            actualWorkingDays,
+            workingMonth,
+            workingDay,
             startDate: data.dateRange.start.toString(),
             endDate: data.dateRange.end.toString(),
         };

@@ -48,7 +48,7 @@ export const TEXT = {
     ADD_DATE: "Ngày tạo",
     TIME_SHEET: "Chấm công",
     ADD_TIME_SHEET: "Thêm chấm công",
-    STAFF_STANDARD_WORKING_DAYS: "Ngày công chuẩn",
+    WORKING_MONTH: "Ngày công tháng",
     ACTUAL_WORKING_DAYS: "Ngày công thực tế",
     WORKING_HOURS: "Giờ làm việc",
     TIME_NUMBER: "Số giờ",

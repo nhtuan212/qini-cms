@@ -37,16 +37,13 @@ export default function SalaryTotal(props: SalaryTotalProps) {
         gasolineAllowancePerDay = 0,
         paidLeave = 0,
         workingHours,
-        target: targetProps,
+        target,
         bonus,
         description,
         salaryType,
         startDate,
         endDate,
     } = props;
-
-    const actualWorkingDays = timeSheetByStaffId.data.length;
-    const target = targetProps * 100;
 
     let workingMonth = 0;
     let workingDays = 0;
@@ -57,9 +54,7 @@ export default function SalaryTotal(props: SalaryTotalProps) {
     let totalBonus = 0;
 
     // Calculate working hours with break time deduction
-    const { totalWorkingHours, totalBreakHours } = calculateWorkingHoursWithBreak(
-        timeSheetByStaffId.data,
-    );
+    const { totalBreakHours } = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
 
     switch (salaryType) {
         case SalaryTypeProps.MONTHLY: {
@@ -79,15 +74,13 @@ export default function SalaryTotal(props: SalaryTotalProps) {
             calculatedSalary = calculatedTotal >= salary ? salary : calculatedTotal;
 
             total = calculatedSalary + totalBonus;
+
             break;
         }
         case SalaryTypeProps.HOURLY:
             calculatedSalary = salary * workingHours;
-            total = Math.floor(
-                salary * timeSheetByStaffId.totalWorkingHours +
-                    timeSheetByStaffId.totalTarget * 0.01 +
-                    bonus,
-            );
+            total = Math.floor(calculatedSalary + target + bonus);
+
             break;
     }
 
@@ -104,15 +97,6 @@ export default function SalaryTotal(props: SalaryTotalProps) {
     return (
         <div className="space-y-4">
             <h3 className="flex items-center gap-2 font-semibold">{TEXT.TOTAL}</h3>
-
-            {salaryType === SalaryTypeProps.MONTHLY && totalWorkingHours > 0 && (
-                <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
-                    <p>{TEXT.ACTUAL_WORKING_DAYS}</p>
-                    <div className="text-right">
-                        <b>{actualWorkingDays}</b>
-                    </div>
-                </Card>
-            )}
 
             <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
                 <div className="text-gray-500">
@@ -131,6 +115,24 @@ export default function SalaryTotal(props: SalaryTotalProps) {
                 <b>{formatCurrency(calculatedSalary)}</b>
             </Card>
 
+            {salaryType === SalaryTypeProps.MONTHLY && workingDays > 0 && (
+                <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
+                    <p>{TEXT.WORKING_MONTH}</p>
+                    <div className="text-right">
+                        <b>{workingMonth}</b>
+                    </div>
+                </Card>
+            )}
+
+            {salaryType === SalaryTypeProps.MONTHLY && workingDays > 0 && (
+                <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
+                    <p>{TEXT.ACTUAL_WORKING_DAYS}</p>
+                    <div className="text-right">
+                        <b>{workingDays}</b>
+                    </div>
+                </Card>
+            )}
+
             {paidLeave > 0 && (
                 <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
                     <p>{TEXT.PAID_LEAVE}</p>
@@ -142,10 +144,10 @@ export default function SalaryTotal(props: SalaryTotalProps) {
                 <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
                     <div className="text-gray-500">
                         <p>{TEXT.TARGET}</p>
-                        <span className="text-sm">{`(${formatCurrency(target)} * 0.01)`}</span>
+                        <span className="text-sm">{`(${formatCurrency(target * 100)} * 0.01)`}</span>
                     </div>
 
-                    <b>{formatCurrency(Math.floor(target * 0.01))}</b>
+                    <b>{formatCurrency(Math.floor(target))}</b>
                 </Card>
             )}
 
