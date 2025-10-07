@@ -68,10 +68,9 @@ export default function SalaryTotal(props: SalaryTotalProps) {
                 getMonthRangeFromDate(endDate).lastDayOfMonth,
             );
             workingDays = calculateWorkingDaysInRange(startDate, endDate);
-            const { totalWorkingHours } = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
 
             const hourlySalaryRate = salary / (workingMonth * 7.5);
-            const calculatedTotal = Math.floor(hourlySalaryRate * totalWorkingHours);
+            const calculatedTotal = Math.floor(hourlySalaryRate * workingHours);
 
             totalLunch = lunchAllowancePerDay * (workingDays - paidLeave);
             totalTransport = gasolineAllowancePerDay * (workingDays - paidLeave);

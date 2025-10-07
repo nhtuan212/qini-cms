@@ -18,6 +18,7 @@ import {
     calculateWorkingDaysInRange,
     calculateWorkingDays,
     calculateWorkingHoursWithBreak,
+    getMonthRangeFromDate,
 } from "@/utils";
 import { TEXT } from "@/constants";
 import { FormSalaryProps } from ".";
@@ -87,11 +88,12 @@ export default function SalaryCalculator({
         const target = Math.floor(timeSheetByStaffId.totalTarget * 0.01);
 
         // Calculate working days for non-target staff (excluding holidays)
+        const monthRange = getMonthRangeFromDate(data.dateRange.start.toString());
         const workingDays = calculateWorkingDaysInRange(
-            data.dateRange.start.toString(),
-            data.dateRange.end.toString(),
+            monthRange.firstDayOfMonth,
+            monthRange.lastDayOfMonth,
         );
-        const actualWorkingDays = calculateWorkingDays(timeSheetByStaffId.data); // Ngày công thực tế từ timesheet
+        const actualWorkingDays = calculateWorkingDays(timeSheetByStaffId.data);
         const { totalWorkingHours } = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
 
         const result = {

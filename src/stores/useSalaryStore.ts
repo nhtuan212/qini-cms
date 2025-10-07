@@ -19,7 +19,7 @@ const initialState: SalaryProps = {
     salaries: [],
 };
 
-export const useSalaryStore = create<SalaryProps & SalaryAction>()(set => ({
+export const useSalaryStore = create<SalaryProps & SalaryAction>()((set, get) => ({
     ...initialState,
 
     // Actions
@@ -73,9 +73,7 @@ export const useSalaryStore = create<SalaryProps & SalaryAction>()(set => ({
                 });
             }
 
-            return set(state => ({
-                salaries: [convertKeysToCamelCase(res.data), ...state.salaries],
-            }));
+            get().getSalaries();
         });
     },
 
