@@ -94,13 +94,20 @@ export default function SalaryCalculator({
             monthRange.lastDayOfMonth,
         );
         const workingDay = calculateWorkingDays(timeSheetByStaffId.data);
-        const { totalWorkingHours } = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
+
+        // Calculate working hours
+        let workingHours;
+        if (staffById.salaryType === SalaryTypeProps.MONTHLY) {
+            workingHours = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
+        } else {
+            workingHours = timeSheetByStaffId.totalWorkingHours;
+        }
 
         const result = {
             ...data,
             name: TEXT.SALARY_PERIOD,
             target,
-            workingHours: totalWorkingHours,
+            workingHours,
             workingMonth,
             workingDay,
             startDate: data.dateRange.start.toString(),
