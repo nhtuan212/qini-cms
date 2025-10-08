@@ -98,7 +98,9 @@ export default function SalaryCalculator({
         // Calculate working hours
         let workingHours;
         if (staffById.salaryType === SalaryTypeProps.MONTHLY) {
-            workingHours = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
+            workingHours = calculateWorkingHoursWithBreak(
+                timeSheetByStaffId.data,
+            ).totalWorkingHours;
         } else {
             workingHours = timeSheetByStaffId.totalWorkingHours;
         }
