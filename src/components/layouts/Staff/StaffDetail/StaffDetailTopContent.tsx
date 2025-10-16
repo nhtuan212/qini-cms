@@ -37,10 +37,10 @@ export default function TargetTopContent() {
                     label={TEXT.DATE_PICKER}
                     className="flex-1 w-fit"
                     value={dateValue}
-                    onChange={(newValue: any) =>
+                    onChange={newValue =>
                         setDateValue({
-                            start: newValue?.start,
-                            end: newValue?.end,
+                            start: newValue?.start as CalendarDate,
+                            end: newValue?.end as CalendarDate,
                         })
                     }
                     onKeyUp={e => {

@@ -7,6 +7,7 @@ export const MENU = [
         url: ROUTE.TARGET,
         label: TEXT.TARGET,
         icon: <DocumentTextIcon className="w-5" />,
+        roles: [ROLE.ADMIN, ROLE.REPORT],
     },
     {
         url: ROUTE.STAFF,

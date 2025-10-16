@@ -88,7 +88,30 @@ export const getCurrentLocation = (): Promise<{ lat: number; lng: number; accura
                     lng: position.coords.longitude,
                     accuracy: position.coords.accuracy,
                 }),
-            reject,
+            error => {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        reject(
+                            new Error(
+                                "Người dùng đã từ chối quyền truy cập vị trí. Vui lòng cho phép truy cập vị trí để tiếp tục.",
+                            ),
+                        );
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        reject(
+                            new Error(
+                                "Thông tin vị trí không khả dụng. Vui lòng kiểm tra kết nối mạng và thử lại.",
+                            ),
+                        );
+                        break;
+                    case error.TIMEOUT:
+                        reject(new Error("Yêu cầu vị trí đã hết thời gian chờ. Vui lòng thử lại."));
+                        break;
+                    default:
+                        reject(new Error("Đã xảy ra lỗi không xác định khi lấy vị trí."));
+                        break;
+                }
+            },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 },
         );
     });

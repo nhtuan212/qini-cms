@@ -1,15 +1,15 @@
 import { create } from "zustand";
 import { fetchData } from "@/utils/fetch";
-import { URL } from "@/constants";
-import { convertKeysToCamelCase, convertKeysToSnakeCase } from "@/utils";
+import { STATUS_CODE, URL } from "@/constants";
+import { convertKeysToCamelCase } from "@/utils";
 
 export type StaffProps = {
     [key: string]: any;
 };
 
 type StaffState = {
-    isLoading?: boolean;
-    isValidatePasswordLoading?: boolean;
+    isLoading: boolean;
+    isValidatePasswordLoading: boolean;
     staff: StaffProps[];
     staffById: StaffProps;
 };
@@ -25,12 +25,14 @@ type StaffAction = {
         id: StaffProps["id"];
         bodyParams: StaffProps;
     }) => Promise<StaffProps>;
+    inActiveStaff: (id: StaffProps["id"]) => Promise<void>;
     deleteStaff: (id: StaffProps["id"]) => Promise<void>;
     validateStaffPassword: (id: StaffProps["id"], password: string) => Promise<StaffProps>;
 };
 
 const initialState: StaffState = {
     isLoading: false,
+    isValidatePasswordLoading: false,
     staff: [],
     staffById: {} as StaffProps,
 };
@@ -50,7 +52,7 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
                 isLoading: false,
             });
 
-            if (res?.code !== 200) {
+            if (res?.code !== STATUS_CODE.OK) {
                 return set({
                     staff: res?.message,
                 });
@@ -72,7 +74,7 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
                 isLoading: false,
             });
 
-            if (res?.code !== 200) {
+            if (res?.code !== STATUS_CODE.OK) {
                 return set({
                     staffById: res?.message,
                 });
@@ -111,13 +113,11 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
             isLoading: true,
         });
 
-        const body = JSON.stringify(convertKeysToSnakeCase(bodyParams));
-
         return await fetchData({
             endpoint: `${URL.STAFF}/${id}`,
             options: {
                 method: "PUT",
-                body,
+                body: JSON.stringify(bodyParams),
             },
         }).then(res => {
             const data = convertKeysToCamelCase(res.data) as StaffProps;
@@ -128,6 +128,35 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
             });
 
             return data;
+        });
+    },
+
+    inActiveStaff: async id => {
+        set({
+            isLoading: true,
+        });
+
+        return await fetchData({
+            endpoint: `${URL.STAFF}/${id}/in-active`,
+            options: {
+                method: "PUT",
+            },
+        }).then(res => {
+            set({
+                isLoading: false,
+            });
+
+            if (res?.code !== STATUS_CODE.OK) {
+                return set({
+                    staff: res?.message,
+                });
+            }
+
+            set(state => ({
+                staff: state.staff.map(s => (s.id === id ? { ...s, isActive: false } : s)),
+            }));
+
+            return res;
         });
     },
 
@@ -146,7 +175,7 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
                 isLoading: false,
             });
 
-            if (res?.code !== 200) {
+            if (res?.code !== STATUS_CODE.OK) {
                 return set({
                     staff: res?.message,
                 });

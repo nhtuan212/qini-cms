@@ -20,6 +20,7 @@ export const ROLE = {
     ADMIN: "ADMIN",
     MANAGER: "MANAGER",
     REPORT: "REPORT",
+    STAFF: "STAFF",
 };
 
 export const STAFF = {

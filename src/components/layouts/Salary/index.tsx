@@ -1,39 +1,75 @@
 "use client";
 
-import React from "react";
-import SalaryCalculator from "./SalaryCalculator";
-import SalaryPanel from "./SalaryPanel";
-import { Tab, Tabs } from "@/components/Tab";
-import { CalculatorIcon, DocumentChartBarIcon } from "@heroicons/react/24/outline";
-import { TEXT } from "@/constants/text";
+import React, { useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import SalaryTopContent from "./SalaryTopContent";
+import useSalaryColumn from "./useSalaryColumn";
+import SalaryTotal, { SalaryTotalProps } from "./SalaryTotal";
+import { Accordion, AccordionItem } from "@/components/Accordion";
+import Table from "@/components/Table";
+import { StaffProps } from "@/stores/useStaffStore";
+import { SalaryProps, useSalaryStore } from "@/stores/useSalaryStore";
+import { formatCurrency, formatDate, isEmpty } from "@/utils";
+import { ROUTE, TEXT } from "@/constants";
 
-export default function Salary() {
+export default function Salary({ staffById }: { staffById?: StaffProps }) {
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    //** Stores */
+    const { isLoading, salaries, getSalaries, cleanUpSalary } = useSalaryStore();
+
+    //** Always call hooks at the top level */
+    const columns = useSalaryColumn();
+
+    //** Effects */
+    useEffect(() => {
+        if (staffById && !isEmpty(staffById)) {
+            getSalaries({ staffId: staffById.id });
+            return;
+        }
+
+        if (searchParams.get("startDate") && searchParams.get("endDate")) {
+            getSalaries({
+                startDate: searchParams.get("startDate"),
+                endDate: searchParams.get("endDate"),
+            });
+            return;
+        }
+
+        getSalaries();
+    }, [getSalaries, staffById, searchParams]);
+
+    useEffect(() => {
+        return () => {
+            cleanUpSalary();
+        };
+    }, [cleanUpSalary]);
+
+    //** Render */
+    if (pathname !== ROUTE.SALARY) {
+        return (
+            <Accordion>
+                {salaries.map((salary: SalaryProps) => (
+                    <AccordionItem
+                        key={salary.id}
+                        title={`${TEXT.SALARY_PERIOD}: ${formatDate(salary.startDate)} - ${formatDate(salary.endDate)}`}
+                        subtitle={<b>{formatCurrency(salary.total)}</b>}
+                    >
+                        <SalaryTotal {...(salary as SalaryTotalProps)} />
+                    </AccordionItem>
+                ))}
+            </Accordion>
+        );
+    }
+
     return (
-        <div>
-            <Tabs>
-                <Tab
-                    key="calculate-salary"
-                    title={
-                        <div className="flex items-center gap-2">
-                            <CalculatorIcon className="h-4 w-4" />
-                            <span>{TEXT.CALCULATE_SALARY}</span>
-                        </div>
-                    }
-                >
-                    <SalaryCalculator />
-                </Tab>
-                <Tab
-                    key="payroll-month"
-                    title={
-                        <div className="flex items-center gap-2">
-                            <DocumentChartBarIcon className="h-4 w-4" />
-                            <span>{TEXT.PAYROLL_MONTH}</span>
-                        </div>
-                    }
-                >
-                    <SalaryPanel />
-                </Tab>
-            </Tabs>
-        </div>
+        <Table
+            rows={salaries}
+            columns={columns}
+            loading={isLoading}
+            className="[&>.tableContainer]:min-h-[45rem]"
+            topContent={<SalaryTopContent />}
+        />
     );
 }

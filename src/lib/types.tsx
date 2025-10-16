@@ -13,3 +13,8 @@ export enum ModalActionProps {
     UPDATE = "update",
     DELETE = "delete",
 }
+
+export enum SalaryTypeProps {
+    HOURLY = "HOURLY",
+    MONTHLY = "MONTHLY",
+}

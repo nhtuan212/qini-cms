@@ -80,95 +80,99 @@ export default function TargetShifts({ target }: { target: TargetProps }) {
                                 {`${targetShift.shiftName} (${targetShift.startTime} - ${targetShift.endTime})`}
                             </h5>
                         </div>
-                        <div className="flex items-center sm:justify-end justify-between">
-                            <span className="mr-6 text-lg font-bold text-blue-600">
-                                {formatCurrency(targetShift.revenue)}
-                            </span>
+                        {targetShift.isTarget && (
+                            <div className="flex items-center sm:justify-end justify-between">
+                                <span className="mr-6 text-lg font-bold text-blue-600">
+                                    {formatCurrency(targetShift.revenue)}
+                                </span>
 
-                            <div>
-                                <Button
-                                    size="sm"
-                                    variant="light"
-                                    color="default"
-                                    isIconOnly
-                                    onPress={async () => {
-                                        await getTargetShiftById(targetShift.id);
-                                        await getModal({
-                                            isOpen: true,
-                                            modalHeader: TEXT.UPDATE(targetShift.shiftName),
-                                            modalBody: <TargetShiftModal />,
-                                        });
-                                    }}
-                                    isDisabled={
-                                        !isWithinShiftTime(
-                                            profile?.role,
-                                            targetShift.startTime,
-                                            targetShift.endTime,
-                                        )
-                                    }
-                                >
-                                    <PencilSquareIcon className="w-4 h-4 text-gray-400" />
-                                </Button>
+                                <div>
+                                    <Button
+                                        size="sm"
+                                        variant="light"
+                                        color="default"
+                                        isIconOnly
+                                        onPress={async () => {
+                                            await getTargetShiftById(targetShift.id);
+                                            await getModal({
+                                                isOpen: true,
+                                                modalHeader: TEXT.UPDATE(targetShift.shiftName),
+                                                modalBody: <TargetShiftModal />,
+                                            });
+                                        }}
+                                        isDisabled={
+                                            !isWithinShiftTime(
+                                                profile?.role,
+                                                targetShift.startTime,
+                                                targetShift.endTime,
+                                            )
+                                        }
+                                    >
+                                        <PencilSquareIcon className="w-4 h-4 text-gray-400" />
+                                    </Button>
 
-                                <Button
-                                    size="sm"
-                                    variant="light"
-                                    isIconOnly
-                                    onPress={async () => {
-                                        const invoices = await getInvoice({
-                                            soldById: targetShift.kiotId,
-                                            targetAt: formatDate(target.targetAt, "YYYY-MM-DD"),
-                                        }).then(invoice => invoice);
+                                    <Button
+                                        size="sm"
+                                        variant="light"
+                                        isIconOnly
+                                        onPress={async () => {
+                                            const invoices = await getInvoice({
+                                                soldById: targetShift.kiotId,
+                                                targetAt: formatDate(target.targetAt, "YYYY-MM-DD"),
+                                            }).then(invoice => invoice);
 
-                                        await updateTargetShift({
-                                            id: targetShift.id,
-                                            bodyParams: invoices,
-                                        });
-                                    }}
-                                    isDisabled={
-                                        !isWithinShiftTime(
-                                            profile?.role,
-                                            targetShift.startTime,
-                                            targetShift.endTime,
-                                        )
-                                    }
-                                >
-                                    <ArrowPathIcon className="w-4 h-4 text-gray-400" />
-                                </Button>
+                                            await updateTargetShift({
+                                                id: targetShift.id,
+                                                bodyParams: invoices,
+                                            });
+                                        }}
+                                        isDisabled={
+                                            !isWithinShiftTime(
+                                                profile?.role,
+                                                targetShift.startTime,
+                                                targetShift.endTime,
+                                            )
+                                        }
+                                    >
+                                        <ArrowPathIcon className="w-4 h-4 text-gray-400" />
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
-                    <div className="space-y-2">
-                        {renderAmount(
-                            TEXT.TRANSFER,
-                            targetShift.transfer,
-                            <CreditCardIcon className="w-4 h-4" />,
-                        )}
-                        {renderAmount(
-                            TEXT.POINT,
-                            targetShift.point,
-                            <CreditCardIcon className="w-4 h-4" />,
-                        )}
-                        {renderAmount(
-                            TEXT.DEDUCTION,
-                            targetShift.deduction,
-                            <CreditCardIcon className="w-4 h-4" />,
-                        )}
-                        {renderAmount(
-                            TEXT.CASH,
-                            targetShift.cash,
-                            <BanknotesIcon className="w-4 h-4" />,
-                        )}
+                    {targetShift.isTarget && (
+                        <div className="space-y-2">
+                            {renderAmount(
+                                TEXT.TRANSFER,
+                                targetShift.transfer,
+                                <CreditCardIcon className="w-4 h-4" />,
+                            )}
+                            {renderAmount(
+                                TEXT.POINT,
+                                targetShift.point,
+                                <CreditCardIcon className="w-4 h-4" />,
+                            )}
+                            {renderAmount(
+                                TEXT.DEDUCTION,
+                                targetShift.deduction,
+                                <CreditCardIcon className="w-4 h-4" />,
+                            )}
+                            {renderAmount(
+                                TEXT.CASH,
+                                targetShift.cash,
+                                <BanknotesIcon className="w-4 h-4" />,
+                            )}
 
-                        {targetShift.description && (
-                            <Input
-                                label={TEXT.NOTE}
-                                type="textarea"
-                                value={targetShift.description}
-                                isReadOnly
-                            />
-                        )}
-                    </div>
+                            {targetShift.description && (
+                                <Input
+                                    label={TEXT.NOTE}
+                                    type="textarea"
+                                    value={targetShift.description}
+                                    isReadOnly
+                                />
+                            )}
+                        </div>
+                    )}
 
                     <TimeSheets
                         targetAt={target.targetAt}
