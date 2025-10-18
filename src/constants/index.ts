@@ -39,12 +39,14 @@ export const URL = {
     SHIFT: "/shift",
     SALARY: "/salary",
     INVOICE: "/invoice",
+    WORK_TYPE: "/work-type",
 };
 
 export const ROUTE = {
     HOME: "/",
     LOGIN: "/login",
     TARGET: "/target",
+    WORK: "/work",
     TARGET_SHIFT: "/target-shift",
     TIME_SHEET: "/time-sheet",
     STAFF: "/staff",

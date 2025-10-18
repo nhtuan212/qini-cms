@@ -5,9 +5,11 @@ import { debounce } from "@/utils";
 import { TEXT } from "@/constants";
 
 function ConfirmModal({
+    isDisabled,
     onConfirm,
     content,
 }: {
+    isDisabled?: boolean;
     onConfirm: () => Promise<any>;
     content?: React.ReactNode;
 }) {
@@ -23,6 +25,7 @@ function ConfirmModal({
                 <Button
                     color="default"
                     variant="bordered"
+                    isDisabled={isDisabled}
                     onPress={() => {
                         getModal({
                             isOpen: false,
@@ -32,7 +35,12 @@ function ConfirmModal({
                     {TEXT.CANCEL}
                 </Button>
 
-                <Button type="button" color="danger" onPress={debounce(onConfirm)}>
+                <Button
+                    type="button"
+                    color="danger"
+                    onPress={debounce(onConfirm)}
+                    isDisabled={isDisabled}
+                >
                     {TEXT.SUBMIT}
                 </Button>
             </div>

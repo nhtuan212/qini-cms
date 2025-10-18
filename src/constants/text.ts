@@ -98,6 +98,7 @@ export const TEXT = {
     NO_PERMISSION: "Bạn không có quyền truy cập",
     NOTE: "Ghi chú",
     NOTE_HAVE_DEDUCTION: "Nhập ghi chú khi có số tiền khấu trừ",
+    DESCRIPTION: "Mô tả",
     DATE_PICKER: "Chọn ngày",
     CONFIRM_DELETE: "Bạn có chắc chắn muốn xoá ?",
     CONFIRM_IN_ACTIVE: "Bạn có chắc chắn muốn ngưng hoạt động ?",
@@ -119,4 +120,9 @@ export const TEXT = {
     IN_ACTIVE: "Ngưng hoạt động",
     OFF_FROM: "Nghỉ việc từ",
     SALARY_CREATED: "Lương đã được tạo thành công",
+    WORK: "Công việc",
+    MANAGE_WORK: "Quản lý công việc",
+    SCHEDULE_WORK: "Lên lịch công việc hàng tuần cho shop",
+    ADD_NEW_WORK_TYPE: "Thêm mới công việc",
+    WORK_TYPE_NAME: "Tên công việc",
 };

@@ -1,5 +1,10 @@
 import React from "react";
-import { BanknotesIcon, DocumentTextIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import {
+    BanknotesIcon,
+    CalendarDateRangeIcon,
+    DocumentTextIcon,
+    UserCircleIcon,
+} from "@heroicons/react/24/outline";
 import { ROLE, ROUTE, TEXT } from "@/constants";
 
 export const MENU = [
@@ -8,6 +13,12 @@ export const MENU = [
         label: TEXT.TARGET,
         icon: <DocumentTextIcon className="w-5" />,
         roles: [ROLE.ADMIN, ROLE.REPORT],
+    },
+    {
+        url: ROUTE.WORK,
+        label: TEXT.WORK,
+        icon: <CalendarDateRangeIcon className="w-5" />,
+        roles: [ROLE.ADMIN],
     },
     {
         url: ROUTE.STAFF,
