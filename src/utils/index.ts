@@ -313,3 +313,6 @@ export {
     getVietnamHolidaysForYear,
     getNonWorkingDaysInRange,
 } from "./vietnamHolidays";
+
+// Week Dates
+export { getWeekDates, getDayName, isDateTodayOrFuture } from "./weekDates";

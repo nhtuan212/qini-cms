@@ -125,4 +125,7 @@ export const TEXT = {
     SCHEDULE_WORK: "Lên lịch công việc hàng tuần cho shop",
     ADD_NEW_WORK_TYPE: "Thêm mới công việc",
     WORK_TYPE_NAME: "Tên công việc",
+    PREVIOUS_WEEK: "Tuần trước",
+    NEXT_WEEK: "Tuần sau",
+    NO_ASSIGNMENT: "Chưa có công việc",
 };

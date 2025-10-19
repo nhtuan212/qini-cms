@@ -40,6 +40,7 @@ export const URL = {
     SALARY: "/salary",
     INVOICE: "/invoice",
     WORK_TYPE: "/work-type",
+    WORK_ASSIGNMENT: "/work-assignment",
 };
 
 export const ROUTE = {
