@@ -2,8 +2,6 @@ import { create } from "zustand";
 import { convertKeysToCamelCase } from "@/utils";
 import { fetchData } from "@/utils/fetch";
 import { STATUS_CODE, URL } from "@/constants";
-import { useWorkTypeStore } from "./useWorkTypeStore";
-import { useStaffStore } from "./useStaffStore";
 
 export type WorkAssignmentProps = {
     [key: string]: any;
@@ -30,172 +28,140 @@ const initialState: WorkAssignmentState = {
     workAssignmentById: {},
 };
 
-export const useWorkAssignmentStore = create<WorkAssignmentState & WorkAssignmentAction>()(
-    (set, get) => ({
-        ...initialState,
+export const useWorkAssignmentStore = create<WorkAssignmentState & WorkAssignmentAction>()(set => ({
+    ...initialState,
 
-        // Actions
+    // Actions
+    getWorkAssignments: async () => {
+        set({
+            isLoading: true,
+        });
 
-        getWorkAssignments: async () => {
+        return await fetchData({
+            endpoint: URL.WORK_ASSIGNMENT,
+        }).then(res => {
             set({
-                isLoading: true,
+                isLoading: false,
             });
 
-            return await fetchData({
-                endpoint: URL.WORK_ASSIGNMENT,
-            }).then(res => {
-                set({
-                    isLoading: false,
-                });
+            if (res?.code !== STATUS_CODE.OK) {
+                throw new Error(res?.message);
+            }
 
-                if (res?.code !== STATUS_CODE.OK) {
-                    throw new Error(res?.message);
-                }
-
-                return set({
-                    workAssignments: res.data.map((item: WorkAssignmentProps) =>
-                        convertKeysToCamelCase(item),
-                    ),
-                });
+            return set({
+                workAssignments: res.data.map((item: WorkAssignmentProps) =>
+                    convertKeysToCamelCase(item),
+                ),
             });
-        },
+        });
+    },
 
-        getWorkAssignmentById: async (id: string) => {
+    getWorkAssignmentById: async (id: string) => {
+        set({
+            isLoading: true,
+        });
+
+        return await fetchData({
+            endpoint: `${URL.WORK_ASSIGNMENT}/${id}`,
+        }).then(res => {
             set({
-                isLoading: true,
+                isLoading: false,
             });
 
-            return await fetchData({
-                endpoint: `${URL.WORK_ASSIGNMENT}/${id}`,
-            }).then(res => {
-                set({
-                    isLoading: false,
-                });
+            if (res?.code !== STATUS_CODE.OK) {
+                throw new Error(res?.message);
+            }
 
-                if (res?.code !== STATUS_CODE.OK) {
-                    throw new Error(res?.message);
-                }
-
-                set({
-                    workAssignmentById: convertKeysToCamelCase(res.data),
-                });
-
-                return convertKeysToCamelCase(res.data);
-            });
-        },
-
-        createWorkAssignment: async (data: WorkAssignmentProps) => {
             set({
-                isLoading: true,
+                workAssignmentById: convertKeysToCamelCase(res.data),
             });
 
-            return await fetchData({
-                endpoint: URL.WORK_ASSIGNMENT,
-                options: { method: "POST", body: JSON.stringify(data) },
-            }).then(res => {
-                set({
-                    isLoading: false,
-                });
+            return convertKeysToCamelCase(res.data);
+        });
+    },
 
-                if (res?.code !== STATUS_CODE.OK) {
-                    throw new Error(res?.message);
-                }
+    createWorkAssignment: async (data: WorkAssignmentProps) => {
+        set({
+            isLoading: true,
+        });
 
-                // Get work types and staff data from their respective stores
-                const workTypeStore = useWorkTypeStore.getState();
-                const staffStore = useStaffStore.getState();
-
-                set(state => ({
-                    workAssignments: [
-                        ...state.workAssignments,
-                        ...res.data.map((item: WorkAssignmentProps) => {
-                            // Find work type name
-                            const workTypeName =
-                                workTypeStore.workTypes.find(
-                                    workType => workType.id === item.workTypeId,
-                                )?.name || "";
-
-                            // Find staff name
-                            const staffName =
-                                staffStore.staff.find(
-                                    staffMember => staffMember.id === item.staffId,
-                                )?.name || "";
-
-                            return convertKeysToCamelCase({
-                                ...item,
-                                workTypeName,
-                                staffName,
-                            });
-                        }),
-                    ],
-                }));
-
-                return convertKeysToCamelCase(res.data);
-            });
-        },
-
-        updateWorkAssignment: async (id: string, data: WorkAssignmentProps) => {
+        return await fetchData({
+            endpoint: URL.WORK_ASSIGNMENT,
+            options: { method: "POST", body: JSON.stringify(data) },
+        }).then(res => {
             set({
-                isLoading: true,
+                isLoading: false,
             });
 
-            return await fetchData({
-                endpoint: `${URL.WORK_ASSIGNMENT}/${id}`,
-                options: { method: "PUT", body: JSON.stringify(data) },
-            }).then(res => {
-                set({
-                    isLoading: false,
-                });
+            if (res?.code !== STATUS_CODE.OK) {
+                throw new Error(res?.message);
+            }
 
-                if (res?.code !== STATUS_CODE.OK) {
-                    throw new Error(res?.message);
-                }
+            set(state => ({
+                workAssignments: [convertKeysToCamelCase(res.data), ...state.workAssignments],
+            }));
 
-                set(() => ({
-                    workAssignments: get().workAssignments.map(workAssignment =>
-                        workAssignment.id === id
-                            ? res.data.find((item: WorkAssignmentProps) =>
-                                  convertKeysToCamelCase(item),
-                              )
-                            : workAssignment,
-                    ),
-                }));
+            return convertKeysToCamelCase(res.data);
+        });
+    },
 
-                return convertKeysToCamelCase(res.data);
-            });
-        },
+    updateWorkAssignment: async (id: string, data: WorkAssignmentProps) => {
+        set({
+            isLoading: true,
+        });
 
-        deleteWorkAssignment: async (id: string) => {
+        return await fetchData({
+            endpoint: `${URL.WORK_ASSIGNMENT}/${id}`,
+            options: { method: "PUT", body: JSON.stringify(data) },
+        }).then(res => {
             set({
-                isLoading: true,
+                isLoading: false,
             });
 
-            return await fetchData({
-                endpoint: `${URL.WORK_ASSIGNMENT}/${id}`,
-                options: { method: "DELETE" },
-            }).then(res => {
-                set({
-                    isLoading: false,
-                });
+            if (res?.code !== STATUS_CODE.OK) {
+                throw new Error(res?.message);
+            }
 
-                if (res?.code !== STATUS_CODE.OK) {
-                    throw new Error(res?.message);
-                }
+            set(state => ({
+                workAssignments: state.workAssignments.map(workAssignment =>
+                    workAssignment.id === id ? convertKeysToCamelCase(res.data) : workAssignment,
+                ),
+            }));
 
-                set(state => ({
-                    workAssignments: state.workAssignments.filter(
-                        workAssignment => workAssignment.id !== id,
-                    ),
-                }));
+            return convertKeysToCamelCase(res.data);
+        });
+    },
 
-                return convertKeysToCamelCase(res.data);
-            });
-        },
+    deleteWorkAssignment: async (id: string) => {
+        set({
+            isLoading: true,
+        });
 
-        resetWorkAssignmentById: () => {
+        return await fetchData({
+            endpoint: `${URL.WORK_ASSIGNMENT}/${id}`,
+            options: { method: "DELETE" },
+        }).then(res => {
             set({
-                workAssignmentById: {},
+                isLoading: false,
             });
-        },
-    }),
-);
+
+            if (res?.code !== STATUS_CODE.OK) {
+                throw new Error(res?.message);
+            }
+
+            set(state => ({
+                workAssignments: state.workAssignments.filter(
+                    workAssignment => workAssignment.id !== id,
+                ),
+            }));
+
+            return convertKeysToCamelCase(res.data);
+        });
+    },
+
+    resetWorkAssignmentById: () => {
+        set({
+            workAssignmentById: {},
+        });
+    },
+}));

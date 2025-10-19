@@ -11,12 +11,18 @@ import { formatDate, getDayName, isEmpty } from "@/utils";
 import { Select, SelectItem } from "@/components/Select";
 import { useStaffStore } from "@/stores/useStaffStore";
 
-export default function WorkAssignmentForm({ date }: { date: Date }) {
+export default function WorkAssignmentForm({
+    date,
+    assignment,
+}: {
+    date: Date;
+    assignment?: WorkAssignmentProps;
+}) {
     //** Stores */
     const { getModal } = useModalStore();
     const { workTypes, getWorkTypes } = useWorkTypeStore();
     const { staff, getStaff } = useStaffStore();
-    const { createWorkAssignment } = useWorkAssignmentStore();
+    const { createWorkAssignment, updateWorkAssignment } = useWorkAssignmentStore();
 
     //** Variables */
     const ASSIGNMENT_FORM = [
@@ -41,11 +47,14 @@ export default function WorkAssignmentForm({ date }: { date: Date }) {
     ];
 
     //** React hook form */
+    const defaultValues = {
+        workTypeId: assignment?.workTypeId || "",
+        staffId: assignment?.staffId || "",
+        date: date,
+    };
+
     const { control, handleSubmit, reset } = useForm<WorkAssignmentProps>({
-        defaultValues: {
-            workTypeId: "",
-            date: date,
-        },
+        defaultValues,
     });
 
     const onSubmit = async (data: WorkAssignmentProps) => {
@@ -54,7 +63,11 @@ export default function WorkAssignmentForm({ date }: { date: Date }) {
             date: formatDate(date, "YYYY-MM-DD"),
         };
 
-        await createWorkAssignment(result);
+        if (assignment?.id) {
+            await updateWorkAssignment(assignment.id, result);
+        } else {
+            await createWorkAssignment(result);
+        }
 
         handleCloseModal();
     };
@@ -94,7 +107,10 @@ export default function WorkAssignmentForm({ date }: { date: Date }) {
                         item.field === "select" ? (
                             <Select
                                 label={item.label}
-                                {...field}
+                                selectedKeys={[
+                                    item.options.find(option => option.id === field.value)?.id,
+                                ]}
+                                onSelectionChange={value => field.onChange(value.currentKey)}
                                 isInvalid={!!errors[item.name]}
                                 errorMessage={<ErrorMessage errors={errors} name={item.name} />}
                             >

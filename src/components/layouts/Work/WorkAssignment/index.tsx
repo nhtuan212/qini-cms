@@ -2,19 +2,22 @@ import React, { useEffect } from "react";
 import WorkAssignmentForm from "./WorkAssignmentForm";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
-import { CalendarIcon, CheckCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
+import ConfirmModal from "@/components/ConfirmModal";
+import Checkbox from "@/components/Checkbox";
+import { CalendarIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
 import { useWorkAssignmentStore } from "@/stores/useWorkAssignmentStore";
+import { useProfileStore } from "@/stores/useProfileStore";
 import { twMerge } from "tailwind-merge";
 import { formatDate, getDayName, getWeekDates, isDateTodayOrFuture, isEmpty } from "@/utils";
-import { TEXT } from "@/constants";
+import { ROLE, TEXT } from "@/constants";
 
 export default function WorkAssignment() {
     //** Stores */
+    const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { workAssignments, getWorkAssignments } = useWorkAssignmentStore();
-
-    console.log({ workAssignments });
+    const { workAssignments, getWorkAssignments, updateWorkAssignment, deleteWorkAssignment } =
+        useWorkAssignmentStore();
 
     //** Variables */
     const currentDate = new Date();
@@ -45,19 +48,27 @@ export default function WorkAssignment() {
             <div className="space-y-1">
                 {assignmentsForDate.map(assignment => (
                     <div key={assignment.id} className="bg-success-50 rounded-md p-2">
-                        <div className="flex items-start gap-x-2">
-                            <CheckCircleIcon
-                                className={twMerge(
-                                    "w-5 h-5 text-primary mt-0.5",
-                                    assignment.completed && "text-success-500",
-                                )}
+                        <div className="flex justify-between items-baseline gap-x-2">
+                            <Checkbox
+                                size="md"
+                                isSelected={assignment.isCompleted}
+                                onChange={e => {
+                                    if (profile.role !== ROLE.ADMIN) {
+                                        return null;
+                                    }
+
+                                    updateWorkAssignment(assignment.id, {
+                                        isCompleted: e.target.checked,
+                                    });
+                                }}
                             />
-                            <div className="space-y-2">
+
+                            <div className="flex-1 space-y-2">
                                 <div>
                                     <p
                                         className={twMerge(
                                             "text-base font-medium",
-                                            assignment.completed && "line-through",
+                                            assignment.isCompleted && "line-through",
                                         )}
                                     >
                                         {assignment.workTypeName}
@@ -66,13 +77,54 @@ export default function WorkAssignment() {
                                         {assignment.description}
                                     </p>
                                 </div>
+
                                 <p className="text-base">{assignment.staffName}</p>
+
                                 {assignment.updatedAt && (
                                     <div className="text-xs text-gray-500">
                                         {formatDate(assignment.updatedAt)}
                                     </div>
                                 )}
                             </div>
+
+                            <Button
+                                isIconOnly
+                                size="sm"
+                                startContent={<PencilIcon className="w-4 h-4" />}
+                                isDisabled={assignment.isCompleted}
+                                onPress={() => {
+                                    getModal({
+                                        isOpen: true,
+                                        modalHeader: TEXT.UPDATE(`"${assignment.workTypeName}"`),
+                                        modalBody: (
+                                            <WorkAssignmentForm
+                                                assignment={assignment}
+                                                date={date}
+                                            />
+                                        ),
+                                    });
+                                }}
+                            />
+
+                            <Button
+                                isIconOnly
+                                size="sm"
+                                startContent={<TrashIcon className="w-4 h-4" />}
+                                onPress={() => {
+                                    getModal({
+                                        isOpen: true,
+                                        modalHeader: TEXT.DELETE,
+                                        modalBody: (
+                                            <ConfirmModal
+                                                onConfirm={async () => {
+                                                    await deleteWorkAssignment(assignment.id);
+                                                    getModal({ isOpen: false });
+                                                }}
+                                            />
+                                        ),
+                                    });
+                                }}
+                            />
                         </div>
                     </div>
                 ))}
@@ -81,7 +133,7 @@ export default function WorkAssignment() {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
             {weekDates.map(date => (
                 <Card key={date.toISOString()} className="p-0">
                     <div className="flex items-center justify-between bg-gray-100 p-2 rounded-t-md">
