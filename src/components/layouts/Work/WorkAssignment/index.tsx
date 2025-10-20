@@ -4,6 +4,7 @@ import Card from "@/components/Card";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import Checkbox from "@/components/Checkbox";
+import Loading from "@/components/Loading";
 import { CalendarIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
 import { useWorkAssignmentStore } from "@/stores/useWorkAssignmentStore";
@@ -19,7 +20,6 @@ import {
     isEmpty,
 } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
-import Loading from "@/components/Loading";
 
 export default function WorkAssignment({
     staffById,
