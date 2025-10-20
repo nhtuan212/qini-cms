@@ -19,6 +19,7 @@ import {
     isEmpty,
 } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
+import Loading from "@/components/Loading";
 
 export default function WorkAssignment({
     staffById,
@@ -48,7 +49,7 @@ export default function WorkAssignment({
 
     //** Render */
     const renderAssignment = (date: Date) => {
-        if (isEmpty(workAssignments) || isLoading) {
+        if (isEmpty(workAssignments)) {
             return TEXT.NO_ASSIGNMENT;
         }
 
@@ -65,7 +66,8 @@ export default function WorkAssignment({
         return (
             <div className="space-y-1">
                 {assignmentsForDate.map(assignment => (
-                    <div key={assignment.id} className="bg-success-50 rounded-md p-2">
+                    <div key={assignment.id} className="relative bg-success-50 rounded-md p-2">
+                        {isLoading && <Loading className="[&>div]:w-8 [&>div]:h-8" />}
                         <div className="flex justify-between items-baseline gap-x-2">
                             <Checkbox
                                 size="md"
