@@ -128,4 +128,5 @@ export const TEXT = {
     PREVIOUS_WEEK: "Tuần trước",
     NEXT_WEEK: "Tuần sau",
     NO_ASSIGNMENT: "Chưa có công việc",
+    WORK_ASSIGNMENT: "Lịch công việc",
 };

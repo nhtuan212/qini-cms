@@ -8,11 +8,12 @@ import { CalendarIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/
 import { useModalStore } from "@/stores/useModalStore";
 import { useWorkAssignmentStore } from "@/stores/useWorkAssignmentStore";
 import { useProfileStore } from "@/stores/useProfileStore";
+import { StaffProps } from "@/stores/useStaffStore";
 import { twMerge } from "tailwind-merge";
 import { formatDate, getDayName, getWeekDates, isDateTodayOrFuture, isEmpty } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
 
-export default function WorkAssignment() {
+export default function WorkAssignment({ staffById }: { staffById?: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
@@ -52,11 +53,11 @@ export default function WorkAssignment() {
                             <Checkbox
                                 size="md"
                                 isSelected={assignment.isCompleted}
+                                isDisabled={
+                                    staffById?.id !== assignment?.staffId &&
+                                    profile.role !== ROLE.ADMIN
+                                }
                                 onChange={e => {
-                                    if (profile.role !== ROLE.ADMIN) {
-                                        return null;
-                                    }
-
                                     updateWorkAssignment(assignment.id, {
                                         isCompleted: e.target.checked,
                                     });
@@ -87,50 +88,60 @@ export default function WorkAssignment() {
                                 )}
                             </div>
 
-                            <Button
-                                isIconOnly
-                                size="sm"
-                                startContent={<PencilIcon className="w-4 h-4" />}
-                                isDisabled={assignment.isCompleted}
-                                onPress={() => {
-                                    getModal({
-                                        isOpen: true,
-                                        modalHeader: TEXT.UPDATE(`"${assignment.workTypeName}"`),
-                                        modalBody: (
-                                            <WorkAssignmentForm
-                                                assignment={assignment}
-                                                date={date}
-                                            />
-                                        ),
-                                    });
-                                }}
-                            />
+                            {profile.role === ROLE.ADMIN && (
+                                <>
+                                    <Button
+                                        isIconOnly
+                                        size="sm"
+                                        startContent={<PencilIcon className="w-4 h-4" />}
+                                        isDisabled={assignment.isCompleted}
+                                        onPress={() => {
+                                            getModal({
+                                                isOpen: true,
+                                                modalHeader: TEXT.UPDATE(
+                                                    `"${assignment.workTypeName}"`,
+                                                ),
+                                                modalBody: (
+                                                    <WorkAssignmentForm
+                                                        assignment={assignment}
+                                                        date={date}
+                                                    />
+                                                ),
+                                            });
+                                        }}
+                                    />
 
-                            <Button
-                                isIconOnly
-                                size="sm"
-                                startContent={<TrashIcon className="w-4 h-4" />}
-                                onPress={() => {
-                                    getModal({
-                                        isOpen: true,
-                                        modalHeader: TEXT.DELETE,
-                                        modalBody: (
-                                            <ConfirmModal
-                                                onConfirm={async () => {
-                                                    await deleteWorkAssignment(assignment.id);
-                                                    getModal({ isOpen: false });
-                                                }}
-                                            />
-                                        ),
-                                    });
-                                }}
-                            />
+                                    <Button
+                                        isIconOnly
+                                        size="sm"
+                                        startContent={<TrashIcon className="w-4 h-4" />}
+                                        onPress={() => {
+                                            getModal({
+                                                isOpen: true,
+                                                modalHeader: TEXT.DELETE,
+                                                modalBody: (
+                                                    <ConfirmModal
+                                                        onConfirm={async () => {
+                                                            await deleteWorkAssignment(
+                                                                assignment.id,
+                                                            );
+                                                            getModal({ isOpen: false });
+                                                        }}
+                                                    />
+                                                ),
+                                            });
+                                        }}
+                                    />
+                                </>
+                            )}
                         </div>
                     </div>
                 ))}
             </div>
         );
     };
+
+    console.log({ ...weekDates });
 
     return (
         <div className="grid md:grid-cols-2 gap-4">
@@ -143,7 +154,7 @@ export default function WorkAssignment() {
                             <h3 className="text-lg">{formatDate(date)}</h3>
                         </div>
 
-                        {isDateTodayOrFuture(date) && (
+                        {isDateTodayOrFuture(date) && profile.role === ROLE.ADMIN && (
                             <Button
                                 isIconOnly
                                 size="sm"
