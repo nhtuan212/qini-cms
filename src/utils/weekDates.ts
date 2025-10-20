@@ -1,19 +1,26 @@
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isSameOrAfter);
+
 export const getWeekDates = (date: Date): Date[] => {
-    // Convert to Vietnam timezone (UTC+7)
-    const vietnamDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+    // Convert to Vietnam timezone using dayjs (consistent with project)
+    const vietnamDate = dayjs.utc(date).tz("Asia/Ho_Chi_Minh");
 
     // Get the start of the week (Monday) in Vietnam timezone
-    const dayOfWeek = vietnamDate.getDay();
+    const dayOfWeek = vietnamDate.day();
     const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Sunday = 0, so -6 to get Monday
-    const mondayDate = new Date(vietnamDate);
-    mondayDate.setDate(vietnamDate.getDate() + mondayOffset);
+    const mondayDate = vietnamDate.add(mondayOffset, "day");
 
     const dates: Date[] = [];
 
     // Generate 7 days starting from Monday
     for (let i = 0; i < 7; i++) {
-        const dayDate = new Date(mondayDate);
-        dayDate.setDate(mondayDate.getDate() + i);
+        const dayDate = mondayDate.add(i, "day").toDate();
         dates.push(dayDate);
     }
 
@@ -27,11 +34,11 @@ export const getDayName = (date: Date): string => {
 };
 
 export const isDateTodayOrFuture = (date: Date): boolean => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to start of day
+    // Get today's date in Vietnam timezone
+    const today = dayjs.utc().tz("Asia/Ho_Chi_Minh").startOf("day");
 
-    const compareDate = new Date(date);
-    compareDate.setHours(0, 0, 0, 0); // Reset time to start of day
+    // Convert input date to Vietnam timezone and get start of day
+    const compareDate = dayjs.utc(date).tz("Asia/Ho_Chi_Minh").startOf("day");
 
-    return compareDate >= today;
+    return compareDate.isSameOrAfter(today);
 };

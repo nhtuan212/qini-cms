@@ -10,19 +10,36 @@ import { useWorkAssignmentStore } from "@/stores/useWorkAssignmentStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { StaffProps } from "@/stores/useStaffStore";
 import { twMerge } from "tailwind-merge";
-import { formatDate, getDayName, getWeekDates, isDateTodayOrFuture, isEmpty } from "@/utils";
+import {
+    formatDate,
+    getCurrentVietnamDate,
+    getDayName,
+    getWeekDates,
+    isDateTodayOrFuture,
+    isEmpty,
+} from "@/utils";
 import { ROLE, TEXT } from "@/constants";
 
-export default function WorkAssignment({ staffById }: { staffById?: StaffProps }) {
+export default function WorkAssignment({
+    staffById,
+    currentWeek,
+}: {
+    staffById?: StaffProps;
+    currentWeek?: Date;
+}) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { workAssignments, getWorkAssignments, updateWorkAssignment, deleteWorkAssignment } =
-        useWorkAssignmentStore();
+    const {
+        isLoading,
+        workAssignments,
+        getWorkAssignments,
+        updateWorkAssignment,
+        deleteWorkAssignment,
+    } = useWorkAssignmentStore();
 
     //** Variables */
-    const currentDate = new Date();
-    const weekDates = getWeekDates(currentDate);
+    const weekDates = getWeekDates(currentWeek || getCurrentVietnamDate());
 
     //** Effects */
     useEffect(() => {
@@ -31,7 +48,7 @@ export default function WorkAssignment({ staffById }: { staffById?: StaffProps }
 
     //** Render */
     const renderAssignment = (date: Date) => {
-        if (isEmpty(workAssignments)) {
+        if (isEmpty(workAssignments) || isLoading) {
             return TEXT.NO_ASSIGNMENT;
         }
 
@@ -141,40 +158,40 @@ export default function WorkAssignment({ staffById }: { staffById?: StaffProps }
         );
     };
 
-    console.log({ ...weekDates });
-
     return (
         <div className="grid md:grid-cols-2 gap-4">
-            {weekDates.map(date => (
-                <Card key={date.toISOString()} className="p-0">
-                    <div className="flex items-center justify-between bg-gray-100 p-2 rounded-t-md">
-                        <div className="flex items-center gap-x-2 p-2">
-                            <CalendarIcon className="w-4 h-4" />
-                            <span>{getDayName(date)}</span>
-                            <h3 className="text-lg">{formatDate(date)}</h3>
+            {weekDates.map(date => {
+                return (
+                    <Card key={date.toISOString()} className="p-0">
+                        <div className="flex items-center justify-between bg-gray-100 p-2 rounded-t-md">
+                            <div className="flex items-center gap-x-2 p-2">
+                                <CalendarIcon className="w-4 h-4" />
+                                <span>{getDayName(date)}</span>
+                                <h3 className="text-lg">{formatDate(date)}</h3>
+                            </div>
+
+                            {isDateTodayOrFuture(date) && profile.role === ROLE.ADMIN && (
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    startContent={<PlusIcon className="w-4 h-4" />}
+                                    onPress={() => {
+                                        getModal({
+                                            isOpen: true,
+                                            modalHeader: TEXT.ADD_NEW,
+                                            modalBody: <WorkAssignmentForm date={date} />,
+                                        });
+                                    }}
+                                />
+                            )}
                         </div>
 
-                        {isDateTodayOrFuture(date) && profile.role === ROLE.ADMIN && (
-                            <Button
-                                isIconOnly
-                                size="sm"
-                                startContent={<PlusIcon className="w-4 h-4" />}
-                                onPress={() => {
-                                    getModal({
-                                        isOpen: true,
-                                        modalHeader: TEXT.ADD_NEW,
-                                        modalBody: <WorkAssignmentForm date={date} />,
-                                    });
-                                }}
-                            />
-                        )}
-                    </div>
-
-                    <div className="p-4 text-sm text-gray-500 border-t border-gray-200 rounded-md">
-                        {renderAssignment(date)}
-                    </div>
-                </Card>
-            ))}
+                        <div className="p-4 text-sm text-gray-500 border-t border-gray-200 rounded-md">
+                            {renderAssignment(date)}
+                        </div>
+                    </Card>
+                );
+            })}
         </div>
     );
 }

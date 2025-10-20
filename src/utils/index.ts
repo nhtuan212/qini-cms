@@ -287,6 +287,15 @@ export const calculateWorkingHours = (checkIn: string | null, checkOut: string |
     return workingHours;
 };
 
+// Time Zone
+export {
+    getCurrentVietnamDate,
+    parseVietnamDate,
+    addDaysToVietnamDate,
+    subtractDaysFromVietnamDate,
+    convertToVietnamTimezone,
+} from "./timeZone";
+
 // Crypto
 export { encryptPasswordRSA, generateRSAKeyPair } from "./crypto";
 
