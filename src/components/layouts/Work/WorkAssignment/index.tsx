@@ -98,7 +98,7 @@ export default function WorkAssignment({
                                     </p>
                                 </div>
 
-                                <p className="text-base">{assignment.staffName}</p>
+                                <p className="text-base">{`${assignment.shiftName} - ${assignment.staffName}`}</p>
 
                                 {assignment.updatedAt && (
                                     <div className="text-xs text-gray-500">

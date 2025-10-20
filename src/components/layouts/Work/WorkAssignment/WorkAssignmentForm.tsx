@@ -2,14 +2,15 @@ import React, { useEffect } from "react";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
+import { Select, SelectItem } from "@/components/Select";
 import { useModalStore } from "@/stores/useModalStore";
 import { useWorkTypeStore } from "@/stores/useWorkTypeStore";
 import { useWorkAssignmentStore, WorkAssignmentProps } from "@/stores/useWorkAssignmentStore";
+import { useShiftStore } from "@/stores/useShiftsStore";
+import { useStaffStore } from "@/stores/useStaffStore";
 import { Controller, useForm } from "react-hook-form";
 import { TEXT } from "@/constants";
 import { formatDate, getDayName, isEmpty } from "@/utils";
-import { Select, SelectItem } from "@/components/Select";
-import { useStaffStore } from "@/stores/useStaffStore";
 
 export default function WorkAssignmentForm({
     date,
@@ -22,6 +23,7 @@ export default function WorkAssignmentForm({
     const { getModal } = useModalStore();
     const { workTypes, getWorkTypes } = useWorkTypeStore();
     const { staff, getStaff } = useStaffStore();
+    const { shifts } = useShiftStore();
     const { createWorkAssignment, updateWorkAssignment } = useWorkAssignmentStore();
 
     //** Variables */
@@ -31,6 +33,15 @@ export default function WorkAssignmentForm({
             name: "workTypeId",
             field: "select",
             options: workTypes,
+            validate: {
+                required: TEXT.IS_REQUIRED,
+            },
+        },
+        {
+            label: TEXT.WORK_SHIFT,
+            name: "shiftId",
+            field: "select",
+            options: shifts,
             validate: {
                 required: TEXT.IS_REQUIRED,
             },
@@ -50,6 +61,7 @@ export default function WorkAssignmentForm({
     const defaultValues = {
         workTypeId: assignment?.workTypeId || "",
         staffId: assignment?.staffId || "",
+        shiftId: assignment?.shiftId || "",
         date: date,
     };
 
@@ -108,13 +120,14 @@ export default function WorkAssignmentForm({
                             <Select
                                 label={item.label}
                                 selectedKeys={[
-                                    item.options.find(option => option.id === field.value)?.id,
+                                    item.options.find((option: any) => option.id === field.value)
+                                        ?.id,
                                 ]}
                                 onSelectionChange={value => field.onChange(value.currentKey)}
                                 isInvalid={!!errors[item.name]}
                                 errorMessage={<ErrorMessage errors={errors} name={item.name} />}
                             >
-                                {item.options.map(option => (
+                                {item.options.map((option: any) => (
                                     <SelectItem key={option.id}>{option.name}</SelectItem>
                                 ))}
                             </Select>
