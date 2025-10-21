@@ -129,4 +129,5 @@ export const TEXT = {
     NEXT_WEEK: "Tuần sau",
     NO_ASSIGNMENT: "Chưa có công việc",
     WORK_ASSIGNMENT: "Lịch công việc",
+    ONLY_UPDATE_TODAY_WORK: "Bạn chỉ có thể cập nhật công việc của ngày hôm nay",
 };

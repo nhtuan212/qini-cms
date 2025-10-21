@@ -23,7 +23,7 @@ export default function WorkAssignmentForm({
     const { getModal } = useModalStore();
     const { workTypes, getWorkTypes } = useWorkTypeStore();
     const { staff, getStaff } = useStaffStore();
-    const { shifts } = useShiftStore();
+    const { shifts, getShifts } = useShiftStore();
     const { createWorkAssignment, updateWorkAssignment } = useWorkAssignmentStore();
 
     //** Variables */
@@ -38,7 +38,7 @@ export default function WorkAssignmentForm({
             },
         },
         {
-            label: TEXT.WORK_SHIFT,
+            label: TEXT.WORK_SHIFT_SELECT,
             name: "shiftId",
             field: "select",
             options: shifts,
@@ -51,9 +51,6 @@ export default function WorkAssignmentForm({
             name: "staffId",
             field: "select",
             options: staff,
-            validate: {
-                required: TEXT.IS_REQUIRED,
-            },
         },
     ];
 
@@ -104,6 +101,12 @@ export default function WorkAssignmentForm({
             getStaff();
         }
     }, [getStaff, staff]);
+
+    useEffect(() => {
+        if (isEmpty(shifts)) {
+            getShifts();
+        }
+    }, [getShifts, shifts]);
 
     //** Render */
     return (

@@ -5,8 +5,15 @@ import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import Checkbox from "@/components/Checkbox";
 import Loading from "@/components/Loading";
-import { CalendarIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+    CalendarIcon,
+    CheckCircleIcon,
+    PencilIcon,
+    PlusIcon,
+    TrashIcon,
+} from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
+import { useAlertStore } from "@/stores/useAlertStore";
 import { useWorkAssignmentStore } from "@/stores/useWorkAssignmentStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { StaffProps } from "@/stores/useStaffStore";
@@ -31,6 +38,7 @@ export default function WorkAssignment({
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
+    const { getAlert } = useAlertStore();
     const {
         isLoading,
         workAssignments,
@@ -73,10 +81,23 @@ export default function WorkAssignment({
                                 size="md"
                                 isSelected={assignment.isCompleted}
                                 isDisabled={
-                                    staffById?.id !== assignment?.staffId &&
-                                    profile.role !== ROLE.ADMIN
+                                    (staffById?.id !== assignment?.staffId &&
+                                        profile.role !== ROLE.ADMIN) ||
+                                    assignment.isCompleted
                                 }
                                 onChange={e => {
+                                    if (
+                                        formatDate(date, "YYYY-MM-DD") !==
+                                        formatDate(getCurrentVietnamDate(), "YYYY-MM-DD")
+                                    ) {
+                                        return getAlert({
+                                            isOpen: true,
+                                            type: "error",
+                                            duration: 3000,
+                                            title: TEXT.ONLY_UPDATE_TODAY_WORK,
+                                        });
+                                    }
+
                                     updateWorkAssignment(assignment.id, {
                                         isCompleted: e.target.checked,
                                     });
@@ -100,9 +121,10 @@ export default function WorkAssignment({
 
                                 <p className="text-base">{`${assignment.shiftName} - ${assignment.staffName}`}</p>
 
-                                {assignment.updatedAt && (
-                                    <div className="text-xs text-gray-500">
-                                        {formatDate(assignment.updatedAt)}
+                                {assignment.isCompleted && assignment.updatedAt && (
+                                    <div className="flex items-center gap-x-1 font-bold text-xs text-primary">
+                                        <CheckCircleIcon className="w-5 h-5" />
+                                        <p>{`${assignment.staffName} - ${formatDate(assignment.updatedAt, "HH:mm - DD/MM/YYYY")}`}</p>
                                     </div>
                                 )}
                             </div>
