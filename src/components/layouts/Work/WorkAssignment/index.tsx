@@ -81,9 +81,9 @@ export default function WorkAssignment({
                                 size="md"
                                 isSelected={assignment.isCompleted}
                                 isDisabled={
-                                    (staffById?.id !== assignment?.staffId &&
-                                        profile.role !== ROLE.ADMIN) ||
-                                    assignment.isCompleted
+                                    (staffById?.id !== assignment?.staffId ||
+                                        assignment.isCompleted) &&
+                                    profile.role !== ROLE.ADMIN
                                 }
                                 onChange={e => {
                                     if (

@@ -51,6 +51,9 @@ export default function WorkAssignmentForm({
             name: "staffId",
             field: "select",
             options: staff,
+            validate: {
+                required: TEXT.IS_REQUIRED,
+            },
         },
     ];
 
