@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 import StaffDetail from "../../Staff/StaffDetail";
 import RecordTimeSheet from "./RecordTimeSheet";
 import Salary from "../../Salary";
+import WorkAssignment from "../../Work/WorkAssignment";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
-import { ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore } from "@/stores/useShiftsStore";
 import { useTargetStore } from "@/stores/useTargetStore";
@@ -44,6 +45,12 @@ export default function AttendanceNavigation() {
             value: "salary",
             component: <Salary staffById={staffById} />,
         },
+        {
+            label: TEXT.WORK_ASSIGNMENT,
+            icon: CalendarIcon,
+            value: "work",
+            component: <WorkAssignment staffById={staffById} />,
+        },
     ];
 
     //** Effects */
@@ -62,7 +69,7 @@ export default function AttendanceNavigation() {
     return (
         <div className="flex flex-col sm:gap-y-4 gap-y-2">
             <Card className="sm:p-4 p-2">
-                <div className="flex">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {tabs.map(tab => (
                         <Button
                             key={tab.value}

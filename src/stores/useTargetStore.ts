@@ -108,7 +108,7 @@ export const useTargetStore = create<TargetState & TargetAction>()(set => ({
             endpoint: URL.TARGET,
             options: {
                 method: "POST",
-                body: JSON.stringify(convertKeysToSnakeCase(bodyParams)),
+                body: JSON.stringify(bodyParams),
             },
         }).then(res => {
             set({

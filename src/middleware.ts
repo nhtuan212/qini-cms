@@ -4,6 +4,7 @@ import { ROLE, ROUTE } from "./constants";
 // Define route permissions based on menu configuration
 const ROUTE_PERMISSIONS = {
     [ROUTE.SALARY]: [ROLE.ADMIN],
+    [ROUTE.WORK]: [ROLE.ADMIN],
 };
 
 // Helper function to check if user has required role for a route
