@@ -258,7 +258,7 @@ export const formatTime = (time?: string, includeSeconds: boolean = false) => {
 /**
  * Calculates working hours between check-in and check-out times, rounding times as follows:
  * - Minutes 00-15: round down to hour
- * - Minutes 16-55: round to half hour
+ * - Minutes 16-50: round to half hour
  * - Minutes 56-59: round up to next hour
  *
  * @param checkIn - Check-in time as string (e.g., "17:00")
@@ -274,7 +274,7 @@ export const calculateWorkingHours = (checkIn: string | null, checkOut: string |
         const min = Number(minStr);
 
         if (min <= 15) return hour;
-        if (min <= 55) return hour + 0.5;
+        if (min <= 50) return hour + 0.5;
         return hour + 1;
     };
 
