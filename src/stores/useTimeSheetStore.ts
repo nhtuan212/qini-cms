@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { useTargetStore } from "./useTargetStore";
-import { calculateWorkingHours, convertKeysToCamelCase, formatDate, formatTime } from "@/utils";
+import { convertKeysToCamelCase, formatTime } from "@/utils";
 import { fetchData } from "@/utils/fetch";
 import { URL, STATUS_CODE } from "@/constants";
 
@@ -37,11 +37,6 @@ interface TimeSheetState {
 }
 
 interface TimeSheetActions {
-    recordTimeSheet: (params: {
-        staffId: string;
-        shiftId: string;
-        targetShiftId: string;
-    }) => Promise<void>;
     getTimeSheetByStaffId: (
         staffId: string,
         params: {
@@ -85,37 +80,8 @@ const initialState: TimeSheetState = {
     },
 };
 
-export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()((set, get) => ({
+export const useTimeSheetStore = create<TimeSheetState & TimeSheetActions>()(set => ({
     ...initialState,
-
-    recordTimeSheet: async ({ staffId, shiftId, targetShiftId }) => {
-        set({ isLoading: true });
-
-        const currentDate = formatDate(new Date(), "YYYY-MM-DD");
-        const timeSheets = get().timeSheetByStaffId.data;
-
-        const currentTimeSheet = timeSheets.find(
-            record =>
-                record.staffId === staffId &&
-                record.shiftId === shiftId &&
-                record.targetShiftId === targetShiftId &&
-                formatDate(record.date, "YYYY-MM-DD") === currentDate,
-        );
-
-        const handleTarget = currentTimeSheet
-            ? get().updateTimeSheet({
-                  id: currentTimeSheet.id,
-                  bodyParams: {
-                      checkOut: formatTime(),
-                      workingHours: calculateWorkingHours(currentTimeSheet.checkIn, formatTime()),
-                  },
-              })
-            : get().createTimeSheet({ staffId, shiftId, targetShiftId });
-
-        return await handleTarget.then(() => {
-            return set({ isLoading: false });
-        });
-    },
 
     getTimeSheetByStaffId: async (staffId, params) => {
         set({ isLoading: true });

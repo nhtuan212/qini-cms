@@ -13,7 +13,14 @@ import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useShiftStore, ShiftProps } from "@/stores/useShiftsStore";
 import { ROLE, TEXT } from "@/constants";
-import { formatDate, getCurrentLocation, isEmpty, verifyLocation } from "@/utils";
+import {
+    calculateWorkingHours,
+    formatDate,
+    formatTime,
+    getCurrentLocation,
+    isEmpty,
+    verifyLocation,
+} from "@/utils";
 
 export default function RecordTimeSheet() {
     //** Stores */
@@ -30,13 +37,14 @@ export default function RecordTimeSheet() {
         isLoading,
         timeSheetByStaffId,
         getTimeSheetByStaffId,
-        recordTimeSheet,
+        createTimeSheet,
+        updateTimeSheet,
         deleteTimeSheet,
     } = useTimeSheetStore();
     const { createTarget } = useTargetStore();
 
     //** Functions */
-    const handleRecordTimeSheet = async () => {
+    const handleRecordTimeSheet = async (type: "checkIn" | "checkOut") => {
         setError("");
 
         if (!selectedShift) {
@@ -92,16 +100,26 @@ export default function RecordTimeSheet() {
             return;
         }
 
-        await recordTimeSheet({
-            staffId: staffById.id,
-            shiftId: selectedShift,
-            targetShiftId,
-        })
-            .then(res => res)
-            .catch(error => {
-                console.error({ error });
+        if (type === "checkOut") {
+            const currentTimeSheet = timeSheetByStaffId.data.find(
+                item => item.shiftId === selectedShift && !item.checkOut,
+            );
+
+            if (!currentTimeSheet) {
                 setError(TEXT.ERROR);
+                return;
+            }
+
+            return updateTimeSheet({
+                id: currentTimeSheet.id,
+                bodyParams: {
+                    checkOut: formatTime(),
+                    workingHours: calculateWorkingHours(currentTimeSheet.checkIn, formatTime()),
+                },
             });
+        }
+
+        return createTimeSheet({ staffId: staffById.id, shiftId: selectedShift, targetShiftId });
     };
 
     //** Effects */
@@ -219,10 +237,11 @@ export default function RecordTimeSheet() {
                         isLoading={isLoading}
                         startContent={<ArrowRightEndOnRectangleIcon className="w-5 h-5" />}
                         isDisabled={
-                            !!timeSheetByStaffId.data.find(item => item.shiftId === selectedShift)
-                                ?.checkIn
+                            !!timeSheetByStaffId.data.find(
+                                item => item.shiftId === selectedShift && !item.checkOut,
+                            )?.checkIn
                         }
-                        onPress={handleRecordTimeSheet}
+                        onPress={() => handleRecordTimeSheet("checkIn")}
                     >
                         {TEXT.CHECK_IN}
                     </Button>
@@ -234,12 +253,12 @@ export default function RecordTimeSheet() {
                         isLoading={isLoading}
                         endContent={<ArrowRightStartOnRectangleIcon className="w-5 h-5" />}
                         isDisabled={
-                            !!timeSheetByStaffId.data.find(item => item.shiftId === selectedShift)
+                            !timeSheetByStaffId.data.find(item => item.shiftId === selectedShift)
                                 ?.checkOut ||
                             !timeSheetByStaffId.data.find(item => item.shiftId === selectedShift)
                                 ?.checkIn
                         }
-                        onPress={handleRecordTimeSheet}
+                        onPress={() => handleRecordTimeSheet("checkOut")}
                     >
                         {TEXT.CHECK_OUT}
                     </Button>
