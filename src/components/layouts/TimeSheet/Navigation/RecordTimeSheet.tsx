@@ -252,12 +252,6 @@ export default function RecordTimeSheet() {
                         size="lg"
                         isLoading={isLoading}
                         endContent={<ArrowRightStartOnRectangleIcon className="w-5 h-5" />}
-                        isDisabled={
-                            !timeSheetByStaffId.data.find(item => item.shiftId === selectedShift)
-                                ?.checkOut ||
-                            !timeSheetByStaffId.data.find(item => item.shiftId === selectedShift)
-                                ?.checkIn
-                        }
                         onPress={() => handleRecordTimeSheet("checkOut")}
                     >
                         {TEXT.CHECK_OUT}
