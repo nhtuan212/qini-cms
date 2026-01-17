@@ -256,10 +256,19 @@ export const formatTime = (time?: string, includeSeconds: boolean = false) => {
 };
 
 /**
- * Calculates working hours between check-in and check-out times, rounding times as follows:
- * - Minutes 00-15: round down to hour
- * - Minutes 16-50: round to half hour
- * - Minutes 56-59: round up to next hour
+ * Calculates working hours between check-in and check-out times.
+ *
+ * Rounding rules for CheckIn:
+ * - Minutes 00-10: round to current hour (e.g., 10:10 → 10:00)
+ * - Minutes 11-30: round to half hour (e.g., 10:25 → 10:30)
+ * - Minutes 31-50: round to half hour (e.g., 10:45 → 10:30)
+ * - Minutes 51-60: round to next hour (e.g., 10:55 → 11:00)
+ *
+ * Rounding rules for CheckOut:
+ * - Minutes 00-20: round to current hour (e.g., 10:15 → 10:00)
+ * - Minutes 21-30: round to half hour (e.g., 10:25 → 10:30)
+ * - Minutes 31-50: round to half hour (e.g., 10:45 → 10:30)
+ * - Minutes 51-60: round to next hour (e.g., 10:55 → 11:00)
  *
  * @param checkIn - Check-in time as string (e.g., "17:00")
  * @param checkOut - Check-out time as string (e.g., "18:00")
@@ -268,24 +277,32 @@ export const formatTime = (time?: string, includeSeconds: boolean = false) => {
 export const calculateWorkingHours = (checkIn: string | null, checkOut: string | null): number => {
     if (!checkIn || !checkOut) return 0;
 
-    const roundTime = (time: string): number => {
+    const roundCheckIn = (time: string): number => {
         const [hourStr, minStr] = time.split(":");
         const hour = Number(hourStr);
         const min = Number(minStr);
 
-        if (min <= 15) return hour;
+        if (min <= 10) return hour;
         if (min <= 50) return hour + 0.5;
         return hour + 1;
     };
 
-    const roundedCheckIn = roundTime(checkIn);
-    const roundedCheckOut = roundTime(checkOut);
+    const roundCheckOut = (time: string): number => {
+        const [hourStr, minStr] = time.split(":");
+        const hour = Number(hourStr);
+        const min = Number(minStr);
 
-    if (roundedCheckIn > roundedCheckOut) return 0;
+        if (min <= 20) return hour;
+        if (min <= 50) return hour + 0.5;
+        return hour + 1;
+    };
 
-    let workingHours = roundedCheckOut - roundedCheckIn;
-    if (workingHours < 0) workingHours = 0;
-    return workingHours;
+    const roundedCheckIn = roundCheckIn(checkIn);
+    const roundedCheckOut = roundCheckOut(checkOut);
+
+    const workingHours = roundedCheckOut - roundedCheckIn;
+
+    return workingHours > 0 ? workingHours : 0;
 };
 
 // Time Zone
