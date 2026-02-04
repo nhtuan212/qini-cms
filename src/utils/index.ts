@@ -261,8 +261,8 @@ export const formatTime = (time?: string, includeSeconds: boolean = false) => {
  * Rounding rules for CheckIn:
  * - Minutes 00-10: round to current hour (e.g., 10:10 → 10:00)
  * - Minutes 11-30: round to half hour (e.g., 10:25 → 10:30)
- * - Minutes 31-50: round to half hour (e.g., 10:45 → 10:30)
- * - Minutes 51-60: round to next hour (e.g., 10:55 → 11:00)
+ * - Minutes 31-40: round to half hour (e.g., 10:40 → 10:30)
+ * - Minutes 41-50: round to next hour (e.g., 10:41 → 11:00)
  *
  * Rounding rules for CheckOut:
  * - Minutes 00-20: round to current hour (e.g., 10:15 → 10:00)
@@ -283,7 +283,7 @@ export const calculateWorkingHours = (checkIn: string | null, checkOut: string |
         const min = Number(minStr);
 
         if (min <= 10) return hour;
-        if (min <= 50) return hour + 0.5;
+        if (min <= 40) return hour + 0.5;
         return hour + 1;
     };
 

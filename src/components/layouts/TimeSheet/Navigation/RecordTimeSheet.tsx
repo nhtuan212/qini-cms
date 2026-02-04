@@ -129,7 +129,7 @@ export default function RecordTimeSheet() {
         });
     }, [getTimeSheetByStaffId, staffById.id]);
 
-    // Function to check if a shift is currently active based on start/end times with 30-minute buffer
+    // Function to check if a shift is currently active based on start/end times (Ca 3: 60-min buffer, others: 30-min buffer)
     const isShiftActive = (shift: ShiftProps): boolean => {
         if (!shift.startTime || !shift.endTime) {
             // In the case is active for "Noi bo" shift
@@ -148,8 +148,8 @@ export default function RecordTimeSheet() {
         const endMinutes =
             parseInt(shift.endTime.split(":")[0]) * 60 + parseInt(shift.endTime.split(":")[1]);
 
-        // Add 30-minute buffer (30 minutes = 30)
-        const bufferMinutes = 30;
+        // Ca 3 uses 60-minute buffer; other shifts use 30-minute buffer
+        const bufferMinutes = shift.id === "a6056d51-3a8e-4e21-a343-0b0100c4c440" ? 60 : 30; // Ca 3 id: a6056d51-3a8e-4e21-a343-0b0100c4c440
         const startWithBuffer = startMinutes - bufferMinutes;
         const endWithBuffer = endMinutes + bufferMinutes;
 
