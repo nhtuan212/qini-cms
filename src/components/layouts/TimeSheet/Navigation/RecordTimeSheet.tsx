@@ -189,6 +189,7 @@ export default function RecordTimeSheet() {
             })
             .map((shift: ShiftProps) => shift.id);
 
+        console.log({ disabledShiftIds });
         return disabledShiftIds;
     }, [shifts, staffById.isTarget]);
 
