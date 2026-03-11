@@ -148,26 +148,12 @@ export default function RecordTimeSheet() {
         const endMinutes =
             parseInt(shift.endTime.split(":")[0]) * 60 + parseInt(shift.endTime.split(":")[1]);
 
-        // Ca 3 uses 60-minute buffer; other shifts use 30-minute buffer
-        const bufferMinutes = shift.id === "a6056d51-3a8e-4e21-a343-0b0100c4c440" ? 60 : 30; // Ca 3 id: a6056d51-3a8e-4e21-a343-0b0100c4c440
-        const startWithBuffer = startMinutes - bufferMinutes;
-        const endWithBuffer = endMinutes + bufferMinutes;
-
-        // Handle shifts that span midnight (e.g., 22:00 to 06:00)
-        if (endMinutes < startMinutes) {
-            // Shift spans midnight - active if current time is after (start - buffer) OR before (end + buffer)
-            const adjustedStartWithBuffer =
-                startWithBuffer < 0 ? startWithBuffer + 1440 : startWithBuffer; // 1440 = 24 hours in minutes
-            const adjustedEndWithBuffer =
-                endWithBuffer > 1440 ? endWithBuffer - 1440 : endWithBuffer;
-
-            return (
-                currentMinutes >= adjustedStartWithBuffer || currentMinutes <= adjustedEndWithBuffer
-            );
-        } else {
-            // Normal shift within same day - active if current time is between (start - buffer) and (end + buffer)
-            return currentMinutes >= startWithBuffer && currentMinutes <= endWithBuffer;
-        }
+        // Buffer minutes for all shifts
+        const bufferMinutes = 60;
+        return (
+            currentMinutes >= startMinutes - bufferMinutes &&
+            currentMinutes <= endMinutes + bufferMinutes
+        );
     };
 
     // Get disabledKeys for HeroUI Select component - disable inactive shifts and incompatible target shifts
