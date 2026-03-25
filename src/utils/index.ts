@@ -93,25 +93,6 @@ export const isEmpty = (data: Array<string | number> | object) => {
 };
 
 /**
- * Creates a debounced function that delays the invocation of the provided function until after a specified wait time has elapsed since the last time the debounced function was invoked.
- *
- * @param func - The function to debounce.
- * @param wait - The number of milliseconds to delay; defaults to 300 milliseconds.
- * @returns A debounced function that delays the invocation of `func`.
- */
-export const debounce = (func: (...args: any[]) => void, wait = 1000) => {
-    let timeout: any;
-
-    return (...args: any) => {
-        clearTimeout(timeout);
-
-        timeout = setTimeout(() => {
-            func.apply(this, args);
-        }, wait);
-    };
-};
-
-/**
  * Breaks a string into multiple lines of a specified length.
  *
  * @param str - The string to break into lines.

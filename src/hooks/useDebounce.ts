@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react";
 
 export function useDebounce<T extends (...args: any[]) => any>(
     fn: T,
-    delay = 500,
+    delay = 300,
 ): (...args: Parameters<T>) => void {
     const isPending = useRef(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);

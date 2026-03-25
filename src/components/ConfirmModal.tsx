@@ -1,7 +1,6 @@
 import React from "react";
 import Button from "@/components/Button";
 import { useModalStore } from "@/stores/useModalStore";
-import { debounce } from "@/utils";
 import { TEXT } from "@/constants";
 
 function ConfirmModal({
@@ -35,12 +34,7 @@ function ConfirmModal({
                     {TEXT.CANCEL}
                 </Button>
 
-                <Button
-                    type="button"
-                    color="danger"
-                    onPress={debounce(onConfirm)}
-                    isDisabled={isDisabled}
-                >
+                <Button type="button" color="danger" onPress={onConfirm} isDisabled={isDisabled}>
                     {TEXT.SUBMIT}
                 </Button>
             </div>
