@@ -16,7 +16,7 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { ROLE, TEXT } from "@/constants";
-import { ModalActionProps } from "@/lib/types";
+import { ModalActionProps } from "@/types";
 
 export default function StaffActions({ item }: { item: StaffProps }) {
     //** Destructuring */

@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { encryptPasswordRSA } from "@/utils";
-import { ModalActionProps } from "@/lib/types";
+import { ModalActionProps } from "@/types";
 import { TEXT } from "@/constants";
 
 export type FormStaffProps = {

@@ -7,7 +7,7 @@ import {
     getMonthRangeFromDate,
 } from "@/utils";
 import { TEXT } from "@/constants";
-import { SalaryTypeProps } from "@/lib/types";
+import { SalaryTypeProps } from "@/types";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 
 export interface SalaryTotalProps {

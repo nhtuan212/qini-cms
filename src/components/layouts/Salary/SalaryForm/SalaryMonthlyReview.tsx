@@ -12,7 +12,7 @@ import {
 } from "@/utils";
 import { TEXT } from "@/constants";
 import { FormSalaryProps } from ".";
-import { SalaryTypeProps } from "@/lib/types";
+import { SalaryTypeProps } from "@/types";
 
 interface SalaryMonthlyReviewProps {
     watch: UseFormWatch<FormSalaryProps>;

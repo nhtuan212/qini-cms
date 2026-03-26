@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { ModalProps } from "@heroui/react";
-import { ModalActionProps } from "@/lib/types";
+import { ModalActionProps } from "@/types";
 
 type UseModalProps = {
     action?: ModalActionProps;

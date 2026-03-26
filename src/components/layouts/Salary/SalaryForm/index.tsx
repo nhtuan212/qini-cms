@@ -8,7 +8,7 @@ import { useStaffStore } from "@/stores/useStaffStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useForm } from "react-hook-form";
 import { getDateTime } from "@/utils";
-import { SalaryTypeProps } from "@/lib/types";
+import { SalaryTypeProps } from "@/types";
 
 export interface FormSalaryProps {
     staffId: string;
