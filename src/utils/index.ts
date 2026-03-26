@@ -148,17 +148,15 @@ const toCamelCase = (str: string) => {
 
 const toSnakeCase = (str: string) => str.replace(/([A-Z])/g, "_$1").toLowerCase();
 
-export const convertKeysToCamelCase = (obj: {
-    [key: string]: any;
-}): Array<{ [key: string]: any }> | { [key: string]: any } => {
+export const convertKeysToCamelCase = <T = any>(obj: { [key: string]: any }): T => {
     if (Array.isArray(obj)) {
-        return obj.map(item => convertKeysToCamelCase(item));
+        return obj.map(item => convertKeysToCamelCase(item)) as unknown as T;
     } else if (typeof obj === "object" && obj !== null) {
         const newObj: { [key: string]: any } = {};
         for (const key in obj) {
             newObj[toCamelCase(key)] = convertKeysToCamelCase((obj as { [key: string]: any })[key]);
         }
-        return newObj;
+        return newObj as unknown as T;
     } else {
         return obj;
     }
@@ -284,6 +282,20 @@ export const calculateWorkingHours = (checkIn: string | null, checkOut: string |
     const workingHours = roundedCheckOut - roundedCheckIn;
 
     return workingHours > 0 ? workingHours : 0;
+};
+
+export const buildParamUrl = (baseUrl: string, params?: object) => {
+    if (!params) return baseUrl;
+
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+            searchParams.append(key, String(value));
+        }
+    });
+
+    const query = searchParams.toString();
+    return query ? `${baseUrl}?${query}` : baseUrl;
 };
 
 // Time Zone

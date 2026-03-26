@@ -11,8 +11,8 @@ import { DocumentCheckIcon, UserIcon } from "@heroicons/react/24/outline";
 import { CalendarDate, RangeValue } from "@heroui/react";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
-import { useSalaryStore } from "@/stores/useSalaryStore";
 import { useAlertStore } from "@/stores/useAlertStore";
+import { useSalary } from "@/hooks";
 import {
     formatDate,
     calculateWorkingDaysInRange,
@@ -57,7 +57,6 @@ export default function SalaryCalculator({
     const { staff, staffById, getStaffById } = useStaffStore();
     const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId, cleanUpTimeSheet } =
         useTimeSheetStore();
-    const { isLoading: isLoadingSalary, createSalary } = useSalaryStore();
     const { getAlert } = useAlertStore();
 
     //** Variables */
@@ -82,6 +81,9 @@ export default function SalaryCalculator({
     const dateRangeWatched = watch("dateRange");
     const startDate = dateRangeWatched.start.toString();
     const endDate = dateRangeWatched.end.toString();
+
+    //** data Fetching */
+    const { isFetching, createSalary } = useSalary();
 
     //** Functions */
     const onSubmit = (data: FormSalaryProps) => {
@@ -308,7 +310,7 @@ export default function SalaryCalculator({
                     className="w-full"
                     size="lg"
                     startContent={<DocumentCheckIcon className="w-5 h-5" />}
-                    isDisabled={isLoading || isLoadingSalary}
+                    isDisabled={isLoading || isFetching}
                 >
                     {TEXT.SUBMIT}
                 </Button>

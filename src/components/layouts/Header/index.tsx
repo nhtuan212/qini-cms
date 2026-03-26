@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -76,11 +74,11 @@ export default function Header() {
                 {menus.map(menu => (
                     <NavbarItem key={menu.url} className="hidden sm:flex">
                         <Link
+                            href={menu.url}
                             className={clsx(
                                 "flex items-center text-sm font-medium hover:underline",
                                 activeRoute === menu.url && "text-primary",
                             )}
-                            href={menu.url}
                         >
                             {menu.icon && <span className="mr-1">{menu.icon}</span>}
                             {menu.label}

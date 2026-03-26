@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button as ButtonNextUI, ButtonProps } from "@heroui/react";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useDebounce } from "@/hooks";
 
 const Button = React.forwardRef(({ ...props }: ButtonProps, ref: React.Ref<HTMLButtonElement>) => {
     //** Functions */
