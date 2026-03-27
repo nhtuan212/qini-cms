@@ -7,7 +7,6 @@ import TargetList from "./TargetList";
 import TargetFilter from "./TargetFilter";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { useShiftStore } from "@/stores/useShiftsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useTargetStore } from "@/stores/useTargetStore";
 import { useLocationCheck } from "@/hooks/useLocationCheck";
@@ -20,7 +19,6 @@ export default function Target() {
     //** Stores */
     const { profile } = useProfileStore();
     const { targets, getTarget } = useTargetStore();
-    const { getShifts } = useShiftStore();
     const { getStaff } = useStaffStore();
 
     //** Custom Hooks */
@@ -28,9 +26,8 @@ export default function Target() {
 
     //** Effects */
     useEffect(() => {
-        getShifts();
         getStaff();
-    }, [getShifts, getStaff]);
+    }, [getStaff]);
 
     useEffect(() => {
         const params = camelCaseQueryString({

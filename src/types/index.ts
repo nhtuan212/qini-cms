@@ -11,3 +11,4 @@ export enum SalaryTypeProps {
 }
 
 export * from "./salary";
+export * from "./shift";

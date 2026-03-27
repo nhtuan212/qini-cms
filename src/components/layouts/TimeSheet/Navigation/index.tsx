@@ -9,7 +9,6 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { CalendarIcon, ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { useShiftStore } from "@/stores/useShiftsStore";
 import { useTargetStore } from "@/stores/useTargetStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { formatDate, snakeCaseQueryString } from "@/utils";
@@ -21,7 +20,6 @@ export default function AttendanceNavigation() {
 
     //** Stores */
     const { staffById } = useStaffStore();
-    const { getShifts } = useShiftStore();
     const { getTarget } = useTargetStore();
     const { cleanUpTimeSheet } = useTimeSheetStore();
 
@@ -61,9 +59,8 @@ export default function AttendanceNavigation() {
     }, [cleanUpTimeSheet]);
 
     useEffect(() => {
-        getShifts();
         getTarget(snakeCaseQueryString({ target_at: formatDate(new Date(), "YYYY-MM-DD") }));
-    }, [getShifts, getTarget]);
+    }, [getTarget]);
 
     //** Render */
     return (

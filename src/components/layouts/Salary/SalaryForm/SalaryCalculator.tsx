@@ -82,7 +82,7 @@ export default function SalaryCalculator({
     const startDate = dateRangeWatched.start.toString();
     const endDate = dateRangeWatched.end.toString();
 
-    //** data Fetching */
+    //** Queries */
     const { isFetching, createSalary } = useSalary();
 
     //** Functions */

@@ -6,8 +6,8 @@ import { Select, SelectItem } from "@/components/Select";
 import { useModalStore } from "@/stores/useModalStore";
 import { useWorkTypeStore } from "@/stores/useWorkTypeStore";
 import { useWorkAssignmentStore, WorkAssignmentProps } from "@/stores/useWorkAssignmentStore";
-import { useShiftStore } from "@/stores/useShiftsStore";
 import { useStaffStore } from "@/stores/useStaffStore";
+import { useShift } from "@/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { TEXT } from "@/constants";
 import { formatDate, getDayName, isEmpty } from "@/utils";
@@ -23,8 +23,10 @@ export default function WorkAssignmentForm({
     const { getModal } = useModalStore();
     const { workTypes, getWorkTypes } = useWorkTypeStore();
     const { staff, getStaff } = useStaffStore();
-    const { shifts, getShifts } = useShiftStore();
     const { createWorkAssignment, updateWorkAssignment } = useWorkAssignmentStore();
+
+    //** Queries */
+    const { shifts } = useShift();
 
     //** Variables */
     const ASSIGNMENT_FORM = [
@@ -104,12 +106,6 @@ export default function WorkAssignmentForm({
             getStaff();
         }
     }, [getStaff, staff]);
-
-    useEffect(() => {
-        if (isEmpty(shifts)) {
-            getShifts();
-        }
-    }, [getShifts, shifts]);
 
     //** Render */
     return (

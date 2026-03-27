@@ -9,6 +9,7 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useAlertStore } from "@/stores/useAlertStore";
 import { useDrawerStore } from "@/stores/useDrawerStore";
+import { useShift } from "@/hooks";
 import { Session } from "next-auth";
 
 export default function MainLayout({
@@ -23,6 +24,9 @@ export default function MainLayout({
     const { modal, getModal } = useModalStore();
     const { drawer, getDrawer } = useDrawerStore();
     const { alert, getAlert } = useAlertStore();
+
+    //** Queries */
+    useShift();
 
     //** Effects */
     useEffect(() => {

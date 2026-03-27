@@ -11,8 +11,7 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { useShiftStore, ShiftProps } from "@/stores/useShiftsStore";
-import { ROLE, TEXT } from "@/constants";
+import { useShift } from "@/hooks";
 import {
     calculateWorkingHours,
     formatDate,
@@ -21,13 +20,17 @@ import {
     isEmpty,
     verifyLocation,
 } from "@/utils";
+import { ROLE, TEXT } from "@/constants";
+import { ShiftProps } from "@/types";
 
 export default function RecordTimeSheet() {
     //** Stores */
     const { profile } = useProfileStore();
     const { targets } = useTargetStore();
     const { staffById } = useStaffStore();
-    const { shifts } = useShiftStore();
+
+    //** Queries */
+    const { shifts } = useShift();
 
     //** States */
     const [error, setError] = useState("");
