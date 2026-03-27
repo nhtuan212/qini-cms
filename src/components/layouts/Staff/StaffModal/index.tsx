@@ -22,7 +22,7 @@ export type FormStaffProps = {
 export default function StaffModal() {
     //** Stores */
     const { modal, getModal } = useModalStore();
-    const { staffById, getStaff, createStaff, updateStaff } = useStaffStore();
+    const { staffById, createStaff, updateStaff } = useStaffStore();
 
     //** Spread syntax */
     const { action } = modal;
@@ -79,7 +79,6 @@ export default function StaffModal() {
         });
 
         reset();
-        getStaff();
     };
 
     //** Effects */

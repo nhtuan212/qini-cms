@@ -1,30 +1,32 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import StaffModal from "./StaffModal";
 import StaffData from "./StaffData";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
-import { useStaffStore } from "@/stores/useStaffStore";
 import { ROLE, TEXT } from "@/constants";
 import { Tab, Tabs } from "@/components/Tab";
 import { useProfileStore } from "@/stores/useProfileStore";
+import { useStaff } from "@/hooks";
 
 export default function Staff() {
     //** Stores */
     const { profile } = useProfileStore();
-    const { isLoading, staff, getStaff } = useStaffStore();
     const { getModal } = useModalStore();
+
+    //** Queries */
+    const { isLoading, staffs } = useStaff();
 
     //** States */
     const [active, setActive] = useState(false);
 
     //** Variables */
     const data = useMemo(() => {
-        return staff.filter(staff => staff.isActive === active);
-    }, [staff, active]);
+        return staffs.filter(staff => staff.isActive === active);
+    }, [staffs, active]);
 
     const disabledKeys = useMemo(() => {
         if (profile.role !== ROLE.ADMIN) {
@@ -33,11 +35,6 @@ export default function Staff() {
 
         return [];
     }, [profile.role]);
-
-    //** Effects */
-    useEffect(() => {
-        getStaff();
-    }, [getStaff]);
 
     //** Render */
     return (

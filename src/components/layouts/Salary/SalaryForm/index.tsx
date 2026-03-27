@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import SalaryHourlyReview from "./SalaryHourlyReview";
 import SalaryCalculator from "./SalaryCalculator";
 import SalaryMonthlyReview from "./SalaryMonthlyReview";
@@ -23,7 +23,7 @@ export interface FormSalaryProps {
 
 export default function SalaryForm() {
     //** Stores */
-    const { isLoading, staffById, getStaff } = useStaffStore();
+    const { isLoading, staffById } = useStaffStore();
     const { isLoading: isLoadingTimeSheet } = useTimeSheetStore();
 
     //** React hook form */
@@ -45,11 +45,6 @@ export default function SalaryForm() {
         useForm<FormSalaryProps>({
             defaultValues,
         });
-
-    //** Effects */
-    useEffect(() => {
-        getStaff();
-    }, [getStaff]);
 
     //** Render */
     const renderSalaryReview = () => {

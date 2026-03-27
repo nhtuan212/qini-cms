@@ -1,25 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchData } from "..";
-import { URL } from "@/constants";
 import { convertKeysToCamelCase } from "@/utils";
-import { ShiftProps } from "@/types";
+import { URL } from "@/constants";
+import { StaffProps } from "@/types/staff";
 
-export const useShift = () => {
-    const endpoint = URL.SHIFT;
+export const useStaff = () => {
+    const endpoint = URL.STAFF;
 
-    // GET
     const {
         isPending,
         isFetching,
-        data: shifts = [],
-    } = useQuery<ShiftProps[]>({
-        queryKey: ["shift"],
+        data: staffs = [],
+    } = useQuery<StaffProps[]>({
+        queryKey: ["staff"],
         queryFn: () =>
             fetchData({
                 endpoint,
             }).then(res => convertKeysToCamelCase(res.data)),
-        staleTime: Infinity,
     });
 
-    return { isPending, isFetching, shifts };
+    return { staffs, isLoading: isPending || isFetching, isPending, isFetching };
 };

@@ -12,7 +12,7 @@ import { CalendarDate, RangeValue } from "@heroui/react";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useAlertStore } from "@/stores/useAlertStore";
-import { useSalary } from "@/hooks";
+import { useSalary, useStaff } from "@/hooks";
 import {
     formatDate,
     calculateWorkingDaysInRange,
@@ -54,14 +54,18 @@ export default function SalaryCalculator({
     handleSubmit,
 }: SalaryCalculatorProps) {
     //** Stores */
-    const { staff, staffById, getStaffById } = useStaffStore();
+    const { staffById, getStaffById } = useStaffStore();
     const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId, cleanUpTimeSheet } =
         useTimeSheetStore();
     const { getAlert } = useAlertStore();
 
+    //** Queries */
+    const { staffs } = useStaff();
+    const { isFetching, createSalary } = useSalary();
+
     //** Variables */
     const orderedStaffByActive = useMemo(() => {
-        return staff.sort((a, b) => {
+        return staffs.sort((a, b) => {
             // First priority: active staff before inactive
             if (a.isActive && !b.isActive) return -1;
             if (!a.isActive && b.isActive) return 1;
@@ -75,15 +79,12 @@ export default function SalaryCalculator({
                 return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
             }
         });
-    }, [staff]);
+    }, [staffs]);
 
     const staffIdWatched = watch("staffId");
     const dateRangeWatched = watch("dateRange");
     const startDate = dateRangeWatched.start.toString();
     const endDate = dateRangeWatched.end.toString();
-
-    //** Queries */
-    const { isFetching, createSalary } = useSalary();
 
     //** Functions */
     const onSubmit = (data: FormSalaryProps) => {

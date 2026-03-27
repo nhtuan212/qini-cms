@@ -5,13 +5,14 @@ import { Autocomplete, AutocompleteItem } from "@/components/AutoComplete";
 import { TimeInput } from "@/components/Input";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { TargetShiftProps } from "@/stores/useTargetShiftStore";
-import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { TimeSheetProps, useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useModalStore } from "@/stores/useModalStore";
+import { useStaff } from "@/hooks";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import { calculateWorkingHours, isEmpty, parseTimeString } from "@/utils";
 import { TEXT } from "@/constants";
+import { StaffProps } from "@/types";
 
 type TimeSheetForm = {
     timeSheets: StaffProps[];
@@ -27,9 +28,11 @@ export default function TimeSheetModal({
     targetShift: TargetShiftProps;
 }) {
     //** Stores */
-    const { staff } = useStaffStore();
     const { getModal } = useModalStore();
     const { isLoading, createTimeSheet, updateTimeSheet } = useTimeSheetStore();
+
+    //** Queries */
+    const { staffs } = useStaff();
 
     //** Variables */
     const isUpdate = currentTimeSheet && !isEmpty(currentTimeSheet);
@@ -133,7 +136,7 @@ export default function TimeSheetModal({
                                             )
                                         }
                                     >
-                                        {staff.map(item => (
+                                        {staffs.map(item => (
                                             <AutocompleteItem key={item.id}>
                                                 {item.name}
                                             </AutocompleteItem>
