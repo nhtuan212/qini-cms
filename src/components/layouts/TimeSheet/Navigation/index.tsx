@@ -19,9 +19,9 @@ export default function AttendanceNavigation() {
     const [activeTab, setActiveTab] = useState("record");
 
     //** Stores */
-    const { staffById } = useStaffStore();
     const { getTarget } = useTargetStore();
     const { cleanUpTimeSheet } = useTimeSheetStore();
+    const { selectedStaff } = useStaffStore();
 
     //** Variables */
     const tabs = [
@@ -29,25 +29,25 @@ export default function AttendanceNavigation() {
             label: TEXT.TIME_SHEET,
             icon: ClockIcon,
             value: "record",
-            component: <RecordTimeSheet />,
+            component: <RecordTimeSheet staff={selectedStaff} />,
         },
         {
             label: TEXT.TARGET,
             icon: GiftIcon,
             value: "detail",
-            component: <StaffDetail />,
+            component: <StaffDetail staff={selectedStaff} />,
         },
         {
             label: TEXT.SALARY,
             icon: CurrencyDollarIcon,
             value: "salary",
-            component: <Salary staffById={staffById} />,
+            component: <Salary staff={selectedStaff} />,
         },
         {
             label: TEXT.WORK_ASSIGNMENT,
             icon: CalendarIcon,
             value: "work",
-            component: <WorkAssignment staffById={staffById} />,
+            component: <WorkAssignment staff={selectedStaff} />,
         },
     ];
 

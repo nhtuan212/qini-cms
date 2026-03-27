@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchData } from "..";
+import { fetchData } from "@/hooks";
 import { convertKeysToCamelCase } from "@/utils";
 import { URL } from "@/constants";
 import { StaffProps } from "@/types/staff";

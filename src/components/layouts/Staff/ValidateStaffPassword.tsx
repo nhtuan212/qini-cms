@@ -4,18 +4,17 @@ import React, { useState } from "react";
 import TimeSheet from "../TimeSheet";
 import PasswordInput from "@/components/PasswordInput";
 import Button from "@/components/Button";
-import { StaffProps } from "@/stores/useStaffStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { STATUS_CODE, TEXT, ROLE } from "@/constants";
 import { encryptPasswordRSA } from "@/utils";
 
-export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) {
+export default function ValidateStaffPassword() {
     //** Stores */
     const { getModal } = useModalStore();
     const { profile } = useProfileStore();
-    const { isValidatePasswordLoading, validateStaffPassword, getStaffById, updateStaff } =
+    const { isValidatePasswordLoading, validateStaffPassword, updateStaff, selectedStaff } =
         useStaffStore();
 
     //** States */
@@ -37,9 +36,9 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
 
         const encryptedPassword = encryptPasswordRSA(value);
 
-        if (staff.isFirstLogin) {
+        if (selectedStaff.isFirstLogin) {
             return updateStaff({
-                id: staff.id,
+                id: selectedStaff.id,
                 bodyParams: { isFirstLogin: false, password: encryptedPassword },
             }).then(res => {
                 if (res.code && res.code !== STATUS_CODE.OK) {
@@ -51,7 +50,7 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
             });
         }
 
-        validateStaffPassword(staff.id, encryptedPassword).then(async res => {
+        validateStaffPassword(selectedStaff.id, encryptedPassword).then(async res => {
             if (!res.isValid || res.code !== STATUS_CODE.OK) {
                 setPasswordError(res.message || TEXT.INVALID_PASSWORD);
                 return;
@@ -61,18 +60,17 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
         });
     };
 
-    const handleTimeSheet = async () => {
-        await getStaffById(staff.id);
-
-        await getModal({
+    const handleTimeSheet = () => {
+        getModal({
             isOpen: true,
             isDismissable: false,
             size: "3xl",
             modalHeader: (
-                <h3 className="sm:text-2xl text-lg font-bold text-gray-800">{staff.name}</h3>
+                <h3 className="sm:text-2xl text-lg font-bold text-gray-800">
+                    {selectedStaff.name}
+                </h3>
             ),
             modalBody: <TimeSheet />,
-            modalFooter: <></>,
         });
     };
 
@@ -80,7 +78,9 @@ export default function ValidateStaffPassword({ staff }: { staff: StaffProps }) 
     return (
         <>
             <PasswordInput
-                placeholder={staff.isFirstLogin ? TEXT.ENTER_NEW_PASSWORD : TEXT.ENTER_PASSWORD}
+                placeholder={
+                    selectedStaff.isFirstLogin ? TEXT.ENTER_NEW_PASSWORD : TEXT.ENTER_PASSWORD
+                }
                 isInvalid={!!passwordError}
                 errorMessage={passwordError}
                 isDisabled={isValidatePasswordLoading}

@@ -23,8 +23,8 @@ export interface FormSalaryProps {
 
 export default function SalaryForm() {
     //** Stores */
-    const { isLoading, staffById } = useStaffStore();
-    const { isLoading: isLoadingTimeSheet } = useTimeSheetStore();
+    const { selectedStaff } = useStaffStore();
+    const { isLoading } = useTimeSheetStore();
 
     //** React hook form */
     const defaultValues = {
@@ -48,7 +48,7 @@ export default function SalaryForm() {
 
     //** Render */
     const renderSalaryReview = () => {
-        if (staffById.salaryType === SalaryTypeProps.HOURLY) {
+        if (selectedStaff.salaryType === SalaryTypeProps.HOURLY) {
             return <SalaryHourlyReview watch={watch} />;
         }
 
@@ -57,7 +57,7 @@ export default function SalaryForm() {
 
     return (
         <div className="grid md:grid-cols-2 gap-4">
-            {(isLoading || isLoadingTimeSheet) && <Loading />}
+            {isLoading && <Loading />}
 
             <div>
                 <SalaryCalculator

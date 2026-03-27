@@ -18,14 +18,14 @@ import { useModalStore } from "@/stores/useModalStore";
 import { ROLE, TEXT } from "@/constants";
 import { ModalActionProps } from "@/types";
 
-export default function StaffActions({ item }: { item: StaffProps }) {
+export default function StaffActions({ staff }: { staff: StaffProps }) {
     //** Destructuring */
-    const { id } = item;
+    const { id } = staff;
 
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getStaffById, deleteStaff, inActiveStaff } = useStaffStore();
+    const { deleteStaff, inActiveStaff } = useStaffStore();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -40,16 +40,14 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     }
 
     //** Functions */
-    const handleUpdateStaff = async (id: string) => {
-        await getStaffById(id);
-
-        await getModal({
+    const handleUpdateStaff = () => {
+        getModal({
             isOpen: true,
             size: "3xl",
             modalHeader: TEXT.UPDATE_STAFF,
             action: ModalActionProps.UPDATE,
             isDismissable: false,
-            modalBody: <StaffModal />,
+            modalBody: <StaffModal staff={staff} />,
         });
     };
 
@@ -98,7 +96,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                     key="edit"
                     startContent={<PencilSquareIcon className="w-5" />}
                     textValue={TEXT.EDIT}
-                    onPress={() => handleUpdateStaff(id)}
+                    onPress={() => handleUpdateStaff()}
                 >
                     {TEXT.EDIT}
                 </DropdownItem>

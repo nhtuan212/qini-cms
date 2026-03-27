@@ -1,9 +1,8 @@
 import React from "react";
-import SalaryForm from "./SalaryForm";
 import SalaryTotal, { SalaryTotalProps } from "./SalaryTotal";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
-import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
 import { useSalary } from "@/hooks";
 import { formatCurrency, formatDate } from "@/utils";
@@ -91,20 +90,6 @@ export default function useSalaryColumn() {
                                 modalBody: <SalaryTotal {...(params.row as SalaryTotalProps)} />,
                             })
                         }
-                    />
-                    <Button
-                        isIconOnly
-                        size="sm"
-                        className="hidden"
-                        startContent={<PencilIcon className="w-4 h-4" />}
-                        onPress={() => {
-                            getModal({
-                                isOpen: true,
-                                size: "full",
-                                modalHeader: params.row.staffName,
-                                modalBody: <SalaryForm />,
-                            });
-                        }}
                     />
                     <Button
                         isIconOnly

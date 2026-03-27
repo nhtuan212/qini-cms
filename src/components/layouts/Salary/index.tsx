@@ -13,7 +13,7 @@ import { formatCurrency, formatDate } from "@/utils";
 import { ROUTE, TEXT } from "@/constants";
 import { SalaryParams } from "@/types";
 
-export default function Salary({ staffById }: { staffById?: StaffProps }) {
+export default function Salary({ staff }: { staff?: StaffProps }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
@@ -21,8 +21,8 @@ export default function Salary({ staffById }: { staffById?: StaffProps }) {
     const columns = useSalaryColumn();
 
     const salaryParams = useMemo((): SalaryParams | undefined => {
-        if (staffById?.id) {
-            return { staffId: staffById.id };
+        if (staff?.id) {
+            return { staffId: staff.id };
         }
 
         const startDate = searchParams.get("startDate");
@@ -33,7 +33,7 @@ export default function Salary({ staffById }: { staffById?: StaffProps }) {
         }
 
         return undefined; // fetch all
-    }, [staffById, searchParams]);
+    }, [staff, searchParams]);
 
     //** Data fe */
     const { isFetching, salaries } = useSalary(salaryParams);

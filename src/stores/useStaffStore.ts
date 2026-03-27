@@ -12,11 +12,13 @@ type StaffState = {
     isValidatePasswordLoading: boolean;
     staff: StaffProps[];
     staffById: StaffProps;
+
+    selectedStaff: StaffProps;
 };
 
 type StaffAction = {
     getStaff: () => Promise<void>;
-    getStaffById: (id: StaffProps["id"]) => Promise<StaffProps>;
+    // getStaffById: (id: StaffProps["id"]) => Promise<StaffProps>;
     createStaff: (bodyParams: StaffProps) => Promise<StaffProps>;
     updateStaff: ({
         id,
@@ -28,6 +30,8 @@ type StaffAction = {
     inActiveStaff: (id: StaffProps["id"]) => Promise<void>;
     deleteStaff: (id: StaffProps["id"]) => Promise<void>;
     validateStaffPassword: (id: StaffProps["id"], password: string) => Promise<StaffProps>;
+
+    setSelectedStaff: (staff: StaffProps) => void;
 };
 
 const initialState: StaffState = {
@@ -35,6 +39,8 @@ const initialState: StaffState = {
     isValidatePasswordLoading: false,
     staff: [],
     staffById: {} as StaffProps,
+
+    selectedStaff: {},
 };
 
 export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
@@ -62,31 +68,31 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
         });
     },
 
-    getStaffById: async id => {
-        set({
-            isLoading: true,
-        });
+    // getStaffById: async id => {
+    //     set({
+    //         isLoading: true,
+    //     });
 
-        return await fetchData({
-            endpoint: `${URL.STAFF}/${id}`,
-        }).then(res => {
-            set({
-                isLoading: false,
-            });
+    //     return await fetchData({
+    //         endpoint: `${URL.STAFF}/${id}`,
+    //     }).then(res => {
+    //         set({
+    //             isLoading: false,
+    //         });
 
-            if (res?.code !== STATUS_CODE.OK) {
-                return set({
-                    staffById: res?.message,
-                });
-            }
+    //         if (res?.code !== STATUS_CODE.OK) {
+    //             return set({
+    //                 staffById: res?.message,
+    //             });
+    //         }
 
-            set({
-                staffById: res.data,
-            });
+    //         set({
+    //             staffById: res.data,
+    //         });
 
-            return res.data;
-        });
-    },
+    //         return res.data;
+    //     });
+    // },
 
     createStaff: async bodyParams => {
         set({
@@ -230,4 +236,9 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
                 };
             });
     },
+
+    setSelectedStaff: staff =>
+        set({
+            selectedStaff: staff,
+        }),
 }));

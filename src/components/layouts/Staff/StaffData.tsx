@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { StaffProps } from "@/stores/useStaffStore";
+import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import ValidateStaffPassword from "./ValidateStaffPassword";
 import StaffActions from "./StaffActions";
 import StaffDetail from "./StaffDetail";
@@ -21,6 +21,7 @@ export default function StaffData({ data }: StaffDataProps) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
+    const { setSelectedStaff } = useStaffStore();
 
     //** Render */
     return (
@@ -37,7 +38,7 @@ export default function StaffData({ data }: StaffDataProps) {
                                 {staff.name}
 
                                 {(profile.role === ROLE.ADMIN || profile.role === ROLE.REPORT) && (
-                                    <StaffActions item={staff} />
+                                    <StaffActions staff={staff} />
                                 )}
                             </div>
 
@@ -54,7 +55,6 @@ export default function StaffData({ data }: StaffDataProps) {
                                                 size: "3xl",
                                                 modalHeader: staff.name,
                                                 modalBody: <StaffDetail staff={staff} />,
-                                                modalFooter: <></>,
                                             });
                                         }}
                                     >
@@ -67,11 +67,12 @@ export default function StaffData({ data }: StaffDataProps) {
                                     className="flex-1"
                                     startContent={<ClockIcon className="w-5 h-5" />}
                                     onPress={() => {
+                                        setSelectedStaff(staff);
+
                                         getModal({
                                             isOpen: true,
                                             modalHeader: staff.name,
-                                            modalBody: <ValidateStaffPassword staff={staff} />,
-                                            modalFooter: <></>,
+                                            modalBody: <ValidateStaffPassword />,
                                         });
                                     }}
                                 >

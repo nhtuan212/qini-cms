@@ -54,10 +54,10 @@ export default function SalaryCalculator({
     handleSubmit,
 }: SalaryCalculatorProps) {
     //** Stores */
-    const { staffById, getStaffById } = useStaffStore();
     const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId, cleanUpTimeSheet } =
         useTimeSheetStore();
     const { getAlert } = useAlertStore();
+    const { setSelectedStaff, selectedStaff } = useStaffStore();
 
     //** Queries */
     const { staffs } = useStaff();
@@ -100,7 +100,8 @@ export default function SalaryCalculator({
 
         // Calculate working hours
         let workingHours;
-        if (staffById.salaryType === SalaryTypeProps.MONTHLY) {
+
+        if (selectedStaff.salaryType === SalaryTypeProps.MONTHLY) {
             workingHours = calculateWorkingHoursWithBreak(
                 timeSheetByStaffId.data,
             ).totalWorkingHours;
@@ -162,9 +163,13 @@ export default function SalaryCalculator({
                             onSelectionChange={value => {
                                 const staffId = value.currentKey as string;
 
-                                getStaffById(staffId).then(res => {
-                                    setValue("salary", res.salary || 25000);
-                                });
+                                const currentStaff =
+                                    staffs.find(staff => staff.id === staffId) || {};
+
+                                // I need selectedStaff for SalaryForm/index
+                                setSelectedStaff(currentStaff);
+
+                                setValue("salary", currentStaff.salary || 25000);
 
                                 // Keep the same date range to calculate salary when change staff
                                 getTimeSheetByStaffId(staffId, {
@@ -226,7 +231,7 @@ export default function SalaryCalculator({
                     )}
                 />
 
-                {staffById.salaryType === SalaryTypeProps.MONTHLY && (
+                {selectedStaff.salaryType === SalaryTypeProps.MONTHLY && (
                     <>
                         <Controller
                             name="paidLeave"

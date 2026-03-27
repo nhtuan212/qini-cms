@@ -10,7 +10,6 @@ import {
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
-import { useStaffStore } from "@/stores/useStaffStore";
 import { useShift } from "@/hooks";
 import {
     calculateWorkingHours,
@@ -21,13 +20,12 @@ import {
     verifyLocation,
 } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
-import { ShiftProps } from "@/types";
+import { ShiftProps, StaffProps } from "@/types";
 
-export default function RecordTimeSheet() {
+export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { targets } = useTargetStore();
-    const { staffById } = useStaffStore();
 
     //** Queries */
     const { shifts } = useShift();
@@ -59,7 +57,7 @@ export default function RecordTimeSheet() {
         const selectedShiftData = shifts.find((shift: ShiftProps) => shift.id === selectedShift);
         if (selectedShiftData) {
             // If staff has isTarget: false, only allow shifts with isTarget: false
-            if (staffById.isTarget === false && selectedShiftData.isTarget !== false) {
+            if (staff.isTarget === false && selectedShiftData.isTarget !== false) {
                 setError("This shift is not compatible with your target status");
                 return;
             }
@@ -122,15 +120,19 @@ export default function RecordTimeSheet() {
             });
         }
 
-        return createTimeSheet({ staffId: staffById.id, shiftId: selectedShift, targetShiftId });
+        return createTimeSheet({
+            staffId: staff.id,
+            shiftId: selectedShift,
+            targetShiftId,
+        });
     };
 
     //** Effects */
     useEffect(() => {
-        getTimeSheetByStaffId(staffById.id, {
+        getTimeSheetByStaffId(staff.id, {
             startDate: formatDate(new Date(), "YYYY-MM-DD"),
         });
-    }, [getTimeSheetByStaffId, staffById.id]);
+    }, [getTimeSheetByStaffId, staff.id]);
 
     // Function to check if a shift is currently active based on start/end times (Ca 3: 60-min buffer, others: 30-min buffer)
     const isShiftActive = (shift: ShiftProps): boolean => {
@@ -169,7 +171,7 @@ export default function RecordTimeSheet() {
                 }
 
                 // If staff has isTarget: false, only allow shifts with isTarget: false
-                if (staffById.isTarget === false) {
+                if (staff.isTarget === false) {
                     return shift.isTarget !== false;
                 }
 
@@ -178,7 +180,7 @@ export default function RecordTimeSheet() {
             })
             .map((shift: ShiftProps) => shift.id);
         return disabledShiftIds;
-    }, [shifts, staffById.isTarget]);
+    }, [shifts, staff.isTarget]);
 
     //** Render */
     return (

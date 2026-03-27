@@ -5,14 +5,13 @@ import DateRangePicker from "@/components/DateRangePicker";
 import Button from "@/components/Button";
 import { RangeValue } from "@heroui/react";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
-import { useStaffStore } from "@/stores/useStaffStore";
 import { CalendarDate } from "@internationalized/date";
 import { formatCurrency, getDateTime } from "@/utils";
 import { TEXT } from "@/constants";
+import { StaffProps } from "@/types";
 
-export default function TargetTopContent() {
+export default function TargetTopContent({ staff }: { staff: StaffProps }) {
     //** Stores */
-    const { staffById } = useStaffStore();
     const { timeSheetByStaffId, getTimeSheetByStaffId } = useTimeSheetStore();
 
     //** States */
@@ -23,7 +22,7 @@ export default function TargetTopContent() {
 
     //** Functions */
     const handleFilterTargets = () => {
-        getTimeSheetByStaffId(staffById.id, {
+        getTimeSheetByStaffId(staff.id, {
             startDate: dateValue.start.toString(),
             endDate: dateValue.end.toString(),
         });

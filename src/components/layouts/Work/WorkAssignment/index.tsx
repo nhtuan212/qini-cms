@@ -29,10 +29,10 @@ import {
 import { ROLE, TEXT } from "@/constants";
 
 export default function WorkAssignment({
-    staffById,
+    staff,
     currentWeek,
 }: {
-    staffById?: StaffProps;
+    staff?: StaffProps;
     currentWeek?: Date;
 }) {
     //** Stores */
@@ -81,8 +81,7 @@ export default function WorkAssignment({
                                 size="md"
                                 isSelected={assignment.isCompleted}
                                 isDisabled={
-                                    (staffById?.id !== assignment?.staffId ||
-                                        assignment.isCompleted) &&
+                                    (staff?.id !== assignment?.staffId || assignment.isCompleted) &&
                                     profile.role !== ROLE.ADMIN
                                 }
                                 onChange={e => {

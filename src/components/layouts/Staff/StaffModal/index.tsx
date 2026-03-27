@@ -8,8 +8,8 @@ import { useForm } from "react-hook-form";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { encryptPasswordRSA } from "@/utils";
-import { ModalActionProps } from "@/types";
 import { TEXT } from "@/constants";
+import { ModalActionProps, StaffProps } from "@/types";
 
 export type FormStaffProps = {
     name: string;
@@ -19,20 +19,20 @@ export type FormStaffProps = {
     isTarget: boolean;
 };
 
-export default function StaffModal() {
+export default function StaffModal({ staff }: { staff?: StaffProps }) {
     //** Stores */
     const { modal, getModal } = useModalStore();
-    const { staffById, createStaff, updateStaff } = useStaffStore();
+    const { createStaff, updateStaff } = useStaffStore();
 
     //** Spread syntax */
     const { action } = modal;
 
     //** React hook form */
     const defaultValues = {
-        name: staffById.name || "",
-        salary: staffById.salary || 0,
-        salaryType: staffById.salaryType || "",
-        isTarget: staffById.isTarget || false,
+        name: staff?.name || "",
+        salary: staff?.salary || 0,
+        salaryType: staff?.salaryType || "",
+        isTarget: staff?.isTarget || false,
     };
 
     const {
@@ -62,7 +62,7 @@ export default function StaffModal() {
                 });
             case ModalActionProps.UPDATE:
                 return updateStaff({
-                    id: staffById.id,
+                    id: staff?.id,
                     bodyParams: result,
                 }).then(() => {
                     handleCloseModal();
@@ -84,9 +84,9 @@ export default function StaffModal() {
     //** Effects */
     useEffect(() => {
         if (action === ModalActionProps.UPDATE) {
-            setValue("name", staffById?.name);
+            setValue("name", staff?.name);
         }
-    }, [setValue, action, staffById]);
+    }, [setValue, action, staff]);
 
     return (
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
