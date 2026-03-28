@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { fetchData } from "@/utils/fetch";
 import { STATUS_CODE, URL } from "@/constants";
-import { convertKeysToCamelCase } from "@/utils";
 
 export type StaffProps = {
     [key: string]: any;
@@ -17,18 +16,18 @@ type StaffState = {
 };
 
 type StaffAction = {
-    getStaff: () => Promise<void>;
+    // getStaff: () => Promise<void>;
     // getStaffById: (id: StaffProps["id"]) => Promise<StaffProps>;
-    createStaff: (bodyParams: StaffProps) => Promise<StaffProps>;
-    updateStaff: ({
-        id,
-        bodyParams,
-    }: {
-        id: StaffProps["id"];
-        bodyParams: StaffProps;
-    }) => Promise<StaffProps>;
+    // createStaff: (bodyParams: StaffProps) => Promise<StaffProps>;
+    // updateStaff: ({
+    //     id,
+    //     bodyParams,
+    // }: {
+    //     id: StaffProps["id"];
+    //     bodyParams: StaffProps;
+    // }) => Promise<StaffProps>;
     inActiveStaff: (id: StaffProps["id"]) => Promise<void>;
-    deleteStaff: (id: StaffProps["id"]) => Promise<void>;
+    // deleteStaff: (id: StaffProps["id"]) => Promise<void>;
     validateStaffPassword: (id: StaffProps["id"], password: string) => Promise<StaffProps>;
 
     setSelectedStaff: (staff: StaffProps) => void;
@@ -43,30 +42,30 @@ const initialState: StaffState = {
     selectedStaff: {},
 };
 
-export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
+export const useStaffStore = create<StaffState & StaffAction>()(set => ({
     ...initialState,
 
-    getStaff: async () => {
-        set({
-            isLoading: true,
-        });
+    // getStaff: async () => {
+    //     set({
+    //         isLoading: true,
+    //     });
 
-        return await fetchData({
-            endpoint: URL.STAFF,
-        }).then(res => {
-            set({
-                isLoading: false,
-            });
+    //     return await fetchData({
+    //         endpoint: URL.STAFF,
+    //     }).then(res => {
+    //         set({
+    //             isLoading: false,
+    //         });
 
-            if (res?.code !== STATUS_CODE.OK) {
-                return set({
-                    staff: res?.message,
-                });
-            }
+    //         if (res?.code !== STATUS_CODE.OK) {
+    //             return set({
+    //                 staff: res?.message,
+    //             });
+    //         }
 
-            return set({ staff: convertKeysToCamelCase(res.data) as StaffProps[] });
-        });
-    },
+    //         return set({ staff: convertKeysToCamelCase(res.data) as StaffProps[] });
+    //     });
+    // },
 
     // getStaffById: async id => {
     //     set({
@@ -94,48 +93,48 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
     //     });
     // },
 
-    createStaff: async bodyParams => {
-        set({
-            isLoading: true,
-        });
+    // createStaff: async bodyParams => {
+    //     set({
+    //         isLoading: true,
+    //     });
 
-        return await fetchData({
-            endpoint: URL.STAFF,
-            options: {
-                method: "POST",
-                body: JSON.stringify(bodyParams),
-            },
-        }).then(res => {
-            set({
-                isLoading: false,
-            });
+    //     return await fetchData({
+    //         endpoint: URL.STAFF,
+    //         options: {
+    //             method: "POST",
+    //             body: JSON.stringify(bodyParams),
+    //         },
+    //     }).then(res => {
+    //         set({
+    //             isLoading: false,
+    //         });
 
-            return res;
-        });
-    },
+    //         return res;
+    //     });
+    // },
 
-    updateStaff: async ({ id, bodyParams }) => {
-        set({
-            isLoading: true,
-        });
+    // updateStaff: async ({ id, bodyParams }) => {
+    //     set({
+    //         isLoading: true,
+    //     });
 
-        return await fetchData({
-            endpoint: `${URL.STAFF}/${id}`,
-            options: {
-                method: "PUT",
-                body: JSON.stringify(bodyParams),
-            },
-        }).then(res => {
-            const data = convertKeysToCamelCase(res.data) as StaffProps;
+    //     return await fetchData({
+    //         endpoint: `${URL.STAFF}/${id}`,
+    //         options: {
+    //             method: "PUT",
+    //             body: JSON.stringify(bodyParams),
+    //         },
+    //     }).then(res => {
+    //         const data = convertKeysToCamelCase(res.data) as StaffProps;
 
-            set({
-                isLoading: false,
-                staff: get().staff.map(s => (s.id === res.data.id ? res.data : s)),
-            });
+    //         set({
+    //             isLoading: false,
+    //             staff: get().staff.map(s => (s.id === res.data.id ? res.data : s)),
+    //         });
 
-            return data;
-        });
-    },
+    //         return data;
+    //     });
+    // },
 
     inActiveStaff: async id => {
         set({
@@ -166,34 +165,34 @@ export const useStaffStore = create<StaffState & StaffAction>()((set, get) => ({
         });
     },
 
-    deleteStaff: async id => {
-        set({
-            isLoading: true,
-        });
+    // deleteStaff: async id => {
+    //     set({
+    //         isLoading: true,
+    //     });
 
-        return await fetchData({
-            endpoint: `${URL.STAFF}/${id}`,
-            options: {
-                method: "DELETE",
-            },
-        }).then(res => {
-            set({
-                isLoading: false,
-            });
+    //     return await fetchData({
+    //         endpoint: `${URL.STAFF}/${id}`,
+    //         options: {
+    //             method: "DELETE",
+    //         },
+    //     }).then(res => {
+    //         set({
+    //             isLoading: false,
+    //         });
 
-            if (res?.code !== STATUS_CODE.OK) {
-                return set({
-                    staff: res?.message,
-                });
-            }
+    //         if (res?.code !== STATUS_CODE.OK) {
+    //             return set({
+    //                 staff: res?.message,
+    //             });
+    //         }
 
-            set({
-                staff: get().staff.filter(s => s.id !== id),
-            });
+    //         set({
+    //             staff: get().staff.filter(s => s.id !== id),
+    //         });
 
-            return res;
-        });
-    },
+    //         return res;
+    //     });
+    // },
 
     validateStaffPassword: async (id, password) => {
         set({

@@ -7,19 +7,22 @@ import Button from "@/components/Button";
 import { useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useProfileStore } from "@/stores/useProfileStore";
+import { useStaff } from "@/hooks";
 import { STATUS_CODE, TEXT, ROLE } from "@/constants";
 import { encryptPasswordRSA } from "@/utils";
 
 export default function ValidateStaffPassword() {
-    //** Stores */
-    const { getModal } = useModalStore();
-    const { profile } = useProfileStore();
-    const { isValidatePasswordLoading, validateStaffPassword, updateStaff, selectedStaff } =
-        useStaffStore();
-
     //** States */
     const [password, setPassword] = useState<string>("");
     const [passwordError, setPasswordError] = useState<string>("");
+
+    //** Stores */
+    const { getModal } = useModalStore();
+    const { profile } = useProfileStore();
+    const { isValidatePasswordLoading, validateStaffPassword, selectedStaff } = useStaffStore();
+
+    //** Queries */
+    const { updateStaff } = useStaff();
 
     //** Functions */
     const handleKeyDown = async () => {
@@ -39,7 +42,7 @@ export default function ValidateStaffPassword() {
         if (selectedStaff.isFirstLogin) {
             return updateStaff({
                 id: selectedStaff.id,
-                bodyParams: { isFirstLogin: false, password: encryptedPassword },
+                params: { isFirstLogin: false, password: encryptedPassword },
             }).then(res => {
                 if (res.code && res.code !== STATUS_CODE.OK) {
                     setPasswordError(res.message || TEXT.INVALID_PASSWORD);

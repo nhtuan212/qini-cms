@@ -13,10 +13,11 @@ import {
     TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
+import { useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
+import { useStaff } from "@/hooks";
 import { ROLE, TEXT } from "@/constants";
-import { ModalActionProps } from "@/types";
+import { ModalActionProps, StaffProps } from "@/types";
 
 export default function StaffActions({ staff }: { staff: StaffProps }) {
     //** Destructuring */
@@ -25,7 +26,10 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { deleteStaff, inActiveStaff } = useStaffStore();
+    const { inActiveStaff } = useStaffStore();
+
+    //** Queries */
+    const { deleteStaff } = useStaff();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -67,7 +71,7 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
         });
     };
 
-    const handleDeleteStaff = (id: string) => {
+    const handleDeleteStaff = (id: StaffProps["id"]) => {
         getModal({
             isOpen: true,
             action: ModalActionProps.UPDATE,

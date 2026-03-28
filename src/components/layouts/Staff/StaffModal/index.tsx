@@ -6,7 +6,7 @@ import StaffConfigInformation from "./StaffConfigInformation";
 import Button from "@/components/Button";
 import { useForm } from "react-hook-form";
 import { useModalStore } from "@/stores/useModalStore";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { useStaff } from "@/hooks";
 import { encryptPasswordRSA } from "@/utils";
 import { TEXT } from "@/constants";
 import { ModalActionProps, StaffProps } from "@/types";
@@ -22,10 +22,12 @@ export type FormStaffProps = {
 export default function StaffModal({ staff }: { staff?: StaffProps }) {
     //** Stores */
     const { modal, getModal } = useModalStore();
-    const { createStaff, updateStaff } = useStaffStore();
 
     //** Spread syntax */
     const { action } = modal;
+
+    //** Queries */
+    const { createStaff, updateStaff } = useStaff();
 
     //** React hook form */
     const defaultValues = {
@@ -63,7 +65,7 @@ export default function StaffModal({ staff }: { staff?: StaffProps }) {
             case ModalActionProps.UPDATE:
                 return updateStaff({
                     id: staff?.id,
-                    bodyParams: result,
+                    params: result,
                 }).then(() => {
                     handleCloseModal();
                 });
