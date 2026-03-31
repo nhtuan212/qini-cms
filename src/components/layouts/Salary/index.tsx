@@ -7,11 +7,10 @@ import useSalaryColumn from "./useSalaryColumn";
 import SalaryTotal, { SalaryTotalProps } from "./SalaryTotal";
 import { Accordion, AccordionItem } from "@/components/Accordion";
 import Table from "@/components/Table";
-import { StaffProps } from "@/stores/useStaffStore";
 import { useSalary } from "@/hooks";
 import { formatCurrency, formatDate } from "@/utils";
 import { ROUTE, TEXT } from "@/constants";
-import { SalaryParams } from "@/types";
+import { SalaryParams, StaffProps } from "@/types";
 
 export default function Salary({ staff }: { staff?: StaffProps }) {
     const pathname = usePathname();

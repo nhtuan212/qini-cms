@@ -8,7 +8,7 @@ export const useStaff = () => {
     const queryClient = useQueryClient();
     const endpoint = URL.STAFF;
 
-    // GET
+    // Get staff
     const {
         isPending,
         isFetching,
@@ -21,7 +21,7 @@ export const useStaff = () => {
             }).then(res => convertKeysToCamelCase(res.data)),
     });
 
-    // POST
+    // Create staff
     const { isPending: isCreating, mutateAsync: createStaff } = useMutation<
         StaffProps[],
         Error,
@@ -41,7 +41,23 @@ export const useStaff = () => {
         },
     });
 
-    // PUT
+    // Validate staff password
+    const {
+        isPending: isValidation,
+        isIdle,
+        mutateAsync: validateStaffPassword,
+    } = useMutation<StaffProps, Error, StaffProps>({
+        mutationFn: ({ id, password }) =>
+            fetchData({
+                endpoint: `${URL.STAFF}/${id}/validate-password`,
+                options: {
+                    method: "POST",
+                    body: JSON.stringify({ password }),
+                },
+            }).then(res => res),
+    });
+
+    // Update Staff
     const { isPending: isUpdating, mutateAsync: updateStaff } = useMutation<
         StaffProps,
         Error,
@@ -63,7 +79,30 @@ export const useStaff = () => {
         },
     });
 
-    // DELETE
+    // In-active staff
+    const { isPending: isInactive, mutateAsync: inActiveStaff } = useMutation({
+        mutationFn: id =>
+            fetchData({
+                endpoint: `${URL.STAFF}/${id}/in-active`,
+                options: {
+                    method: "PUT",
+                },
+            }).then(res => convertKeysToCamelCase(res.data)),
+        onSuccess: (_, id) => {
+            queryClient.setQueryData<StaffProps[]>(["staff"], old =>
+                old?.map(staff =>
+                    staff.id === id
+                        ? {
+                              ...staff,
+                              isActive: false,
+                          }
+                        : staff,
+                ),
+            );
+        },
+    });
+
+    // Delete staff
     const { isPending: isDeleting, mutateAsync: deleteStaff } = useMutation<
         StaffProps,
         Error,
@@ -77,9 +116,9 @@ export const useStaff = () => {
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
         onSuccess: res => {
-            queryClient.setQueryData<StaffProps[]>(
-                ["staff"],
-                old => old?.filter(staff => staff.id !== res[0].id) ?? [],
+            // Remove staff from the list
+            queryClient.setQueryData<StaffProps[]>(["staff"], old =>
+                old?.filter(staff => staff.id !== res[0].id),
             );
         },
     });
@@ -92,12 +131,26 @@ export const useStaff = () => {
         isCreating,
         createStaff,
 
+        isValidation,
+        isIdle,
+        validateStaffPassword,
+
         isUpdating,
         updateStaff,
+
+        isInactive,
+        inActiveStaff,
 
         isDeleting,
         deleteStaff,
 
-        isLoading: isPending || isFetching || isCreating || isUpdating || isDeleting,
+        isLoading:
+            isPending ||
+            isFetching ||
+            isCreating ||
+            isValidation ||
+            isUpdating ||
+            isInactive ||
+            isDeleting,
     };
 };

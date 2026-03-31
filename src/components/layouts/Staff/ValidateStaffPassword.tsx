@@ -9,23 +9,24 @@ import { useModalStore } from "@/stores/useModalStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useStaff } from "@/hooks";
 import { STATUS_CODE, TEXT, ROLE } from "@/constants";
-import { encryptPasswordRSA } from "@/utils";
+import { runWorker } from "@/workers";
 
 export default function ValidateStaffPassword() {
     //** States */
     const [password, setPassword] = useState<string>("");
     const [passwordError, setPasswordError] = useState<string>("");
+    const [isLoading, setIsLoading] = useState(false);
 
     //** Stores */
     const { getModal } = useModalStore();
     const { profile } = useProfileStore();
-    const { isValidatePasswordLoading, validateStaffPassword, selectedStaff } = useStaffStore();
+    const { selectedStaff } = useStaffStore();
 
     //** Queries */
-    const { updateStaff } = useStaff();
+    const { validateStaffPassword, updateStaff, isValidation } = useStaff();
 
     //** Functions */
-    const handleKeyDown = async () => {
+    const handleValidate = async () => {
         setPasswordError("");
         const value = password;
 
@@ -37,30 +38,38 @@ export default function ValidateStaffPassword() {
             return null;
         }
 
-        const encryptedPassword = encryptPasswordRSA(value);
+        try {
+            setIsLoading(true);
 
-        if (selectedStaff.isFirstLogin) {
-            return updateStaff({
-                id: selectedStaff.id,
-                params: { isFirstLogin: false, password: encryptedPassword },
-            }).then(res => {
-                if (res.code && res.code !== STATUS_CODE.OK) {
-                    setPasswordError(res.message || TEXT.INVALID_PASSWORD);
-                    return;
-                }
+            const encryptedPassword = await runWorker("encryptPassword", value);
 
-                return handleTimeSheet();
-            });
-        }
+            if (selectedStaff.isFirstLogin) {
+                return updateStaff({
+                    id: selectedStaff.id,
+                    params: { isFirstLogin: false, password: encryptedPassword },
+                }).then(res => {
+                    if (res.code && res.code !== STATUS_CODE.OK) {
+                        setPasswordError(res.message || TEXT.INVALID_PASSWORD);
+                        return;
+                    }
 
-        validateStaffPassword(selectedStaff.id, encryptedPassword).then(async res => {
-            if (!res.isValid || res.code !== STATUS_CODE.OK) {
-                setPasswordError(res.message || TEXT.INVALID_PASSWORD);
-                return;
+                    return handleTimeSheet();
+                });
             }
 
-            return handleTimeSheet();
-        });
+            validateStaffPassword({ id: selectedStaff.id, password: encryptedPassword }).then(
+                res => {
+                    if (res.code !== STATUS_CODE.OK) {
+                        setPasswordError(res.message || TEXT.INVALID_PASSWORD);
+                        return;
+                    }
+
+                    return handleTimeSheet();
+                },
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleTimeSheet = () => {
@@ -86,11 +95,11 @@ export default function ValidateStaffPassword() {
                 }
                 isInvalid={!!passwordError}
                 errorMessage={passwordError}
-                isDisabled={isValidatePasswordLoading}
+                isDisabled={isLoading || isValidation}
                 onValueChange={setPassword}
             />
 
-            <Button isLoading={isValidatePasswordLoading} onPress={handleKeyDown}>
+            <Button isLoading={isLoading || isValidation} onPress={handleValidate}>
                 {TEXT.SUBMIT}
             </Button>
         </>

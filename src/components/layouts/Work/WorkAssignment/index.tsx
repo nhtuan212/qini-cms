@@ -16,7 +16,6 @@ import { useModalStore } from "@/stores/useModalStore";
 import { useAlertStore } from "@/stores/useAlertStore";
 import { useWorkAssignmentStore } from "@/stores/useWorkAssignmentStore";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { StaffProps } from "@/stores/useStaffStore";
 import { twMerge } from "tailwind-merge";
 import {
     formatDate,
@@ -27,6 +26,7 @@ import {
     isEmpty,
 } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
+import { StaffProps } from "@/types";
 
 export default function WorkAssignment({
     staff,

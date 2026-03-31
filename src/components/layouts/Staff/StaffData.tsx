@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
+import { useStaffStore } from "@/stores/useStaffStore";
 import ValidateStaffPassword from "./ValidateStaffPassword";
 import StaffActions from "./StaffActions";
 import StaffDetail from "./StaffDetail";
@@ -12,12 +12,9 @@ import { useModalStore } from "@/stores/useModalStore";
 import { BanknotesIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { ROLE, TEXT } from "@/constants";
 import { formatDate } from "@/utils";
+import { StaffProps } from "@/types";
 
-interface StaffDataProps {
-    data: StaffProps[];
-}
-
-export default function StaffData({ data }: StaffDataProps) {
+export default function StaffData({ data }: { data: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
