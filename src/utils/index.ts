@@ -146,8 +146,6 @@ const toCamelCase = (str: string) => {
     });
 };
 
-const toSnakeCase = (str: string) => str.replace(/([A-Z])/g, "_$1").toLowerCase();
-
 export const convertKeysToCamelCase = <T = any>(obj: { [key: string]: any }): T => {
     if (Array.isArray(obj)) {
         return obj.map(item => convertKeysToCamelCase(item)) as unknown as T;
@@ -189,20 +187,6 @@ export const parseTimeString = (timeString: string) => {
 
     const [hours, minutes] = timeString.split(":");
     return new Time(Number(hours), Number(minutes));
-};
-
-export const snakeCaseQueryString = (
-    params: URLSearchParams | Record<string, any>,
-    prefix: "?" | "&" = "?",
-): string => {
-    const entries =
-        params instanceof URLSearchParams ? Object.fromEntries(params.entries()) : params;
-
-    const snakeEntries = Object.entries(entries).map(([key, value]) => [toSnakeCase(key), value]);
-
-    const queryString = new URLSearchParams(snakeEntries).toString();
-
-    return queryString ? `${prefix}${queryString}` : "";
 };
 
 export const camelCaseQueryString = (
@@ -306,6 +290,9 @@ export {
     subtractDaysFromVietnamDate,
     convertToVietnamTimezone,
 } from "./timeZone";
+
+// Shift active
+export { isShiftActive } from "./shiftActive";
 
 // Crypto
 export { encryptPasswordRSA, generateRSAKeyPair } from "./crypto";

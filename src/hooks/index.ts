@@ -25,4 +25,5 @@ export const fetchData = async ({
 export * from "./queries/useSalary";
 export * from "./queries/useShift";
 export * from "./queries/useStaff";
+export * from "./queries/useTarget";
 export * from "./useDebounce";

@@ -35,7 +35,6 @@ export const useStaff = () => {
                     body: JSON.stringify(params),
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
-
         onSuccess: res => {
             queryClient.setQueryData<StaffProps[]>(["staff"], old => [res[0], ...(old ?? [])]);
         },

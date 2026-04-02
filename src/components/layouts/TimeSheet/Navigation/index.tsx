@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import StaffDetail from "../../Staff/StaffDetail";
 import RecordTimeSheet from "./RecordTimeSheet";
 import Salary from "../../Salary";
@@ -9,9 +9,7 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { CalendarIcon, ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { useTargetStore } from "@/stores/useTargetStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
-import { formatDate, snakeCaseQueryString } from "@/utils";
 import { TEXT } from "@/constants";
 
 export default function AttendanceNavigation() {
@@ -19,7 +17,6 @@ export default function AttendanceNavigation() {
     const [activeTab, setActiveTab] = useState("record");
 
     //** Stores */
-    const { getTarget } = useTargetStore();
     const { cleanUpTimeSheet } = useTimeSheetStore();
     const { selectedStaff } = useStaffStore();
 
@@ -57,10 +54,6 @@ export default function AttendanceNavigation() {
             cleanUpTimeSheet();
         };
     }, [cleanUpTimeSheet]);
-
-    useEffect(() => {
-        getTarget(snakeCaseQueryString({ target_at: formatDate(new Date(), "YYYY-MM-DD") }));
-    }, [getTarget]);
 
     //** Render */
     return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/Button";
 import DateRangePicker from "@/components/DateRangePicker";
@@ -73,18 +73,6 @@ export default function TargetFilter() {
                 )}
                 <Button onPress={() => handleFilterTargets()}>{TEXT.SUBMIT}</Button>
             </div>
-
-            {/* <Button
-                startContent={<PlusIcon className="w-4 h-4" />}
-                onPress={() => {
-                    createTarget({
-                        name: TEXT.TARGET,
-                        targetAt: new Date().toISOString(),
-                    });
-                }}
-            >
-                {TEXT.ADD_TARGET}
-            </Button> */}
         </div>
     );
 }

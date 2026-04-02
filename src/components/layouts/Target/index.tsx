@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import NotFound from "@/app/not-found";
 import TargetList from "./TargetList";
 import TargetFilter from "./TargetFilter";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { useTargetStore } from "@/stores/useTargetStore";
+import { useTarget } from "@/hooks";
 import { useLocationCheck } from "@/hooks/useLocationCheck";
-import { camelCaseQueryString, getDateTime } from "@/utils";
+import { getDateTime } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
 
 export default function Target() {
@@ -17,19 +16,15 @@ export default function Target() {
 
     //** Stores */
     const { profile } = useProfileStore();
-    const { targets, getTarget } = useTargetStore();
+
+    //** Queries */
+    const { targets } = useTarget({
+        startDate: searchParams.get("startDate") || getDateTime().firstDayOfMonth,
+        endDate: searchParams.get("endDate") || getDateTime().lastDayOfMonth,
+    });
 
     //** Custom Hooks */
     const { isLocationValid } = useLocationCheck();
-
-    useEffect(() => {
-        const params = camelCaseQueryString({
-            startDate: searchParams.get("startDate") || getDateTime().firstDayOfMonth,
-            endDate: searchParams.get("endDate") || getDateTime().lastDayOfMonth,
-        });
-
-        getTarget(params);
-    }, [searchParams, getTarget]);
 
     //** Render */
     if (isLocationValid !== null && !isLocationValid && profile?.role !== ROLE.ADMIN) {

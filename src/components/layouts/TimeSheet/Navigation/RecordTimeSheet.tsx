@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { Select, SelectItem } from "@/components/Select";
@@ -9,25 +9,25 @@ import {
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
-import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
-import { useShift } from "@/hooks";
+import { useShift, useTarget } from "@/hooks";
 import {
     calculateWorkingHours,
     formatDate,
     formatTime,
     getCurrentLocation,
     isEmpty,
+    isShiftActive,
     verifyLocation,
 } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
-import { ShiftProps, StaffProps } from "@/types";
+import { StaffProps } from "@/types";
 
 export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
-    const { targets } = useTargetStore();
 
     //** Queries */
+    const { createTarget, targets } = useTarget();
     const { shifts } = useShift();
 
     //** States */
@@ -42,7 +42,36 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
         updateTimeSheet,
         deleteTimeSheet,
     } = useTimeSheetStore();
-    const { createTarget } = useTargetStore();
+
+    //** Variables */
+    const todayStr = formatDate(new Date(), "YYYY-MM-DD");
+
+    const todayTarget = useMemo(() => {
+        return targets.find(target => {
+            return formatDate(target.targetAt, "YYYY-MM-DD") === todayStr;
+        });
+    }, [targets, todayStr]);
+
+    // Get disabledKeys for HeroUI Select component - disable inactive shifts and incompatible target shifts
+    const disabledKeys = useMemo(() => {
+        const disabledShiftIds = shifts
+            .filter(shift => {
+                // Disable if shift is not active
+                if (!isShiftActive(shift)) {
+                    return true;
+                }
+
+                // If staff has isTarget: false, only allow shifts with isTarget: false
+                if (staff.isTarget === false) {
+                    return shift.isTarget !== false;
+                }
+
+                // If staff has isTarget: true, allow all shifts
+                return false;
+            })
+            .map(shift => shift.id);
+        return disabledShiftIds;
+    }, [shifts, staff.isTarget]);
 
     //** Functions */
     const handleRecordTimeSheet = async (type: "checkIn" | "checkOut") => {
@@ -51,16 +80,6 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
         if (!selectedShift) {
             setShiftError(TEXT.IS_REQUIRED);
             return;
-        }
-
-        // Validate shift compatibility with staff target status
-        const selectedShiftData = shifts.find((shift: ShiftProps) => shift.id === selectedShift);
-        if (selectedShiftData) {
-            // If staff has isTarget: false, only allow shifts with isTarget: false
-            if (staff.isTarget === false && selectedShiftData.isTarget !== false) {
-                setError("This shift is not compatible with your target status");
-                return;
-            }
         }
 
         // Validate location
@@ -72,29 +91,19 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
             return;
         }
 
-        let targetShiftId = null;
-        const todayTarget = targets.find(target => {
-            return (
-                formatDate(target.targetAt, "YYYY-MM-DD") === formatDate(new Date(), "YYYY-MM-DD")
-            );
-        });
+        // Check today target
+        let target = todayTarget;
 
-        if (!todayTarget) {
-            const target = await createTarget({
+        if (!target) {
+            target = await createTarget({
                 name: TEXT.TARGET,
-                targetAt: formatDate(new Date(), "YYYY-MM-DD"),
+                targetAt: todayStr,
             });
-
-            targetShiftId = target.targetShifts.find(
-                (shift: TargetProps["targetShift"]) => shift.shiftId === selectedShift,
-            )?.id;
-        } else {
-            const targetShift = todayTarget.targetShifts.find(
-                (shift: TargetProps["targetShift"]) => shift.shiftId === selectedShift,
-            );
-
-            targetShiftId = targetShift ? targetShift.id : null;
         }
+
+        const targetShiftId = target.targetShifts.find(
+            shift => shift.shiftId === selectedShift,
+        )?.id;
 
         if (!targetShiftId) {
             setError(TEXT.ERROR);
@@ -134,54 +143,6 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
         });
     }, [getTimeSheetByStaffId, staff.id]);
 
-    // Function to check if a shift is currently active based on start/end times (Ca 3: 60-min buffer, others: 30-min buffer)
-    const isShiftActive = (shift: ShiftProps): boolean => {
-        if (!shift.startTime || !shift.endTime) {
-            // In the case is active for "Noi bo" shift
-            return true;
-        }
-
-        const currentTime = new Date();
-        const currentTimeString = formatDate(currentTime, "HH:mm");
-
-        // Convert times to minutes for easier comparison
-        const currentMinutes =
-            parseInt(currentTimeString.split(":")[0]) * 60 +
-            parseInt(currentTimeString.split(":")[1]);
-        const startMinutes =
-            parseInt(shift.startTime.split(":")[0]) * 60 + parseInt(shift.startTime.split(":")[1]);
-        const endMinutes =
-            parseInt(shift.endTime.split(":")[0]) * 60 + parseInt(shift.endTime.split(":")[1]);
-
-        // Buffer minutes for all shifts
-        const bufferMinutes = 60;
-        return (
-            currentMinutes >= startMinutes - bufferMinutes &&
-            currentMinutes <= endMinutes + bufferMinutes
-        );
-    };
-
-    // Get disabledKeys for HeroUI Select component - disable inactive shifts and incompatible target shifts
-    const disabledKeys = useMemo(() => {
-        const disabledShiftIds = shifts
-            .filter((shift: ShiftProps) => {
-                // Disable if shift is not active
-                if (!isShiftActive(shift)) {
-                    return true;
-                }
-
-                // If staff has isTarget: false, only allow shifts with isTarget: false
-                if (staff.isTarget === false) {
-                    return shift.isTarget !== false;
-                }
-
-                // If staff has isTarget: true, allow all shifts
-                return false;
-            })
-            .map((shift: ShiftProps) => shift.id);
-        return disabledShiftIds;
-    }, [shifts, staff.isTarget]);
-
     //** Render */
     return (
         <div className="sm:space-y-6 space-y-2">
@@ -212,7 +173,7 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
                         setSelectedShift(e.target.value);
                     }}
                 >
-                    {shifts.map((shift: ShiftProps) => (
+                    {shifts.map(shift => (
                         <SelectItem key={shift.id}>
                             {`${shift.name} ${shift.startTime && shift.endTime && `(${shift.startTime} - ${shift.endTime})`}`}
                         </SelectItem>
