@@ -54,7 +54,7 @@ export default function TargetList({
     };
 
     return (
-        <div className="relative min-h-full flex flex-col gap-y-4">
+        <div className="relative h-full min-h-[70vh] flex flex-col gap-y-4">
             {(isLoading || isLoadingInvoice) && <Loading />}
 
             {targets.map(target => (
