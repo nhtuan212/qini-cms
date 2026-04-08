@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { Select, SelectItem } from "@/components/Select";
@@ -8,14 +8,12 @@ import {
     TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
-import { useShift, useTarget } from "@/hooks";
+import { useShift, useTarget, useTimeSheet } from "@/hooks";
 import {
     calculateWorkingHours,
     formatDate,
     formatTime,
     getCurrentLocation,
-    isEmpty,
     isShiftActive,
     verifyLocation,
 } from "@/utils";
@@ -29,19 +27,15 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
     //** Queries */
     const { createTarget, targets } = useTarget();
     const { shifts } = useShift();
+    const { isLoading, timeSheetRecords, createTimeSheet, updateTimeSheet, deleteTimeSheet } =
+        useTimeSheet(staff.id, {
+            startDate: formatDate(new Date(), "YYYY-MM-DD"),
+        });
 
     //** States */
     const [error, setError] = useState("");
     const [selectedShift, setSelectedShift] = useState<string | null>(null);
     const [shiftError, setShiftError] = useState<string | null>(null);
-    const {
-        isLoading,
-        timeSheetByStaffId,
-        getTimeSheetByStaffId,
-        createTimeSheet,
-        updateTimeSheet,
-        deleteTimeSheet,
-    } = useTimeSheetStore();
 
     //** Variables */
     const todayStr = formatDate(new Date(), "YYYY-MM-DD");
@@ -54,7 +48,7 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
 
     // Get disabledKeys for HeroUI Select component - disable inactive shifts and incompatible target shifts
     const disabledKeys = useMemo(() => {
-        const disabledShiftIds = shifts
+        return shifts
             .filter(shift => {
                 // Disable if shift is not active
                 if (!isShiftActive(shift)) {
@@ -70,7 +64,6 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
                 return false;
             })
             .map(shift => shift.id);
-        return disabledShiftIds;
     }, [shifts, staff.isTarget]);
 
     //** Functions */
@@ -111,7 +104,7 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
         }
 
         if (type === "checkOut") {
-            const currentTimeSheet = timeSheetByStaffId.data.find(
+            const currentTimeSheet = timeSheetRecords?.data.find(
                 item => item.shiftId === selectedShift && !item.checkOut,
             );
 
@@ -122,7 +115,7 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
 
             return updateTimeSheet({
                 id: currentTimeSheet.id,
-                bodyParams: {
+                params: {
                     checkOut: formatTime(),
                     workingHours: calculateWorkingHours(currentTimeSheet.checkIn, formatTime()),
                 },
@@ -133,15 +126,9 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
             staffId: staff.id,
             shiftId: selectedShift,
             targetShiftId,
+            checkIn: formatTime(),
         });
     };
-
-    //** Effects */
-    useEffect(() => {
-        getTimeSheetByStaffId(staff.id, {
-            startDate: formatDate(new Date(), "YYYY-MM-DD"),
-        });
-    }, [getTimeSheetByStaffId, staff.id]);
 
     //** Render */
     return (
@@ -188,7 +175,7 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
                         isLoading={isLoading}
                         startContent={<ArrowRightEndOnRectangleIcon className="w-5 h-5" />}
                         isDisabled={
-                            !!timeSheetByStaffId.data.find(
+                            !!timeSheetRecords?.data?.find(
                                 item => item.shiftId === selectedShift && !item.checkOut,
                             )?.checkIn
                         }
@@ -215,46 +202,46 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
             {/* Today's Summary */}
             <Card className="bg-primary-50 sm:p-4 p-2 border border-primary-200">
                 <h4 className="font-semibold text-gray-800 mb-3">{TEXT.TODAY_SUMMARY}</h4>
-                {!isEmpty(timeSheetByStaffId) &&
-                    timeSheetByStaffId.data.map((item, index) => (
-                        <div key={index}>
-                            <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-1 items-center gap-2 text-sm">
-                                <div>
-                                    <span className="text-gray-600">{`${TEXT.WORK_SHIFT}:`}</span>
-                                    <span className="ml-2 font-medium">{item.shiftName}</span>
+
+                {timeSheetRecords?.data?.map(item => (
+                    <div key={item.id}>
+                        <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-1 items-center gap-2 text-sm">
+                            <div>
+                                <span className="text-gray-600">{`${TEXT.WORK_SHIFT}:`}</span>
+                                <span className="ml-2 font-medium">{item.shiftName}</span>
+                            </div>
+                            <div>
+                                <span className="text-gray-600">{`${TEXT.CHECK_IN}:`}</span>
+                                <span className="ml-2 font-medium">{item.checkIn}</span>
+                            </div>
+                            <div>
+                                <span className="text-gray-600">{`${TEXT.CHECK_OUT}:`}</span>
+                                <span className="ml-2 font-medium">{item.checkOut}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <div className="flex-1">
+                                    <span className="text-gray-600">{`${TEXT.WORKING_HOURS}:`}</span>
+                                    <span className="ml-2 font-medium">
+                                        {item.workingHours || "0"}
+                                    </span>
                                 </div>
-                                <div>
-                                    <span className="text-gray-600">{`${TEXT.CHECK_IN}:`}</span>
-                                    <span className="ml-2 font-medium">{item.checkIn}</span>
-                                </div>
-                                <div>
-                                    <span className="text-gray-600">{`${TEXT.CHECK_OUT}:`}</span>
-                                    <span className="ml-2 font-medium">{item.checkOut}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <div className="flex-1">
-                                        <span className="text-gray-600">{`${TEXT.WORKING_HOURS}:`}</span>
-                                        <span className="ml-2 font-medium">
-                                            {item.workingHours || "0"}
-                                        </span>
+                                {profile?.role === ROLE.ADMIN && (
+                                    <div className="ml-auto">
+                                        <Button
+                                            size="sm"
+                                            variant="light"
+                                            color="default"
+                                            isIconOnly
+                                            onPress={() => deleteTimeSheet(item.id)}
+                                        >
+                                            <TrashIcon className="w-4 h-4" />
+                                        </Button>
                                     </div>
-                                    {profile?.role === ROLE.ADMIN && (
-                                        <div className="ml-auto">
-                                            <Button
-                                                size="sm"
-                                                variant="light"
-                                                color="default"
-                                                isIconOnly
-                                                onPress={() => deleteTimeSheet(item.id)}
-                                            >
-                                                <TrashIcon className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    )}
-                                </div>
+                                )}
                             </div>
                         </div>
-                    ))}
+                    </div>
+                ))}
             </Card>
         </div>
     );

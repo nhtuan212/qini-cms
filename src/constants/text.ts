@@ -39,6 +39,7 @@ export const TEXT = {
     DEDUCTION: "Tiền khấu trừ",
     TRANSFER: "Chuyển khoản",
     TOTAL: "Tổng cộng",
+    NET_PAY: "Thực nhận",
     WORK_SHIFT: "Ca",
     DETAIL_SHIFT: "Chi tiết các ca làm việc",
     WORK_SHIFT_SELECT: "Chọn ca làm việc",

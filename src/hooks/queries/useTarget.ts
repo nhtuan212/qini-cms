@@ -20,10 +20,11 @@ export const useTarget = (params?: {
         data: targets = [],
     } = useQuery<TargetProps[]>({
         queryKey: ["target", params],
-        queryFn: () =>
-            fetchData({
+        queryFn: async () => {
+            return fetchData({
                 endpoint: `${endpoint}${queryString}`,
-            }).then(res => convertKeysToCamelCase(res.data)),
+            }).then(res => convertKeysToCamelCase(res.data));
+        },
     });
 
     // Create target

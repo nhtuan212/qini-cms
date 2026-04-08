@@ -1,8 +1,21 @@
-export interface TimeSheet {
+export interface TimesheetData {
     id: string;
     staffId: string;
-    checkIn: string;
-    checkOut: string;
-    workingHours: number;
+    shiftId: string;
     staffName: string;
+    targetShiftId: string;
+    shiftName: string;
+    date: string; // "YYYY-MM-DD"
+    checkIn: string; // "HH:mm" | ""
+    checkOut: string; // "HH:mm" | ""
+    workingHours: number;
+    target: number;
+}
+
+export interface TimesheetRecordProps {
+    staffName: string;
+    salary: number;
+    totalWorkingHours: number;
+    totalTarget: number;
+    data: TimesheetData[];
 }

@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { convertKeysToCamelCase, convertKeysToSnakeCase } from "@/utils";
 import { fetchData } from "@/utils/fetch";
 import { URL } from "@/constants";
-import { useTargetStore } from "@/stores/useTargetStore";
 
 export type TargetShiftProps = {
     [key: string]: any;
@@ -70,11 +69,11 @@ export const useTargetShiftStore = create<TargetShiftState & TargetShiftAction>(
                 isLoading: false,
             });
 
-            if (res?.code === 200) {
-                useTargetStore
-                    .getState()
-                    .updateTargetShiftInTargets(convertKeysToCamelCase(res.data));
-            }
+            // if (res?.code === 200) {
+            //     useTargetStore
+            //         .getState()
+            //         .updateTargetShiftInTargets(convertKeysToCamelCase(res.data));
+            // }
 
             return res;
         });

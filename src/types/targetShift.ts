@@ -1,4 +1,4 @@
-import { TimeSheet } from "./timeSheet";
+import { TimesheetData } from "./timeSheet";
 
 export interface TargetShiftProps {
     id: string;
@@ -14,5 +14,5 @@ export interface TargetShiftProps {
     endTime: string;
     kiotId: string | null;
     isTarget: boolean;
-    timeSheets: TimeSheet[];
+    timeSheets: TimesheetData[];
 }

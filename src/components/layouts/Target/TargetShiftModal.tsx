@@ -2,11 +2,16 @@ import React, { useEffect } from "react";
 import ErrorMessage from "@/components/ErrorMessage";
 import Button from "@/components/Button";
 import Input, { NumberInput } from "@/components/Input";
-import { TargetProps } from "@/stores/useTargetStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useTargetShiftStore } from "@/stores/useTargetShiftStore";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { TEXT } from "@/constants";
+import { TargetShiftProps } from "@/types";
+
+type TargetShiftForm = Pick<
+    TargetShiftProps,
+    "revenue" | "transfer" | "point" | "deduction" | "cash" | "description"
+>;
 
 export default function TargetShiftModal() {
     //** Stores */
@@ -30,7 +35,7 @@ export default function TargetShiftModal() {
         setValue,
         clearErrors,
         formState: { errors },
-    } = useForm<TargetProps["targetShift"]>({ values: defaultValues });
+    } = useForm<TargetShiftForm>({ values: defaultValues });
 
     const watchedValues = useWatch({
         control,
@@ -38,7 +43,7 @@ export default function TargetShiftModal() {
     });
 
     //** Functions */
-    const onSubmit = async (data: TargetProps["targetShift"]) => {
+    const onSubmit = async (data: TargetShiftForm) => {
         await updateTargetShift({
             id: targetShift.id,
             bodyParams: data,
@@ -51,10 +56,10 @@ export default function TargetShiftModal() {
 
     //** Effects */
     useEffect(() => {
-        const r = parseFloat(watchedValues[0]) || 0;
-        const t = parseFloat(watchedValues[1]) || 0;
-        const p = parseFloat(watchedValues[2]) || 0;
-        const d = parseFloat(watchedValues[3]) || 0;
+        const r = watchedValues[0];
+        const t = watchedValues[1];
+        const p = watchedValues[2];
+        const d = watchedValues[3];
 
         setValue("cash", r - t - p - d);
     }, [watchedValues, setValue]);

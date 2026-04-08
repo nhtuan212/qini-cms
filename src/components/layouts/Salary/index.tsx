@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import SalaryTopContent from "./SalaryTopContent";
 import useSalaryColumn from "./useSalaryColumn";
-import SalaryTotal, { SalaryTotalProps } from "./SalaryTotal";
-import { Accordion, AccordionItem } from "@/components/Accordion";
+import SalaryTotal from "./SalaryTotal";
 import Table from "@/components/Table";
+import { Accordion, AccordionItem } from "@/components/Accordion";
 import { useSalary } from "@/hooks";
 import { formatCurrency, formatDate } from "@/utils";
 import { ROUTE, TEXT } from "@/constants";
@@ -34,8 +34,8 @@ export default function Salary({ staff }: { staff?: StaffProps }) {
         return undefined; // fetch all
     }, [staff, searchParams]);
 
-    //** Data fe */
-    const { isFetching, salaries } = useSalary(salaryParams);
+    //** Queries */
+    const { isLoading, salaries } = useSalary(salaryParams);
 
     //** Render */
     if (pathname !== ROUTE.SALARY) {
@@ -47,7 +47,7 @@ export default function Salary({ staff }: { staff?: StaffProps }) {
                         title={`${TEXT.SALARY_PERIOD}: ${formatDate(salary.startDate)} - ${formatDate(salary.endDate)}`}
                         subtitle={<b>{formatCurrency(salary.total)}</b>}
                     >
-                        <SalaryTotal {...(salary as SalaryTotalProps)} />
+                        <SalaryTotal {...salary} target={salary.target * 100} />
                     </AccordionItem>
                 ))}
             </Accordion>
@@ -58,7 +58,7 @@ export default function Salary({ staff }: { staff?: StaffProps }) {
         <Table
             rows={salaries}
             columns={columns}
-            loading={isFetching}
+            loading={isLoading}
             className="[&>.tableContainer]:min-h-[45rem]"
             topContent={<SalaryTopContent />}
         />

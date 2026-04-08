@@ -18,7 +18,7 @@ export default function Target() {
     const { profile } = useProfileStore();
 
     //** Queries */
-    const { targets } = useTarget({
+    const { isLoading, targets } = useTarget({
         startDate: searchParams.get("startDate") || getDateTime().firstDayOfMonth,
         endDate: searchParams.get("endDate") || getDateTime().lastDayOfMonth,
     });
@@ -40,7 +40,7 @@ export default function Target() {
 
             <TargetFilter />
 
-            <TargetList targets={targets} />
+            <TargetList isLoading={isLoading} targets={targets} />
         </div>
     );
 }

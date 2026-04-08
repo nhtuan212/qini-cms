@@ -13,11 +13,10 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { TargetShiftProps, useTargetShiftStore } from "@/stores/useTargetShiftStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useInvoiceStore } from "@/stores/useInvoice";
-import { TargetProps } from "@/stores/useTargetStore";
 import { formatCurrency, formatDate } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
 
-export default function TargetShifts({ target }: { target: TargetProps }) {
+export default function TargetShifts({ target }: { target: TargetShiftProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();

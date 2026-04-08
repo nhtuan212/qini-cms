@@ -1,5 +1,5 @@
 import React from "react";
-import SalaryTotal, { SalaryTotalProps } from "./SalaryTotal";
+import SalaryTotal from "./SalaryTotal";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -87,7 +87,9 @@ export default function useSalaryColumn() {
                             getModal({
                                 isOpen: true,
                                 modalHeader: params.row.staffName,
-                                modalBody: <SalaryTotal {...(params.row as SalaryTotalProps)} />,
+                                modalBody: (
+                                    <SalaryTotal {...params.row} target={params.row.target * 100} />
+                                ),
                             })
                         }
                     />

@@ -1,9 +1,11 @@
+import { SalaryTypeProps } from ".";
+
 export interface SalaryProps {
     id: string;
     staffName: string;
     name: string;
     salary: number;
-    salaryType: "HOURLY" | "MONTHLY";
+    salaryType: SalaryTypeProps;
     workingHours: number;
     target: number;
     bonus: number;
@@ -19,7 +21,7 @@ export interface SalaryProps {
 }
 
 export interface SalaryParams {
-    staffId?: number;
+    staffId?: string;
     startDate?: string | null;
     endDate?: string | null;
 }

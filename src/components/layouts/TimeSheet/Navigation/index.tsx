@@ -1,6 +1,4 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import StaffDetail from "../../Staff/StaffDetail";
 import RecordTimeSheet from "./RecordTimeSheet";
 import Salary from "../../Salary";
@@ -9,7 +7,6 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { CalendarIcon, ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { TEXT } from "@/constants";
 
 export default function AttendanceNavigation() {
@@ -17,7 +14,6 @@ export default function AttendanceNavigation() {
     const [activeTab, setActiveTab] = useState("record");
 
     //** Stores */
-    const { cleanUpTimeSheet } = useTimeSheetStore();
     const { selectedStaff } = useStaffStore();
 
     //** Variables */
@@ -47,13 +43,6 @@ export default function AttendanceNavigation() {
             component: <WorkAssignment staff={selectedStaff} />,
         },
     ];
-
-    //** Effects */
-    useEffect(() => {
-        return () => {
-            cleanUpTimeSheet();
-        };
-    }, [cleanUpTimeSheet]);
 
     //** Render */
     return (

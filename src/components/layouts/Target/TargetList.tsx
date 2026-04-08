@@ -1,29 +1,29 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import TargetShifts from "./TargetShifts";
 import Loading from "@/components/Loading";
 import Button from "@/components/Button";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
-import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
-import { useTargetShiftStore } from "@/stores/useTargetShiftStore";
 import { useInvoiceStore } from "@/stores/useInvoice";
 import { formatCurrency, formatDate } from "@/utils";
 import { TEXT } from "@/constants";
+import { TargetProps } from "@/types";
 
-export default function TargetList({ targets }: { targets: TargetProps[] }) {
+export default function TargetList({
+    isLoading,
+    targets,
+}: {
+    isLoading: boolean;
+    targets: TargetProps[];
+}) {
     //** Refs */
     const targetRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
     //** Stores */
-    const { isLoading: isLoadingTarget } = useTargetStore();
-    const { isLoading: isLoadingTargetShift } = useTargetShiftStore();
     const { isLoading: isLoadingInvoice } = useInvoiceStore();
 
     //** States */
     const [openTargetId, setOpenTargetId] = useState<string | null>(null);
-
-    //** Variables */
-    const isLoading = isLoadingTarget || isLoadingTargetShift || isLoadingInvoice;
 
     //** Functions */
     const handleToggleTarget = (targetId: string) => {
@@ -54,8 +54,8 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
     };
 
     return (
-        <div className="relative min-h-screen flex flex-col gap-y-4">
-            {isLoading && <Loading />}
+        <div className="relative min-h-full flex flex-col gap-y-4">
+            {(isLoading || isLoadingInvoice) && <Loading />}
 
             {targets.map(target => (
                 <div
@@ -94,16 +94,6 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
                                     {renderTarget(TEXT.CASH, target.cash)}
                                 </div>
                             </div>
-
-                            {/* <div className="flex items-center">
-                                <Button size="sm" variant="light" color="default" isIconOnly>
-                                    <PencilSquareIcon className="w-5 h-5 text-gray-500" />
-                                </Button>
-
-                                <Button size="sm" variant="light" color="default" isIconOnly>
-                                    <TrashIcon className="w-5 h-5 text-gray-500" />
-                                </Button>
-                            </div> */}
                         </div>
                     </div>
 

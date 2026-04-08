@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Select, SelectItem } from "@/components/Select";
 import DateRangePicker from "@/components/DateRangePicker";
 import Input, { NumberInput } from "@/components/Input";
@@ -10,7 +10,6 @@ import ErrorMessage from "@/components/ErrorMessage";
 import { DocumentCheckIcon, UserIcon } from "@heroicons/react/24/outline";
 import { CalendarDate, RangeValue } from "@heroui/react";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useAlertStore } from "@/stores/useAlertStore";
 import { useSalary, useStaff } from "@/hooks";
 import {
@@ -22,7 +21,7 @@ import {
 } from "@/utils";
 import { TEXT } from "@/constants";
 import { FormSalaryProps } from ".";
-import { SalaryTypeProps } from "@/types";
+import { SalaryTypeProps, TimesheetRecordProps } from "@/types";
 import {
     Control,
     Controller,
@@ -31,37 +30,34 @@ import {
     UseFormReset,
     UseFormTrigger,
     UseFormHandleSubmit,
-    UseFormWatch,
 } from "react-hook-form";
 
 interface SalaryCalculatorProps {
+    timeSheetRecords: TimesheetRecordProps;
     control: Control<FormSalaryProps>;
     setValue: UseFormSetValue<FormSalaryProps>;
     getValues: UseFormGetValues<FormSalaryProps>;
     trigger: UseFormTrigger<FormSalaryProps>;
-    watch: UseFormWatch<FormSalaryProps>;
     reset: UseFormReset<FormSalaryProps>;
     handleSubmit: UseFormHandleSubmit<FormSalaryProps>;
 }
 
 export default function SalaryCalculator({
+    timeSheetRecords,
     control,
     setValue,
     getValues,
     trigger,
-    watch,
     reset,
     handleSubmit,
 }: SalaryCalculatorProps) {
     //** Stores */
-    const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId, cleanUpTimeSheet } =
-        useTimeSheetStore();
     const { getAlert } = useAlertStore();
     const { setSelectedStaff, selectedStaff } = useStaffStore();
 
     //** Queries */
     const { staffs } = useStaff();
-    const { isFetching, createSalary } = useSalary();
+    const { isLoading, createSalary } = useSalary();
 
     //** Variables */
     const orderedStaffByActive = useMemo(() => {
@@ -81,14 +77,9 @@ export default function SalaryCalculator({
         });
     }, [staffs]);
 
-    const staffIdWatched = watch("staffId");
-    const dateRangeWatched = watch("dateRange");
-    const startDate = dateRangeWatched.start.toString();
-    const endDate = dateRangeWatched.end.toString();
-
     //** Functions */
     const onSubmit = (data: FormSalaryProps) => {
-        const target = Math.floor(timeSheetByStaffId.totalTarget * 0.01);
+        const target = Math.floor(timeSheetRecords.totalTarget * 0.01);
 
         // Calculate working days for non-target staff (excluding holidays)
         const monthRange = getMonthRangeFromDate(data.dateRange.start.toString());
@@ -96,17 +87,15 @@ export default function SalaryCalculator({
             monthRange.firstDayOfMonth,
             monthRange.lastDayOfMonth,
         );
-        const workingDay = calculateWorkingDays(timeSheetByStaffId.data);
+        const workingDay = calculateWorkingDays(timeSheetRecords.data);
 
         // Calculate working hours
         let workingHours;
 
         if (selectedStaff.salaryType === SalaryTypeProps.MONTHLY) {
-            workingHours = calculateWorkingHoursWithBreak(
-                timeSheetByStaffId.data,
-            ).totalWorkingHours;
+            workingHours = calculateWorkingHoursWithBreak(timeSheetRecords.data).totalWorkingHours;
         } else {
-            workingHours = timeSheetByStaffId.totalWorkingHours;
+            workingHours = timeSheetRecords.totalWorkingHours;
         }
 
         const result = {
@@ -127,7 +116,6 @@ export default function SalaryCalculator({
                 title: TEXT.SALARY_CREATED,
             });
 
-            cleanUpTimeSheet();
             reset({
                 staffId: getValues("staffId"),
                 salary: getValues("salary"),
@@ -163,21 +151,17 @@ export default function SalaryCalculator({
                             onSelectionChange={value => {
                                 const staffId = value.currentKey as string;
 
+                                field.onChange(staffId);
+
                                 const currentStaff =
                                     staffs.find(staff => staff.id === staffId) || {};
 
-                                // I need selectedStaff for SalaryForm/index
+                                // zustand store
                                 setSelectedStaff(currentStaff);
 
+                                // Use watched salary for the changes
                                 setValue("salary", currentStaff.salary || 25000);
-
-                                // Keep the same date range to calculate salary when change staff
-                                getTimeSheetByStaffId(staffId, {
-                                    startDate: formatDate(startDate, "YYYY-MM-DD"),
-                                    endDate: formatDate(endDate, "YYYY-MM-DD"),
-                                });
-
-                                field.onChange(staffId);
+                                setValue("staffId", staffId);
 
                                 reset({
                                     staffId: getValues("staffId"),
@@ -207,13 +191,6 @@ export default function SalaryCalculator({
                                 if (!value) return null;
 
                                 setValue("dateRange", value as RangeValue<CalendarDate>);
-
-                                if (staffIdWatched) {
-                                    getTimeSheetByStaffId(staffIdWatched, {
-                                        startDate: formatDate(value.start.toString(), "YYYY-MM-DD"),
-                                        endDate: formatDate(value.end.toString(), "YYYY-MM-DD"),
-                                    });
-                                }
                             }}
                         />
                     )}
@@ -316,7 +293,7 @@ export default function SalaryCalculator({
                     className="w-full"
                     size="lg"
                     startContent={<DocumentCheckIcon className="w-5 h-5" />}
-                    isDisabled={isLoading || isFetching}
+                    isDisabled={isLoading}
                 >
                     {TEXT.SUBMIT}
                 </Button>
