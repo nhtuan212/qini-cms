@@ -4,7 +4,6 @@ import Loading from "@/components/Loading";
 import Button from "@/components/Button";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
-import { useInvoiceStore } from "@/stores/useInvoice";
 import { formatCurrency, formatDate } from "@/utils";
 import { TEXT } from "@/constants";
 import { TargetProps } from "@/types";
@@ -18,9 +17,6 @@ export default function TargetList({
 }) {
     //** Refs */
     const targetRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-
-    //** Stores */
-    const { isLoading: isLoadingInvoice } = useInvoiceStore();
 
     //** States */
     const [openTargetId, setOpenTargetId] = useState<string | null>(null);
@@ -55,7 +51,7 @@ export default function TargetList({
 
     return (
         <div className="relative h-full min-h-[70vh] flex flex-col gap-y-4">
-            {(isLoading || isLoadingInvoice) && <Loading />}
+            {isLoading && <Loading />}
 
             {targets.map(target => (
                 <div

@@ -16,3 +16,4 @@ export * from "./timeSheet";
 export * from "./staff";
 export * from "./salary";
 export * from "./shift";
+export * from "./invoice";

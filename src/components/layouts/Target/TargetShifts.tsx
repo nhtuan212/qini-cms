@@ -12,7 +12,7 @@ import {
 import { useProfileStore } from "@/stores/useProfileStore";
 import { TargetShiftProps, useTargetShiftStore } from "@/stores/useTargetShiftStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { useInvoiceStore } from "@/stores/useInvoice";
+import { useInvoice } from "@/hooks";
 import { formatCurrency, formatDate } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
 
@@ -21,7 +21,9 @@ export default function TargetShifts({ target }: { target: TargetShiftProps }) {
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
     const { getTargetShiftById, updateTargetShift } = useTargetShiftStore();
-    const { getInvoice } = useInvoiceStore();
+
+    //** Queries */
+    const { getInvoice } = useInvoice();
 
     //** Functions */
     const isWithinShiftTime = (
