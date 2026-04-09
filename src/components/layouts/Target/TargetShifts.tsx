@@ -3,6 +3,7 @@ import TimeSheets from "./TimeSheets";
 import TargetShiftModal from "./TargetShiftModal";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import Loading from "@/components/Loading";
 import {
     ArrowPathIcon,
     BanknotesIcon,
@@ -10,20 +11,20 @@ import {
     PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { TargetShiftProps, useTargetShiftStore } from "@/stores/useTargetShiftStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { useInvoice } from "@/hooks";
+import { useInvoice, useTargetShift } from "@/hooks";
 import { formatCurrency, formatDate } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
+import { TargetProps, TargetShiftProps } from "@/types";
 
-export default function TargetShifts({ target }: { target: TargetShiftProps }) {
+export default function TargetShifts({ target }: { target: TargetProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getTargetShiftById, updateTargetShift } = useTargetShiftStore();
 
     //** Queries */
-    const { getInvoice } = useInvoice();
+    const { isLoading: isInvoiceLoading, getInvoice } = useInvoice();
+    const { isLoading, updateTargetShift } = useTargetShift();
 
     //** Functions */
     const isWithinShiftTime = (
@@ -49,6 +50,20 @@ export default function TargetShifts({ target }: { target: TargetShiftProps }) {
         return now >= startWindow && now <= endWindow;
     };
 
+    const handleSyncInvoice = async (targetShift: TargetShiftProps) => {
+        if (!targetShift.kiotId) return;
+
+        const invoices = await getInvoice({
+            soldById: targetShift.kiotId,
+            targetAt: formatDate(target.targetAt, "YYYY-MM-DD"),
+        });
+
+        await updateTargetShift({
+            id: targetShift.id,
+            params: invoices,
+        });
+    };
+
     //** Render */
     const renderAmount = (name: string, value: number, icon: React.ReactNode) => {
         return (
@@ -63,6 +78,8 @@ export default function TargetShifts({ target }: { target: TargetShiftProps }) {
 
     return (
         <div className="relative flex flex-col gap-y-4">
+            {(isLoading || isInvoiceLoading) && <Loading />}
+
             <div className="flex justify-between items-center">
                 <h4 className="font-semibold text-gray-900">{TEXT.DETAIL_SHIFT}</h4>
                 {/* <Button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center text-sm">
@@ -93,12 +110,11 @@ export default function TargetShifts({ target }: { target: TargetShiftProps }) {
                                         variant="light"
                                         color="default"
                                         isIconOnly
-                                        onPress={async () => {
-                                            await getTargetShiftById(targetShift.id);
-                                            await getModal({
+                                        onPress={() => {
+                                            getModal({
                                                 isOpen: true,
                                                 modalHeader: TEXT.UPDATE(targetShift.shiftName),
-                                                modalBody: <TargetShiftModal />,
+                                                modalBody: <TargetShiftModal {...targetShift} />,
                                             });
                                         }}
                                         isDisabled={
@@ -116,17 +132,7 @@ export default function TargetShifts({ target }: { target: TargetShiftProps }) {
                                         size="sm"
                                         variant="light"
                                         isIconOnly
-                                        onPress={async () => {
-                                            const invoices = await getInvoice({
-                                                soldById: targetShift.kiotId,
-                                                targetAt: formatDate(target.targetAt, "YYYY-MM-DD"),
-                                            }).then(invoice => invoice);
-
-                                            await updateTargetShift({
-                                                id: targetShift.id,
-                                                bodyParams: invoices,
-                                            });
-                                        }}
+                                        onPress={() => handleSyncInvoice(targetShift)}
                                         isDisabled={
                                             !isWithinShiftTime(
                                                 profile?.role,

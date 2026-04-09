@@ -3,7 +3,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import Button from "@/components/Button";
 import Input, { NumberInput } from "@/components/Input";
 import { useModalStore } from "@/stores/useModalStore";
-import { useTargetShiftStore } from "@/stores/useTargetShiftStore";
+import { useTargetShift } from "@/hooks";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { TEXT } from "@/constants";
 import { TargetShiftProps } from "@/types";
@@ -13,19 +13,31 @@ type TargetShiftForm = Pick<
     "revenue" | "transfer" | "point" | "deduction" | "cash" | "description"
 >;
 
-export default function TargetShiftModal() {
+export default function TargetShiftModal(props: TargetShiftProps) {
+    const {
+        id,
+        revenue = 0,
+        transfer = 0,
+        point = 0,
+        deduction = 0,
+        cash = 0,
+        description = "",
+    } = props;
+
     //** Stores */
-    const { isLoading, targetShift, updateTargetShift } = useTargetShiftStore();
     const { getModal } = useModalStore();
+
+    //** Queries */
+    const { isLoading, updateTargetShift } = useTargetShift();
 
     //** React hook form */
     const defaultValues = {
-        revenue: targetShift.revenue || 0,
-        transfer: targetShift.transfer || 0,
-        point: targetShift.point || 0,
-        deduction: targetShift.deduction || 0,
-        cash: targetShift.cash || 0,
-        description: targetShift.description || "",
+        revenue,
+        transfer,
+        point,
+        deduction,
+        cash,
+        description,
     };
 
     const {
@@ -45,11 +57,11 @@ export default function TargetShiftModal() {
     //** Functions */
     const onSubmit = async (data: TargetShiftForm) => {
         await updateTargetShift({
-            id: targetShift.id,
-            bodyParams: data,
+            id,
+            params: data,
         });
 
-        await getModal({
+        getModal({
             isOpen: false,
         });
     };

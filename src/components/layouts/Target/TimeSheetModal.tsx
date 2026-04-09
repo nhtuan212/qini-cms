@@ -2,13 +2,12 @@ import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
 import { Autocomplete, AutocompleteItem } from "@/components/AutoComplete";
 import { TimeInput } from "@/components/Input";
-import { TargetShiftProps } from "@/stores/useTargetShiftStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaff, useTimeSheet } from "@/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { calculateWorkingHours, isEmpty, parseTimeString } from "@/utils";
 import { TEXT } from "@/constants";
-import { TimesheetData } from "@/types";
+import { TargetShiftProps, TimesheetData } from "@/types";
 
 type TimeSheetForm = Pick<TimesheetData, "staffId" | "checkIn" | "checkOut">;
 

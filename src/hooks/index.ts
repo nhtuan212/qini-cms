@@ -26,6 +26,7 @@ export * from "./queries/useSalary";
 export * from "./queries/useShift";
 export * from "./queries/useStaff";
 export * from "./queries/useTarget";
+export * from "./queries/useTargetShift";
 export * from "./queries/useTimeSheet";
 export * from "./queries/useInvoice";
 export * from "./useDebounce";

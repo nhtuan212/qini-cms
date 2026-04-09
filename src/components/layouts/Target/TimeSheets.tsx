@@ -2,11 +2,10 @@ import TimeSheetModal from "./TimeSheetModal";
 import Button from "@/components/Button";
 import { PencilIcon, PlusIcon, TrashIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
-import { TargetShiftProps } from "@/stores/useTargetShiftStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useTimeSheet } from "@/hooks";
 import { ROLE, TEXT } from "@/constants";
-import { TimesheetData } from "@/types";
+import { TargetShiftProps, TimesheetData } from "@/types";
 
 export default function TimeSheets({
     targetAt,
