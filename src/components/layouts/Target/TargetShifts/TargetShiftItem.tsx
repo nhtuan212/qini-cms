@@ -13,10 +13,10 @@ export default function TargetShiftItem({
     targetShift: TargetShiftProps;
     targetAt: TargetProps["targetAt"];
 }) {
-    const { shiftName, startTime, endTime } = targetShift;
+    const { isCollectMoney, shiftName, startTime, endTime } = targetShift;
 
     //** States */
-    const [isCollect, setIsCollect] = useState(false);
+    const [isCollect, setIsCollect] = useState(isCollectMoney);
 
     //** Queries */
     const { isLoading: isInvoiceLoading, getInvoice } = useInvoice();
@@ -45,7 +45,7 @@ export default function TargetShiftItem({
             <div className="h-full space-y-2">
                 {targetShift.isTarget && (
                     <IsTarget
-                        data={targetShift}
+                        targetShift={targetShift}
                         targetAt={targetAt}
                         getInvoice={getInvoice}
                         updateTargetShift={updateTargetShift}

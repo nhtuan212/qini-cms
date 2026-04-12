@@ -14,5 +14,6 @@ export interface TargetShiftProps {
     endTime: string;
     kiotId: string | null;
     isTarget: boolean;
+    isCollectMoney: boolean;
     timeSheets: TimesheetData[];
 }

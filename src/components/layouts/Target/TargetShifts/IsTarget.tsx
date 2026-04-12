@@ -18,7 +18,7 @@ import { ROLE, TEXT } from "@/constants";
 import { TargetProps, TargetShiftProps } from "@/types";
 
 interface IsTargetProps {
-    data: TargetShiftProps;
+    targetShift: TargetShiftProps;
     targetAt: TargetProps["targetAt"];
     getInvoice: any;
     updateTargetShift: any;
@@ -26,16 +26,28 @@ interface IsTargetProps {
 }
 
 export default function IsTarget({
-    data,
+    targetShift,
     targetAt,
     getInvoice,
     updateTargetShift,
     handleCollectMoney,
 }: IsTargetProps) {
-    const { shiftName, startTime, endTime, revenue, transfer, point, cash, description } = data;
+    const {
+        id,
+        kiotId,
+        shiftName,
+        startTime,
+        endTime,
+        revenue,
+        transfer,
+        point,
+        cash,
+        description,
+        isCollectMoney,
+    } = targetShift;
 
     //** States */
-    const [isCollect, setIsCollect] = useState(false);
+    const [isCollect, setIsCollect] = useState(isCollectMoney);
 
     //** Stores */
     const { profile } = useProfileStore();
@@ -68,16 +80,16 @@ export default function IsTarget({
         return now >= startWindow && now <= endWindow;
     };
 
-    const handleSyncInvoice = async (targetShift: TargetShiftProps) => {
-        if (!targetShift.kiotId) return;
+    const handleSyncInvoice = async () => {
+        if (!kiotId) return;
 
         const invoices = await getInvoice({
-            soldById: targetShift.kiotId,
+            soldById: kiotId,
             targetAt: formatDate(targetAt, "YYYY-MM-DD"),
         });
 
         await updateTargetShift({
-            id: targetShift.id,
+            id: id,
             params: invoices,
         });
     };
@@ -87,6 +99,11 @@ export default function IsTarget({
 
         setIsCollect(!isCollect);
         handleCollectMoney(!isCollect);
+
+        updateTargetShift({
+            id,
+            params: { isCollectMoney: !isCollect },
+        });
     };
 
     //** Render */
@@ -126,7 +143,7 @@ export default function IsTarget({
                             getModal({
                                 isOpen: true,
                                 modalHeader: TEXT.UPDATE(shiftName),
-                                modalBody: <TargetShiftModal {...data} />,
+                                modalBody: <TargetShiftModal {...targetShift} />,
                             });
                         }}
                         isDisabled={!isWithinShiftTime(profile?.role, startTime, endTime)}
@@ -138,7 +155,7 @@ export default function IsTarget({
                         size="sm"
                         variant="light"
                         isIconOnly
-                        onPress={() => handleSyncInvoice(data)}
+                        onPress={() => handleSyncInvoice}
                         isDisabled={!isWithinShiftTime(profile?.role, startTime, endTime)}
                     >
                         <ArrowPathIcon className="w-4 h-4 text-gray-400" />
