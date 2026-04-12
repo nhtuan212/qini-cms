@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import TargetShifts from "./TargetShifts";
 import Loading from "@/components/Loading";
 import Button from "@/components/Button";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ArrowTrendingUpIcon, BanknotesIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
 import { formatCurrency, formatDate } from "@/utils";
 import { TEXT } from "@/constants";
@@ -45,11 +45,24 @@ export default function TargetList({
     };
 
     //** Render */
-    const renderTarget = (name: string, value: number) => {
+    const renderTarget = ({
+        name,
+        value,
+        icon,
+        className,
+    }: {
+        name: string;
+        value: number;
+        icon?: React.ReactNode;
+        className?: string;
+    }) => {
         return (
-            <div className="space-y-1 mx-auto">
-                <p className="text-sm text-gray-600">{name}</p>
-                <p className="font-semibold text-gray-900">{formatCurrency(value)}</p>
+            <div className={twMerge("space-y-1", className)}>
+                <p className="flex items-center gap-x-1 text-black">
+                    {icon}
+                    <span className="text-sm">{name}</span>
+                </p>
+                <p className="font-semibold">{formatCurrency(value)}</p>
             </div>
         );
     };
@@ -64,7 +77,7 @@ export default function TargetList({
                     ref={el => {
                         targetRefs.current[target.id] = el;
                     }}
-                    className="relative flex flex-col gap-y-4 bg-white px-2 py-4 rounded-xl shadow-md odd:bg-gray-50"
+                    className="relative flex flex-col gap-y-2 bg-white px-2 py-4 border rounded-xl shadow-md odd:bg-gray-50"
                 >
                     <div
                         className="grid sm:grid-cols-2 gap-2 cursor-pointer"
@@ -91,10 +104,25 @@ export default function TargetList({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-2 text-gray-600">
-                            {renderTarget(TEXT.REVENUE, target.revenue)}
-                            {renderTarget(TEXT.TRANSFER, target.transfer)}
-                            {renderTarget(TEXT.CASH, target.cash)}
+                        <div className="grid sm:grid-cols-3 grid-cols-2 gap-2 uppercase">
+                            {renderTarget({
+                                name: TEXT.REVENUE,
+                                value: target.revenue,
+                                icon: <ArrowTrendingUpIcon className="w-4 h-4" />,
+                                className: "text-primary",
+                            })}
+                            {renderTarget({
+                                name: TEXT.TRANSFER,
+                                value: target.transfer,
+                                icon: <BanknotesIcon className="w-4 h-4" />,
+                                className: "text-secondary",
+                            })}
+                            {renderTarget({
+                                name: TEXT.CASH,
+                                value: target.cash,
+                                icon: <BanknotesIcon className="w-4 h-4" />,
+                                className: "sm:col-span-1 col-span-2 text-success",
+                            })}
                         </div>
                     </div>
 
