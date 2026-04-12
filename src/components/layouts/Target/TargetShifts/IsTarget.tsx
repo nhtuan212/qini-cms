@@ -155,7 +155,7 @@ export default function IsTarget({
                         size="sm"
                         variant="light"
                         isIconOnly
-                        onPress={() => handleSyncInvoice}
+                        onPress={handleSyncInvoice}
                         isDisabled={!isWithinShiftTime(profile?.role, startTime, endTime)}
                     >
                         <ArrowPathIcon className="w-4 h-4 text-gray-400" />
