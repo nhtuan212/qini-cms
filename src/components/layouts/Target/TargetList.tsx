@@ -29,9 +29,16 @@ export default function TargetList({
         // Scroll to the target div when opening
         if (newOpenTargetId && targetRefs.current[targetId]) {
             setTimeout(() => {
-                targetRefs.current[targetId]?.scrollIntoView({
+                const element = targetRefs.current[targetId];
+                if (!element) return;
+
+                // Calculate menu height on the top
+                const elementTop = element.getBoundingClientRect().top + window.scrollY;
+                const offset = 65 + 16;
+
+                window.scrollTo({
+                    top: elementTop - offset,
                     behavior: "smooth",
-                    block: "start",
                 });
             }, 100); // Small delay to ensure the content is rendered
         }

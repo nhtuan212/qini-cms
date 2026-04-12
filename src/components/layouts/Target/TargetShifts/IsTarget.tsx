@@ -130,37 +130,34 @@ export default function IsTarget({
 
     return (
         <>
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-end gap-x-2">
                 <span className="font-bold text-blue-600">{formatCurrency(revenue)}</span>
 
-                <div>
-                    <Button
-                        size="sm"
-                        variant="light"
-                        color="default"
-                        isIconOnly
-                        onPress={() => {
-                            getModal({
-                                isOpen: true,
-                                modalHeader: TEXT.UPDATE(shiftName),
-                                modalBody: <TargetShiftModal {...targetShift} />,
-                            });
-                        }}
-                        isDisabled={!isWithinShiftTime(profile?.role, startTime, endTime)}
-                    >
-                        <PencilSquareIcon className="w-4 h-4 text-gray-400" />
-                    </Button>
+                <Button
+                    size="sm"
+                    color="secondary"
+                    isIconOnly
+                    onPress={() => {
+                        getModal({
+                            isOpen: true,
+                            modalHeader: TEXT.UPDATE(shiftName),
+                            modalBody: <TargetShiftModal {...targetShift} />,
+                        });
+                    }}
+                    isDisabled={!isWithinShiftTime(profile?.role, startTime, endTime)}
+                >
+                    <PencilSquareIcon className="w-4 h-4" />
+                </Button>
 
-                    <Button
-                        size="sm"
-                        variant="light"
-                        isIconOnly
-                        onPress={handleSyncInvoice}
-                        isDisabled={!isWithinShiftTime(profile?.role, startTime, endTime)}
-                    >
-                        <ArrowPathIcon className="w-4 h-4 text-gray-400" />
-                    </Button>
-                </div>
+                <Button
+                    size="sm"
+                    color="primary"
+                    isIconOnly
+                    onPress={handleSyncInvoice}
+                    isDisabled={!isWithinShiftTime(profile?.role, startTime, endTime)}
+                >
+                    <ArrowPathIcon className="w-4 h-4" />
+                </Button>
             </div>
 
             {renderAmount(TEXT.TRANSFER, transfer, <CreditCardIcon className="w-4 h-4" />)}
