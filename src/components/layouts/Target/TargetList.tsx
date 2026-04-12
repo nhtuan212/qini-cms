@@ -87,7 +87,6 @@ export default function TargetList({
                         <div className="grid grid-cols-3 gap-2 text-gray-600">
                             {renderTarget(TEXT.REVENUE, target.revenue)}
                             {renderTarget(TEXT.TRANSFER, target.transfer)}
-                            {/* {renderTarget(TEXT.DEDUCTION, target.deduction)} */}
                             {renderTarget(TEXT.CASH, target.cash)}
                         </div>
                     </div>

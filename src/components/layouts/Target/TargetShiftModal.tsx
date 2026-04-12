@@ -10,19 +10,11 @@ import { TargetShiftProps } from "@/types";
 
 type TargetShiftForm = Pick<
     TargetShiftProps,
-    "revenue" | "transfer" | "point" | "deduction" | "cash" | "description"
+    "revenue" | "transfer" | "point" | "cash" | "description"
 >;
 
 export default function TargetShiftModal(props: TargetShiftProps) {
-    const {
-        id,
-        revenue = 0,
-        transfer = 0,
-        point = 0,
-        deduction = 0,
-        cash = 0,
-        description = "",
-    } = props;
+    const { id, revenue = 0, transfer = 0, point = 0, cash = 0, description = "" } = props;
 
     //** Stores */
     const { getModal } = useModalStore();
@@ -35,7 +27,6 @@ export default function TargetShiftModal(props: TargetShiftProps) {
         revenue,
         transfer,
         point,
-        deduction,
         cash,
         description,
     };
@@ -43,15 +34,13 @@ export default function TargetShiftModal(props: TargetShiftProps) {
     const {
         control,
         handleSubmit,
-        getValues,
         setValue,
-        clearErrors,
         formState: { errors },
     } = useForm<TargetShiftForm>({ values: defaultValues });
 
     const watchedValues = useWatch({
         control,
-        name: ["revenue", "transfer", "point", "deduction"],
+        name: ["revenue", "transfer", "point"],
     });
 
     //** Functions */
@@ -71,9 +60,8 @@ export default function TargetShiftModal(props: TargetShiftProps) {
         const r = watchedValues[0];
         const t = watchedValues[1];
         const p = watchedValues[2];
-        const d = watchedValues[3];
 
-        setValue("cash", r - t - p - d);
+        setValue("cash", r - t - p);
     }, [watchedValues, setValue]);
 
     //** Render */
@@ -128,30 +116,10 @@ export default function TargetShiftModal(props: TargetShiftProps) {
 
                 <Controller
                     control={control}
-                    name="deduction"
-                    render={({ field }) => (
-                        <NumberInput
-                            label={TEXT.DEDUCTION}
-                            minValue={0}
-                            defaultValue={0}
-                            value={field.value || 0}
-                            onValueChange={(value: any) => {
-                                field.onChange(value);
-
-                                if (!value) {
-                                    setValue("cash", 0);
-                                    clearErrors("description");
-                                }
-                            }}
-                        />
-                    )}
-                />
-
-                <Controller
-                    control={control}
                     name="cash"
                     render={({ field }) => (
                         <NumberInput
+                            className="col-span-2"
                             label={TEXT.CASH}
                             minValue={0}
                             defaultValue={0}
@@ -164,14 +132,6 @@ export default function TargetShiftModal(props: TargetShiftProps) {
                 <Controller
                     control={control}
                     name="description"
-                    rules={{
-                        validate: value => {
-                            if (!value && getValues("deduction") > 0) {
-                                return TEXT.NOTE_HAVE_DEDUCTION;
-                            }
-                            return true;
-                        },
-                    }}
                     render={({ field }) => (
                         <Input
                             className="col-span-2"

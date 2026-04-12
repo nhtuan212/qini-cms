@@ -36,6 +36,7 @@ export default function TargetShiftItem({
             )}
         >
             {(isLoading || isInvoiceLoading) && <Loading />}
+
             <div className="grid grid-cols-2 justify-between items-center">
                 <h5 className="sm:text-base text-sm font-semibold text-gray-900">
                     {`${shiftName} (${startTime} - ${endTime})`}

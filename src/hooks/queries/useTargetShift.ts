@@ -6,10 +6,7 @@ import { TargetProps, TargetShiftProps } from "@/types";
 
 interface UpdateTargetShiftProps {
     id: TargetShiftProps["id"];
-    params: Pick<
-        TargetShiftProps,
-        "revenue" | "transfer" | "point" | "deduction" | "cash" | "description"
-    >;
+    params: Pick<TargetShiftProps, "revenue" | "transfer" | "point" | "cash" | "description">;
 }
 
 export const useTargetShift = () => {
@@ -28,7 +25,6 @@ export const useTargetShift = () => {
                               revenue: res.revenue,
                               transfer: res.transfer,
                               cash: res.cash,
-                              deduction: res.deduction,
                               description: res.description,
                           }
                         : tgs;

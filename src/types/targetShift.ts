@@ -7,7 +7,6 @@ export interface TargetShiftProps {
     cash: number;
     transfer: number;
     point: number;
-    deduction: number;
     description: string;
     shiftName: string;
     startTime: string;
