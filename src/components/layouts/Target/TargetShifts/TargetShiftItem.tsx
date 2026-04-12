@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import IsTarget from "./IsTarget";
 import TimeSheets from "../TimeSheets";
 import Loading from "@/components/Loading";
+import Chip from "@/components/Chip";
+import { BanknotesIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
-import { TargetProps, TargetShiftProps } from "@/types";
 import { useInvoice, useTargetShift } from "@/hooks";
+import { TEXT } from "@/constants";
+import { TargetProps, TargetShiftProps } from "@/types";
 
 export default function TargetShiftItem({
     targetShift,
@@ -37,10 +40,16 @@ export default function TargetShiftItem({
         >
             {(isLoading || isInvoiceLoading) && <Loading />}
 
-            <div className="grid grid-cols-2 justify-between items-center">
+            <div className="flex justify-between items-center">
                 <h5 className="sm:text-base text-sm font-semibold text-gray-900">
                     {`${shiftName} (${startTime} - ${endTime})`}
                 </h5>
+                <Chip
+                    color={isCollect ? "success" : "default"}
+                    startContent={<BanknotesIcon className="w-4 h-4" />}
+                >
+                    {isCollect ? TEXT.SUCCESS : TEXT.PENDING}
+                </Chip>
             </div>
 
             <div className="h-full space-y-2">
