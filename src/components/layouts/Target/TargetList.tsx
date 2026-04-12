@@ -40,11 +40,9 @@ export default function TargetList({
     //** Render */
     const renderTarget = (name: string, value: number) => {
         return (
-            <div className="flex-1 flex items-center gap-x-2">
-                <div className="flex flex-col gap-y-1">
-                    <p className="text-sm text-gray-600">{name}</p>
-                    <p className="text-lg font-semibold text-gray-900">{formatCurrency(value)}</p>
-                </div>
+            <div className="space-y-1 mx-auto">
+                <p className="text-sm text-gray-600">{name}</p>
+                <p className="font-semibold text-gray-900">{formatCurrency(value)}</p>
             </div>
         );
     };
@@ -59,37 +57,38 @@ export default function TargetList({
                     ref={el => {
                         targetRefs.current[target.id] = el;
                     }}
-                    className="relative flex flex-col gap-y-6 bg-white p-6 rounded-xl shadow-md odd:bg-gray-100"
+                    className="relative flex flex-col gap-y-4 bg-white px-2 py-4 rounded-xl shadow-md odd:bg-gray-50"
                 >
-                    <div className="flex items-center gap-x-2">
-                        <Button
-                            size="sm"
-                            variant="light"
-                            color="default"
-                            isIconOnly
-                            onPress={() => handleToggleTarget(target.id)}
-                        >
-                            <ChevronRightIcon
-                                className={twMerge(
-                                    "w-5 h-5 transition-all duration-300",
-                                    openTargetId === target.id && "rotate-90",
-                                )}
-                            />
-                        </Button>
-
+                    <div
+                        className="grid sm:grid-cols-2 gap-2 cursor-pointer"
+                        onClick={() => handleToggleTarget(target.id)}
+                    >
                         <div className="flex items-center justify-between w-full">
-                            <div className="flex-1">
-                                <div key={target.id} className="flex items-center gap-x-2">
-                                    <h3 className="text-lg font-semibold text-gray-900">{`${target.name} ngày ${formatDate(target.targetAt)}`}</h3>
-                                </div>
+                            <Button
+                                size="sm"
+                                variant="light"
+                                color="default"
+                                isIconOnly
+                                onPress={() => handleToggleTarget(target.id)}
+                            >
+                                <ChevronRightIcon
+                                    className={twMerge(
+                                        "w-5 h-5 transition-all duration-300",
+                                        openTargetId === target.id && "rotate-90",
+                                    )}
+                                />
+                            </Button>
 
-                                <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-y-2 gap-x-6 mt-2 text-gray-600">
-                                    {renderTarget(TEXT.REVENUE, target.revenue)}
-                                    {renderTarget(TEXT.TRANSFER, target.transfer)}
-                                    {renderTarget(TEXT.DEDUCTION, target.deduction)}
-                                    {renderTarget(TEXT.CASH, target.cash)}
-                                </div>
+                            <div key={target.id} className="flex-1">
+                                <h3 className="text-base font-semibold text-gray-900">{`${target.name} ngày ${formatDate(target.targetAt)}`}</h3>
                             </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2 text-gray-600">
+                            {renderTarget(TEXT.REVENUE, target.revenue)}
+                            {renderTarget(TEXT.TRANSFER, target.transfer)}
+                            {/* {renderTarget(TEXT.DEDUCTION, target.deduction)} */}
+                            {renderTarget(TEXT.CASH, target.cash)}
                         </div>
                     </div>
 
