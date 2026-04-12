@@ -4,6 +4,7 @@ import Loading from "@/components/Loading";
 import Button from "@/components/Button";
 import { ArrowTrendingUpIcon, BanknotesIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
+import { AnimatePresence, motion } from "framer-motion";
 import { formatCurrency, formatDate } from "@/utils";
 import { TEXT } from "@/constants";
 import { TargetProps } from "@/types";
@@ -126,7 +127,18 @@ export default function TargetList({
                         </div>
                     </div>
 
-                    {openTargetId === target.id && <TargetShifts target={target} />}
+                    <AnimatePresence>
+                        {openTargetId === target.id && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                <TargetShifts target={target} />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             ))}
         </div>

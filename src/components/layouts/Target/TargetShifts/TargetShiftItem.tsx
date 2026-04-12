@@ -5,6 +5,7 @@ import Loading from "@/components/Loading";
 import Chip from "@/components/Chip";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
+import { motion } from "framer-motion";
 import { useInvoice, useTargetShift } from "@/hooks";
 import { TEXT } from "@/constants";
 import { TargetProps, TargetShiftProps } from "@/types";
@@ -32,7 +33,10 @@ export default function TargetShiftItem({
 
     //** Render */
     return (
-        <div
+        <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
             className={twMerge(
                 "relative flex flex-col justify-between gap-2 p-2 border border-gray-200 rounded-lg shadow-md",
                 isCollect && "bg-success-50",
@@ -69,6 +73,6 @@ export default function TargetShiftItem({
                 targetShift={targetShift}
                 timeSheets={targetShift.timeSheets}
             />
-        </div>
+        </motion.div>
     );
 }
