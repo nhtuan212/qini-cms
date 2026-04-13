@@ -1,13 +1,10 @@
-import { useState } from "react";
 import IsTarget from "./IsTarget";
 import TimeSheets from "../TimeSheets";
 import Loading from "@/components/Loading";
-import Chip from "@/components/Chip";
-import { BanknotesIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
 import { motion } from "framer-motion";
+import { useCollectMoneyStore } from "@/stores/useCollectMoneyStore";
 import { useInvoice, useTargetShift } from "@/hooks";
-import { TEXT } from "@/constants";
 import { TargetProps, TargetShiftProps } from "@/types";
 
 export default function TargetShiftItem({
@@ -17,10 +14,10 @@ export default function TargetShiftItem({
     targetShift: TargetShiftProps;
     targetAt: TargetProps["targetAt"];
 }) {
-    const { isCollectMoney, shiftName, startTime, endTime } = targetShift;
+    const { id, shiftName, startTime, endTime } = targetShift;
 
-    //** States */
-    const [isCollect, setIsCollect] = useState(isCollectMoney);
+    //** Stores */
+    const { setCollectMoney, isCollected } = useCollectMoneyStore();
 
     //** Queries */
     const { isLoading: isInvoiceLoading, getInvoice } = useInvoice();
@@ -28,8 +25,11 @@ export default function TargetShiftItem({
 
     //** Functions */
     const handleCollectMoney = (status: boolean) => {
-        setIsCollect(status);
+        setCollectMoney(id, status);
     };
+
+    //** Variables */
+    const isCollect = isCollected(id);
 
     //** Render */
     return (
@@ -44,17 +44,9 @@ export default function TargetShiftItem({
         >
             {(isLoading || isInvoiceLoading) && <Loading />}
 
-            <div className="flex justify-between items-center">
-                <h5 className="sm:text-base text-sm font-semibold text-gray-900">
-                    {`${shiftName} (${startTime} - ${endTime})`}
-                </h5>
-                <Chip
-                    color={isCollect ? "success" : "default"}
-                    startContent={<BanknotesIcon className="w-4 h-4" />}
-                >
-                    {isCollect ? TEXT.SUCCESS : TEXT.PENDING}
-                </Chip>
-            </div>
+            <h5 className="sm:text-base text-sm font-semibold text-gray-900">
+                {`${shiftName} (${startTime} - ${endTime})`}
+            </h5>
 
             <div className="h-full space-y-2">
                 {targetShift.isTarget && (
@@ -63,6 +55,7 @@ export default function TargetShiftItem({
                         targetAt={targetAt}
                         getInvoice={getInvoice}
                         updateTargetShift={updateTargetShift}
+                        isCollect={isCollect}
                         handleCollectMoney={handleCollectMoney}
                     />
                 )}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import TargetShiftModal from "../TargetShiftModal";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
@@ -22,6 +22,7 @@ interface IsTargetProps {
     targetAt: TargetProps["targetAt"];
     getInvoice: any;
     updateTargetShift: any;
+    isCollect: boolean;
     handleCollectMoney: (status: boolean) => void;
 }
 
@@ -30,6 +31,7 @@ export default function IsTarget({
     targetAt,
     getInvoice,
     updateTargetShift,
+    isCollect,
     handleCollectMoney,
 }: IsTargetProps) {
     const {
@@ -43,11 +45,7 @@ export default function IsTarget({
         point,
         cash,
         description,
-        isCollectMoney,
     } = targetShift;
-
-    //** States */
-    const [isCollect, setIsCollect] = useState(isCollectMoney);
 
     //** Stores */
     const { profile } = useProfileStore();
@@ -97,7 +95,6 @@ export default function IsTarget({
     const handleToggleCollectMoney = () => {
         if (!isAdmin) return true;
 
-        setIsCollect(!isCollect);
         handleCollectMoney(!isCollect);
 
         updateTargetShift({
@@ -131,6 +128,24 @@ export default function IsTarget({
     return (
         <>
             <div className="flex items-center justify-end gap-x-2">
+                <Button
+                    className={twMerge("mr-auto", !isCollect ? "bg-black" : "")}
+                    size="sm"
+                    color={isCollect ? "success" : "primary"}
+                    startContent={
+                        isCollect ? (
+                            <CheckIcon className="w-4 h-4" />
+                        ) : (
+                            <StopIcon className="w-4 h-4" />
+                        )
+                    }
+                    endContent={<BanknotesIcon className="w-4 h-4" />}
+                    onPress={handleToggleCollectMoney}
+                    isDisabled={!isAdmin}
+                >
+                    {TEXT.COLLECT_MONEY}
+                </Button>
+
                 <span className="font-bold text-blue-600">{formatCurrency(revenue)}</span>
 
                 <Button
@@ -172,19 +187,6 @@ export default function IsTarget({
             {description && (
                 <Input label={TEXT.NOTE} type="textarea" value={description} isReadOnly />
             )}
-
-            <Button
-                className={!isCollect ? "bg-black" : ""}
-                color={isCollect ? "success" : "primary"}
-                fullWidth
-                startContent={
-                    isCollect ? <CheckIcon className="w-4 h-4" /> : <StopIcon className="w-4 h-4" />
-                }
-                onPress={handleToggleCollectMoney}
-                isDisabled={!isAdmin}
-            >
-                {TEXT.COLLECT_MONEY}
-            </Button>
         </>
     );
 }
