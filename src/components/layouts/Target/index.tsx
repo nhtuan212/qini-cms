@@ -31,13 +31,6 @@ export default function Target() {
     //** Variables */
     const currentTargets = useMemo(() => {
         if (targetFilterTab === REVENUE_STATUS.UN_COLLECTED) {
-            console.log({
-                targetFilterTab,
-                targets,
-                filter: targets.filter(tg =>
-                    tg.targetShifts.some(shift => shift.isTarget && !shift.isCollectMoney),
-                ),
-            });
             return targets.filter(tg =>
                 tg.targetShifts.some(shift => shift.isTarget && !shift.isCollectMoney),
             );
