@@ -39,12 +39,17 @@ export default function TargetTotal({
         value: number;
         className?: string;
     }) => (
-        <div className={twMerge("space-y-2 px-8 py-6 text-white rounded-md shadow-xl", className)}>
-            <div className="flex items-center gap-x-2 font-semibold uppercase">
+        <div
+            className={twMerge(
+                "h-full flex flex-col justify-between space-y-2 p-4 text-white rounded-md shadow-xl",
+                className,
+            )}
+        >
+            <div className="h-full flex items-center gap-x-2 font-semibold uppercase">
                 {icon} {title}
             </div>
 
-            <h3 className="font-bold text-2xl">{formatCurrency(value)}</h3>
+            <h3 className="font-bold sm:text-xl">{formatCurrency(value)}</h3>
         </div>
     );
 
@@ -58,25 +63,25 @@ export default function TargetTotal({
             <div className="grid md:grid-cols-4 grid-cols-2 items-center gap-4">
                 {renderTotal({
                     title: TEXT.REVENUE,
-                    icon: <ArrowTrendingUpIcon className="w-6 h-6" />,
+                    icon: <ArrowTrendingUpIcon className="w-5 h-5" />,
                     value: total.revenue,
                     className: "bg-primary",
                 })}
                 {renderTotal({
                     title: TEXT.TRANSFER,
-                    icon: <BanknotesIcon className="w-6 h-6" />,
+                    icon: <BanknotesIcon className="w-5 h-5" />,
                     value: total.transfer,
                     className: "bg-secondary",
                 })}
                 {renderTotal({
                     title: TEXT.CASH,
-                    icon: <BanknotesIcon className="w-6 h-6" />,
+                    icon: <BanknotesIcon className="w-5 h-5" />,
                     value: total.cash,
                     className: "bg-success-600",
                 })}
                 {renderTotal({
                     title: `${TEXT.CASH} ${TEXT.UNCOLLECTED}`,
-                    icon: <MinusCircleIcon className="w-6 h-6" />,
+                    icon: <MinusCircleIcon className="w-5 h-5" />,
                     value: total.uncollectedCash,
                     className: "bg-danger",
                 })}
