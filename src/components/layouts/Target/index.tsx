@@ -33,9 +33,14 @@ export default function Target() {
         if (targetFilterTab === REVENUE_STATUS.UN_COLLECTED) {
             console.log({
                 targetFilterTab,
-                filter: targets.filter(tg => tg.targetShifts.some(shift => !shift.isCollectMoney)),
+                targets,
+                filter: targets.filter(tg =>
+                    tg.targetShifts.some(shift => shift.isTarget && !shift.isCollectMoney),
+                ),
             });
-            return targets.filter(tg => tg.targetShifts.some(shift => !shift.isCollectMoney));
+            return targets.filter(tg =>
+                tg.targetShifts.some(shift => shift.isTarget && !shift.isCollectMoney),
+            );
         }
 
         return targets;

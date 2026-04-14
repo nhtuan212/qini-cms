@@ -2,7 +2,7 @@ import React, { Key, useMemo } from "react";
 import { Tab, Tabs } from "@/components/Tab";
 import { ArrowTrendingUpIcon, BanknotesIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
-import { TEXT } from "@/constants";
+import { REVENUE_STATUS, TEXT } from "@/constants";
 import { TargetProps } from "@/types";
 import { formatCurrency } from "@/utils";
 
@@ -22,7 +22,7 @@ export default function TargetTotal({
             transfer: targets.reduce((acc, curr) => acc + curr.transfer, 0),
             cash: targets.reduce((acc, curr) => acc + curr.cash, 0),
             uncollectedCash: targetShifts
-                .filter(shift => !shift.isCollectMoney)
+                .filter(shift => shift.isTarget && !shift.isCollectMoney)
                 .reduce((acc, curr) => acc + curr.cash, 0),
         };
     }, [targets]);
@@ -51,8 +51,8 @@ export default function TargetTotal({
     return (
         <div className="flex flex-col gap-y-4">
             <Tabs className="ml-auto" onSelectionChange={setTargetFilterTab}>
-                <Tab key="all" title={TEXT.ALL}></Tab>
-                <Tab key="unCollected" title={TEXT.UNCOLLECTED}></Tab>
+                <Tab key={REVENUE_STATUS.ALL} title={TEXT.ALL}></Tab>
+                <Tab key={REVENUE_STATUS.UN_COLLECTED} title={TEXT.UNCOLLECTED}></Tab>
             </Tabs>
 
             <div className="grid md:grid-cols-4 grid-cols-2 items-center gap-4">
