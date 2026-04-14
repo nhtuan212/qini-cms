@@ -93,25 +93,6 @@ export const isEmpty = (data: Array<string | number> | object) => {
 };
 
 /**
- * Creates a debounced function that delays the invocation of the provided function until after a specified wait time has elapsed since the last time the debounced function was invoked.
- *
- * @param func - The function to debounce.
- * @param wait - The number of milliseconds to delay; defaults to 300 milliseconds.
- * @returns A debounced function that delays the invocation of `func`.
- */
-export const debounce = (func: (...args: any[]) => void, wait = 1000) => {
-    let timeout: any;
-
-    return (...args: any) => {
-        clearTimeout(timeout);
-
-        timeout = setTimeout(() => {
-            func.apply(this, args);
-        }, wait);
-    };
-};
-
-/**
  * Breaks a string into multiple lines of a specified length.
  *
  * @param str - The string to break into lines.
@@ -165,19 +146,15 @@ const toCamelCase = (str: string) => {
     });
 };
 
-const toSnakeCase = (str: string) => str.replace(/([A-Z])/g, "_$1").toLowerCase();
-
-export const convertKeysToCamelCase = (obj: {
-    [key: string]: any;
-}): Array<{ [key: string]: any }> | { [key: string]: any } => {
+export const convertKeysToCamelCase = <T = any>(obj: { [key: string]: any }): T => {
     if (Array.isArray(obj)) {
-        return obj.map(item => convertKeysToCamelCase(item));
+        return obj.map(item => convertKeysToCamelCase(item)) as unknown as T;
     } else if (typeof obj === "object" && obj !== null) {
         const newObj: { [key: string]: any } = {};
         for (const key in obj) {
             newObj[toCamelCase(key)] = convertKeysToCamelCase((obj as { [key: string]: any })[key]);
         }
-        return newObj;
+        return newObj as unknown as T;
     } else {
         return obj;
     }
@@ -212,20 +189,6 @@ export const parseTimeString = (timeString: string) => {
     return new Time(Number(hours), Number(minutes));
 };
 
-export const snakeCaseQueryString = (
-    params: URLSearchParams | Record<string, any>,
-    prefix: "?" | "&" = "?",
-): string => {
-    const entries =
-        params instanceof URLSearchParams ? Object.fromEntries(params.entries()) : params;
-
-    const snakeEntries = Object.entries(entries).map(([key, value]) => [toSnakeCase(key), value]);
-
-    const queryString = new URLSearchParams(snakeEntries).toString();
-
-    return queryString ? `${prefix}${queryString}` : "";
-};
-
 export const camelCaseQueryString = (
     params: URLSearchParams | Record<string, any>,
     prefix: "?" | "&" = "?",
@@ -256,10 +219,19 @@ export const formatTime = (time?: string, includeSeconds: boolean = false) => {
 };
 
 /**
- * Calculates working hours between check-in and check-out times, rounding times as follows:
- * - Minutes 00-15: round down to hour
- * - Minutes 16-50: round to half hour
- * - Minutes 56-59: round up to next hour
+ * Calculates working hours between check-in and check-out times.
+ *
+ * Rounding rules for CheckIn:
+ * - Minutes 00-10: round to current hour (e.g., 10:10 → 10:00)
+ * - Minutes 11-30: round to half hour (e.g., 10:25 → 10:30)
+ * - Minutes 31-40: round to half hour (e.g., 10:40 → 10:30)
+ * - Minutes 41-50: round to next hour (e.g., 10:41 → 11:00)
+ *
+ * Rounding rules for CheckOut:
+ * - Minutes 00-20: round to current hour (e.g., 10:15 → 10:00)
+ * - Minutes 21-30: round to half hour (e.g., 10:25 → 10:30)
+ * - Minutes 31-50: round to half hour (e.g., 10:45 → 10:30)
+ * - Minutes 51-60: round to next hour (e.g., 10:55 → 11:00)
  *
  * @param checkIn - Check-in time as string (e.g., "17:00")
  * @param checkOut - Check-out time as string (e.g., "18:00")
@@ -268,24 +240,46 @@ export const formatTime = (time?: string, includeSeconds: boolean = false) => {
 export const calculateWorkingHours = (checkIn: string | null, checkOut: string | null): number => {
     if (!checkIn || !checkOut) return 0;
 
-    const roundTime = (time: string): number => {
+    const roundCheckIn = (time: string): number => {
         const [hourStr, minStr] = time.split(":");
         const hour = Number(hourStr);
         const min = Number(minStr);
 
-        if (min <= 15) return hour;
+        if (min <= 10) return hour;
+        if (min <= 40) return hour + 0.5;
+        return hour + 1;
+    };
+
+    const roundCheckOut = (time: string): number => {
+        const [hourStr, minStr] = time.split(":");
+        const hour = Number(hourStr);
+        const min = Number(minStr);
+
+        if (min <= 20) return hour;
         if (min <= 50) return hour + 0.5;
         return hour + 1;
     };
 
-    const roundedCheckIn = roundTime(checkIn);
-    const roundedCheckOut = roundTime(checkOut);
+    const roundedCheckIn = roundCheckIn(checkIn);
+    const roundedCheckOut = roundCheckOut(checkOut);
 
-    if (roundedCheckIn > roundedCheckOut) return 0;
+    const workingHours = roundedCheckOut - roundedCheckIn;
 
-    let workingHours = roundedCheckOut - roundedCheckIn;
-    if (workingHours < 0) workingHours = 0;
-    return workingHours;
+    return workingHours > 0 ? workingHours : 0;
+};
+
+export const buildParamUrl = (baseUrl: string, params?: object) => {
+    if (!params) return baseUrl;
+
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+            searchParams.append(key, String(value));
+        }
+    });
+
+    const query = searchParams.toString();
+    return query ? `${baseUrl}?${query}` : baseUrl;
 };
 
 // Time Zone
@@ -296,6 +290,9 @@ export {
     subtractDaysFromVietnamDate,
     convertToVietnamTimezone,
 } from "./timeZone";
+
+// Shift active
+export { isShiftActive } from "./shiftActive";
 
 // Crypto
 export { encryptPasswordRSA, generateRSAKeyPair } from "./crypto";

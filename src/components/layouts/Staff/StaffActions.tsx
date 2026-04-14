@@ -13,19 +13,21 @@ import {
     TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
 import { useModalStore } from "@/stores/useModalStore";
+import { useStaff } from "@/hooks";
 import { ROLE, TEXT } from "@/constants";
-import { ModalActionProps } from "@/lib/types";
+import { ModalActionProps, StaffProps } from "@/types";
 
-export default function StaffActions({ item }: { item: StaffProps }) {
+export default function StaffActions({ staff }: { staff: StaffProps }) {
     //** Destructuring */
-    const { id } = item;
+    const { id } = staff;
 
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { getStaffById, deleteStaff, inActiveStaff } = useStaffStore();
+
+    //** Queries */
+    const { inActiveStaff, deleteStaff } = useStaff();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -40,20 +42,18 @@ export default function StaffActions({ item }: { item: StaffProps }) {
     }
 
     //** Functions */
-    const handleUpdateStaff = async (id: string) => {
-        await getStaffById(id);
-
-        await getModal({
+    const handleUpdateStaff = () => {
+        getModal({
             isOpen: true,
             size: "3xl",
             modalHeader: TEXT.UPDATE_STAFF,
             action: ModalActionProps.UPDATE,
             isDismissable: false,
-            modalBody: <StaffModal />,
+            modalBody: <StaffModal staff={staff} />,
         });
     };
 
-    const handleInActiveStaff = (id: string) => {
+    const handleInActiveStaff = (id: StaffProps["id"]) => {
         getModal({
             isOpen: true,
             action: ModalActionProps.UPDATE,
@@ -69,7 +69,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
         });
     };
 
-    const handleDeleteStaff = (id: string) => {
+    const handleDeleteStaff = (id: StaffProps["id"]) => {
         getModal({
             isOpen: true,
             action: ModalActionProps.UPDATE,
@@ -98,7 +98,7 @@ export default function StaffActions({ item }: { item: StaffProps }) {
                     key="edit"
                     startContent={<PencilSquareIcon className="w-5" />}
                     textValue={TEXT.EDIT}
-                    onPress={() => handleUpdateStaff(id)}
+                    onPress={() => handleUpdateStaff()}
                 >
                     {TEXT.EDIT}
                 </DropdownItem>

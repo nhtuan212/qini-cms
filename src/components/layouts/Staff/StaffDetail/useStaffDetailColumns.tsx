@@ -1,9 +1,6 @@
-"use client";
-
-import React from "react";
 import { TEXT } from "@/constants";
 import { formatCurrency, formatDate } from "@/utils";
-import { TimeSheetProps } from "@/stores/useTimeSheetStore";
+import { TimesheetData } from "@/types";
 
 //** Custom hook */
 export default function useStaffDetailColumns() {
@@ -12,19 +9,19 @@ export default function useStaffDetailColumns() {
             key: "createAt",
             name: TEXT.DATE,
             className: "min-w-24",
-            content: (params: TimeSheetProps) => formatDate(params.row.date),
+            content: (params: { row: TimesheetData }) => formatDate(params.row.date),
         },
         {
             key: "shiftName",
             name: TEXT.WORK_SHIFT,
             className: "min-w-20",
-            content: (params: TimeSheetProps) => params.row.shiftName,
+            content: (params: { row: TimesheetData }) => params.row.shiftName,
         },
         {
             key: "timeSheet",
             name: TEXT.WORKING_HOURS,
             className: "min-w-28",
-            content: (params: TimeSheetProps) => {
+            content: (params: { row: TimesheetData }) => {
                 return (
                     <div className="w-full flex gap-2">
                         <div className="basis-1/2">{params.row.checkIn}</div>
@@ -38,12 +35,12 @@ export default function useStaffDetailColumns() {
             key: "timeNumber",
             name: TEXT.TIME_NUMBER,
             className: "min-w-20",
-            content: (params: TimeSheetProps) => params.row.workingHours,
+            content: (params: { row: TimesheetData }) => params.row.workingHours,
         },
         {
             key: "target",
             name: TEXT.TARGET,
-            content: (params: TimeSheetProps) => formatCurrency(params.row.target),
+            content: (params: { row: TimesheetData }) => formatCurrency(params.row.target),
         },
     ];
 

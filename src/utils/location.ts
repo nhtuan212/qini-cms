@@ -23,6 +23,13 @@ export const ALLOWED_LOCATIONS: LocationBounds[] = [
     },
     {
         id: "location-2",
+        name: "My home",
+        lat: 10.837089002164662,
+        lng: 106.76325667621812,
+        radiusMeters: 50,
+    },
+    {
+        id: "location-3",
         name: "CaAdv",
         lat: 10.782565871848758,
         lng: 106.69742843582436,

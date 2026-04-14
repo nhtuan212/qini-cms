@@ -8,7 +8,7 @@ import { Control, Controller, UseFormWatch } from "react-hook-form";
 import { SALARY_TYPE } from "@/apis";
 import { TEXT } from "@/constants";
 import { FormStaffProps } from ".";
-import { SalaryTypeProps } from "@/lib/types";
+import { SalaryTypeProps } from "@/types";
 
 interface StaffConfigSalaryProps {
     control: Control<FormStaffProps>;

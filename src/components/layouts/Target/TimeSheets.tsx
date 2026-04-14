@@ -1,12 +1,11 @@
-import React from "react";
 import TimeSheetModal from "./TimeSheetModal";
 import Button from "@/components/Button";
 import { PencilIcon, PlusIcon, TrashIcon, UserGroupIcon } from "@heroicons/react/24/outline";
-import { TimeSheetProps, useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { TargetShiftProps } from "@/stores/useTargetShiftStore";
 import { useProfileStore } from "@/stores/useProfileStore";
+import { useTimeSheet } from "@/hooks";
 import { ROLE, TEXT } from "@/constants";
+import { TargetShiftProps, TimesheetData } from "@/types";
 
 export default function TimeSheets({
     targetAt,
@@ -15,20 +14,22 @@ export default function TimeSheets({
 }: {
     targetAt: string;
     targetShift: TargetShiftProps;
-    timeSheets: TimeSheetProps;
+    timeSheets: TimesheetData[];
 }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { deleteTimeSheet } = useTimeSheetStore();
+
+    //** Queries */
+    const { deleteTimeSheet } = useTimeSheet();
 
     //** Render */
     return (
-        <div className="mt-4">
-            <h3 className="mb-2 font-semibold text-gray-900">{TEXT.TIME_SHEET}</h3>
+        <>
+            <h4 className="font-semibold text-gray-900">{TEXT.TIME_SHEET}</h4>
 
-            <div className="flex flex-col gap-y-2 mt-3 pt-3 border-t border-gray-200">
-                <div className="flex justify-between items-center">
+            <div className="flex flex-col border-t border-gray-200">
+                <div className="flex justify-between items-center pt-2">
                     <h6 className="flex items-center gap-x-2 mb-2 text-sm font-medium text-gray-700">
                         <UserGroupIcon className="w-4 h-4" />
                         Chấm công ({timeSheets?.length || 0} nhân viên)
@@ -58,14 +59,11 @@ export default function TimeSheets({
                 </div>
 
                 <div className="space-y-2">
-                    {timeSheets.map((timeSheet: TimeSheetProps) => (
+                    {timeSheets.map((timeSheet: TimesheetData) => (
                         <div key={timeSheet.id} className="bg-primary-100 rounded-md p-2">
-                            <div className="flex justify-between items-center text-xs px-3 py-2">
+                            <div className="flex justify-between items-center text-xs">
                                 <div className="font-medium text-gray-800">
                                     {timeSheet.staffName || "Chưa đặt tên"}
-                                    {/* <div className="text-xs text-gray-600">
-                                        {`${TEXT.TARGET}: ${formatCurrency(timeSheet.target)}`}
-                                    </div> */}
                                 </div>
 
                                 <div className="flex items-center gap-x-2">
@@ -102,9 +100,7 @@ export default function TimeSheets({
                                                 color="default"
                                                 isIconOnly
                                                 startContent={<TrashIcon className="w-4 h-4" />}
-                                                onPress={() => {
-                                                    deleteTimeSheet(timeSheet.id);
-                                                }}
+                                                onPress={() => deleteTimeSheet(timeSheet.id)}
                                             />
                                         </div>
                                     )}
@@ -114,6 +110,6 @@ export default function TimeSheets({
                     ))}
                 </div>
             </div>
-        </div>
+        </>
     );
 }

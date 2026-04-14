@@ -1,48 +1,40 @@
-import React from "react";
 import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
 import { Autocomplete, AutocompleteItem } from "@/components/AutoComplete";
 import { TimeInput } from "@/components/Input";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { TargetShiftProps } from "@/stores/useTargetShiftStore";
-import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
-import { TimeSheetProps, useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { twMerge } from "tailwind-merge";
+import { useStaff, useTimeSheet } from "@/hooks";
+import { Controller, useForm } from "react-hook-form";
 import { calculateWorkingHours, isEmpty, parseTimeString } from "@/utils";
 import { TEXT } from "@/constants";
+import { TargetShiftProps, TimesheetData } from "@/types";
 
-type TimeSheetForm = {
-    timeSheets: StaffProps[];
-};
+type TimeSheetForm = Pick<TimesheetData, "staffId" | "checkIn" | "checkOut">;
 
 export default function TimeSheetModal({
     currentTimeSheet,
     targetAt,
     targetShift,
 }: {
-    currentTimeSheet?: TimeSheetProps;
+    currentTimeSheet?: TimesheetData;
     targetAt: string;
     targetShift: TargetShiftProps;
 }) {
     //** Stores */
-    const { staff } = useStaffStore();
     const { getModal } = useModalStore();
-    const { isLoading, createTimeSheet, updateTimeSheet } = useTimeSheetStore();
+
+    //** Queries */
+    const { staffs } = useStaff();
+    const { createTimeSheet, updateTimeSheet } = useTimeSheet();
 
     //** Variables */
     const isUpdate = currentTimeSheet && !isEmpty(currentTimeSheet);
 
     //** React hook form */
     const defaultValues: TimeSheetForm = {
-        timeSheets: [
-            {
-                staffId: isUpdate ? currentTimeSheet?.staffId : "",
-                checkIn: isUpdate ? currentTimeSheet?.checkIn : targetShift.startTime,
-                checkOut: isUpdate ? currentTimeSheet?.checkOut : targetShift.endTime,
-            },
-        ],
+        staffId: isUpdate ? currentTimeSheet?.staffId : "",
+        checkIn: isUpdate ? currentTimeSheet?.checkIn : targetShift.startTime,
+        checkOut: isUpdate ? currentTimeSheet?.checkOut : targetShift.endTime,
     };
 
     const {
@@ -53,26 +45,23 @@ export default function TimeSheetModal({
         formState: { errors },
     } = useForm<TimeSheetForm>({ values: defaultValues });
 
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: "timeSheets",
-    });
-
     const onSubmit = async (data: TimeSheetForm) => {
-        const result = data.timeSheets.map(item => ({
-            staffId: item.staffId,
+        const { staffId, checkIn, checkOut } = data;
+
+        const result = {
+            staffId,
+            checkIn,
+            checkOut,
+            workingHours: calculateWorkingHours(checkIn, checkOut),
             shiftId: targetShift.shiftId,
             targetShiftId: targetShift.id,
-            checkIn: item.checkIn,
-            checkOut: item.checkOut,
-            workingHours: calculateWorkingHours(item.checkIn, item.checkOut),
             date: targetAt,
-        }));
+        };
 
         if (currentTimeSheet) {
             await updateTimeSheet({
                 id: currentTimeSheet.id,
-                bodyParams: result[0],
+                params: result,
             });
         } else {
             await createTimeSheet(result);
@@ -87,189 +76,144 @@ export default function TimeSheetModal({
     return (
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
             <div className="max-h-[90vh] flex flex-col gap-8 overflow-auto">
-                {!isUpdate && (
-                    <div className="flex justify-end">
-                        <Button
-                            onPress={() =>
-                                append({
-                                    staffId: "",
-                                    checkIn: targetShift.startTime,
-                                    checkOut: targetShift.endTime,
-                                })
-                            }
-                        >
-                            {TEXT.ADD_TIME_SHEET}
-                        </Button>
-                    </div>
-                )}
-
-                {fields.map((field, index) => (
-                    <div
-                        key={field.id}
-                        className="relative w-full flex justify-between items-center gap-2"
-                    >
-                        <Controller
-                            name={`timeSheets.${index}.staffId`}
-                            control={control}
-                            rules={{
-                                required: TEXT.IS_REQUIRED,
-                            }}
-                            render={({ field }) => {
-                                return (
-                                    <Autocomplete
-                                        label={TEXT.STAFF}
-                                        defaultSelectedKey={
-                                            currentTimeSheet?.staffId || field.value
-                                        }
-                                        {...field}
-                                        isInvalid={!!errors?.timeSheets?.[index]?.staffId}
-                                        onSelectionChange={field.onChange}
-                                        errorMessage={
-                                            errors?.timeSheets?.[index]?.staffId && (
-                                                <ErrorMessage
-                                                    errors={errors}
-                                                    name={`timeSheets.${index}.staffId`}
-                                                />
-                                            )
-                                        }
-                                    >
-                                        {staff.map(item => (
-                                            <AutocompleteItem key={item.id}>
-                                                {item.name}
-                                            </AutocompleteItem>
-                                        ))}
-                                    </Autocomplete>
-                                );
-                            }}
-                        />
-
-                        <Controller
-                            name={`timeSheets.${index}.checkIn`}
-                            rules={{
-                                required: !isUpdate && TEXT.IS_REQUIRED,
-
-                                validate: (value: string) => {
-                                    const checkOutTime = getValues(`timeSheets.${index}.checkOut`);
-
-                                    if (value && checkOutTime) {
-                                        const [checkInHour, checkInMinute] = value
-                                            .split(":")
-                                            .map(Number);
-                                        const [checkOutHour, checkOutMinute] = checkOutTime
-                                            .split(":")
-                                            .map(Number);
-
-                                        if (
-                                            checkInHour > checkOutHour ||
-                                            (checkInHour === checkOutHour &&
-                                                checkInMinute >= checkOutMinute)
-                                        ) {
-                                            return TEXT.CHECK_OUR_LARGE_THAN_CHECK_IN;
-                                        }
-
-                                        clearErrors(`timeSheets.${index}.checkOut`);
-                                    }
-                                    return true;
-                                },
-                            }}
-                            control={control}
-                            render={({ field }) => (
-                                <TimeInput
-                                    label={TEXT.CHECK_IN}
-                                    value={parseTimeString(field.value)}
-                                    onChange={(e: any) => {
-                                        if (!e) return;
-
-                                        const timeString = `${e.hour}:${e.minute}`;
-                                        field.onChange(timeString);
-                                    }}
-                                    isRequired={true}
-                                    isInvalid={!!errors?.timeSheets?.[index]?.checkIn}
+                <div className="relative w-full flex justify-between items-center gap-2">
+                    <Controller
+                        name={"staffId"}
+                        control={control}
+                        rules={{
+                            required: TEXT.IS_REQUIRED,
+                        }}
+                        render={({ field }) => {
+                            return (
+                                <Autocomplete
+                                    label={TEXT.STAFF}
+                                    defaultSelectedKey={currentTimeSheet?.staffId || field.value}
+                                    {...field}
+                                    isInvalid={!!errors?.staffId}
+                                    onSelectionChange={field.onChange}
                                     errorMessage={
-                                        errors?.timeSheets?.[index]?.checkIn && (
-                                            <ErrorMessage
-                                                errors={errors}
-                                                name={`timeSheets.${index}.checkIn`}
-                                            />
+                                        errors?.staffId && (
+                                            <ErrorMessage errors={errors} name={"staffId"} />
                                         )
                                     }
-                                />
-                            )}
-                        />
+                                >
+                                    {staffs.map(item => (
+                                        <AutocompleteItem key={item.id}>
+                                            {item.name}
+                                        </AutocompleteItem>
+                                    ))}
+                                </Autocomplete>
+                            );
+                        }}
+                    />
 
-                        <Controller
-                            name={`timeSheets.${index}.checkOut`}
-                            rules={{
-                                required: !isUpdate && TEXT.IS_REQUIRED,
+                    <Controller
+                        name={"checkIn"}
+                        rules={{
+                            required: !isUpdate && TEXT.IS_REQUIRED,
 
-                                validate: (value: string) => {
-                                    const checkInTime = getValues(`timeSheets.${index}.checkIn`);
+                            validate: (value: string) => {
+                                const checkOutTime = getValues("checkOut");
 
-                                    if (value && checkInTime) {
-                                        const [checkInHour, checkInMinute] = checkInTime
-                                            .split(":")
-                                            .map(Number);
-                                        const [checkOutHour, checkOutMinute] = value
-                                            .split(":")
-                                            .map(Number);
+                                if (value && checkOutTime) {
+                                    const [checkInHour, checkInMinute] = value
+                                        .split(":")
+                                        .map(Number);
+                                    const [checkOutHour, checkOutMinute] = checkOutTime
+                                        .split(":")
+                                        .map(Number);
 
-                                        if (
-                                            checkOutHour < checkInHour ||
-                                            (checkOutHour === checkInHour &&
-                                                checkOutMinute <= checkInMinute)
-                                        ) {
-                                            return TEXT.CHECK_OUR_LARGE_THAN_CHECK_IN;
-                                        }
-
-                                        clearErrors(`timeSheets.${index}.checkIn`);
+                                    if (
+                                        checkInHour > checkOutHour ||
+                                        (checkInHour === checkOutHour &&
+                                            checkInMinute >= checkOutMinute)
+                                    ) {
+                                        return TEXT.CHECK_OUR_LARGE_THAN_CHECK_IN;
                                     }
 
-                                    return true;
-                                },
-                            }}
-                            control={control}
-                            render={({ field }) => (
-                                <TimeInput
-                                    label={TEXT.CHECK_OUT}
-                                    value={parseTimeString(field.value)}
-                                    onChange={(e: any) => {
-                                        if (!e) return;
+                                    clearErrors("checkOut");
+                                }
+                                return true;
+                            },
+                        }}
+                        control={control}
+                        render={({ field }) => (
+                            <TimeInput
+                                label={TEXT.CHECK_IN}
+                                value={parseTimeString(field.value)}
+                                onChange={(e: any) => {
+                                    if (!e) return;
 
-                                        const timeString = `${e.hour}:${e.minute}`;
-                                        field.onChange(timeString);
-                                    }}
-                                    isRequired={true}
-                                    isInvalid={!!errors?.timeSheets?.[index]?.checkOut}
-                                    errorMessage={
-                                        errors?.timeSheets?.[index]?.checkOut && (
-                                            <ErrorMessage
-                                                errors={errors}
-                                                name={`timeSheets.${index}.checkOut`}
-                                            />
-                                        )
-                                    }
-                                />
-                            )}
-                        />
-
-                        {!isUpdate && (
-                            <Button
-                                className={twMerge(
-                                    "absolute right-0 -top-3",
-                                    "min-w-6 h-6 p-0 rounded-full",
-                                )}
-                                onPress={() => remove(index)}
-                            >
-                                <XMarkIcon className="w-4" />
-                            </Button>
+                                    const timeString = `${e.hour}:${e.minute}`;
+                                    field.onChange(timeString);
+                                }}
+                                isRequired={true}
+                                isInvalid={!!errors?.checkIn}
+                                errorMessage={
+                                    errors?.checkIn && (
+                                        <ErrorMessage errors={errors} name={"checkIn"} />
+                                    )
+                                }
+                            />
                         )}
-                    </div>
-                ))}
+                    />
+
+                    <Controller
+                        name={"checkOut"}
+                        rules={{
+                            required: !isUpdate && TEXT.IS_REQUIRED,
+
+                            validate: (value: string) => {
+                                const checkInTime = getValues("checkIn");
+
+                                if (value && checkInTime) {
+                                    const [checkInHour, checkInMinute] = checkInTime
+                                        .split(":")
+                                        .map(Number);
+                                    const [checkOutHour, checkOutMinute] = value
+                                        .split(":")
+                                        .map(Number);
+
+                                    if (
+                                        checkOutHour < checkInHour ||
+                                        (checkOutHour === checkInHour &&
+                                            checkOutMinute <= checkInMinute)
+                                    ) {
+                                        return TEXT.CHECK_OUR_LARGE_THAN_CHECK_IN;
+                                    }
+
+                                    clearErrors("checkIn");
+                                }
+
+                                return true;
+                            },
+                        }}
+                        control={control}
+                        render={({ field }) => (
+                            <TimeInput
+                                label={TEXT.CHECK_OUT}
+                                value={parseTimeString(field.value)}
+                                onChange={(e: any) => {
+                                    if (!e) return;
+
+                                    const timeString = `${e.hour}:${e.minute}`;
+                                    field.onChange(timeString);
+                                }}
+                                isRequired={true}
+                                isInvalid={!!errors?.checkOut}
+                                errorMessage={
+                                    errors?.checkOut && (
+                                        <ErrorMessage errors={errors} name={"checkOut"} />
+                                    )
+                                }
+                            />
+                        )}
+                    />
+                </div>
 
                 <div className=" sticky bottom-0 w-full flex justify-end gap-2 bg-white">
                     <Button
                         color="default"
-                        isLoading={isLoading}
                         onPress={() =>
                             getModal({
                                 isOpen: false,
@@ -279,9 +223,7 @@ export default function TimeSheetModal({
                         {TEXT.CANCEL}
                     </Button>
 
-                    <Button type="submit" isLoading={isLoading}>
-                        {TEXT.SAVE}
-                    </Button>
+                    <Button type="submit">{TEXT.SAVE}</Button>
                 </div>
             </div>
         </form>

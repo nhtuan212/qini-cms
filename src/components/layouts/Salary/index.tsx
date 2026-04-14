@@ -1,62 +1,53 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useMemo } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import SalaryTopContent from "./SalaryTopContent";
 import useSalaryColumn from "./useSalaryColumn";
-import SalaryTotal, { SalaryTotalProps } from "./SalaryTotal";
-import { Accordion, AccordionItem } from "@/components/Accordion";
+import SalaryTotal from "./SalaryTotal";
 import Table from "@/components/Table";
-import { StaffProps } from "@/stores/useStaffStore";
-import { SalaryProps, useSalaryStore } from "@/stores/useSalaryStore";
-import { formatCurrency, formatDate, isEmpty } from "@/utils";
+import { Accordion, AccordionItem } from "@/components/Accordion";
+import { useSalary } from "@/hooks";
+import { formatCurrency, formatDate } from "@/utils";
 import { ROUTE, TEXT } from "@/constants";
+import { SalaryParams, StaffProps } from "@/types";
 
-export default function Salary({ staffById }: { staffById?: StaffProps }) {
+export default function Salary({ staff }: { staff?: StaffProps }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    //** Stores */
-    const { isLoading, salaries, getSalaries, cleanUpSalary } = useSalaryStore();
-
-    //** Always call hooks at the top level */
+    //** Variables */
     const columns = useSalaryColumn();
 
-    //** Effects */
-    useEffect(() => {
-        if (staffById && !isEmpty(staffById)) {
-            getSalaries({ staffId: staffById.id });
-            return;
+    const salaryParams = useMemo((): SalaryParams | undefined => {
+        if (staff?.id) {
+            return { staffId: staff.id };
         }
 
-        if (searchParams.get("startDate") && searchParams.get("endDate")) {
-            getSalaries({
-                startDate: searchParams.get("startDate"),
-                endDate: searchParams.get("endDate"),
-            });
-            return;
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
+
+        if (startDate && endDate) {
+            return { startDate, endDate };
         }
 
-        getSalaries();
-    }, [getSalaries, staffById, searchParams]);
+        return undefined; // fetch all
+    }, [staff, searchParams]);
 
-    useEffect(() => {
-        return () => {
-            cleanUpSalary();
-        };
-    }, [cleanUpSalary]);
+    //** Queries */
+    const { isLoading, salaries } = useSalary(salaryParams);
 
     //** Render */
     if (pathname !== ROUTE.SALARY) {
         return (
             <Accordion>
-                {salaries.map((salary: SalaryProps) => (
+                {salaries.map(salary => (
                     <AccordionItem
                         key={salary.id}
                         title={`${TEXT.SALARY_PERIOD}: ${formatDate(salary.startDate)} - ${formatDate(salary.endDate)}`}
                         subtitle={<b>{formatCurrency(salary.total)}</b>}
                     >
-                        <SalaryTotal {...(salary as SalaryTotalProps)} />
+                        <SalaryTotal {...salary} target={salary.target * 100} />
                     </AccordionItem>
                 ))}
             </Accordion>

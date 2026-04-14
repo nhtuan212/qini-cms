@@ -1,41 +1,37 @@
-"use client";
-
-import React, { useEffect } from "react";
-import Table from "@/components/Table";
+import { useState } from "react";
 import useStaffDetailColumns from "./useStaffDetailColumns";
 import StaffDetailTopContent from "./StaffDetailTopContent";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
-import { StaffProps, useStaffStore } from "@/stores/useStaffStore";
-import { formatDate, getDateTime } from "@/utils";
+import Table from "@/components/Table";
+import { useTimeSheet } from "@/hooks";
+import { getDateTime } from "@/utils";
+import { StaffProps } from "@/types";
 
-export default function StaffModalDetail({ staff }: { staff?: StaffProps }) {
-    //** Stores */
-    const { staffById, getStaffById } = useStaffStore();
-    const { isLoading, timeSheetByStaffId, getTimeSheetByStaffId } = useTimeSheetStore();
+export default function StaffModalDetail({ staff }: { staff: StaffProps }) {
+    //** States */
+    const [dateValue, setDateValue] = useState({
+        start: getDateTime().firstDayOfMonth,
+        end: getDateTime().lastDayOfMonth,
+    });
 
-    //** Effects */
-    useEffect(() => {
-        if (staff) {
-            getStaffById(staff.id);
-        }
-    }, [getStaffById, staff]);
-
-    useEffect(() => {
-        if (staffById?.id) {
-            getTimeSheetByStaffId(staffById?.id, {
-                startDate: formatDate(getDateTime().firstDayOfMonth.toString(), "YYYY-MM-DD"),
-                endDate: formatDate(new Date(), "YYYY-MM-DD"),
-            });
-        }
-    }, [getTimeSheetByStaffId, staffById]);
+    //** Queries */
+    const { isLoading, timeSheetRecords } = useTimeSheet(staff.id, {
+        startDate: dateValue.start,
+        endDate: dateValue.end,
+    });
 
     //** Render */
     return (
         <Table
             columns={useStaffDetailColumns()}
-            rows={timeSheetByStaffId.data}
+            rows={timeSheetRecords.data}
             loading={isLoading}
-            topContent={<StaffDetailTopContent />}
+            topContent={
+                <StaffDetailTopContent
+                    timeSheetRecords={timeSheetRecords}
+                    dateRange={dateValue}
+                    onChangeDateRange={setDateValue}
+                />
+            }
         />
     );
 }

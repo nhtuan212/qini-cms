@@ -1,29 +1,30 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import TargetShifts from "./TargetShifts";
 import Loading from "@/components/Loading";
 import Button from "@/components/Button";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ArrowTrendingUpIcon, BanknotesIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
-import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
-import { useTargetShiftStore } from "@/stores/useTargetShiftStore";
-import { useInvoiceStore } from "@/stores/useInvoice";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCollectMoneyStore } from "@/stores/useCollectMoneyStore";
 import { formatCurrency, formatDate } from "@/utils";
 import { TEXT } from "@/constants";
+import { TargetProps } from "@/types";
 
-export default function TargetList({ targets }: { targets: TargetProps[] }) {
+export default function TargetList({
+    isLoading,
+    targets,
+}: {
+    isLoading: boolean;
+    targets: TargetProps[];
+}) {
     //** Refs */
     const targetRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-
-    //** Stores */
-    const { isLoading: isLoadingTarget } = useTargetStore();
-    const { isLoading: isLoadingTargetShift } = useTargetShiftStore();
-    const { isLoading: isLoadingInvoice } = useInvoiceStore();
 
     //** States */
     const [openTargetId, setOpenTargetId] = useState<string | null>(null);
 
-    //** Variables */
-    const isLoading = isLoadingTarget || isLoadingTargetShift || isLoadingInvoice;
+    //** Stores */
+    const { isCollected, setCollectMoney } = useCollectMoneyStore();
 
     //** Functions */
     const handleToggleTarget = (targetId: string) => {
@@ -33,83 +34,145 @@ export default function TargetList({ targets }: { targets: TargetProps[] }) {
         // Scroll to the target div when opening
         if (newOpenTargetId && targetRefs.current[targetId]) {
             setTimeout(() => {
-                targetRefs.current[targetId]?.scrollIntoView({
+                const element = targetRefs.current[targetId];
+                if (!element) return;
+
+                // Calculate menu height on the top
+                const elementTop = element.getBoundingClientRect().top + window.scrollY;
+                const offset = 65 + 16;
+
+                window.scrollTo({
+                    top: elementTop - offset,
                     behavior: "smooth",
-                    block: "start",
                 });
             }, 100); // Small delay to ensure the content is rendered
         }
     };
 
+    //** Effects */
+    useEffect(() => {
+        // Sync all target shifts collect money status to store on initial load
+        targets.map(target => {
+            target.targetShifts
+                .filter(ts => ts.isTarget)
+                .forEach(ts => setCollectMoney(ts.id, ts.isCollectMoney));
+        });
+    }, [setCollectMoney, targets]);
+
     //** Render */
-    const renderTarget = (name: string, value: number) => {
+    const renderTarget = ({
+        name,
+        value,
+        icon,
+        className,
+    }: {
+        name: string;
+        value: number;
+        icon?: React.ReactNode;
+        className?: string;
+    }) => {
         return (
-            <div className="flex-1 flex items-center gap-x-2">
-                <div className="flex flex-col gap-y-1">
-                    <p className="text-sm text-gray-600">{name}</p>
-                    <p className="text-lg font-semibold text-gray-900">{formatCurrency(value)}</p>
-                </div>
+            <div className={twMerge("space-y-1", className)}>
+                <p className="flex items-center gap-x-1 text-black">
+                    {icon}
+                    <span className="text-sm">{name}</span>
+                </p>
+                <p className="font-semibold">{formatCurrency(value)}</p>
             </div>
         );
     };
 
     return (
-        <div className="relative min-h-screen flex flex-col gap-y-4">
+        <div className="relative h-full min-h-[70vh] flex flex-col gap-y-4">
             {isLoading && <Loading />}
 
-            {targets.map(target => (
-                <div
-                    key={target.id}
-                    ref={el => {
-                        targetRefs.current[target.id] = el;
-                    }}
-                    className="relative flex flex-col gap-y-6 bg-white p-6 rounded-xl shadow-md odd:bg-gray-100"
-                >
-                    <div className="flex items-center gap-x-2">
-                        <Button
-                            size="sm"
-                            variant="light"
-                            color="default"
-                            isIconOnly
-                            onPress={() => handleToggleTarget(target.id)}
+            {targets.map(target => {
+                const shiftTargets = target.targetShifts.filter(ts => ts.isTarget).map(ts => ts.id);
+
+                return (
+                    <div
+                        key={target.id}
+                        ref={el => {
+                            targetRefs.current[target.id] = el;
+                        }}
+                        className="relative flex flex-col gap-y-2 bg-white px-2 py-4 border rounded-xl shadow-md even:bg-gray-50"
+                    >
+                        <div
+                            className="grid md:grid-cols-3 grid-cols-2 gap-4 cursor-pointer"
+                            onClick={() => handleToggleTarget(target.id)}
                         >
-                            <ChevronRightIcon
-                                className={twMerge(
-                                    "w-5 h-5 transition-all duration-300",
-                                    openTargetId === target.id && "rotate-90",
-                                )}
-                            />
-                        </Button>
+                            <div className="flex items-center justify-between w-full">
+                                <Button
+                                    size="sm"
+                                    variant="light"
+                                    color="default"
+                                    isIconOnly
+                                    onPress={() => handleToggleTarget(target.id)}
+                                >
+                                    <ChevronRightIcon
+                                        className={twMerge(
+                                            "w-5 h-5 transition-all duration-300",
+                                            openTargetId === target.id && "rotate-90",
+                                        )}
+                                    />
+                                </Button>
 
-                        <div className="flex items-center justify-between w-full">
-                            <div className="flex-1">
-                                <div key={target.id} className="flex items-center gap-x-2">
-                                    <h3 className="text-lg font-semibold text-gray-900">{`${target.name} ngày ${formatDate(target.targetAt)}`}</h3>
-                                </div>
+                                <div className="flex-1 space-y-1">
+                                    <div key={target.id}>
+                                        <h3 className="text-base font-semibold text-gray-900">{`${target.name} ngày ${formatDate(target.targetAt)}`}</h3>
+                                    </div>
 
-                                <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-y-2 gap-x-6 mt-2 text-gray-600">
-                                    {renderTarget(TEXT.REVENUE, target.revenue)}
-                                    {renderTarget(TEXT.TRANSFER, target.transfer)}
-                                    {renderTarget(TEXT.DEDUCTION, target.deduction)}
-                                    {renderTarget(TEXT.CASH, target.cash)}
+                                    <div className="flex items-center gap-x-1">
+                                        {shiftTargets.map(id => (
+                                            <div
+                                                key={id}
+                                                className={twMerge(
+                                                    "w-2.5 h-2.5 rounded-full transition-colors border border-success",
+                                                    isCollected(id) && "bg-success",
+                                                )}
+                                            ></div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* <div className="flex items-center">
-                                <Button size="sm" variant="light" color="default" isIconOnly>
-                                    <PencilSquareIcon className="w-5 h-5 text-gray-500" />
-                                </Button>
-
-                                <Button size="sm" variant="light" color="default" isIconOnly>
-                                    <TrashIcon className="w-5 h-5 text-gray-500" />
-                                </Button>
-                            </div> */}
+                            <div className="col-span-2 grid sm:grid-cols-3 grid-cols-2 gap-2 ml-6 uppercase">
+                                {renderTarget({
+                                    name: TEXT.REVENUE,
+                                    value: target.revenue,
+                                    icon: <ArrowTrendingUpIcon className="w-4 h-4" />,
+                                    className: "text-primary",
+                                })}
+                                {renderTarget({
+                                    name: TEXT.TRANSFER,
+                                    value: target.transfer,
+                                    icon: <BanknotesIcon className="w-4 h-4" />,
+                                    className: "text-secondary",
+                                })}
+                                {renderTarget({
+                                    name: TEXT.CASH,
+                                    value: target.cash,
+                                    icon: <BanknotesIcon className="w-4 h-4" />,
+                                    className: "sm:col-span-1 col-span-2 text-success",
+                                })}
+                            </div>
                         </div>
-                    </div>
 
-                    {openTargetId === target.id && <TargetShifts target={target} />}
-                </div>
-            ))}
+                        <AnimatePresence>
+                            {openTargetId === target.id && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <TargetShifts target={target} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                );
+            })}
         </div>
     );
 }

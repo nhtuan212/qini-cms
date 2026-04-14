@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import StaffDetail from "../../Staff/StaffDetail";
 import RecordTimeSheet from "./RecordTimeSheet";
 import Salary from "../../Salary";
@@ -9,10 +7,6 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { CalendarIcon, ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { useShiftStore } from "@/stores/useShiftsStore";
-import { useTargetStore } from "@/stores/useTargetStore";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
-import { formatDate, snakeCaseQueryString } from "@/utils";
 import { TEXT } from "@/constants";
 
 export default function AttendanceNavigation() {
@@ -20,10 +14,7 @@ export default function AttendanceNavigation() {
     const [activeTab, setActiveTab] = useState("record");
 
     //** Stores */
-    const { staffById } = useStaffStore();
-    const { getShifts } = useShiftStore();
-    const { getTarget } = useTargetStore();
-    const { cleanUpTimeSheet } = useTimeSheetStore();
+    const { selectedStaff } = useStaffStore();
 
     //** Variables */
     const tabs = [
@@ -31,39 +22,27 @@ export default function AttendanceNavigation() {
             label: TEXT.TIME_SHEET,
             icon: ClockIcon,
             value: "record",
-            component: <RecordTimeSheet />,
+            component: <RecordTimeSheet staff={selectedStaff} />,
         },
         {
             label: TEXT.TARGET,
             icon: GiftIcon,
             value: "detail",
-            component: <StaffDetail />,
+            component: <StaffDetail staff={selectedStaff} />,
         },
         {
             label: TEXT.SALARY,
             icon: CurrencyDollarIcon,
             value: "salary",
-            component: <Salary staffById={staffById} />,
+            component: <Salary staff={selectedStaff} />,
         },
         {
             label: TEXT.WORK_ASSIGNMENT,
             icon: CalendarIcon,
             value: "work",
-            component: <WorkAssignment staffById={staffById} />,
+            component: <WorkAssignment staff={selectedStaff} />,
         },
     ];
-
-    //** Effects */
-    useEffect(() => {
-        return () => {
-            cleanUpTimeSheet();
-        };
-    }, [cleanUpTimeSheet]);
-
-    useEffect(() => {
-        getShifts();
-        getTarget(snakeCaseQueryString({ target_at: formatDate(new Date(), "YYYY-MM-DD") }));
-    }, [getShifts, getTarget]);
 
     //** Render */
     return (

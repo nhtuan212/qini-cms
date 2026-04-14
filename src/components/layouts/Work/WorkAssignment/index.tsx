@@ -16,7 +16,6 @@ import { useModalStore } from "@/stores/useModalStore";
 import { useAlertStore } from "@/stores/useAlertStore";
 import { useWorkAssignmentStore } from "@/stores/useWorkAssignmentStore";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { StaffProps } from "@/stores/useStaffStore";
 import { twMerge } from "tailwind-merge";
 import {
     formatDate,
@@ -27,12 +26,13 @@ import {
     isEmpty,
 } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
+import { StaffProps } from "@/types";
 
 export default function WorkAssignment({
-    staffById,
+    staff,
     currentWeek,
 }: {
-    staffById?: StaffProps;
+    staff?: StaffProps;
     currentWeek?: Date;
 }) {
     //** Stores */
@@ -81,8 +81,7 @@ export default function WorkAssignment({
                                 size="md"
                                 isSelected={assignment.isCompleted}
                                 isDisabled={
-                                    (staffById?.id !== assignment?.staffId ||
-                                        assignment.isCompleted) &&
+                                    (staff?.id !== assignment?.staffId || assignment.isCompleted) &&
                                     profile.role !== ROLE.ADMIN
                                 }
                                 onChange={e => {

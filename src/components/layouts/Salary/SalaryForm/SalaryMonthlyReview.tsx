@@ -1,8 +1,6 @@
-import React, { useEffect } from "react";
 import SalaryTotal from "../SalaryTotal";
 import Card from "@/components/Card";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
 import { UseFormWatch } from "react-hook-form";
 import {
     calculateWorkingDaysInRange,
@@ -12,16 +10,14 @@ import {
 } from "@/utils";
 import { TEXT } from "@/constants";
 import { FormSalaryProps } from ".";
-import { SalaryTypeProps } from "@/lib/types";
+import { SalaryTypeProps, TimesheetRecordProps } from "@/types";
 
 interface SalaryMonthlyReviewProps {
+    timeSheetRecords: TimesheetRecordProps;
     watch: UseFormWatch<FormSalaryProps>;
 }
 
-export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps) {
-    //** Stores */
-    const { timeSheetByStaffId, cleanUpTimeSheet } = useTimeSheetStore();
-
+export default function SalaryMonthlyReview({ timeSheetRecords, watch }: SalaryMonthlyReviewProps) {
     //** Variables */
     const salary = watch("salary");
     const paidLeave = watch("paidLeave") || 0;
@@ -33,18 +29,11 @@ export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps)
 
     // Calculate working hours with break time deduction
     const { totalWorkingHours, totalBreakHours } = calculateWorkingHoursWithBreak(
-        timeSheetByStaffId.data,
+        timeSheetRecords.data,
     );
 
     // Get month range from the selected date range
     const monthRange = getMonthRangeFromDate(dateRange.start.toString());
-
-    //** Effects */
-    useEffect(() => {
-        return () => {
-            cleanUpTimeSheet();
-        };
-    }, [cleanUpTimeSheet]);
 
     //** Render */
     return (
@@ -62,7 +51,7 @@ export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps)
 
                     <div className="flex justify-between items-center gap-2">
                         <p className="text-gray-500">{TEXT.STAFF_NAME}</p>
-                        <b>{timeSheetByStaffId.staffName}</b>
+                        <b>{timeSheetRecords.staffName}</b>
                     </div>
 
                     <div className="flex justify-between items-center gap-2">
@@ -94,13 +83,13 @@ export default function SalaryMonthlyReview({ watch }: SalaryMonthlyReviewProps)
                 </Card>
 
                 <SalaryTotal
+                    timeSheetRecords={timeSheetRecords}
                     salary={salary}
                     salaryType={SalaryTypeProps.MONTHLY}
                     paidLeave={paidLeave}
                     lunchAllowancePerDay={lunchAllowancePerDay}
                     gasolineAllowancePerDay={gasolineAllowancePerDay}
                     workingHours={totalWorkingHours}
-                    target={timeSheetByStaffId.totalTarget}
                     bonus={bonus}
                     description={description}
                     startDate={dateRange.start.toString()}

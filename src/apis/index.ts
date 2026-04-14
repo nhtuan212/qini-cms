@@ -1,4 +1,4 @@
-import { SalaryTypeProps } from "@/lib/types";
+import { SalaryTypeProps } from "@/types";
 
 export const SALARY_TYPE = [
     {

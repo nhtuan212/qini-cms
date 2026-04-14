@@ -6,8 +6,7 @@ import { Select, SelectItem } from "@/components/Select";
 import { useModalStore } from "@/stores/useModalStore";
 import { useWorkTypeStore } from "@/stores/useWorkTypeStore";
 import { useWorkAssignmentStore, WorkAssignmentProps } from "@/stores/useWorkAssignmentStore";
-import { useShiftStore } from "@/stores/useShiftsStore";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { useShift, useStaff } from "@/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { TEXT } from "@/constants";
 import { formatDate, getDayName, isEmpty } from "@/utils";
@@ -22,9 +21,11 @@ export default function WorkAssignmentForm({
     //** Stores */
     const { getModal } = useModalStore();
     const { workTypes, getWorkTypes } = useWorkTypeStore();
-    const { staff, getStaff } = useStaffStore();
-    const { shifts, getShifts } = useShiftStore();
     const { createWorkAssignment, updateWorkAssignment } = useWorkAssignmentStore();
+
+    //** Queries */
+    const { shifts } = useShift();
+    const { staffs } = useStaff();
 
     //** Variables */
     const ASSIGNMENT_FORM = [
@@ -50,7 +51,7 @@ export default function WorkAssignmentForm({
             label: TEXT.STAFF_NAME,
             name: "staffId",
             field: "select",
-            options: staff,
+            options: staffs,
             validate: {
                 required: TEXT.IS_REQUIRED,
             },
@@ -98,18 +99,6 @@ export default function WorkAssignmentForm({
             getWorkTypes();
         }
     }, [getWorkTypes, workTypes]);
-
-    useEffect(() => {
-        if (isEmpty(staff)) {
-            getStaff();
-        }
-    }, [getStaff, staff]);
-
-    useEffect(() => {
-        if (isEmpty(shifts)) {
-            getShifts();
-        }
-    }, [getShifts, shifts]);
 
     //** Render */
     return (

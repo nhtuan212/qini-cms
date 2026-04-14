@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { StaffProps } from "@/stores/useStaffStore";
+import { useStaffStore } from "@/stores/useStaffStore";
 import ValidateStaffPassword from "./ValidateStaffPassword";
 import StaffActions from "./StaffActions";
 import StaffDetail from "./StaffDetail";
@@ -12,15 +12,13 @@ import { useModalStore } from "@/stores/useModalStore";
 import { BanknotesIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { ROLE, TEXT } from "@/constants";
 import { formatDate } from "@/utils";
+import { StaffProps } from "@/types";
 
-interface StaffDataProps {
-    data: StaffProps[];
-}
-
-export default function StaffData({ data }: StaffDataProps) {
+export default function StaffData({ data }: { data: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
+    const { setSelectedStaff } = useStaffStore();
 
     //** Render */
     return (
@@ -37,7 +35,7 @@ export default function StaffData({ data }: StaffDataProps) {
                                 {staff.name}
 
                                 {(profile.role === ROLE.ADMIN || profile.role === ROLE.REPORT) && (
-                                    <StaffActions item={staff} />
+                                    <StaffActions staff={staff} />
                                 )}
                             </div>
 
@@ -54,7 +52,6 @@ export default function StaffData({ data }: StaffDataProps) {
                                                 size: "3xl",
                                                 modalHeader: staff.name,
                                                 modalBody: <StaffDetail staff={staff} />,
-                                                modalFooter: <></>,
                                             });
                                         }}
                                     >
@@ -67,11 +64,12 @@ export default function StaffData({ data }: StaffDataProps) {
                                     className="flex-1"
                                     startContent={<ClockIcon className="w-5 h-5" />}
                                     onPress={() => {
+                                        setSelectedStaff(staff);
+
                                         getModal({
                                             isOpen: true,
                                             modalHeader: staff.name,
-                                            modalBody: <ValidateStaffPassword staff={staff} />,
-                                            modalFooter: <></>,
+                                            modalBody: <ValidateStaffPassword />,
                                         });
                                     }}
                                 >

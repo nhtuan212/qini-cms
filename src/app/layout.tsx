@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { auth } from "@/auth";
+import QueryProvider from "@/components/Provider/QueryProvider";
 import Provider from "@/components/Provider";
 import MainLayout from "@/components/layouts";
 import "./globals.scss";
@@ -44,7 +45,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     return (
         <html suppressHydrationWarning lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <Provider>{RenderMainLayout()}</Provider>
+                <QueryProvider>
+                    <Provider>{RenderMainLayout()}</Provider>
+                </QueryProvider>
             </body>
         </html>
     );

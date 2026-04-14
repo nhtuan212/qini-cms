@@ -1,14 +1,12 @@
-import React, { useEffect } from "react";
 import SalaryHourlyReview from "./SalaryHourlyReview";
 import SalaryCalculator from "./SalaryCalculator";
 import SalaryMonthlyReview from "./SalaryMonthlyReview";
-import Loading from "@/components/Loading";
 import { CalendarDate, RangeValue } from "@heroui/react";
 import { useStaffStore } from "@/stores/useStaffStore";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
+import { useTimeSheet } from "@/hooks";
 import { useForm } from "react-hook-form";
 import { getDateTime } from "@/utils";
-import { SalaryTypeProps } from "@/lib/types";
+import { SalaryTypeProps } from "@/types";
 
 export interface FormSalaryProps {
     staffId: string;
@@ -23,8 +21,7 @@ export interface FormSalaryProps {
 
 export default function SalaryForm() {
     //** Stores */
-    const { isLoading, staffById, getStaff } = useStaffStore();
-    const { isLoading: isLoadingTimeSheet } = useTimeSheetStore();
+    const { selectedStaff } = useStaffStore();
 
     //** React hook form */
     const defaultValues = {
@@ -46,37 +43,37 @@ export default function SalaryForm() {
             defaultValues,
         });
 
-    //** Effects */
-    useEffect(() => {
-        getStaff();
-    }, [getStaff]);
+    const staffId = watch("staffId");
+    const dateRange = watch("dateRange");
+
+    //** Queries */
+    const { timeSheetRecords } = useTimeSheet(staffId, {
+        startDate: dateRange.start,
+        endDate: dateRange.end,
+    });
 
     //** Render */
     const renderSalaryReview = () => {
-        if (staffById.salaryType === SalaryTypeProps.HOURLY) {
-            return <SalaryHourlyReview watch={watch} />;
+        if (selectedStaff.salaryType === SalaryTypeProps.HOURLY) {
+            return <SalaryHourlyReview timeSheetRecords={timeSheetRecords} watch={watch} />;
         }
 
-        return <SalaryMonthlyReview watch={watch} />;
+        return <SalaryMonthlyReview timeSheetRecords={timeSheetRecords} watch={watch} />;
     };
 
     return (
         <div className="grid md:grid-cols-2 gap-4">
-            {(isLoading || isLoadingTimeSheet) && <Loading />}
+            <SalaryCalculator
+                timeSheetRecords={timeSheetRecords}
+                control={control}
+                setValue={setValue}
+                getValues={getValues}
+                trigger={trigger}
+                reset={reset}
+                handleSubmit={handleSubmit}
+            />
 
-            <div>
-                <SalaryCalculator
-                    control={control}
-                    setValue={setValue}
-                    getValues={getValues}
-                    watch={watch}
-                    trigger={trigger}
-                    reset={reset}
-                    handleSubmit={handleSubmit}
-                />
-            </div>
-
-            <div>{renderSalaryReview()}</div>
+            {renderSalaryReview()}
         </div>
     );
 }

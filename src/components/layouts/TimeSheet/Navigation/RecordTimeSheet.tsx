@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { Select, SelectItem } from "@/components/Select";
@@ -8,50 +8,71 @@ import {
     TrashIcon,
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
-import { TargetProps, useTargetStore } from "@/stores/useTargetStore";
-import { useStaffStore } from "@/stores/useStaffStore";
-import { useShiftStore, ShiftProps } from "@/stores/useShiftsStore";
+import { useShift, useTarget, useTimeSheet } from "@/hooks";
+import {
+    calculateWorkingHours,
+    formatDate,
+    formatTime,
+    getCurrentLocation,
+    isShiftActive,
+    verifyLocation,
+} from "@/utils";
 import { ROLE, TEXT } from "@/constants";
-import { formatDate, getCurrentLocation, isEmpty, verifyLocation } from "@/utils";
+import { StaffProps } from "@/types";
 
-export default function RecordTimeSheet() {
+export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
     //** Stores */
     const { profile } = useProfileStore();
-    const { targets } = useTargetStore();
-    const { staffById } = useStaffStore();
-    const { shifts } = useShiftStore();
+
+    //** Queries */
+    const { createTarget, targets } = useTarget();
+    const { shifts } = useShift();
+    const { isLoading, timeSheetRecords, createTimeSheet, updateTimeSheet, deleteTimeSheet } =
+        useTimeSheet(staff.id, {
+            startDate: formatDate(new Date(), "YYYY-MM-DD"),
+        });
 
     //** States */
     const [error, setError] = useState("");
     const [selectedShift, setSelectedShift] = useState<string | null>(null);
     const [shiftError, setShiftError] = useState<string | null>(null);
-    const {
-        isLoading,
-        timeSheetByStaffId,
-        getTimeSheetByStaffId,
-        recordTimeSheet,
-        deleteTimeSheet,
-    } = useTimeSheetStore();
-    const { createTarget } = useTargetStore();
+
+    //** Variables */
+    const todayStr = formatDate(new Date(), "YYYY-MM-DD");
+
+    const todayTarget = useMemo(() => {
+        return targets.find(target => {
+            return formatDate(target.targetAt, "YYYY-MM-DD") === todayStr;
+        });
+    }, [targets, todayStr]);
+
+    // Get disabledKeys for HeroUI Select component - disable inactive shifts and incompatible target shifts
+    const disabledKeys = useMemo(() => {
+        return shifts
+            .filter(shift => {
+                // Disable if shift is not active
+                if (!isShiftActive(shift)) {
+                    return true;
+                }
+
+                // If staff has isTarget: false, only allow shifts with isTarget: false
+                if (staff.isTarget === false) {
+                    return shift.isTarget !== false;
+                }
+
+                // If staff has isTarget: true, allow all shifts
+                return false;
+            })
+            .map(shift => shift.id);
+    }, [shifts, staff.isTarget]);
 
     //** Functions */
-    const handleRecordTimeSheet = async () => {
+    const handleRecordTimeSheet = async (type: "checkIn" | "checkOut") => {
         setError("");
 
         if (!selectedShift) {
             setShiftError(TEXT.IS_REQUIRED);
             return;
-        }
-
-        // Validate shift compatibility with staff target status
-        const selectedShiftData = shifts.find((shift: ShiftProps) => shift.id === selectedShift);
-        if (selectedShiftData) {
-            // If staff has isTarget: false, only allow shifts with isTarget: false
-            if (staffById.isTarget === false && selectedShiftData.isTarget !== false) {
-                setError("This shift is not compatible with your target status");
-                return;
-            }
         }
 
         // Validate location
@@ -63,116 +84,51 @@ export default function RecordTimeSheet() {
             return;
         }
 
-        let targetShiftId = null;
-        const todayTarget = targets.find(target => {
-            return (
-                formatDate(target.targetAt, "YYYY-MM-DD") === formatDate(new Date(), "YYYY-MM-DD")
-            );
-        });
+        // Check today target
+        let target = todayTarget;
 
-        if (!todayTarget) {
-            const target = await createTarget({
+        if (!target) {
+            target = await createTarget({
                 name: TEXT.TARGET,
-                targetAt: formatDate(new Date(), "YYYY-MM-DD"),
+                targetAt: todayStr,
             });
-
-            targetShiftId = target.targetShifts.find(
-                (shift: TargetProps["targetShift"]) => shift.shiftId === selectedShift,
-            )?.id;
-        } else {
-            const targetShift = todayTarget.targetShifts.find(
-                (shift: TargetProps["targetShift"]) => shift.shiftId === selectedShift,
-            );
-
-            targetShiftId = targetShift ? targetShift.id : null;
         }
+
+        const targetShiftId = target.targetShifts.find(
+            shift => shift.shiftId === selectedShift,
+        )?.id;
 
         if (!targetShiftId) {
             setError(TEXT.ERROR);
             return;
         }
 
-        await recordTimeSheet({
-            staffId: staffById.id,
+        if (type === "checkOut") {
+            const currentTimeSheet = timeSheetRecords?.data.find(
+                item => item.shiftId === selectedShift && !item.checkOut,
+            );
+
+            if (!currentTimeSheet) {
+                setError(TEXT.ERROR);
+                return;
+            }
+
+            return updateTimeSheet({
+                id: currentTimeSheet.id,
+                params: {
+                    checkOut: formatTime(),
+                    workingHours: calculateWorkingHours(currentTimeSheet.checkIn, formatTime()),
+                },
+            });
+        }
+
+        return createTimeSheet({
+            staffId: staff.id,
             shiftId: selectedShift,
             targetShiftId,
-        })
-            .then(res => res)
-            .catch(error => {
-                console.error({ error });
-                setError(TEXT.ERROR);
-            });
-    };
-
-    //** Effects */
-    useEffect(() => {
-        getTimeSheetByStaffId(staffById.id, {
-            startDate: formatDate(new Date(), "YYYY-MM-DD"),
+            checkIn: formatTime(),
         });
-    }, [getTimeSheetByStaffId, staffById.id]);
-
-    // Function to check if a shift is currently active based on start/end times with 30-minute buffer
-    const isShiftActive = (shift: ShiftProps): boolean => {
-        if (!shift.startTime || !shift.endTime) {
-            // In the case is active for "Noi bo" shift
-            return true;
-        }
-
-        const currentTime = new Date();
-        const currentTimeString = formatDate(currentTime, "HH:mm");
-
-        // Convert times to minutes for easier comparison
-        const currentMinutes =
-            parseInt(currentTimeString.split(":")[0]) * 60 +
-            parseInt(currentTimeString.split(":")[1]);
-        const startMinutes =
-            parseInt(shift.startTime.split(":")[0]) * 60 + parseInt(shift.startTime.split(":")[1]);
-        const endMinutes =
-            parseInt(shift.endTime.split(":")[0]) * 60 + parseInt(shift.endTime.split(":")[1]);
-
-        // Add 30-minute buffer (30 minutes = 30)
-        const bufferMinutes = 30;
-        const startWithBuffer = startMinutes - bufferMinutes;
-        const endWithBuffer = endMinutes + bufferMinutes;
-
-        // Handle shifts that span midnight (e.g., 22:00 to 06:00)
-        if (endMinutes < startMinutes) {
-            // Shift spans midnight - active if current time is after (start - buffer) OR before (end + buffer)
-            const adjustedStartWithBuffer =
-                startWithBuffer < 0 ? startWithBuffer + 1440 : startWithBuffer; // 1440 = 24 hours in minutes
-            const adjustedEndWithBuffer =
-                endWithBuffer > 1440 ? endWithBuffer - 1440 : endWithBuffer;
-
-            return (
-                currentMinutes >= adjustedStartWithBuffer || currentMinutes <= adjustedEndWithBuffer
-            );
-        } else {
-            // Normal shift within same day - active if current time is between (start - buffer) and (end + buffer)
-            return currentMinutes >= startWithBuffer && currentMinutes <= endWithBuffer;
-        }
     };
-
-    // Get disabledKeys for HeroUI Select component - disable inactive shifts and incompatible target shifts
-    const disabledKeys = useMemo(() => {
-        const disabledShiftIds = shifts
-            .filter((shift: ShiftProps) => {
-                // Disable if shift is not active
-                if (!isShiftActive(shift)) {
-                    return true;
-                }
-
-                // If staff has isTarget: false, only allow shifts with isTarget: false
-                if (staffById.isTarget === false) {
-                    return shift.isTarget !== false;
-                }
-
-                // If staff has isTarget: true, allow all shifts
-                return false;
-            })
-            .map((shift: ShiftProps) => shift.id);
-
-        return disabledShiftIds;
-    }, [shifts, staffById.isTarget]);
 
     //** Render */
     return (
@@ -204,7 +160,7 @@ export default function RecordTimeSheet() {
                         setSelectedShift(e.target.value);
                     }}
                 >
-                    {shifts.map((shift: ShiftProps) => (
+                    {shifts.map(shift => (
                         <SelectItem key={shift.id}>
                             {`${shift.name} ${shift.startTime && shift.endTime && `(${shift.startTime} - ${shift.endTime})`}`}
                         </SelectItem>
@@ -219,10 +175,11 @@ export default function RecordTimeSheet() {
                         isLoading={isLoading}
                         startContent={<ArrowRightEndOnRectangleIcon className="w-5 h-5" />}
                         isDisabled={
-                            !!timeSheetByStaffId.data.find(item => item.shiftId === selectedShift)
-                                ?.checkIn
+                            !!timeSheetRecords?.data?.find(
+                                item => item.shiftId === selectedShift && !item.checkOut,
+                            )?.checkIn
                         }
-                        onPress={handleRecordTimeSheet}
+                        onPress={() => handleRecordTimeSheet("checkIn")}
                     >
                         {TEXT.CHECK_IN}
                     </Button>
@@ -233,13 +190,7 @@ export default function RecordTimeSheet() {
                         size="lg"
                         isLoading={isLoading}
                         endContent={<ArrowRightStartOnRectangleIcon className="w-5 h-5" />}
-                        isDisabled={
-                            !!timeSheetByStaffId.data.find(item => item.shiftId === selectedShift)
-                                ?.checkOut ||
-                            !timeSheetByStaffId.data.find(item => item.shiftId === selectedShift)
-                                ?.checkIn
-                        }
-                        onPress={handleRecordTimeSheet}
+                        onPress={() => handleRecordTimeSheet("checkOut")}
                     >
                         {TEXT.CHECK_OUT}
                     </Button>
@@ -251,46 +202,46 @@ export default function RecordTimeSheet() {
             {/* Today's Summary */}
             <Card className="bg-primary-50 sm:p-4 p-2 border border-primary-200">
                 <h4 className="font-semibold text-gray-800 mb-3">{TEXT.TODAY_SUMMARY}</h4>
-                {!isEmpty(timeSheetByStaffId) &&
-                    timeSheetByStaffId.data.map((item, index) => (
-                        <div key={index}>
-                            <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-1 items-center gap-2 text-sm">
-                                <div>
-                                    <span className="text-gray-600">{`${TEXT.WORK_SHIFT}:`}</span>
-                                    <span className="ml-2 font-medium">{item.shiftName}</span>
+
+                {timeSheetRecords?.data?.map(item => (
+                    <div key={item.id}>
+                        <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-1 items-center gap-2 text-sm">
+                            <div>
+                                <span className="text-gray-600">{`${TEXT.WORK_SHIFT}:`}</span>
+                                <span className="ml-2 font-medium">{item.shiftName}</span>
+                            </div>
+                            <div>
+                                <span className="text-gray-600">{`${TEXT.CHECK_IN}:`}</span>
+                                <span className="ml-2 font-medium">{item.checkIn}</span>
+                            </div>
+                            <div>
+                                <span className="text-gray-600">{`${TEXT.CHECK_OUT}:`}</span>
+                                <span className="ml-2 font-medium">{item.checkOut}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <div className="flex-1">
+                                    <span className="text-gray-600">{`${TEXT.WORKING_HOURS}:`}</span>
+                                    <span className="ml-2 font-medium">
+                                        {item.workingHours || "0"}
+                                    </span>
                                 </div>
-                                <div>
-                                    <span className="text-gray-600">{`${TEXT.CHECK_IN}:`}</span>
-                                    <span className="ml-2 font-medium">{item.checkIn}</span>
-                                </div>
-                                <div>
-                                    <span className="text-gray-600">{`${TEXT.CHECK_OUT}:`}</span>
-                                    <span className="ml-2 font-medium">{item.checkOut}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <div className="flex-1">
-                                        <span className="text-gray-600">{`${TEXT.WORKING_HOURS}:`}</span>
-                                        <span className="ml-2 font-medium">
-                                            {item.workingHours || "0"}
-                                        </span>
+                                {profile?.role === ROLE.ADMIN && (
+                                    <div className="ml-auto">
+                                        <Button
+                                            size="sm"
+                                            variant="light"
+                                            color="default"
+                                            isIconOnly
+                                            onPress={() => deleteTimeSheet(item.id)}
+                                        >
+                                            <TrashIcon className="w-4 h-4" />
+                                        </Button>
                                     </div>
-                                    {profile?.role === ROLE.ADMIN && (
-                                        <div className="ml-auto">
-                                            <Button
-                                                size="sm"
-                                                variant="light"
-                                                color="default"
-                                                isIconOnly
-                                                onPress={() => deleteTimeSheet(item.id)}
-                                            >
-                                                <TrashIcon className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    )}
-                                </div>
+                                )}
                             </div>
                         </div>
-                    ))}
+                    </div>
+                ))}
             </Card>
         </div>
     );

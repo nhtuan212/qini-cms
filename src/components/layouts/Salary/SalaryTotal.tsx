@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import Card from "@/components/Card";
 import {
     calculateWorkingDaysInRange,
@@ -7,17 +6,16 @@ import {
     getMonthRangeFromDate,
 } from "@/utils";
 import { TEXT } from "@/constants";
-import { SalaryTypeProps } from "@/lib/types";
-import { useTimeSheetStore } from "@/stores/useTimeSheetStore";
+import { SalaryTypeProps, TimesheetRecordProps } from "@/types";
 
 export interface SalaryTotalProps {
-    staffId?: string;
+    timeSheetRecords?: TimesheetRecordProps;
     salary: number;
     paidLeave?: number;
     lunchAllowancePerDay?: number;
     gasolineAllowancePerDay?: number;
-    workingHours: number;
-    target: number;
+    workingHours?: number;
+    target?: number;
     bonus: number;
     salaryType?: SalaryTypeProps;
     description: string;
@@ -26,21 +24,18 @@ export interface SalaryTotalProps {
 }
 
 export default function SalaryTotal(props: SalaryTotalProps) {
-    //** Stores */
-    const { timeSheetByStaffId, getTimeSheetByStaffId } = useTimeSheetStore();
-
     //** Variables */
     const {
-        staffId,
         salary,
+        timeSheetRecords,
         lunchAllowancePerDay = 0,
         gasolineAllowancePerDay = 0,
         paidLeave = 0,
-        workingHours,
-        target,
         bonus,
         description,
         salaryType,
+        target = timeSheetRecords?.totalTarget || 0,
+        workingHours = timeSheetRecords?.totalWorkingHours || 0,
         startDate,
         endDate,
     } = props;
@@ -54,7 +49,7 @@ export default function SalaryTotal(props: SalaryTotalProps) {
     let totalBonus = 0;
 
     // Calculate working hours with break time deduction
-    const { totalBreakHours } = calculateWorkingHoursWithBreak(timeSheetByStaffId.data);
+    const { totalBreakHours } = calculateWorkingHoursWithBreak(timeSheetRecords?.data || []);
 
     switch (salaryType) {
         case SalaryTypeProps.MONTHLY: {
@@ -77,21 +72,12 @@ export default function SalaryTotal(props: SalaryTotalProps) {
 
             break;
         }
-        case SalaryTypeProps.HOURLY:
+        default:
             calculatedSalary = salary * workingHours;
-            total = Math.floor(calculatedSalary + target + bonus);
+            total = Math.floor(calculatedSalary + target * 0.01 + bonus);
 
             break;
     }
-
-    //** Effects */
-    useEffect(() => {
-        staffId &&
-            getTimeSheetByStaffId(staffId, {
-                startDate,
-                endDate,
-            });
-    }, [getTimeSheetByStaffId, staffId, startDate, endDate]);
 
     //** Render */
     return (
@@ -144,10 +130,10 @@ export default function SalaryTotal(props: SalaryTotalProps) {
                 <Card className="flex justify-between items-center gap-2 bg-primary-100 p-2">
                     <div className="text-gray-500">
                         <p>{TEXT.TARGET}</p>
-                        <span className="text-sm">{`(${formatCurrency(target * 100)} * 0.01)`}</span>
+                        <span className="text-sm">{`(${formatCurrency(target)} * 0.01)`}</span>
                     </div>
 
-                    <b>{formatCurrency(Math.floor(target))}</b>
+                    <b>{formatCurrency(Math.floor(target * 0.01))}</b>
                 </Card>
             )}
 
@@ -184,7 +170,7 @@ export default function SalaryTotal(props: SalaryTotalProps) {
             )}
 
             <Card className="flex justify-between items-center gap-2 bg-primary px-2 py-4 text-white">
-                <div>{TEXT.TOTAL}</div>
+                <div>{TEXT.NET_PAY}</div>
 
                 <b>{formatCurrency(total)}</b>
             </Card>

@@ -1,45 +1,43 @@
-"use client";
-
-import React, { useEffect } from "react";
+import { Key, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import NotFound from "@/app/not-found";
 import TargetList from "./TargetList";
 import TargetFilter from "./TargetFilter";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { useShiftStore } from "@/stores/useShiftsStore";
-import { useStaffStore } from "@/stores/useStaffStore";
-import { useTargetStore } from "@/stores/useTargetStore";
+import { useTarget } from "@/hooks";
 import { useLocationCheck } from "@/hooks/useLocationCheck";
-import { camelCaseQueryString, getDateTime } from "@/utils";
-import { ROLE, TEXT } from "@/constants";
+import { getDateTime } from "@/utils";
+import { REVENUE_STATUS, ROLE, TEXT } from "@/constants";
 
 export default function Target() {
     const searchParams = useSearchParams();
 
+    //** States */
+    const [targetFilterTab, setTargetFilterTab] = useState<Key>(REVENUE_STATUS.ALL);
+
     //** Stores */
     const { profile } = useProfileStore();
-    const { targets, getTarget } = useTargetStore();
-    const { getShifts } = useShiftStore();
-    const { getStaff } = useStaffStore();
+
+    //** Queries */
+    const { isLoading, targets } = useTarget({
+        startDate: searchParams.get("startDate") || getDateTime().firstDayOfMonth,
+        endDate: searchParams.get("endDate") || getDateTime().lastDayOfMonth,
+    });
 
     //** Custom Hooks */
     const { isLocationValid } = useLocationCheck();
 
-    //** Effects */
-    useEffect(() => {
-        getShifts();
-        getStaff();
-    }, [getShifts, getStaff]);
+    //** Variables */
+    const currentTargets = useMemo(() => {
+        if (targetFilterTab === REVENUE_STATUS.UN_COLLECTED) {
+            return targets.filter(tg =>
+                tg.targetShifts.some(shift => shift.isTarget && !shift.isCollectMoney),
+            );
+        }
 
-    useEffect(() => {
-        const params = camelCaseQueryString({
-            startDate: searchParams.get("startDate") || getDateTime().firstDayOfMonth,
-            endDate: searchParams.get("endDate") || getDateTime().lastDayOfMonth,
-        });
-
-        getTarget(params);
-    }, [searchParams, getTarget]);
+        return targets;
+    }, [targets, targetFilterTab]);
 
     //** Render */
     if (isLocationValid !== null && !isLocationValid && profile?.role !== ROLE.ADMIN) {
@@ -53,9 +51,13 @@ export default function Target() {
                 {TEXT.LIST_TARGET}
             </h2>
 
-            <TargetFilter />
+            <TargetFilter
+                targets={targets}
+                profile={profile}
+                setTargetFilterTab={setTargetFilterTab}
+            />
 
-            <TargetList targets={targets} />
+            <TargetList isLoading={isLoading} targets={currentTargets} />
         </div>
     );
 }
