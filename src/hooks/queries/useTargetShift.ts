@@ -26,6 +26,7 @@ export const useTargetShift = () => {
                               transfer: res.transfer,
                               cash: res.cash,
                               description: res.description,
+                              isCollectMoney: res.isCollectMoney,
                           }
                         : tgs;
                 }),

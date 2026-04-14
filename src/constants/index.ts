@@ -53,3 +53,8 @@ export const ROUTE = {
     STAFF: "/staff",
     SALARY: "/salary",
 };
+
+export const REVENUE_STATUS = {
+    ALL: "all",
+    UN_COLLECTED: "unCollected",
+};

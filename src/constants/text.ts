@@ -131,4 +131,7 @@ export const TEXT = {
     ONLY_UPDATE_TODAY_WORK: "Bạn chỉ có thể cập nhật công việc của ngày hôm nay",
     PENDING: "Đang chờ",
     SUCCESS: "Hoàn tất",
+    ALL: "Tất cả",
+    COLLECTED: "Đã thu",
+    UNCOLLECTED: "Chưa thu",
 };
