@@ -6,7 +6,7 @@ export const fetchData = async ({
 }: {
     endpoint: string | URL;
     options?: RequestInit;
-}): Promise<any> => {
+}) => {
     const url = `${BASE_URL}${endpoint}`;
 
     return await fetch(url, {

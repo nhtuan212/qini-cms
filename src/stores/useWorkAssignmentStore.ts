@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { convertKeysToCamelCase } from "@/utils";
-import { fetchData } from "@/utils/fetch";
+import { fetchData } from "@/hooks";
 import { STATUS_CODE, URL } from "@/constants";
+import { convertKeysToCamelCase } from "@/utils";
 
 export type WorkAssignmentProps = {
     [key: string]: any;

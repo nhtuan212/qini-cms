@@ -14,7 +14,7 @@ import { ROLE, TEXT } from "@/constants";
 import { formatDate } from "@/utils";
 import { StaffProps } from "@/types";
 
-export default function StaffData({ data }: { data: StaffProps }) {
+export default function StaffData({ data }: { data: StaffProps[] }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();

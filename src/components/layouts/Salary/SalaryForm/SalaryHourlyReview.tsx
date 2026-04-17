@@ -17,6 +17,8 @@ export default function SalaryHourlyReview({ timeSheetRecords, watch }: SalaryHo
     //** Stores */
     const { selectedStaff } = useStaffStore();
 
+    if (!selectedStaff) return null;
+
     //** Variables */
     const salary = watch("salary");
     const bonus = watch("bonus") || 0;

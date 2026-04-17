@@ -141,7 +141,7 @@ export default function TimeSheetModal({
                             <TimeInput
                                 label={TEXT.CHECK_IN}
                                 value={parseTimeString(field.value)}
-                                onChange={(e: any) => {
+                                onChange={e => {
                                     if (!e) return;
 
                                     const timeString = `${e.hour}:${e.minute}`;
@@ -193,7 +193,7 @@ export default function TimeSheetModal({
                             <TimeInput
                                 label={TEXT.CHECK_OUT}
                                 value={parseTimeString(field.value)}
-                                onChange={(e: any) => {
+                                onChange={e => {
                                     if (!e) return;
 
                                     const timeString = `${e.hour}:${e.minute}`;

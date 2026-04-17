@@ -77,6 +77,8 @@ export default function SalaryCalculator({
         });
     }, [staffs]);
 
+    if (!selectedStaff) return null;
+
     //** Functions */
     const onSubmit = (data: FormSalaryProps) => {
         const target = Math.floor(timeSheetRecords.totalTarget * 0.01);
@@ -153,8 +155,14 @@ export default function SalaryCalculator({
 
                                 field.onChange(staffId);
 
-                                const currentStaff =
-                                    staffs.find(staff => staff.id === staffId) || {};
+                                reset({
+                                    staffId: getValues("staffId"),
+                                    salary: getValues("salary"),
+                                    dateRange: getValues("dateRange"),
+                                });
+
+                                const currentStaff = staffs.find(staff => staff.id === staffId);
+                                if (!currentStaff) return null;
 
                                 // zustand store
                                 setSelectedStaff(currentStaff);
@@ -162,12 +170,6 @@ export default function SalaryCalculator({
                                 // Use watched salary for the changes
                                 setValue("salary", currentStaff.salary || 25000);
                                 setValue("staffId", staffId);
-
-                                reset({
-                                    staffId: getValues("staffId"),
-                                    salary: getValues("salary"),
-                                    dateRange: getValues("dateRange"),
-                                });
                             }}
                         >
                             {orderedStaffByActive.map(staff => (

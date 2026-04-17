@@ -53,6 +53,8 @@ export default function SalaryForm() {
     });
 
     //** Render */
+    if (!selectedStaff) return null;
+
     const renderSalaryReview = () => {
         if (selectedStaff.salaryType === SalaryTypeProps.HOURLY) {
             return <SalaryHourlyReview timeSheetRecords={timeSheetRecords} watch={watch} />;

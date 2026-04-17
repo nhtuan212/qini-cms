@@ -1,9 +1,7 @@
 import { create } from "zustand";
 import { ModalProps } from "@heroui/react";
-import { ModalActionProps } from "@/types";
 
 type UseModalProps = {
-    action?: ModalActionProps;
     modalHeader?: React.ReactNode;
     modalBody?: React.ReactNode;
     modalFooter?: React.ReactNode;
@@ -20,7 +18,6 @@ type ModalAction = {
 const initialState: ModalState = {
     modal: {
         isOpen: false,
-        action: ModalActionProps.CREATE,
     },
 };
 

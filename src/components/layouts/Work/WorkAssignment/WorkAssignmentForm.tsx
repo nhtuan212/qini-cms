@@ -115,14 +115,13 @@ export default function WorkAssignmentForm({
                             <Select
                                 label={item.label}
                                 selectedKeys={[
-                                    item.options.find((option: any) => option.id === field.value)
-                                        ?.id,
+                                    item.options.find(option => option.id === field.value)?.id,
                                 ]}
                                 onSelectionChange={value => field.onChange(value.currentKey)}
                                 isInvalid={!!errors[item.name]}
                                 errorMessage={<ErrorMessage errors={errors} name={item.name} />}
                             >
-                                {item.options.map((option: any) => (
+                                {item.options.map(option => (
                                     <SelectItem key={option.id}>{option.name}</SelectItem>
                                 ))}
                             </Select>

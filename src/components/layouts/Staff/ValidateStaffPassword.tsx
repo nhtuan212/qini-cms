@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import TimeSheet from "../TimeSheet";
 import PasswordInput from "@/components/PasswordInput";
 import Button from "@/components/Button";
@@ -10,6 +10,7 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { useStaff } from "@/hooks";
 import { STATUS_CODE, TEXT, ROLE } from "@/constants";
 import { runWorker } from "@/workers";
+import { StaffProps } from "@/types";
 
 export default function ValidateStaffPassword() {
     //** States */
@@ -24,6 +25,8 @@ export default function ValidateStaffPassword() {
 
     //** Queries */
     const { validateStaffPassword, updateStaff, isValidation } = useStaff();
+
+    if (!selectedStaff) return null;
 
     //** Functions */
     const handleValidate = async () => {
@@ -41,13 +44,13 @@ export default function ValidateStaffPassword() {
         try {
             setIsLoading(true);
 
-            const encryptedPassword = await runWorker("encryptPassword", value);
+            const encryptedPassword = (await runWorker("encryptPassword", value)) as string;
 
             if (selectedStaff.isFirstLogin) {
                 return updateStaff({
                     id: selectedStaff.id,
                     params: { isFirstLogin: false, password: encryptedPassword },
-                }).then(res => {
+                }).then((res: StaffProps & { code?: number; message?: string }) => {
                     if (res.code && res.code !== STATUS_CODE.OK) {
                         setPasswordError(res.message || TEXT.INVALID_PASSWORD);
                         return;
@@ -58,7 +61,7 @@ export default function ValidateStaffPassword() {
             }
 
             validateStaffPassword({ id: selectedStaff.id, password: encryptedPassword }).then(
-                res => {
+                (res: StaffProps & { code?: number; message?: string }) => {
                     if (res.code !== STATUS_CODE.OK) {
                         setPasswordError(res.message || TEXT.INVALID_PASSWORD);
                         return;
@@ -79,7 +82,7 @@ export default function ValidateStaffPassword() {
             size: "3xl",
             modalHeader: (
                 <h3 className="sm:text-2xl text-lg font-bold text-gray-800">
-                    {selectedStaff.name}
+                    {selectedStaff?.name}
                 </h3>
             ),
             modalBody: <TimeSheet />,

@@ -9,7 +9,7 @@ function ConfirmModal({
     content,
 }: {
     isDisabled?: boolean;
-    onConfirm: () => Promise<any>;
+    onConfirm: () => Promise<void>;
     content?: React.ReactNode;
 }) {
     //** Stores */

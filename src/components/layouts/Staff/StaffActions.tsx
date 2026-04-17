@@ -16,7 +16,7 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useStaff } from "@/hooks";
 import { ROLE, TEXT } from "@/constants";
-import { ModalActionProps, StaffProps } from "@/types";
+import { StaffProps } from "@/types";
 
 export default function StaffActions({ staff }: { staff: StaffProps }) {
     //** Destructuring */
@@ -47,7 +47,6 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
             isOpen: true,
             size: "3xl",
             modalHeader: TEXT.UPDATE_STAFF,
-            action: ModalActionProps.UPDATE,
             isDismissable: false,
             modalBody: <StaffModal staff={staff} />,
         });
@@ -56,7 +55,6 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
     const handleInActiveStaff = (id: StaffProps["id"]) => {
         getModal({
             isOpen: true,
-            action: ModalActionProps.UPDATE,
             modalHeader: TEXT.CONFIRM_IN_ACTIVE,
             modalBody: (
                 <ConfirmModal
@@ -72,7 +70,6 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
     const handleDeleteStaff = (id: StaffProps["id"]) => {
         getModal({
             isOpen: true,
-            action: ModalActionProps.UPDATE,
             modalHeader: TEXT.CONFIRM_DELETE,
             modalBody: (
                 <ConfirmModal

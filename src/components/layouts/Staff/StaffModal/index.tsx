@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import StaffConfigSalary from "./StaffConfigSalary";
 import StaffConfigInformation from "./StaffConfigInformation";
 import Button from "@/components/Button";
@@ -9,22 +9,16 @@ import { useModalStore } from "@/stores/useModalStore";
 import { useStaff } from "@/hooks";
 import { encryptPasswordRSA } from "@/utils";
 import { TEXT } from "@/constants";
-import { ModalActionProps, StaffProps } from "@/types";
+import { StaffProps } from "@/types";
 
-export type FormStaffProps = {
-    name: string;
-    salary: number;
-    password?: string;
-    salaryType: string;
-    isTarget: boolean;
-};
+export type FormStaffProps = Pick<
+    StaffProps,
+    "name" | "salary" | "password" | "salaryType" | "isTarget"
+>;
 
 export default function StaffModal({ staff }: { staff?: StaffProps }) {
     //** Stores */
-    const { modal, getModal } = useModalStore();
-
-    //** Spread syntax */
-    const { action } = modal;
+    const { getModal } = useModalStore();
 
     //** Queries */
     const { createStaff, updateStaff } = useStaff();
@@ -32,8 +26,9 @@ export default function StaffModal({ staff }: { staff?: StaffProps }) {
     //** React hook form */
     const defaultValues = {
         name: staff?.name || "",
+        password: "",
         salary: staff?.salary || 0,
-        salaryType: staff?.salaryType || "",
+        salaryType: staff?.salaryType || "HOURLY",
         isTarget: staff?.isTarget || false,
     };
 
@@ -57,21 +52,18 @@ export default function StaffModal({ staff }: { staff?: StaffProps }) {
             }),
         };
 
-        switch (action) {
-            case ModalActionProps.CREATE:
-                return createStaff(result).then(() => {
-                    handleCloseModal();
-                });
-            case ModalActionProps.UPDATE:
-                return updateStaff({
-                    id: staff?.id,
-                    params: result,
-                }).then(() => {
-                    handleCloseModal();
-                });
-            default:
-                break;
+        if (staff) {
+            return updateStaff({
+                id: staff.id,
+                params: result,
+            }).then(() => {
+                handleCloseModal();
+            });
         }
+
+        return createStaff(result).then(() => {
+            handleCloseModal();
+        });
     };
 
     //** Functions */
@@ -85,11 +77,10 @@ export default function StaffModal({ staff }: { staff?: StaffProps }) {
 
     //** Effects */
     useEffect(() => {
-        if (action === ModalActionProps.UPDATE) {
-            setValue("name", staff?.name);
-        }
-    }, [setValue, action, staff]);
+        staff && setValue("name", staff.name);
+    }, [setValue, staff]);
 
+    //** Return */
     return (
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <div className="grid sm:grid-cols-2 gap-4">

@@ -16,6 +16,8 @@ export default function AttendanceNavigation() {
     //** Stores */
     const { selectedStaff } = useStaffStore();
 
+    if (!selectedStaff) return null;
+
     //** Variables */
     const tabs = [
         {

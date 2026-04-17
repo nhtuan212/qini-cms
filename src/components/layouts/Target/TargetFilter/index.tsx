@@ -4,7 +4,7 @@ import TargetTotal from "./TargetTotal";
 import Button from "@/components/Button";
 import DateRangePicker from "@/components/DateRangePicker";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { CalendarDate, RangeValue } from "@heroui/react";
+import { DateValue, RangeValue } from "@heroui/react";
 import { getDateTime, formatDate, camelCaseQueryString } from "@/utils";
 import { ROLE, ROUTE, TEXT } from "@/constants";
 import { parseDate } from "@internationalized/date";
@@ -24,7 +24,7 @@ export default function TargetFilter({
     const searchParams = useSearchParams();
 
     //** States */
-    const [dateValue, setDateValue] = useState<RangeValue<CalendarDate> | null>(null);
+    const [dateValue, setDateValue] = useState<RangeValue<DateValue> | null>(null);
 
     //** Functions */
     const handleFilterTargets = async () => {
@@ -65,12 +65,14 @@ export default function TargetFilter({
                     label={TEXT.DATE_PICKER}
                     className="flex-1 w-fit"
                     value={dateValue}
-                    onChange={(newValue: any) =>
+                    onChange={(newValue: RangeValue<DateValue> | null) => {
+                        if (!newValue) return;
+
                         setDateValue({
-                            start: newValue?.start,
-                            end: newValue?.end,
-                        })
-                    }
+                            start: newValue.start,
+                            end: newValue.end,
+                        });
+                    }}
                     onKeyUp={e => {
                         if (e.key === "Enter") {
                             handleFilterTargets();

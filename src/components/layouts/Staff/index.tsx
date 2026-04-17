@@ -24,7 +24,7 @@ export default function Staff() {
     const [active, setActive] = useState(false);
 
     //** Variables */
-    const data = useMemo(() => {
+    const staffActive = useMemo(() => {
         return staffs.filter(staff => staff.isActive === active);
     }, [staffs, active]);
 
@@ -65,10 +65,10 @@ export default function Staff() {
                 onSelectionChange={key => setActive(key === "active")}
             >
                 <Tab key="active" title={TEXT.ACTIVE}>
-                    <StaffData data={data} />
+                    <StaffData data={staffActive} />
                 </Tab>
                 <Tab key="in-active" title={TEXT.IN_ACTIVE}>
-                    <StaffData data={data} />
+                    <StaffData data={staffActive} />
                 </Tab>
             </Tabs>
         </>

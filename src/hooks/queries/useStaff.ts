@@ -4,9 +4,12 @@ import { convertKeysToCamelCase } from "@/utils";
 import { URL } from "@/constants";
 import { StaffProps } from "@/types/staff";
 
+type UpdateStaffProps = { id: StaffProps["id"]; params: Partial<StaffProps> };
+
 export const useStaff = () => {
     const queryClient = useQueryClient();
     const endpoint = URL.STAFF;
+    const queryKey = ["staff"];
 
     // Get staff
     const {
@@ -14,7 +17,7 @@ export const useStaff = () => {
         isFetching,
         data: staffs = [],
     } = useQuery<StaffProps[]>({
-        queryKey: ["staff"],
+        queryKey,
         queryFn: () =>
             fetchData({
                 endpoint,
@@ -25,7 +28,7 @@ export const useStaff = () => {
     const { isPending: isCreating, mutateAsync: createStaff } = useMutation<
         StaffProps[],
         Error,
-        StaffProps
+        Pick<StaffProps, "name" | "salary" | "password" | "salaryType" | "isTarget">
     >({
         mutationFn: params =>
             fetchData({
@@ -36,7 +39,7 @@ export const useStaff = () => {
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
         onSuccess: res => {
-            queryClient.setQueryData<StaffProps[]>(["staff"], old => [res[0], ...(old ?? [])]);
+            queryClient.setQueryData<StaffProps[]>(queryKey, old => [res[0], ...(old ?? [])]);
         },
     });
 
@@ -45,7 +48,7 @@ export const useStaff = () => {
         isPending: isValidation,
         isIdle,
         mutateAsync: validateStaffPassword,
-    } = useMutation<StaffProps, Error, StaffProps>({
+    } = useMutation<StaffProps, Error, Pick<StaffProps, "id" | "password">>({
         mutationFn: ({ id, password }) =>
             fetchData({
                 endpoint: `${URL.STAFF}/${id}/validate-password`,
@@ -60,7 +63,7 @@ export const useStaff = () => {
     const { isPending: isUpdating, mutateAsync: updateStaff } = useMutation<
         StaffProps,
         Error,
-        StaffProps
+        UpdateStaffProps
     >({
         mutationFn: ({ id, params }) =>
             fetchData({
@@ -71,15 +74,18 @@ export const useStaff = () => {
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
         onSuccess: res => {
-            queryClient.setQueryData<StaffProps[]>(
-                ["staff"],
-                old => old?.map(staff => (staff.id === res.id ? res : staff)) ?? [],
+            queryClient.setQueriesData({ queryKey }, (prev: StaffProps[]) =>
+                prev?.map(staff => (staff.id === res.id ? res : staff)),
             );
         },
     });
 
     // In-active staff
-    const { isPending: isInactive, mutateAsync: inActiveStaff } = useMutation({
+    const { isPending: isInactive, mutateAsync: inActiveStaff } = useMutation<
+        StaffProps,
+        Error,
+        StaffProps["id"]
+    >({
         mutationFn: id =>
             fetchData({
                 endpoint: `${URL.STAFF}/${id}/in-active`,
@@ -87,17 +93,17 @@ export const useStaff = () => {
                     method: "PUT",
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
-        onSuccess: (_, id) => {
-            queryClient.setQueryData<StaffProps[]>(["staff"], old =>
-                old?.map(staff =>
-                    staff.id === id
+        onSuccess: res => {
+            queryClient.setQueriesData({ queryKey }, (prev: StaffProps[]) => {
+                return prev?.map(staff =>
+                    staff.id === res.id
                         ? {
                               ...staff,
                               isActive: false,
                           }
                         : staff,
-                ),
-            );
+                );
+            });
         },
     });
 
@@ -105,7 +111,7 @@ export const useStaff = () => {
     const { isPending: isDeleting, mutateAsync: deleteStaff } = useMutation<
         StaffProps,
         Error,
-        StaffProps
+        StaffProps["id"]
     >({
         mutationFn: id =>
             fetchData({
@@ -116,9 +122,9 @@ export const useStaff = () => {
             }).then(res => convertKeysToCamelCase(res.data)),
         onSuccess: res => {
             // Remove staff from the list
-            queryClient.setQueryData<StaffProps[]>(["staff"], old =>
-                old?.filter(staff => staff.id !== res[0].id),
-            );
+            queryClient.setQueriesData({ queryKey }, (prev: StaffProps[]) => {
+                return prev.filter(staff => staff.id !== res.id);
+            });
         },
     });
 
