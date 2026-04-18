@@ -77,10 +77,10 @@ export default function SalaryCalculator({
         });
     }, [staffs]);
 
-    if (!selectedStaff) return null;
-
     //** Functions */
     const onSubmit = (data: FormSalaryProps) => {
+        if (!selectedStaff) return null;
+
         const target = Math.floor(timeSheetRecords.totalTarget * 0.01);
 
         // Calculate working days for non-target staff (excluding holidays)
@@ -210,7 +210,7 @@ export default function SalaryCalculator({
                     )}
                 />
 
-                {selectedStaff.salaryType === SalaryTypeProps.MONTHLY && (
+                {selectedStaff?.salaryType === SalaryTypeProps.MONTHLY && (
                     <>
                         <Controller
                             name="paidLeave"
