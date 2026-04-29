@@ -34,18 +34,7 @@ export default function IsTarget({
     isCollect,
     handleCollectMoney,
 }: IsTargetProps) {
-    const {
-        id,
-        kiotId,
-        shiftName,
-        startTime,
-        endTime,
-        revenue,
-        transfer,
-        point,
-        cash,
-        description,
-    } = targetShift;
+    const { id, kiotId, shiftName, revenue, transfer, point, cash, description } = targetShift;
 
     //** Stores */
     const { profile } = useProfileStore();
@@ -55,29 +44,6 @@ export default function IsTarget({
     const isAdmin = profile.role === ROLE.ADMIN;
 
     //** Functions */
-    const isWithinShiftTime = (
-        userRole: string | undefined,
-        startTime: string,
-        endTime: string,
-    ) => {
-        if (userRole === ROLE.ADMIN) return true;
-        if (!startTime || !endTime) return false;
-
-        const now = new Date();
-        const [startHour, startMinute] = startTime.split(":").map(Number);
-        const [endHour, endMinute] = endTime.split(":").map(Number);
-        const start = new Date(now);
-        const end = new Date(now);
-
-        start.setHours(startHour, startMinute, 0, 0);
-        end.setHours(endHour, endMinute, 0, 0);
-
-        // Adjust window: 30 min before start, 30 min after end
-        const startWindow = new Date(start.getTime() - 30 * 60 * 1000);
-        const endWindow = new Date(end.getTime() + 30 * 60 * 1000);
-        return now >= startWindow && now <= endWindow;
-    };
-
     const handleSyncInvoice = async () => {
         if (!kiotId) return;
 
@@ -148,29 +114,24 @@ export default function IsTarget({
 
                 <span className="font-bold text-blue-600">{formatCurrency(revenue)}</span>
 
-                <Button
-                    size="sm"
-                    color="secondary"
-                    isIconOnly
-                    onPress={() => {
-                        getModal({
-                            isOpen: true,
-                            modalHeader: TEXT.UPDATE(shiftName),
-                            modalBody: <TargetShiftModal {...targetShift} />,
-                        });
-                    }}
-                    isDisabled={!isWithinShiftTime(profile?.role, startTime, endTime)}
-                >
-                    <PencilSquareIcon className="w-4 h-4" />
-                </Button>
+                {isAdmin && (
+                    <Button
+                        size="sm"
+                        color="secondary"
+                        isIconOnly
+                        onPress={() => {
+                            getModal({
+                                isOpen: true,
+                                modalHeader: TEXT.UPDATE(shiftName),
+                                modalBody: <TargetShiftModal {...targetShift} />,
+                            });
+                        }}
+                    >
+                        <PencilSquareIcon className="w-4 h-4" />
+                    </Button>
+                )}
 
-                <Button
-                    size="sm"
-                    color="primary"
-                    isIconOnly
-                    onPress={handleSyncInvoice}
-                    isDisabled={!isWithinShiftTime(profile?.role, startTime, endTime)}
-                >
+                <Button size="sm" color="primary" isIconOnly onPress={handleSyncInvoice}>
                     <ArrowPathIcon className="w-4 h-4" />
                 </Button>
             </div>
