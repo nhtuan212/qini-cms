@@ -6,7 +6,7 @@ import DateRangePicker from "@/components/DateRangePicker";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { DateValue, RangeValue } from "@heroui/react";
 import { getDateTime, formatDate, camelCaseQueryString } from "@/utils";
-import { ROLE, ROUTE, TEXT } from "@/constants";
+import { ROUTE, TEXT } from "@/constants";
 import { parseDate } from "@internationalized/date";
 import { TargetProps } from "@/types";
 import { ProfileProps } from "@/stores/useProfileStore";
@@ -56,9 +56,11 @@ export default function TargetFilter({
     //** Render */
     return (
         <div className="space-y-6">
-            {profile.role === ROLE.ADMIN && (
-                <TargetTotal targets={targets} setTargetFilterTab={setTargetFilterTab} />
-            )}
+            <TargetTotal
+                role={profile.role}
+                targets={targets}
+                setTargetFilterTab={setTargetFilterTab}
+            />
 
             <div className="flex-1 flex justify-between items-center flex-wrap gap-4">
                 <DateRangePicker

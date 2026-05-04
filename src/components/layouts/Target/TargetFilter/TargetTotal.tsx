@@ -1,15 +1,18 @@
 import React, { Key, useMemo } from "react";
 import { Tab, Tabs } from "@/components/Tab";
 import { ArrowTrendingUpIcon, BanknotesIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
+import { ProfileProps } from "@/stores/useProfileStore";
 import { twMerge } from "tailwind-merge";
-import { REVENUE_STATUS, TEXT } from "@/constants";
+import { REVENUE_STATUS, ROLE, TEXT } from "@/constants";
 import { TargetProps } from "@/types";
 import { formatCurrency } from "@/utils";
 
 export default function TargetTotal({
+    role,
     targets,
     setTargetFilterTab,
 }: {
+    role: ProfileProps["role"];
     targets: TargetProps[];
     setTargetFilterTab: (key: Key) => void;
 }) {
@@ -61,18 +64,20 @@ export default function TargetTotal({
             </Tabs>
 
             <div className="grid md:grid-cols-4 grid-cols-2 items-center gap-4">
-                {renderTotal({
-                    title: TEXT.REVENUE,
-                    icon: <ArrowTrendingUpIcon className="w-5 h-5" />,
-                    value: total.revenue,
-                    className: "bg-primary",
-                })}
-                {renderTotal({
-                    title: TEXT.TRANSFER,
-                    icon: <BanknotesIcon className="w-5 h-5" />,
-                    value: total.transfer,
-                    className: "bg-secondary",
-                })}
+                {role === ROLE.ADMIN &&
+                    renderTotal({
+                        title: TEXT.REVENUE,
+                        icon: <ArrowTrendingUpIcon className="w-5 h-5" />,
+                        value: total.revenue,
+                        className: "bg-primary",
+                    })}
+                {role === ROLE.ADMIN &&
+                    renderTotal({
+                        title: TEXT.TRANSFER,
+                        icon: <BanknotesIcon className="w-5 h-5" />,
+                        value: total.transfer,
+                        className: "bg-secondary",
+                    })}
                 {renderTotal({
                     title: TEXT.CASH,
                     icon: <BanknotesIcon className="w-5 h-5" />,
