@@ -46,8 +46,12 @@ export default function StaffModal({ staff }: { staff?: StaffProps }) {
 
     const onSubmit = async (data: FormStaffProps) => {
         const result = {
-            ...data,
-            ...(data.password && {
+            name: data.name,
+            salary: data.salary,
+            salaryType: data.salaryType,
+            isTarget: data.isTarget,
+
+            ...(data.password.trim() && {
                 password: encryptPasswordRSA(data.password),
             }),
         };
@@ -61,7 +65,7 @@ export default function StaffModal({ staff }: { staff?: StaffProps }) {
             });
         }
 
-        return createStaff(result).then(() => {
+        return createStaff(result as FormStaffProps).then(() => {
             handleCloseModal();
         });
     };
