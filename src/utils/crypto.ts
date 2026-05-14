@@ -37,6 +37,6 @@ export const encryptPasswordRSA = (password: string): string => {
         return encrypted;
     } catch (error) {
         console.error("RSA encryption error:", error);
-        throw new Error("Failed to encrypt password");
+        throw new Error("Failed to encrypt password", { cause: error });
     }
 };

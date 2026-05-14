@@ -6,9 +6,8 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint",
+        "lint": "eslint",
         "prettier": "prettier --write \"**/*.{ts,tsx,json,scss}\"",
-        "eslint": "tsc --noEmit && eslint --quiet \"src/**/*.{ts,tsx,json}\"",
         "lint-staged": "lint-staged",
         "prepare": "husky"
     },
@@ -28,7 +27,7 @@
         "autoprefixer": "^10.4.20",
         "dayjs": "^1.11.13",
         "framer-motion": "^12.38.0",
-        "next": "16.2.1",
+        "next": "^16.2.6",
         "next-app": "^0.0.0",
         "next-auth": "^5.0.0-beta.30",
         "next-themes": "^0.4.6",
@@ -43,20 +42,21 @@
     "devDependencies": {
         "@eslint/compat": "^1.1.1",
         "@eslint/eslintrc": "^3.1.0",
-        "@eslint/js": "^9.7.0",
+        "@eslint/js": "^10.0.1",
         "@types/node": "^20",
         "@types/node-rsa": "^1.1.4",
         "@types/react": "^18",
         "@types/react-dom": "^18",
-        "eslint": "^9.8.0",
-        "eslint-config-next": "^15.1.2",
-        "globals": "^15.8.0",
+        "eslint": "^10.3.0",
+        "eslint-config-next": "^16.2.6",
+        "globals": "^17.6.0",
         "husky": "^9.1.4",
+        "jiti": "^2.7.0",
         "lint-staged": "^15.2.7",
         "postcss": "^8",
         "prettier": "^3.3.3",
         "tailwindcss": "^3.4.17",
         "typescript": "^5",
-        "typescript-eslint": "^8.18.1"
+        "typescript-eslint": "^8.59.2"
     }
 }
