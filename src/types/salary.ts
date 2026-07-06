@@ -23,6 +23,13 @@ export interface SalaryProps {
 export interface SalaryListProps {
     salaries: SalaryProps[];
     totalAmount: number;
+    startDate?: string;
+    endDate?: string;
+}
+
+export interface SalaryPeriodProps {
+    startDate?: string;
+    endDate?: string;
 }
 
 export interface SalaryParams {

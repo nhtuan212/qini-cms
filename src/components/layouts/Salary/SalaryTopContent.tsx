@@ -3,17 +3,30 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import dayjs from "dayjs";
 import SalaryForm from "./SalaryForm";
 import Button from "@/components/Button";
 import DateRangePicker from "@/components/DateRangePicker";
-import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    PlusIcon,
+    XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { CalendarDate, RangeValue } from "@heroui/react";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { camelCaseQueryString, formatCurrency } from "@/utils";
+import { camelCaseQueryString, formatCurrency, formatDate, getMonthRangeFromDate } from "@/utils";
 import { ROLE, ROUTE, TEXT } from "@/constants";
+import { SalaryPeriodProps } from "@/types";
 
-export default function SalaryTopContent({ totalAmount = 0 }: { totalAmount?: number }) {
+export default function SalaryTopContent({
+    totalAmount = 0,
+    period,
+}: {
+    totalAmount?: number;
+    period?: SalaryPeriodProps;
+}) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -23,6 +36,39 @@ export default function SalaryTopContent({ totalAmount = 0 }: { totalAmount?: nu
 
     //** States */
     const [dateValue, setDateValue] = useState<RangeValue<CalendarDate> | null>(null);
+
+    //** Variables */
+    // Period being viewed: URL params take precedence, otherwise the default period BE resolved
+    const periodStart = searchParams.get("startDate") || period?.startDate;
+    const periodEnd = searchParams.get("endDate") || period?.endDate;
+
+    const start = dayjs(periodStart);
+    const end = dayjs(periodEnd);
+    const isFullMonth =
+        start.isValid() &&
+        end.isValid() &&
+        start.date() === 1 &&
+        end.isSame(start, "month") &&
+        end.date() === end.daysInMonth();
+
+    const periodLabel = isFullMonth
+        ? `${TEXT.MONTH} ${start.format("MM/YYYY")}`
+        : `${formatDate(periodStart || null)} - ${formatDate(periodEnd || null)}`;
+
+    //** Functions */
+    const goToMonth = (offset: number) => {
+        const { firstDayOfMonth, lastDayOfMonth } = getMonthRangeFromDate(
+            start.add(offset, "month").format("YYYY-MM-DD"),
+        );
+
+        router.push(
+            camelCaseQueryString({
+                startDate: firstDayOfMonth,
+                endDate: lastDayOfMonth,
+            }),
+        );
+        setDateValue(null);
+    };
 
     //** Render */
     return (
@@ -74,31 +120,48 @@ export default function SalaryTopContent({ totalAmount = 0 }: { totalAmount?: nu
                 </div>
 
                 {profile.role === ROLE.ADMIN && (
-                    <div className="flex flex-col gap-y-2">
-                        <Button
-                            className="ml-auto"
-                            startContent={<PlusIcon className="w-5 h-5" />}
-                            onPress={() => {
-                                getModal({
-                                    isOpen: true,
-                                    size: "5xl",
-                                    modalHeader: TEXT.CALCULATE_SALARY,
-                                    modalBody: <SalaryForm />,
-                                });
-                            }}
-                        >
-                            {TEXT.ADD_NEW}
-                        </Button>
+                    <Button
+                        startContent={<PlusIcon className="w-5 h-5" />}
+                        onPress={() => {
+                            getModal({
+                                isOpen: true,
+                                size: "5xl",
+                                modalHeader: TEXT.CALCULATE_SALARY,
+                                modalBody: <SalaryForm />,
+                            });
+                        }}
+                    >
+                        {TEXT.ADD_NEW}
+                    </Button>
+                )}
+            </div>
 
-                        {totalAmount > 0 && (
-                            <p className="text-gray-500">
-                                {`${TEXT.TOTAL}: `}
-                                <b className="text-lg text-primary">
-                                    {formatCurrency(totalAmount)}
-                                </b>
-                            </p>
-                        )}
+            <div className="flex justify-between items-center">
+                {periodStart && periodEnd && (
+                    <div className="flex items-center gap-x-1">
+                        <Button
+                            isIconOnly
+                            variant="light"
+                            color="default"
+                            onPress={() => goToMonth(-1)}
+                            startContent={<ChevronLeftIcon className="w-4 h-4" />}
+                        />
+                        <span className="min-w-32 text-center font-semibold">{periodLabel}</span>
+                        <Button
+                            isIconOnly
+                            variant="light"
+                            color="default"
+                            onPress={() => goToMonth(1)}
+                            startContent={<ChevronRightIcon className="w-4 h-4" />}
+                        />
                     </div>
+                )}
+
+                {totalAmount > 0 && (
+                    <p className="text-gray-500">
+                        {`${TEXT.TOTAL}: `}
+                        <b className="text-lg text-primary">{formatCurrency(totalAmount)}</b>
+                    </p>
                 )}
             </div>
         </>

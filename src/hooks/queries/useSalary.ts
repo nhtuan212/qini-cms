@@ -21,10 +21,12 @@ export const useSalary = (params?: SalaryParams) => {
             }).then(res => ({
                 salaries: convertKeysToCamelCase(res.data),
                 totalAmount: res.totalAmount || 0,
+                startDate: res.startDate,
+                endDate: res.endDate,
             })),
     });
 
-    const { salaries = [], totalAmount = 0 } = data || {};
+    const { salaries = [], totalAmount = 0, startDate, endDate } = data || {};
 
     // POST
     const { isPending: isCreating, mutateAsync: createSalary } = useMutation<
@@ -70,6 +72,7 @@ export const useSalary = (params?: SalaryParams) => {
         isFetching,
         salaries,
         totalAmount,
+        period: { startDate, endDate },
 
         isCreating,
         createSalary,

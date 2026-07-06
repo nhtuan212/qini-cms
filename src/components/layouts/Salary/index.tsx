@@ -35,7 +35,7 @@ export default function Salary({ staff }: { staff?: StaffProps }) {
     }, [staff, searchParams]);
 
     //** Queries */
-    const { isLoading, salaries, totalAmount } = useSalary(salaryParams);
+    const { isLoading, salaries, totalAmount, period } = useSalary(salaryParams);
 
     //** Render */
     if (pathname !== ROUTE.SALARY) {
@@ -60,7 +60,7 @@ export default function Salary({ staff }: { staff?: StaffProps }) {
             columns={columns}
             loading={isLoading}
             className="[&>.tableContainer]:min-h-[45rem]"
-            topContent={<SalaryTopContent totalAmount={totalAmount} />}
+            topContent={<SalaryTopContent totalAmount={totalAmount} period={period} />}
         />
     );
 }
