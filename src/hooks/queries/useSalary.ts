@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchData } from "..";
 import { buildParamUrl, convertKeysToCamelCase } from "@/utils";
 import { URL } from "@/constants";
-import { CreateSalaryProps, SalaryParams, SalaryProps } from "@/types";
+import { CreateSalaryProps, SalaryListProps, SalaryParams, SalaryProps } from "@/types";
 
 export const useSalary = (params?: SalaryParams) => {
     const { staffId, ...queryParams } = params || {};
@@ -13,17 +13,18 @@ export const useSalary = (params?: SalaryParams) => {
     const endpoint = buildParamUrl(baseEndpoint, queryParams);
 
     // GET
-    const {
-        isPending,
-        isFetching,
-        data: salaries = [],
-    } = useQuery<SalaryProps[]>({
+    const { isPending, isFetching, data } = useQuery<SalaryListProps>({
         queryKey: ["salary", params],
         queryFn: () =>
             fetchData({
                 endpoint,
-            }).then(res => convertKeysToCamelCase(res.data)),
+            }).then(res => ({
+                salaries: convertKeysToCamelCase(res.data),
+                totalAmount: res.totalAmount || 0,
+            })),
     });
+
+    const { salaries = [], totalAmount = 0 } = data || {};
 
     // POST
     const { isPending: isCreating, mutateAsync: createSalary } = useMutation<
@@ -68,6 +69,7 @@ export const useSalary = (params?: SalaryParams) => {
         isPending,
         isFetching,
         salaries,
+        totalAmount,
 
         isCreating,
         createSalary,

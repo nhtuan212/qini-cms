@@ -20,6 +20,11 @@ export interface SalaryProps {
     total: number;
 }
 
+export interface SalaryListProps {
+    salaries: SalaryProps[];
+    totalAmount: number;
+}
+
 export interface SalaryParams {
     staffId?: string;
     startDate?: string | null;

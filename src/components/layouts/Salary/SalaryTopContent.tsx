@@ -10,10 +10,10 @@ import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CalendarDate, RangeValue } from "@heroui/react";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { camelCaseQueryString } from "@/utils";
+import { camelCaseQueryString, formatCurrency } from "@/utils";
 import { ROLE, ROUTE, TEXT } from "@/constants";
 
-export default function SalaryTopContent() {
+export default function SalaryTopContent({ totalAmount = 0 }: { totalAmount?: number }) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -27,7 +27,9 @@ export default function SalaryTopContent() {
     //** Render */
     return (
         <>
-            <h3 className="title text-black">{TEXT.SALARY}</h3>
+            <div className="flex justify-between items-center">
+                <h3 className="title text-black">{TEXT.SALARY}</h3>
+            </div>
 
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-x-2">
@@ -72,19 +74,31 @@ export default function SalaryTopContent() {
                 </div>
 
                 {profile.role === ROLE.ADMIN && (
-                    <Button
-                        startContent={<PlusIcon className="w-5 h-5" />}
-                        onPress={() => {
-                            getModal({
-                                isOpen: true,
-                                size: "5xl",
-                                modalHeader: TEXT.CALCULATE_SALARY,
-                                modalBody: <SalaryForm />,
-                            });
-                        }}
-                    >
-                        {TEXT.ADD_NEW}
-                    </Button>
+                    <div className="flex flex-col gap-y-2">
+                        <Button
+                            className="ml-auto"
+                            startContent={<PlusIcon className="w-5 h-5" />}
+                            onPress={() => {
+                                getModal({
+                                    isOpen: true,
+                                    size: "5xl",
+                                    modalHeader: TEXT.CALCULATE_SALARY,
+                                    modalBody: <SalaryForm />,
+                                });
+                            }}
+                        >
+                            {TEXT.ADD_NEW}
+                        </Button>
+
+                        {totalAmount > 0 && (
+                            <p className="text-gray-500">
+                                {`${TEXT.TOTAL}: `}
+                                <b className="text-lg text-primary">
+                                    {formatCurrency(totalAmount)}
+                                </b>
+                            </p>
+                        )}
+                    </div>
                 )}
             </div>
         </>
