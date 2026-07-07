@@ -42,13 +42,16 @@ export default function TargetTotal({
         value: number;
         className?: string;
     }) => (
+        // Avoid percentage heights (h-full) here: old Safari (< 15.4) resolves them
+        // incorrectly inside auto-sized grid rows, blowing the cards up and
+        // overlapping the content below. Grid stretch + flex-1 gives the same look.
         <div
             className={twMerge(
-                "h-full flex flex-col justify-between space-y-2 p-4 text-white rounded-md shadow-xl",
+                "flex flex-col justify-between space-y-2 p-4 text-white rounded-md shadow-xl",
                 className,
             )}
         >
-            <div className="h-full flex items-center gap-x-2 font-semibold uppercase">
+            <div className="flex-1 flex items-center gap-x-2 font-semibold uppercase">
                 {icon} {title}
             </div>
 
@@ -63,7 +66,7 @@ export default function TargetTotal({
                 <Tab key={REVENUE_STATUS.UN_COLLECTED} title={TEXT.UNCOLLECTED}></Tab>
             </Tabs>
 
-            <div className="grid md:grid-cols-4 grid-cols-2 items-center gap-4">
+            <div className="grid md:grid-cols-4 grid-cols-2 gap-4">
                 {role === ROLE.ADMIN &&
                     renderTotal({
                         title: TEXT.REVENUE,
