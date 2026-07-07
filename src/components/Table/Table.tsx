@@ -51,7 +51,8 @@ export default function Table({ ...props }: TableProps) {
     //** Functions */
     const isEmpty = (obj: object | undefined) => {
         for (const prop in obj) {
-            if (Object.hasOwn(obj, prop)) {
+            // Avoid Object.hasOwn: it requires Safari 15.4+ and breaks on older iOS
+            if (Object.prototype.hasOwnProperty.call(obj, prop)) {
                 return false;
             }
         }
