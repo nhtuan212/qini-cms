@@ -49,9 +49,9 @@ export default function WorkAssignmentForm({
         },
         {
             label: TEXT.STAFF_NAME,
-            name: "staffId",
+            name: "userId",
             field: "select",
-            options: staffs,
+            options: staffs.map(staff => ({ ...staff, id: staff.userId })),
             validate: {
                 required: TEXT.IS_REQUIRED,
             },
@@ -61,7 +61,7 @@ export default function WorkAssignmentForm({
     //** React hook form */
     const defaultValues = {
         workTypeId: assignment?.workTypeId || "",
-        staffId: assignment?.staffId || "",
+        userId: assignment?.userId || "",
         shiftId: assignment?.shiftId || "",
         date: date,
     };

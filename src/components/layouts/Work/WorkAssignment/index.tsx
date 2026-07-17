@@ -81,7 +81,8 @@ export default function WorkAssignment({
                                 size="md"
                                 isSelected={assignment.isCompleted}
                                 isDisabled={
-                                    (staff?.id !== assignment?.staffId || assignment.isCompleted) &&
+                                    (staff?.userId !== assignment?.userId ||
+                                        assignment.isCompleted) &&
                                     profile.role !== ROLE.ADMIN
                                 }
                                 onChange={e => {
@@ -118,12 +119,12 @@ export default function WorkAssignment({
                                     </p>
                                 </div>
 
-                                <p className="text-base">{`${assignment.shiftName} - ${assignment.staffName}`}</p>
+                                <p className="text-base">{`${assignment.shiftName} - ${assignment.name}`}</p>
 
                                 {assignment.isCompleted && assignment.updatedAt && (
                                     <div className="flex items-center gap-x-1 font-bold text-xs text-primary">
                                         <CheckCircleIcon className="w-5 h-5" />
-                                        <p>{`${assignment.staffName} - ${formatDate(assignment.updatedAt, "HH:mm - DD/MM/YYYY")}`}</p>
+                                        <p>{`${assignment.name} - ${formatDate(assignment.updatedAt, "HH:mm - DD/MM/YYYY")}`}</p>
                                     </div>
                                 )}
                             </div>

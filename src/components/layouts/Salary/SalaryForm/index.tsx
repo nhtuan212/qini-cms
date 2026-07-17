@@ -9,7 +9,7 @@ import { getDateTime } from "@/utils";
 import { SalaryTypeProps } from "@/types";
 
 export interface FormSalaryProps {
-    staffId: string;
+    userId: string;
     dateRange: RangeValue<CalendarDate>;
     salary: number;
     paidLeave: number;
@@ -25,7 +25,7 @@ export default function SalaryForm() {
 
     //** React hook form */
     const defaultValues = {
-        staffId: "",
+        userId: "",
         dateRange: {
             start: getDateTime().firstDayOfMonth,
             end: getDateTime().lastDayOfMonth,
@@ -43,11 +43,11 @@ export default function SalaryForm() {
             defaultValues,
         });
 
-    const staffId = watch("staffId");
+    const userId = watch("userId");
     const dateRange = watch("dateRange");
 
     //** Queries */
-    const { timeSheetRecords } = useTimeSheet(staffId, {
+    const { timeSheetRecords } = useTimeSheet(userId, {
         startDate: dateRange.start,
         endDate: dateRange.end,
     });

@@ -63,7 +63,7 @@ export default function TimeSheets({
                         <div key={timeSheet.id} className="bg-primary-100 rounded-md p-2">
                             <div className="flex justify-between items-center text-xs">
                                 <div className="font-medium text-gray-800">
-                                    {timeSheet.staffName || "Chưa đặt tên"}
+                                    {timeSheet.name || "Chưa đặt tên"}
                                 </div>
 
                                 <div className="flex items-center gap-x-2">

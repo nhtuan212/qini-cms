@@ -5,11 +5,11 @@ import { URL } from "@/constants";
 import { CreateSalaryProps, SalaryListProps, SalaryParams, SalaryProps } from "@/types";
 
 export const useSalary = (params?: SalaryParams) => {
-    const { staffId, ...queryParams } = params || {};
+    const { userId, ...queryParams } = params || {};
 
     const queryClient = useQueryClient();
 
-    const baseEndpoint = staffId ? `${URL.SALARY}${URL.STAFF}/${staffId}` : URL.SALARY;
+    const baseEndpoint = userId ? `${URL.SALARY}${URL.USER}/${userId}` : URL.SALARY;
     const endpoint = buildParamUrl(baseEndpoint, queryParams);
 
     // GET

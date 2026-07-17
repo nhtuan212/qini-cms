@@ -10,14 +10,14 @@ interface useTimeSheetProps {
     endDate?: string | CalendarDate;
 }
 
-type CreateTimeSheet = Pick<TimesheetData, "staffId" | "shiftId" | "targetShiftId" | "checkIn">;
+type CreateTimeSheet = Pick<TimesheetData, "userId" | "shiftId" | "targetShiftId" | "checkIn">;
 
 interface updateTimeSheetProps {
     id: TimesheetData["id"];
     params: Pick<TimesheetData, "checkOut" | "workingHours">;
 }
 
-export const useTimeSheet = (staffId?: TimesheetData["staffId"], params?: useTimeSheetProps) => {
+export const useTimeSheet = (userId?: TimesheetData["userId"], params?: useTimeSheetProps) => {
     const queryClient = useQueryClient();
     const queryKey = ["timeSheet"];
     const endpoint = URL.TIME_SHEET;
@@ -48,14 +48,14 @@ export const useTimeSheet = (staffId?: TimesheetData["staffId"], params?: useTim
         isFetching,
         data: timeSheetRecords = {} as TimesheetRecordProps,
     } = useQuery<TimesheetRecordProps, Error, TimesheetRecordProps>({
-        queryKey: [...queryKey, staffId, params],
+        queryKey: [...queryKey, userId, params],
         queryFn: () =>
             fetchData({
-                endpoint: `${endpoint}/staff/${staffId}${queryString}`,
+                endpoint: `${endpoint}/user/${userId}${queryString}`,
             }).then(res => convertKeysToCamelCase(res)),
-        enabled: !!staffId, // fetch when has staffId
-        select: ({ staffName, salary, totalTarget, totalWorkingHours, data }) => ({
-            staffName,
+        enabled: !!userId, // fetch when has userId
+        select: ({ name, salary, totalTarget, totalWorkingHours, data }) => ({
+            name,
             salary,
             totalTarget,
             totalWorkingHours,

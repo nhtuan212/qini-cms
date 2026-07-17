@@ -20,8 +20,8 @@ export default function Salary({ staff }: { staff?: StaffProps }) {
     const columns = useSalaryColumn();
 
     const salaryParams = useMemo((): SalaryParams | undefined => {
-        if (staff?.id) {
-            return { staffId: staff.id };
+        if (staff?.userId) {
+            return { userId: staff.userId };
         }
 
         const startDate = searchParams.get("startDate");

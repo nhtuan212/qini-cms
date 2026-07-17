@@ -119,7 +119,7 @@ export default function SalaryCalculator({
             });
 
             reset({
-                staffId: getValues("staffId"),
+                userId: getValues("userId"),
                 salary: getValues("salary"),
                 dateRange: getValues("dateRange"),
             });
@@ -137,7 +137,7 @@ export default function SalaryCalculator({
 
                 <Controller
                     control={control}
-                    name="staffId"
+                    name="userId"
                     rules={{
                         required: {
                             value: true,
@@ -148,20 +148,20 @@ export default function SalaryCalculator({
                         <Select
                             label={TEXT.SELECT_STAFF}
                             selectedKeys={[field.value]}
-                            isInvalid={!!errors?.staffId}
-                            errorMessage={<ErrorMessage errors={errors} name={"staffId"} />}
+                            isInvalid={!!errors?.userId}
+                            errorMessage={<ErrorMessage errors={errors} name={"userId"} />}
                             onSelectionChange={value => {
-                                const staffId = value.currentKey as string;
+                                const userId = value.currentKey as string;
 
-                                field.onChange(staffId);
+                                field.onChange(userId);
 
                                 reset({
-                                    staffId: getValues("staffId"),
+                                    userId: getValues("userId"),
                                     salary: getValues("salary"),
                                     dateRange: getValues("dateRange"),
                                 });
 
-                                const currentStaff = staffs.find(staff => staff.id === staffId);
+                                const currentStaff = staffs.find(staff => staff.userId === userId);
                                 if (!currentStaff) return null;
 
                                 // zustand store
@@ -169,11 +169,11 @@ export default function SalaryCalculator({
 
                                 // Use watched salary for the changes
                                 setValue("salary", currentStaff.salary || 25000);
-                                setValue("staffId", staffId);
+                                setValue("userId", userId);
                             }}
                         >
                             {orderedStaffByActive.map(staff => (
-                                <SelectItem key={staff.id}>
+                                <SelectItem key={staff.userId}>
                                     {`${staff.name} ${staff.isActive ? "" : `(${TEXT.OFF_FROM} ${formatDate(staff.updatedAt)})`}`}
                                 </SelectItem>
                             ))}

@@ -9,7 +9,7 @@ import { calculateWorkingHours, isEmpty, parseTimeString } from "@/utils";
 import { TEXT } from "@/constants";
 import { TargetShiftProps, TimesheetData } from "@/types";
 
-type TimeSheetForm = Pick<TimesheetData, "staffId" | "checkIn" | "checkOut">;
+type TimeSheetForm = Pick<TimesheetData, "userId" | "checkIn" | "checkOut">;
 
 export default function TimeSheetModal({
     currentTimeSheet,
@@ -32,7 +32,7 @@ export default function TimeSheetModal({
 
     //** React hook form */
     const defaultValues: TimeSheetForm = {
-        staffId: isUpdate ? currentTimeSheet?.staffId : "",
+        userId: isUpdate ? currentTimeSheet?.userId : "",
         checkIn: isUpdate ? currentTimeSheet?.checkIn : targetShift.startTime,
         checkOut: isUpdate ? currentTimeSheet?.checkOut : targetShift.endTime,
     };
@@ -46,10 +46,10 @@ export default function TimeSheetModal({
     } = useForm<TimeSheetForm>({ values: defaultValues });
 
     const onSubmit = async (data: TimeSheetForm) => {
-        const { staffId, checkIn, checkOut } = data;
+        const { userId, checkIn, checkOut } = data;
 
         const result = {
-            staffId,
+            userId,
             checkIn,
             checkOut,
             workingHours: calculateWorkingHours(checkIn, checkOut),
@@ -78,7 +78,7 @@ export default function TimeSheetModal({
             <div className="max-h-[90vh] flex flex-col gap-8 overflow-auto">
                 <div className="relative w-full flex justify-between items-center gap-2">
                     <Controller
-                        name={"staffId"}
+                        name={"userId"}
                         control={control}
                         rules={{
                             required: TEXT.IS_REQUIRED,
@@ -87,18 +87,18 @@ export default function TimeSheetModal({
                             return (
                                 <Autocomplete
                                     label={TEXT.STAFF}
-                                    defaultSelectedKey={currentTimeSheet?.staffId || field.value}
+                                    defaultSelectedKey={currentTimeSheet?.userId || field.value}
                                     {...field}
-                                    isInvalid={!!errors?.staffId}
+                                    isInvalid={!!errors?.userId}
                                     onSelectionChange={field.onChange}
                                     errorMessage={
-                                        errors?.staffId && (
-                                            <ErrorMessage errors={errors} name={"staffId"} />
+                                        errors?.userId && (
+                                            <ErrorMessage errors={errors} name={"userId"} />
                                         )
                                     }
                                 >
                                     {staffs.map(item => (
-                                        <AutocompleteItem key={item.id}>
+                                        <AutocompleteItem key={item.userId}>
                                             {item.name}
                                         </AutocompleteItem>
                                     ))}

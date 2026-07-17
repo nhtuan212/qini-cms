@@ -36,7 +36,11 @@ export const authCredentials = [
                         break;
                 }
 
-                return res.data;
+                // Lần đầu đăng nhập: BE trả { isFirstLogin, createPasswordToken }
+                // (chưa có accessToken). Trả về session "pending" mang theo token
+                // + username để trang set-password tạo mật khẩu rồi đăng nhập lại.
+                // Trường hợp thường: res.data có { accessToken, role, ...user }.
+                return { ...res.data, username: credentials?.username };
             });
         },
     }),

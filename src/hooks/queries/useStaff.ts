@@ -8,7 +8,7 @@ type UpdateStaffProps = { id: StaffProps["id"]; params: Partial<StaffProps> };
 
 export const useStaff = () => {
     const queryClient = useQueryClient();
-    const endpoint = URL.STAFF;
+    const endpoint = URL.EMPLOYEE;
     const queryKey = ["staff"];
 
     // Get staff
@@ -43,22 +43,6 @@ export const useStaff = () => {
         },
     });
 
-    // Validate staff password
-    const {
-        isPending: isValidation,
-        isIdle,
-        mutateAsync: validateStaffPassword,
-    } = useMutation<StaffProps, Error, Pick<StaffProps, "id" | "password">>({
-        mutationFn: ({ id, password }) =>
-            fetchData({
-                endpoint: `${URL.STAFF}/${id}/validate-password`,
-                options: {
-                    method: "POST",
-                    body: JSON.stringify({ password }),
-                },
-            }).then(res => res),
-    });
-
     // Update Staff
     const { isPending: isUpdating, mutateAsync: updateStaff } = useMutation<
         StaffProps,
@@ -67,7 +51,7 @@ export const useStaff = () => {
     >({
         mutationFn: ({ id, params }) =>
             fetchData({
-                endpoint: `${URL.STAFF}/${id}`,
+                endpoint: `${endpoint}/${id}`,
                 options: {
                     method: "PUT",
                     body: JSON.stringify(params),
@@ -88,7 +72,7 @@ export const useStaff = () => {
     >({
         mutationFn: id =>
             fetchData({
-                endpoint: `${URL.STAFF}/${id}/in-active`,
+                endpoint: `${endpoint}/${id}/in-active`,
                 options: {
                     method: "PUT",
                 },
@@ -115,7 +99,7 @@ export const useStaff = () => {
     >({
         mutationFn: id =>
             fetchData({
-                endpoint: `${URL.STAFF}/${id}`,
+                endpoint: `${endpoint}/${id}`,
                 options: {
                     method: "DELETE",
                 },
@@ -136,10 +120,6 @@ export const useStaff = () => {
         isCreating,
         createStaff,
 
-        isValidation,
-        isIdle,
-        validateStaffPassword,
-
         isUpdating,
         updateStaff,
 
@@ -149,13 +129,6 @@ export const useStaff = () => {
         isDeleting,
         deleteStaff,
 
-        isLoading:
-            isPending ||
-            isFetching ||
-            isCreating ||
-            isValidation ||
-            isUpdating ||
-            isInactive ||
-            isDeleting,
+        isLoading: isPending || isFetching || isCreating || isUpdating || isInactive || isDeleting,
     };
 };

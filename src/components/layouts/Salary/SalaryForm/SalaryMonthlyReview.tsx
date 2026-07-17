@@ -51,7 +51,7 @@ export default function SalaryMonthlyReview({ timeSheetRecords, watch }: SalaryM
 
                     <div className="flex justify-between items-center gap-2">
                         <p className="text-gray-500">{TEXT.STAFF_NAME}</p>
-                        <b>{timeSheetRecords.staffName}</b>
+                        <b>{timeSheetRecords.name}</b>
                     </div>
 
                     <div className="flex justify-between items-center gap-2">

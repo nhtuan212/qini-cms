@@ -31,11 +31,13 @@ export const STAFF = {
 export const URL = {
     HOME: "/",
     LOGIN: "/login",
+    LOGIN_CREATE_PASSWORD: "/login/create-password",
     TARGET: "/target",
     TARGET_SHIFT: "/target-shift",
     TIME_SHEET: "/time-sheet",
     USER: "/user",
     STAFF: "/staff",
+    EMPLOYEE: "/employee",
     SHIFT: "/shift",
     SALARY: "/salary",
     INVOICE: "/invoice",
@@ -46,6 +48,7 @@ export const URL = {
 export const ROUTE = {
     HOME: "/",
     LOGIN: "/login",
+    SET_PASSWORD: "/user/set-password",
     TARGET: "/target",
     WORK: "/work",
     TARGET_SHIFT: "/target-shift",

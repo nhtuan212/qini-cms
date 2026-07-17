@@ -5,10 +5,18 @@ import { authCredentials } from "./authCredentials";
 declare module "next-auth" {
     interface User {
         role?: string;
+        accessToken?: string;
+        isFirstLogin?: boolean;
+        createPasswordToken?: string;
+        username?: string;
     }
     interface Session {
         user: {
             role?: string;
+            accessToken?: string;
+            isFirstLogin?: boolean;
+            createPasswordToken?: string;
+            username?: string;
         } & DefaultSession["user"];
     }
 }

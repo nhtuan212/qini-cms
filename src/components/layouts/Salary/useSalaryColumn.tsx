@@ -21,7 +21,7 @@ export default function useSalaryColumn() {
             key: TEXT.STAFF,
             name: TEXT.STAFF,
             className: "min-w-24",
-            content: (params: { row: SalaryProps }) => params.row.staffName,
+            content: (params: { row: SalaryProps }) => params.row.employeeName,
         },
         {
             key: TEXT.SALARY_PERIOD,
@@ -86,7 +86,7 @@ export default function useSalaryColumn() {
                         onPress={() =>
                             getModal({
                                 isOpen: true,
-                                modalHeader: params.row.staffName,
+                                modalHeader: params.row.employeeName,
                                 modalBody: (
                                     <SalaryTotal {...params.row} target={params.row.target * 100} />
                                 ),

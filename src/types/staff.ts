@@ -1,5 +1,6 @@
 export interface StaffProps {
     id: string;
+    userId: string;
     name: string;
     salary: number;
     salaryType: "HOURLY" | "MONTHLY";

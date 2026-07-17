@@ -28,7 +28,7 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
     const { createTarget, targets } = useTarget();
     const { shifts } = useShift();
     const { isLoading, timeSheetRecords, createTimeSheet, updateTimeSheet, deleteTimeSheet } =
-        useTimeSheet(staff.id, {
+        useTimeSheet(staff.userId, {
             startDate: formatDate(new Date(), "YYYY-MM-DD"),
         });
 
@@ -123,7 +123,7 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
         }
 
         return createTimeSheet({
-            staffId: staff.id,
+            userId: staff.userId,
             shiftId: selectedShift,
             targetShiftId,
             checkIn: formatTime(),
