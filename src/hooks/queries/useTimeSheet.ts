@@ -14,7 +14,7 @@ type CreateTimeSheet = Pick<TimesheetData, "userId" | "shiftId" | "targetShiftId
 
 interface updateTimeSheetProps {
     id: TimesheetData["id"];
-    params: Pick<TimesheetData, "checkOut" | "workingHours">;
+    params: Pick<TimesheetData, "checkOut">;
 }
 
 export const useTimeSheet = (userId?: TimesheetData["userId"], params?: useTimeSheetProps) => {

@@ -9,14 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useShift, useTarget, useTimeSheet } from "@/hooks";
-import {
-    calculateWorkingHours,
-    formatDate,
-    formatTime,
-    getCurrentLocation,
-    isShiftActive,
-    verifyLocation,
-} from "@/utils";
+import { formatDate, formatTime, isShiftActive } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
 import { EmployeeProps } from "@/types";
 
@@ -75,49 +68,32 @@ export default function RecordTimeSheet({ employee }: { employee: EmployeeProps 
             return;
         }
 
-        // Validate location
-        const { lat, lng } = await getCurrentLocation();
-        const locationVerification = verifyLocation(lat, lng);
-
-        if (!locationVerification.isValid && profile?.role !== ROLE.ADMIN) {
-            setError(locationVerification.message);
-            return;
-        }
-
         // Check today target
-        let target = todayTarget;
-
-        if (!target) {
-            target = await createTarget({
-                name: TEXT.TARGET,
-                targetAt: todayStr,
-            });
-        }
+        const target =
+            todayTarget || (await createTarget({ name: TEXT.TARGET, targetAt: todayStr }));
 
         const targetShiftId = target.targetShifts.find(
             shift => shift.shiftId === selectedShift,
         )?.id;
 
         if (!targetShiftId) {
-            setError(TEXT.ERROR);
-            return;
+            return setError(TEXT.ERROR);
         }
 
         if (type === "checkOut") {
-            const currentTimeSheet = timeSheetRecords?.data.find(
+            const current = timeSheetRecords?.data.find(
                 item => item.shiftId === selectedShift && !item.checkOut,
             );
 
-            if (!currentTimeSheet) {
+            if (!current) {
                 setError(TEXT.ERROR);
                 return;
             }
 
             return updateTimeSheet({
-                id: currentTimeSheet.id,
+                id: current.id,
                 params: {
                     checkOut: formatTime(),
-                    workingHours: calculateWorkingHours(currentTimeSheet.checkIn, formatTime()),
                 },
             });
         }

@@ -5,7 +5,7 @@ import { TimeInput } from "@/components/Input";
 import { useModalStore } from "@/stores/useModalStore";
 import { useEmployee, useTimeSheet } from "@/hooks";
 import { Controller, useForm } from "react-hook-form";
-import { calculateWorkingHours, isEmpty, parseTimeString } from "@/utils";
+import { isEmpty, parseTimeString } from "@/utils";
 import { TEXT } from "@/constants";
 import { TargetShiftProps, TimesheetData } from "@/types";
 
@@ -52,7 +52,6 @@ export default function TimeSheetModal({
             userId,
             checkIn,
             checkOut,
-            workingHours: calculateWorkingHours(checkIn, checkOut),
             shiftId: targetShift.shiftId,
             targetShiftId: targetShift.id,
             date: targetAt,
