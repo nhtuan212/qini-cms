@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import Header from "./Header";
+import NavMenu from "./NavMenu";
 import Alert from "../Alert";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "../Modal";
 import { Drawer, DrawerHeader, DrawerBody, DrawerFooter } from "../Drawer";
@@ -35,10 +36,19 @@ export default function MainLayout({
 
     //** Render */
     return (
-        <main className="h-screen">
+        <main className="flex flex-col h-screen">
             <Header />
 
-            <section className="container py-4">{children}</section>
+            <div className="flex flex-1 min-h-0">
+                {/* Persistent sidebar on lg+ screens, pushes content to the right */}
+                <aside className="hidden lg:block w-64 shrink-0 overflow-y-auto border-r border-default-200 px-3 py-4">
+                    <NavMenu />
+                </aside>
+
+                <section className="container flex-1 min-h-0 overflow-y-auto py-4">
+                    {children}
+                </section>
+            </div>
 
             <Modal
                 isOpen={modal.isOpen}

@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import {
     BanknotesIcon,
     CalendarDateRangeIcon,
@@ -6,7 +7,14 @@ import {
 } from "@heroicons/react/24/outline";
 import { ROLE, ROUTE, TEXT } from "@/constants";
 
-export const MENU = [
+export interface MenuItem {
+    url: string;
+    label: string;
+    icon?: ReactNode;
+    roles?: string[];
+}
+
+export const MENU: MenuItem[] = [
     {
         url: ROUTE.TARGET,
         label: TEXT.TARGET,

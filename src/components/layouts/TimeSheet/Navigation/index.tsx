@@ -8,41 +8,51 @@ import Card from "@/components/Card";
 import { CalendarIcon, ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
 import { useEmployeeStore } from "@/stores/useEmployeeStore";
 import { TEXT } from "@/constants";
+import { EmployeeProps } from "@/types";
 
-export default function AttendanceNavigation() {
+interface AttendanceNavigationProps {
+    // Self check-in truyền employee = profile; luồng admin bỏ trống để lấy selectedEmployee.
+    employee?: EmployeeProps;
+}
+
+export default function AttendanceNavigation({
+    employee: employeeProp,
+}: AttendanceNavigationProps) {
     //** States */
     const [activeTab, setActiveTab] = useState("record");
 
     //** Stores */
     const { selectedEmployee } = useEmployeeStore();
 
-    if (!selectedEmployee) return null;
-
     //** Variables */
+    const employee = employeeProp ?? selectedEmployee;
+
+    if (!employee) return null;
+
     const tabs = [
         {
             label: TEXT.TIME_SHEET,
             icon: ClockIcon,
             value: "record",
-            component: <RecordTimeSheet employee={selectedEmployee} />,
+            component: <RecordTimeSheet employee={employee} />,
         },
         {
             label: TEXT.TARGET,
             icon: GiftIcon,
             value: "detail",
-            component: <EmployeeDetail employee={selectedEmployee} />,
+            component: <EmployeeDetail employee={employee} />,
         },
         {
             label: TEXT.SALARY,
             icon: CurrencyDollarIcon,
             value: "salary",
-            component: <Salary employee={selectedEmployee} />,
+            component: <Salary employee={employee} />,
         },
         {
             label: TEXT.WORK_ASSIGNMENT,
             icon: CalendarIcon,
             value: "work",
-            component: <WorkAssignment employee={selectedEmployee} />,
+            component: <WorkAssignment employee={employee} />,
         },
     ];
 

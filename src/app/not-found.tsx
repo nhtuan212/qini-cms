@@ -7,7 +7,7 @@ import { ROUTE } from "@/constants";
 
 export default function NotFound() {
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center">
+        <div className="min-h-full flex flex-col justify-center items-center">
             <div className="max-w-md w-full space-y-4 text-center">
                 <ShoppingBagIcon className="w-16 h-16 text-gray-400 mx-auto" />
 

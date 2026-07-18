@@ -9,6 +9,8 @@ declare module "next-auth" {
         isFirstLogin?: boolean;
         createPasswordToken?: string;
         username?: string;
+        userId?: string;
+        isTarget?: boolean;
     }
     interface Session {
         user: {
@@ -17,6 +19,8 @@ declare module "next-auth" {
             isFirstLogin?: boolean;
             createPasswordToken?: string;
             username?: string;
+            userId?: string;
+            isTarget?: boolean;
         } & DefaultSession["user"];
     }
 }
