@@ -2,7 +2,7 @@ import SalaryHourlyReview from "./SalaryHourlyReview";
 import SalaryCalculator from "./SalaryCalculator";
 import SalaryMonthlyReview from "./SalaryMonthlyReview";
 import { CalendarDate, RangeValue } from "@heroui/react";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { useEmployeeStore } from "@/stores/useEmployeeStore";
 import { useTimeSheet } from "@/hooks";
 import { useForm } from "react-hook-form";
 import { getDateTime } from "@/utils";
@@ -21,7 +21,7 @@ export interface FormSalaryProps {
 
 export default function SalaryForm() {
     //** Stores */
-    const { selectedStaff } = useStaffStore();
+    const { selectedEmployee } = useEmployeeStore();
 
     //** React hook form */
     const defaultValues = {
@@ -54,7 +54,7 @@ export default function SalaryForm() {
 
     //** Render */
     const renderSalaryReview = () => {
-        if (selectedStaff?.salaryType === SalaryTypeProps.HOURLY) {
+        if (selectedEmployee?.salaryType === SalaryTypeProps.HOURLY) {
             return <SalaryHourlyReview timeSheetRecords={timeSheetRecords} watch={watch} />;
         }
 

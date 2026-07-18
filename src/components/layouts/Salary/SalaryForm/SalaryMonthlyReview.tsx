@@ -46,11 +46,11 @@ export default function SalaryMonthlyReview({ timeSheetRecords, watch }: SalaryM
             <div className="relative h-full space-y-4">
                 <Card className="space-y-4 p-4">
                     <h3 className="flex items-center gap-2 font-semibold">
-                        {TEXT.STAFF_INFORMATION}
+                        {TEXT.EMPLOYEE_INFORMATION}
                     </h3>
 
                     <div className="flex justify-between items-center gap-2">
-                        <p className="text-gray-500">{TEXT.STAFF_NAME}</p>
+                        <p className="text-gray-500">{TEXT.EMPLOYEE_NAME}</p>
                         <b>{timeSheetRecords.name}</b>
                     </div>
 

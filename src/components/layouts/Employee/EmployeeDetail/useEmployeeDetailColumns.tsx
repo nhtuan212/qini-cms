@@ -3,7 +3,7 @@ import { formatCurrency, formatDate } from "@/utils";
 import { TimesheetData } from "@/types";
 
 //** Custom hook */
-export default function useStaffDetailColumns() {
+export default function useEmployeeDetailColumns() {
     const columns = [
         {
             key: "createAt",

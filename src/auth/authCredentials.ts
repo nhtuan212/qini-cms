@@ -29,17 +29,10 @@ export const authCredentials = [
                     }),
                 },
             }).then(res => {
-                switch (res.status) {
-                    case STATUS_CODE.UNAUTHORIZED:
-                        throw new InvalidLogin401();
-                    default:
-                        break;
+                if (res.status === STATUS_CODE.UNAUTHORIZED || !res.data) {
+                    throw new InvalidLogin401();
                 }
 
-                // Lần đầu đăng nhập: BE trả { isFirstLogin, createPasswordToken }
-                // (chưa có accessToken). Trả về session "pending" mang theo token
-                // + username để trang set-password tạo mật khẩu rồi đăng nhập lại.
-                // Trường hợp thường: res.data có { accessToken, role, ...user }.
                 return { ...res.data, username: credentials?.username };
             });
         },

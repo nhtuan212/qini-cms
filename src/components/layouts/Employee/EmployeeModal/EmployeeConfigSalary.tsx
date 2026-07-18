@@ -7,22 +7,22 @@ import Switch from "@/components/Switch";
 import { Control, Controller, UseFormWatch } from "react-hook-form";
 import { SALARY_TYPE } from "@/apis";
 import { TEXT } from "@/constants";
-import { FormStaffProps } from ".";
+import { FormEmployeeProps } from ".";
 import { SalaryTypeProps } from "@/types";
 
-interface StaffConfigSalaryProps {
-    control: Control<FormStaffProps>;
-    watch: UseFormWatch<FormStaffProps>;
+interface EmployeeConfigSalaryProps {
+    control: Control<FormEmployeeProps>;
+    watch: UseFormWatch<FormEmployeeProps>;
 }
 
-export default function StaffConfigSalary({ control, watch }: StaffConfigSalaryProps) {
+export default function EmployeeConfigSalary({ control, watch }: EmployeeConfigSalaryProps) {
     //** Variables */
     const salaryTypeWatched = watch("salaryType");
 
     //** Render */
     return (
         <Card className="flex flex-col border p-3 space-y-4">
-            <h3 className="text-gray-900 font-semibold">{TEXT.STAFF_SALARY}</h3>
+            <h3 className="text-gray-900 font-semibold">{TEXT.EMPLOYEE_SALARY}</h3>
 
             <Controller
                 name="salaryType"

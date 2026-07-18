@@ -10,9 +10,9 @@ import { Accordion, AccordionItem } from "@/components/Accordion";
 import { useSalary } from "@/hooks";
 import { formatCurrency, formatDate } from "@/utils";
 import { ROUTE, TEXT } from "@/constants";
-import { SalaryParams, StaffProps } from "@/types";
+import { SalaryParams, EmployeeProps } from "@/types";
 
-export default function Salary({ staff }: { staff?: StaffProps }) {
+export default function Salary({ employee }: { employee?: EmployeeProps }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
@@ -20,8 +20,8 @@ export default function Salary({ staff }: { staff?: StaffProps }) {
     const columns = useSalaryColumn();
 
     const salaryParams = useMemo((): SalaryParams | undefined => {
-        if (staff?.userId) {
-            return { userId: staff.userId };
+        if (employee?.userId) {
+            return { userId: employee.userId };
         }
 
         const startDate = searchParams.get("startDate");
@@ -32,7 +32,7 @@ export default function Salary({ staff }: { staff?: StaffProps }) {
         }
 
         return undefined; // fetch all
-    }, [staff, searchParams]);
+    }, [employee, searchParams]);
 
     //** Queries */
     const { isLoading, salaries, totalAmount, period } = useSalary(salaryParams);

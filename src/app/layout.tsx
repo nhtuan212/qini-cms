@@ -35,8 +35,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
     //** Render */
     const RenderMainLayout = () => {
-        // Session "pending" (first-login, chưa tạo mật khẩu) không dựng layout
-        // chính — chỉ render trang set-password để tránh gọi query cần token.
         if (session && !session.user?.isFirstLogin) {
             return <MainLayout session={session}>{children}</MainLayout>;
         }

@@ -1,7 +1,7 @@
 import SalaryTotal from "../SalaryTotal";
 import Card from "@/components/Card";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { useEmployeeStore } from "@/stores/useEmployeeStore";
 import { formatCurrency } from "@/utils";
 import { TEXT } from "@/constants";
 import { FormSalaryProps } from ".";
@@ -15,9 +15,9 @@ interface SalaryHourlyReviewProps {
 
 export default function SalaryHourlyReview({ timeSheetRecords, watch }: SalaryHourlyReviewProps) {
     //** Stores */
-    const { selectedStaff } = useStaffStore();
+    const { selectedEmployee } = useEmployeeStore();
 
-    if (!selectedStaff) return null;
+    if (!selectedEmployee) return null;
 
     //** Variables */
     const salary = watch("salary");
@@ -36,12 +36,12 @@ export default function SalaryHourlyReview({ timeSheetRecords, watch }: SalaryHo
             <div className="relative h-full space-y-4">
                 <Card className="space-y-4 p-4">
                     <h3 className="flex items-center gap-2 font-semibold">
-                        {TEXT.STAFF_INFORMATION}
+                        {TEXT.EMPLOYEE_INFORMATION}
                     </h3>
 
                     <div className="flex justify-between items-center gap-2">
-                        <p className="text-gray-500">{TEXT.STAFF_NAME}</p>
-                        <b>{selectedStaff.name}</b>
+                        <p className="text-gray-500">{TEXT.EMPLOYEE_NAME}</p>
+                        <b>{selectedEmployee.name}</b>
                     </div>
 
                     <div className="flex justify-between items-center gap-2">

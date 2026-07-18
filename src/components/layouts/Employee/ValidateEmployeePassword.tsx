@@ -2,20 +2,20 @@
 
 import TimeSheet from "../TimeSheet";
 import Button from "@/components/Button";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { useEmployeeStore } from "@/stores/useEmployeeStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { TEXT } from "@/constants";
 
-export default function ValidateStaffPassword() {
+export default function ValidateEmployeePassword() {
     //** Stores */
     const { getModal } = useModalStore();
-    const { selectedStaff } = useStaffStore();
+    const { selectedEmployee } = useEmployeeStore();
 
-    if (!selectedStaff) return null;
+    if (!selectedEmployee) return null;
 
     //** Functions */
     // TODO(auth): Cổng mật khẩu theo ca đã bị vô hiệu hoá tạm thời.
-    // BE đã bỏ POST /staff/:id/validate-password và chuyển auth sang luồng
+    // BE đã bỏ POST /employee/:id/validate-password và chuyển auth sang luồng
     // login per-employee (createPasswordToken → /login/create-password).
     // Khi triển khai luồng login mới, thay nút này bằng xác thực người dùng
     // thật thay vì mở thẳng bảng chấm công.
@@ -30,7 +30,7 @@ export default function ValidateStaffPassword() {
             size: "3xl",
             modalHeader: (
                 <h3 className="sm:text-2xl text-lg font-bold text-gray-800">
-                    {selectedStaff?.name}
+                    {selectedEmployee?.name}
                 </h3>
             ),
             modalBody: <TimeSheet />,

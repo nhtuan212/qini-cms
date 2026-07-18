@@ -1,13 +1,12 @@
-export interface StaffProps {
+export interface EmployeeProps {
     id: string;
     userId: string;
     name: string;
+    password: string;
     salary: number;
     salaryType: "HOURLY" | "MONTHLY";
     isTarget: boolean;
     isActive: boolean;
-    isFirstLogin: boolean;
-    password: string;
     createdAt: string;
     updatedAt: string;
 }

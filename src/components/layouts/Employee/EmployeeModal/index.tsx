@@ -1,35 +1,31 @@
 "use client";
 
 import { useEffect } from "react";
-import StaffConfigSalary from "./StaffConfigSalary";
-import StaffConfigInformation from "./StaffConfigInformation";
+import EmployeeConfigSalary from "./EmployeeConfigSalary";
+import EmployeeConfigInformation from "./EmployeeConfigInformation";
 import Button from "@/components/Button";
 import { useForm } from "react-hook-form";
 import { useModalStore } from "@/stores/useModalStore";
-import { useStaff } from "@/hooks";
+import { useEmployee } from "@/hooks";
 import { encryptPasswordRSA } from "@/utils";
-import { TEXT } from "@/constants";
-import { StaffProps } from "@/types";
+import { DEFAULT_PASSWORD, TEXT } from "@/constants";
+import { EmployeeProps } from "@/types";
 
-export type FormStaffProps = Pick<
-    StaffProps,
-    "name" | "salary" | "password" | "salaryType" | "isTarget"
->;
+export type FormEmployeeProps = Pick<EmployeeProps, "name" | "salary" | "salaryType" | "isTarget">;
 
-export default function StaffModal({ staff }: { staff?: StaffProps }) {
+export default function EmployeeModal({ employee }: { employee?: EmployeeProps }) {
     //** Stores */
     const { getModal } = useModalStore();
 
     //** Queries */
-    const { createStaff, updateStaff } = useStaff();
+    const { createEmployee, updateEmployee } = useEmployee();
 
     //** React hook form */
     const defaultValues = {
-        name: staff?.name || "",
-        password: "",
-        salary: staff?.salary || 0,
-        salaryType: staff?.salaryType || "HOURLY",
-        isTarget: staff?.isTarget || false,
+        name: employee?.name || "",
+        salary: employee?.salary || 0,
+        salaryType: employee?.salaryType || "HOURLY",
+        isTarget: employee?.isTarget || false,
     };
 
     const {
@@ -39,33 +35,35 @@ export default function StaffModal({ staff }: { staff?: StaffProps }) {
         setValue,
         watch,
         formState: { errors },
-    } = useForm<FormStaffProps>({
+    } = useForm<FormEmployeeProps>({
         values: defaultValues,
         criteriaMode: "all",
     });
 
-    const onSubmit = async (data: FormStaffProps) => {
+    const onSubmit = async (data: FormEmployeeProps) => {
         const result = {
             name: data.name,
             salary: data.salary,
             salaryType: data.salaryType,
             isTarget: data.isTarget,
-
-            ...(data.password.trim() && {
-                password: encryptPasswordRSA(data.password),
-            }),
         };
 
-        if (staff) {
-            return updateStaff({
-                id: staff.id,
+        if (employee) {
+            return updateEmployee({
+                id: employee.id,
                 params: result,
             }).then(() => {
                 handleCloseModal();
             });
         }
 
-        return createStaff(result as FormStaffProps).then(() => {
+        // Nhân viên mới: active + password mặc định (RSA-encrypt). BE tự tạo user
+        // với isFirstLogin=true → đăng nhập lần đầu rồi qua trang set-password.
+        return createEmployee({
+            ...result,
+            isActive: true,
+            password: encryptPasswordRSA(DEFAULT_PASSWORD),
+        }).then(() => {
             handleCloseModal();
         });
     };
@@ -81,15 +79,15 @@ export default function StaffModal({ staff }: { staff?: StaffProps }) {
 
     //** Effects */
     useEffect(() => {
-        staff && setValue("name", staff.name);
-    }, [setValue, staff]);
+        employee && setValue("name", employee.name);
+    }, [setValue, employee]);
 
     //** Return */
     return (
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <div className="grid sm:grid-cols-2 gap-4">
-                <StaffConfigInformation control={control} errors={errors} />
-                <StaffConfigSalary control={control} watch={watch} />
+                <EmployeeConfigInformation control={control} errors={errors} />
+                <EmployeeConfigSalary control={control} watch={watch} />
             </div>
 
             <div className="flex flex-row-reverse gap-2">

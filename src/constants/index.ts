@@ -3,6 +3,7 @@ import { TEXT } from "./text";
 export { TEXT };
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+export const DEFAULT_PASSWORD = "123456";
 
 export const STATUS_CODE = {
     OK: 200,
@@ -36,7 +37,6 @@ export const URL = {
     TARGET_SHIFT: "/target-shift",
     TIME_SHEET: "/time-sheet",
     USER: "/user",
-    STAFF: "/staff",
     EMPLOYEE: "/employee",
     SHIFT: "/shift",
     SALARY: "/salary",
@@ -53,7 +53,7 @@ export const ROUTE = {
     WORK: "/work",
     TARGET_SHIFT: "/target-shift",
     TIME_SHEET: "/time-sheet",
-    STAFF: "/staff",
+    EMPLOYEE: "/employee",
     SALARY: "/salary",
 };
 

@@ -1,9 +1,6 @@
 import { BASE_URL, STATUS_CODE } from "@/constants";
 import { getAccessToken } from "@/auth/accessToken";
 
-// Token hết hạn/không hợp lệ → đăng xuất về trang login. Chỉ chạy ở browser,
-// khi đang có token, và không phải các endpoint đăng nhập (tránh việc nhập sai
-// mật khẩu ở màn login lại kích hoạt signOut).
 const handleUnauthorized = async () => {
     const { signOut } = await import("next-auth/react");
     await signOut({ callbackUrl: "/login" });
@@ -41,7 +38,6 @@ export const fetchData = async ({
             return res.json();
         })
         .then(body => {
-            // BE có thể trả HTTP 200 nhưng bọc mã lỗi trong body ({ status/code: 401 }).
             if (
                 shouldHandle401 &&
                 (body?.status === STATUS_CODE.UNAUTHORIZED ||
@@ -59,7 +55,7 @@ export const fetchData = async ({
 
 export * from "./queries/useSalary";
 export * from "./queries/useShift";
-export * from "./queries/useStaff";
+export * from "./queries/useEmployee";
 export * from "./queries/useTarget";
 export * from "./queries/useTargetShift";
 export * from "./queries/useTimeSheet";

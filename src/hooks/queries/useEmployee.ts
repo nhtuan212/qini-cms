@@ -2,21 +2,21 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchData } from "@/hooks";
 import { convertKeysToCamelCase } from "@/utils";
 import { URL } from "@/constants";
-import { StaffProps } from "@/types/staff";
+import { EmployeeProps } from "@/types/employee";
 
-type UpdateStaffProps = { id: StaffProps["id"]; params: Partial<StaffProps> };
+type UpdateEmployeeProps = { id: EmployeeProps["id"]; params: Partial<EmployeeProps> };
 
-export const useStaff = () => {
+export const useEmployee = () => {
     const queryClient = useQueryClient();
     const endpoint = URL.EMPLOYEE;
-    const queryKey = ["staff"];
+    const queryKey = ["employee"];
 
-    // Get staff
+    // Get employee
     const {
         isPending,
         isFetching,
-        data: staffs = [],
-    } = useQuery<StaffProps[]>({
+        data: employees = [],
+    } = useQuery<EmployeeProps[]>({
         queryKey,
         queryFn: () =>
             fetchData({
@@ -24,11 +24,10 @@ export const useStaff = () => {
             }).then(res => convertKeysToCamelCase(res.data)),
     });
 
-    // Create staff
-    const { isPending: isCreating, mutateAsync: createStaff } = useMutation<
-        StaffProps[],
+    const { isPending: isCreating, mutateAsync: createEmployee } = useMutation<
+        EmployeeProps[],
         Error,
-        Pick<StaffProps, "name" | "salary" | "password" | "salaryType" | "isTarget">
+        Pick<EmployeeProps, "name" | "salary" | "password" | "salaryType" | "isTarget" | "isActive">
     >({
         mutationFn: params =>
             fetchData({
@@ -39,15 +38,15 @@ export const useStaff = () => {
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
         onSuccess: res => {
-            queryClient.setQueryData<StaffProps[]>(queryKey, old => [res[0], ...(old ?? [])]);
+            queryClient.setQueryData<EmployeeProps[]>(queryKey, old => [res[0], ...(old ?? [])]);
         },
     });
 
-    // Update Staff
-    const { isPending: isUpdating, mutateAsync: updateStaff } = useMutation<
-        StaffProps,
+    // Update Employee
+    const { isPending: isUpdating, mutateAsync: updateEmployee } = useMutation<
+        EmployeeProps,
         Error,
-        UpdateStaffProps
+        UpdateEmployeeProps
     >({
         mutationFn: ({ id, params }) =>
             fetchData({
@@ -58,17 +57,17 @@ export const useStaff = () => {
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
         onSuccess: res => {
-            queryClient.setQueriesData({ queryKey }, (prev: StaffProps[]) =>
-                prev?.map(staff => (staff.id === res.id ? res : staff)),
+            queryClient.setQueriesData({ queryKey }, (prev: EmployeeProps[]) =>
+                prev?.map(employee => (employee.id === res.id ? res : employee)),
             );
         },
     });
 
-    // In-active staff
-    const { isPending: isInactive, mutateAsync: inActiveStaff } = useMutation<
-        StaffProps,
+    // In-active employee
+    const { isPending: isInactive, mutateAsync: inActiveEmployee } = useMutation<
+        EmployeeProps,
         Error,
-        StaffProps["id"]
+        EmployeeProps["id"]
     >({
         mutationFn: id =>
             fetchData({
@@ -78,24 +77,24 @@ export const useStaff = () => {
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
         onSuccess: res => {
-            queryClient.setQueriesData({ queryKey }, (prev: StaffProps[]) => {
-                return prev?.map(staff =>
-                    staff.id === res.id
+            queryClient.setQueriesData({ queryKey }, (prev: EmployeeProps[]) => {
+                return prev?.map(employee =>
+                    employee.id === res.id
                         ? {
-                              ...staff,
+                              ...employee,
                               isActive: false,
                           }
-                        : staff,
+                        : employee,
                 );
             });
         },
     });
 
-    // Delete staff
-    const { isPending: isDeleting, mutateAsync: deleteStaff } = useMutation<
-        StaffProps,
+    // Delete employee
+    const { isPending: isDeleting, mutateAsync: deleteEmployee } = useMutation<
+        EmployeeProps,
         Error,
-        StaffProps["id"]
+        EmployeeProps["id"]
     >({
         mutationFn: id =>
             fetchData({
@@ -105,29 +104,29 @@ export const useStaff = () => {
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
         onSuccess: res => {
-            // Remove staff from the list
-            queryClient.setQueriesData({ queryKey }, (prev: StaffProps[]) => {
-                return prev.filter(staff => staff.id !== res.id);
+            // Remove employee from the list
+            queryClient.setQueriesData({ queryKey }, (prev: EmployeeProps[]) => {
+                return prev.filter(employee => employee.id !== res.id);
             });
         },
     });
 
     return {
-        staffs,
+        employees,
         isPending,
         isFetching,
 
         isCreating,
-        createStaff,
+        createEmployee,
 
         isUpdating,
-        updateStaff,
+        updateEmployee,
 
         isInactive,
-        inActiveStaff,
+        inActiveEmployee,
 
         isDeleting,
-        deleteStaff,
+        deleteEmployee,
 
         isLoading: isPending || isFetching || isCreating || isUpdating || isInactive || isDeleting,
     };

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import StaffDetail from "../../Staff/StaffDetail";
+import EmployeeDetail from "../../Employee/EmployeeDetail";
 import RecordTimeSheet from "./RecordTimeSheet";
 import Salary from "../../Salary";
 import WorkAssignment from "../../Work/WorkAssignment";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { CalendarIcon, ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { useEmployeeStore } from "@/stores/useEmployeeStore";
 import { TEXT } from "@/constants";
 
 export default function AttendanceNavigation() {
@@ -14,9 +14,9 @@ export default function AttendanceNavigation() {
     const [activeTab, setActiveTab] = useState("record");
 
     //** Stores */
-    const { selectedStaff } = useStaffStore();
+    const { selectedEmployee } = useEmployeeStore();
 
-    if (!selectedStaff) return null;
+    if (!selectedEmployee) return null;
 
     //** Variables */
     const tabs = [
@@ -24,25 +24,25 @@ export default function AttendanceNavigation() {
             label: TEXT.TIME_SHEET,
             icon: ClockIcon,
             value: "record",
-            component: <RecordTimeSheet staff={selectedStaff} />,
+            component: <RecordTimeSheet employee={selectedEmployee} />,
         },
         {
             label: TEXT.TARGET,
             icon: GiftIcon,
             value: "detail",
-            component: <StaffDetail staff={selectedStaff} />,
+            component: <EmployeeDetail employee={selectedEmployee} />,
         },
         {
             label: TEXT.SALARY,
             icon: CurrencyDollarIcon,
             value: "salary",
-            component: <Salary staff={selectedStaff} />,
+            component: <Salary employee={selectedEmployee} />,
         },
         {
             label: TEXT.WORK_ASSIGNMENT,
             icon: CalendarIcon,
             value: "work",
-            component: <WorkAssignment staff={selectedStaff} />,
+            component: <WorkAssignment employee={selectedEmployee} />,
         },
     ];
 

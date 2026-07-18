@@ -42,7 +42,7 @@ export const useTimeSheet = (userId?: TimesheetData["userId"], params?: useTimeS
             }));
         });
 
-    // Get timeSheets by staff
+    // Get timeSheets by employee
     const {
         isPending,
         isFetching,
@@ -63,7 +63,7 @@ export const useTimeSheet = (userId?: TimesheetData["userId"], params?: useTimeS
         }),
     });
 
-    // Create timeSheet by staff
+    // Create timeSheet by employee
     const { isPending: isCreating, mutateAsync: createTimeSheet } = useMutation<
         TimesheetData,
         Error,
@@ -87,7 +87,7 @@ export const useTimeSheet = (userId?: TimesheetData["userId"], params?: useTimeS
         },
     });
 
-    // Update timeSheet by staff
+    // Update timeSheet by employee
     const { isPending: isUpdating, mutateAsync: updateTimeSheet } = useMutation<
         TimesheetData,
         Error,
@@ -116,7 +116,7 @@ export const useTimeSheet = (userId?: TimesheetData["userId"], params?: useTimeS
         },
     });
 
-    // Delete timeSheet by staff
+    // Delete timeSheet by employee
     const { isPending: isDeleting, mutateAsync: deleteTimeSheet } = useMutation({
         mutationFn: (id: TimesheetData["id"]) =>
             fetchData({

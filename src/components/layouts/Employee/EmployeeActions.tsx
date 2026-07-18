@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import StaffModal from "./StaffModal";
+import EmployeeModal from "./EmployeeModal";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
@@ -14,20 +13,20 @@ import {
 } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { useStaff } from "@/hooks";
+import { useEmployee } from "@/hooks";
 import { ROLE, TEXT } from "@/constants";
-import { StaffProps } from "@/types";
+import { EmployeeProps } from "@/types";
 
-export default function StaffActions({ staff }: { staff: StaffProps }) {
+export default function EmployeeActions({ employee }: { employee: EmployeeProps }) {
     //** Destructuring */
-    const { id } = staff;
+    const { id } = employee;
 
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
 
     //** Queries */
-    const { inActiveStaff, deleteStaff } = useStaff();
+    const { inActiveEmployee, deleteEmployee } = useEmployee();
 
     //** Variables */
     const disabledKeys: string[] = [];
@@ -42,24 +41,24 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
     }
 
     //** Functions */
-    const handleUpdateStaff = () => {
+    const handleUpdateEmployee = () => {
         getModal({
             isOpen: true,
             size: "3xl",
-            modalHeader: TEXT.UPDATE_STAFF,
+            modalHeader: TEXT.UPDATE_EMPLOYEE,
             isDismissable: false,
-            modalBody: <StaffModal staff={staff} />,
+            modalBody: <EmployeeModal employee={employee} />,
         });
     };
 
-    const handleInActiveStaff = (id: StaffProps["id"]) => {
+    const handleInActiveEmployee = (id: EmployeeProps["id"]) => {
         getModal({
             isOpen: true,
             modalHeader: TEXT.CONFIRM_IN_ACTIVE,
             modalBody: (
                 <ConfirmModal
                     onConfirm={async () => {
-                        await inActiveStaff(id);
+                        await inActiveEmployee(id);
                         getModal({ isOpen: false });
                     }}
                 />
@@ -67,14 +66,14 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
         });
     };
 
-    const handleDeleteStaff = (id: StaffProps["id"]) => {
+    const handleDeleteEmployee = (id: EmployeeProps["id"]) => {
         getModal({
             isOpen: true,
             modalHeader: TEXT.CONFIRM_DELETE,
             modalBody: (
                 <ConfirmModal
                     onConfirm={async () => {
-                        await deleteStaff(id);
+                        await deleteEmployee(id);
                         getModal({ isOpen: false });
                     }}
                 />
@@ -90,12 +89,12 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
                     <EllipsisVerticalIcon className="w-6" />
                 </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="Staff actions" disabledKeys={disabledKeys}>
+            <DropdownMenu aria-label="Employee actions" disabledKeys={disabledKeys}>
                 <DropdownItem
                     key="edit"
                     startContent={<PencilSquareIcon className="w-5" />}
                     textValue={TEXT.EDIT}
-                    onPress={() => handleUpdateStaff()}
+                    onPress={() => handleUpdateEmployee()}
                 >
                     {TEXT.EDIT}
                 </DropdownItem>
@@ -103,7 +102,7 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
                     key="inActive"
                     startContent={<PauseCircleIcon className="w-5" />}
                     textValue={TEXT.IN_ACTIVE}
-                    onPress={() => handleInActiveStaff(id)}
+                    onPress={() => handleInActiveEmployee(id)}
                 >
                     {TEXT.IN_ACTIVE}
                 </DropdownItem>
@@ -119,7 +118,7 @@ export default function StaffActions({ staff }: { staff: StaffProps }) {
                     key="delete"
                     startContent={<TrashIcon className="w-5" />}
                     textValue={TEXT.DELETE}
-                    onPress={() => handleDeleteStaff(id)}
+                    onPress={() => handleDeleteEmployee(id)}
                 >
                     {TEXT.DELETE}
                 </DropdownItem>

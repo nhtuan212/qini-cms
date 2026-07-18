@@ -23,7 +23,7 @@ export default function Profile() {
                     />
                 </div>
             </DropdownTrigger>
-            <DropdownMenu aria-label="Staff actions">
+            <DropdownMenu aria-label="Employee actions">
                 <DropdownItem
                     key="profile"
                     startContent={<UserCircleIcon className="w-6" />}

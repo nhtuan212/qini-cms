@@ -3,7 +3,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import { Autocomplete, AutocompleteItem } from "@/components/AutoComplete";
 import { TimeInput } from "@/components/Input";
 import { useModalStore } from "@/stores/useModalStore";
-import { useStaff, useTimeSheet } from "@/hooks";
+import { useEmployee, useTimeSheet } from "@/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { calculateWorkingHours, isEmpty, parseTimeString } from "@/utils";
 import { TEXT } from "@/constants";
@@ -24,7 +24,7 @@ export default function TimeSheetModal({
     const { getModal } = useModalStore();
 
     //** Queries */
-    const { staffs } = useStaff();
+    const { employees } = useEmployee();
     const { createTimeSheet, updateTimeSheet } = useTimeSheet();
 
     //** Variables */
@@ -86,7 +86,7 @@ export default function TimeSheetModal({
                         render={({ field }) => {
                             return (
                                 <Autocomplete
-                                    label={TEXT.STAFF}
+                                    label={TEXT.EMPLOYEE}
                                     defaultSelectedKey={currentTimeSheet?.userId || field.value}
                                     {...field}
                                     isInvalid={!!errors?.userId}
@@ -97,7 +97,7 @@ export default function TimeSheetModal({
                                         )
                                     }
                                 >
-                                    {staffs.map(item => (
+                                    {employees.map(item => (
                                         <AutocompleteItem key={item.userId}>
                                             {item.name}
                                         </AutocompleteItem>

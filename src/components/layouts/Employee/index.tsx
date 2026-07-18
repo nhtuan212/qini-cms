@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import StaffModal from "./StaffModal";
-import StaffData from "./StaffData";
+import { useMemo, useState } from "react";
+import EmployeeModal from "./EmployeeModal";
+import EmployeeData from "./EmployeeData";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import { PlusIcon } from "@heroicons/react/24/outline";
@@ -10,23 +10,23 @@ import { useModalStore } from "@/stores/useModalStore";
 import { ROLE, TEXT } from "@/constants";
 import { Tab, Tabs } from "@/components/Tab";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { useStaff } from "@/hooks";
+import { useEmployee } from "@/hooks";
 
-export default function Staff() {
+export default function Employee() {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
 
     //** Queries */
-    const { isLoading, staffs } = useStaff();
+    const { isLoading, employees } = useEmployee();
 
     //** States */
     const [active, setActive] = useState(false);
 
     //** Variables */
-    const staffActive = useMemo(() => {
-        return staffs.filter(staff => staff.isActive === active);
-    }, [staffs, active]);
+    const employeeActive = useMemo(() => {
+        return employees.filter(employee => employee.isActive === active);
+    }, [employees, active]);
 
     const disabledKeys = useMemo(() => {
         if (profile.role !== ROLE.ADMIN) {
@@ -42,14 +42,14 @@ export default function Staff() {
             {isLoading && <Loading />}
 
             <div className="flex justify-between items-center">
-                <div className="title">{TEXT.STAFF}</div>
+                <div className="title">{TEXT.EMPLOYEE}</div>
                 <Button
                     onPress={() =>
                         getModal({
                             isOpen: true,
                             size: "3xl",
-                            modalHeader: TEXT.ADD_STAFF,
-                            modalBody: <StaffModal />,
+                            modalHeader: TEXT.ADD_EMPLOYEE,
+                            modalBody: <EmployeeModal />,
                         })
                     }
                 >
@@ -65,10 +65,10 @@ export default function Staff() {
                 onSelectionChange={key => setActive(key === "active")}
             >
                 <Tab key="active" title={TEXT.ACTIVE}>
-                    <StaffData data={staffActive} />
+                    <EmployeeData data={employeeActive} />
                 </Tab>
                 <Tab key="in-active" title={TEXT.IN_ACTIVE}>
-                    <StaffData data={staffActive} />
+                    <EmployeeData data={employeeActive} />
                 </Tab>
             </Tabs>
         </>

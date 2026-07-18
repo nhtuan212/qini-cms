@@ -1,4 +1,3 @@
-import React from "react";
 import SalaryTotal from "./SalaryTotal";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
@@ -18,8 +17,8 @@ export default function useSalaryColumn() {
     //** Variables */
     const columns = [
         {
-            key: TEXT.STAFF,
-            name: TEXT.STAFF,
+            key: TEXT.EMPLOYEE,
+            name: TEXT.EMPLOYEE,
             className: "min-w-24",
             content: (params: { row: SalaryProps }) => params.row.employeeName,
         },

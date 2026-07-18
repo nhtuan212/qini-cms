@@ -2,20 +2,22 @@ import React from "react";
 import Input from "@/components/Input";
 import ErrorMessage from "@/components/ErrorMessage";
 import Card from "@/components/Card";
-import PasswordInput from "@/components/PasswordInput";
 import { TEXT } from "@/constants";
 import { Control, Controller, FieldErrors } from "react-hook-form";
-import { FormStaffProps } from ".";
+import { FormEmployeeProps } from ".";
 
-interface StaffConfigInformationProps {
-    control: Control<FormStaffProps>;
-    errors: FieldErrors<FormStaffProps>;
+interface EmployeeConfigInformationProps {
+    control: Control<FormEmployeeProps>;
+    errors: FieldErrors<FormEmployeeProps>;
 }
 
-export default function StaffConfigInformation({ control, errors }: StaffConfigInformationProps) {
+export default function EmployeeConfigInformation({
+    control,
+    errors,
+}: EmployeeConfigInformationProps) {
     return (
         <Card className="border p-3 space-y-4">
-            <h3 className="text-gray-900 font-semibold">{TEXT.STAFF_INFORMATION}</h3>
+            <h3 className="text-gray-900 font-semibold">{TEXT.EMPLOYEE_INFORMATION}</h3>
 
             <Controller
                 name="name"
@@ -32,12 +34,6 @@ export default function StaffConfigInformation({ control, errors }: StaffConfigI
                         errorMessage={<ErrorMessage errors={errors} name={"name"} />}
                     />
                 )}
-            />
-
-            <Controller
-                name="password"
-                control={control}
-                render={({ field }) => <PasswordInput variant="bordered" {...field} />}
             />
         </Card>
     );

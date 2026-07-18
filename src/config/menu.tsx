@@ -1,4 +1,3 @@
-import React from "react";
 import {
     BanknotesIcon,
     CalendarDateRangeIcon,
@@ -21,8 +20,9 @@ export const MENU = [
         roles: [ROLE.ADMIN],
     },
     {
-        url: ROUTE.STAFF,
-        label: TEXT.STAFF,
+        url: ROUTE.EMPLOYEE,
+        label: TEXT.EMPLOYEE,
+        roles: [ROLE.ADMIN],
         icon: <UserCircleIcon className="w-5" />,
     },
     {

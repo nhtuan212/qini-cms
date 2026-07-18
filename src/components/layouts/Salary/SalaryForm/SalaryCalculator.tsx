@@ -9,9 +9,9 @@ import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
 import { DocumentCheckIcon, UserIcon } from "@heroicons/react/24/outline";
 import { CalendarDate, RangeValue } from "@heroui/react";
-import { useStaffStore } from "@/stores/useStaffStore";
+import { useEmployeeStore } from "@/stores/useEmployeeStore";
 import { useAlertStore } from "@/stores/useAlertStore";
-import { useSalary, useStaff } from "@/hooks";
+import { useSalary, useEmployee } from "@/hooks";
 import {
     formatDate,
     calculateWorkingDaysInRange,
@@ -53,37 +53,37 @@ export default function SalaryCalculator({
 }: SalaryCalculatorProps) {
     //** Stores */
     const { getAlert } = useAlertStore();
-    const { setSelectedStaff, selectedStaff } = useStaffStore();
+    const { setSelectedEmployee, selectedEmployee } = useEmployeeStore();
 
     //** Queries */
-    const { staffs } = useStaff();
+    const { employees } = useEmployee();
     const { isLoading, createSalary } = useSalary();
 
     //** Variables */
-    const orderedStaffByActive = useMemo(() => {
-        return staffs.sort((a, b) => {
-            // First priority: active staff before inactive
+    const orderedEmployeeByActive = useMemo(() => {
+        return employees.sort((a, b) => {
+            // First priority: active employee before inactive
             if (a.isActive && !b.isActive) return -1;
             if (!a.isActive && b.isActive) return 1;
 
             // Second priority: different sorting based on active status
             if (a.isActive && b.isActive) {
-                // Inactive staff: sort by name alphabetically
+                // Inactive employee: sort by name alphabetically
                 return a.name.localeCompare(b.name);
             } else {
-                // Active staff: sort by updatedAt desc (most recent first)
+                // Active employee: sort by updatedAt desc (most recent first)
                 return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
             }
         });
-    }, [staffs]);
+    }, [employees]);
 
     //** Functions */
     const onSubmit = (data: FormSalaryProps) => {
-        if (!selectedStaff) return null;
+        if (!selectedEmployee) return null;
 
         const target = Math.floor(timeSheetRecords.totalTarget * 0.01);
 
-        // Calculate working days for non-target staff (excluding holidays)
+        // Calculate working days for non-target employee (excluding holidays)
         const monthRange = getMonthRangeFromDate(data.dateRange.start.toString());
         const workingMonth = calculateWorkingDaysInRange(
             monthRange.firstDayOfMonth,
@@ -94,7 +94,7 @@ export default function SalaryCalculator({
         // Calculate working hours
         let workingHours;
 
-        if (selectedStaff.salaryType === SalaryTypeProps.MONTHLY) {
+        if (selectedEmployee.salaryType === SalaryTypeProps.MONTHLY) {
             workingHours = calculateWorkingHoursWithBreak(timeSheetRecords.data).totalWorkingHours;
         } else {
             workingHours = timeSheetRecords.totalWorkingHours;
@@ -132,7 +132,7 @@ export default function SalaryCalculator({
             <Card className="flex flex-col gap-4">
                 <h3 className="title text-gray-900 flex items-center gap-2">
                     <UserIcon className="w-5 h-5" />
-                    {TEXT.STAFF_INFORMATION}
+                    {TEXT.EMPLOYEE_INFORMATION}
                 </h3>
 
                 <Controller
@@ -146,7 +146,7 @@ export default function SalaryCalculator({
                     }}
                     render={({ field, formState: { errors } }) => (
                         <Select
-                            label={TEXT.SELECT_STAFF}
+                            label={TEXT.SELECT_EMPLOYEE}
                             selectedKeys={[field.value]}
                             isInvalid={!!errors?.userId}
                             errorMessage={<ErrorMessage errors={errors} name={"userId"} />}
@@ -161,20 +161,22 @@ export default function SalaryCalculator({
                                     dateRange: getValues("dateRange"),
                                 });
 
-                                const currentStaff = staffs.find(staff => staff.userId === userId);
-                                if (!currentStaff) return null;
+                                const currentEmployee = employees.find(
+                                    employee => employee.userId === userId,
+                                );
+                                if (!currentEmployee) return null;
 
                                 // zustand store
-                                setSelectedStaff(currentStaff);
+                                setSelectedEmployee(currentEmployee);
 
                                 // Use watched salary for the changes
-                                setValue("salary", currentStaff.salary || 25000);
+                                setValue("salary", currentEmployee.salary || 25000);
                                 setValue("userId", userId);
                             }}
                         >
-                            {orderedStaffByActive.map(staff => (
-                                <SelectItem key={staff.userId}>
-                                    {`${staff.name} ${staff.isActive ? "" : `(${TEXT.OFF_FROM} ${formatDate(staff.updatedAt)})`}`}
+                            {orderedEmployeeByActive.map(employee => (
+                                <SelectItem key={employee.userId}>
+                                    {`${employee.name} ${employee.isActive ? "" : `(${TEXT.OFF_FROM} ${formatDate(employee.updatedAt)})`}`}
                                 </SelectItem>
                             ))}
                         </Select>
@@ -210,7 +212,7 @@ export default function SalaryCalculator({
                     )}
                 />
 
-                {selectedStaff?.salaryType === SalaryTypeProps.MONTHLY && (
+                {selectedEmployee?.salaryType === SalaryTypeProps.MONTHLY && (
                     <>
                         <Controller
                             name="paidLeave"

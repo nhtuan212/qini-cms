@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
-import { useStaffStore } from "@/stores/useStaffStore";
-import ValidateStaffPassword from "./ValidateStaffPassword";
-import StaffActions from "./StaffActions";
-import StaffDetail from "./StaffDetail";
+import { useEmployeeStore } from "@/stores/useEmployeeStore";
+import ValidateEmployeePassword from "./ValidateEmployeePassword";
+import EmployeeActions from "./EmployeeActions";
+import EmployeeDetail from "./EmployeeDetail";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import { useProfileStore } from "@/stores/useProfileStore";
@@ -12,30 +11,30 @@ import { useModalStore } from "@/stores/useModalStore";
 import { BanknotesIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { ROLE, TEXT } from "@/constants";
 import { formatDate } from "@/utils";
-import { StaffProps } from "@/types";
+import { EmployeeProps } from "@/types";
 
-export default function StaffData({ data }: { data: StaffProps[] }) {
+export default function EmployeeData({ data }: { data: EmployeeProps[] }) {
     //** Stores */
     const { profile } = useProfileStore();
     const { getModal } = useModalStore();
-    const { setSelectedStaff } = useStaffStore();
+    const { setSelectedEmployee } = useEmployeeStore();
 
     //** Render */
     return (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 sm:gap-4 gap-2">
             {data &&
                 data.length > 0 &&
-                data?.map((staff: StaffProps) => {
+                data?.map((employee: EmployeeProps) => {
                     return (
                         <Card
-                            key={staff.id}
+                            key={employee.id}
                             className="min-h-36 flex flex-col justify-between gap-4 bg-gray-50 p-3 border rounded-lg shadow-md"
                         >
                             <div className="flex justify-between items-center">
-                                {staff.name}
+                                {employee.name}
 
                                 {(profile.role === ROLE.ADMIN || profile.role === ROLE.REPORT) && (
-                                    <StaffActions staff={staff} />
+                                    <EmployeeActions employee={employee} />
                                 )}
                             </div>
 
@@ -50,8 +49,8 @@ export default function StaffData({ data }: { data: StaffProps[] }) {
                                             getModal({
                                                 isOpen: true,
                                                 size: "3xl",
-                                                modalHeader: staff.name,
-                                                modalBody: <StaffDetail staff={staff} />,
+                                                modalHeader: employee.name,
+                                                modalBody: <EmployeeDetail employee={employee} />,
                                             });
                                         }}
                                     >
@@ -64,12 +63,12 @@ export default function StaffData({ data }: { data: StaffProps[] }) {
                                     className="flex-1"
                                     startContent={<ClockIcon className="w-5 h-5" />}
                                     onPress={() => {
-                                        setSelectedStaff(staff);
+                                        setSelectedEmployee(employee);
 
                                         getModal({
                                             isOpen: true,
-                                            modalHeader: staff.name,
-                                            modalBody: <ValidateStaffPassword />,
+                                            modalHeader: employee.name,
+                                            modalBody: <ValidateEmployeePassword />,
                                         });
                                     }}
                                 >
@@ -77,10 +76,10 @@ export default function StaffData({ data }: { data: StaffProps[] }) {
                                 </Button>
                             </div>
 
-                            {!staff.isActive && (
+                            {!employee.isActive && (
                                 <div className="bg-danger-50 p-2 border-l-3 border-danger-200 rounded-md">
                                     <div className="text-tiny text-gray-500">
-                                        {`${TEXT.OFF_FROM}: ${formatDate(staff.updatedAt)}`}
+                                        {`${TEXT.OFF_FROM}: ${formatDate(employee.updatedAt)}`}
                                     </div>
                                 </div>
                             )}

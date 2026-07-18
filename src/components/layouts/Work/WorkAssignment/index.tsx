@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import WorkAssignmentForm from "./WorkAssignmentForm";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
@@ -26,13 +26,13 @@ import {
     isEmpty,
 } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
-import { StaffProps } from "@/types";
+import { EmployeeProps } from "@/types";
 
 export default function WorkAssignment({
-    staff,
+    employee,
     currentWeek,
 }: {
-    staff?: StaffProps;
+    employee?: EmployeeProps;
     currentWeek?: Date;
 }) {
     //** Stores */
@@ -81,7 +81,7 @@ export default function WorkAssignment({
                                 size="md"
                                 isSelected={assignment.isCompleted}
                                 isDisabled={
-                                    (staff?.userId !== assignment?.userId ||
+                                    (employee?.userId !== assignment?.userId ||
                                         assignment.isCompleted) &&
                                     profile.role !== ROLE.ADMIN
                                 }

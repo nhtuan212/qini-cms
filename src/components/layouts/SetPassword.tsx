@@ -65,7 +65,6 @@ export default function SetPassword() {
                 return setError(res?.message || TEXT.SET_PASSWORD_FAILED);
             }
 
-            // Đăng nhập lại bằng mật khẩu mới để lấy accessToken (session thật).
             const loginRes = await signIn("credentials", {
                 username,
                 password: newPassword,

@@ -18,9 +18,9 @@ import {
     verifyLocation,
 } from "@/utils";
 import { ROLE, TEXT } from "@/constants";
-import { StaffProps } from "@/types";
+import { EmployeeProps } from "@/types";
 
-export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
+export default function RecordTimeSheet({ employee }: { employee: EmployeeProps }) {
     //** Stores */
     const { profile } = useProfileStore();
 
@@ -28,7 +28,7 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
     const { createTarget, targets } = useTarget();
     const { shifts } = useShift();
     const { isLoading, timeSheetRecords, createTimeSheet, updateTimeSheet, deleteTimeSheet } =
-        useTimeSheet(staff.userId, {
+        useTimeSheet(employee.userId, {
             startDate: formatDate(new Date(), "YYYY-MM-DD"),
         });
 
@@ -55,16 +55,16 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
                     return true;
                 }
 
-                // If staff has isTarget: false, only allow shifts with isTarget: false
-                if (staff.isTarget === false) {
+                // If employee has isTarget: false, only allow shifts with isTarget: false
+                if (employee.isTarget === false) {
                     return shift.isTarget !== false;
                 }
 
-                // If staff has isTarget: true, allow all shifts
+                // If employee has isTarget: true, allow all shifts
                 return false;
             })
             .map(shift => shift.id);
-    }, [shifts, staff.isTarget]);
+    }, [shifts, employee.isTarget]);
 
     //** Functions */
     const handleRecordTimeSheet = async (type: "checkIn" | "checkOut") => {
@@ -123,7 +123,7 @@ export default function RecordTimeSheet({ staff }: { staff: StaffProps }) {
         }
 
         return createTimeSheet({
-            userId: staff.userId,
+            userId: employee.userId,
             shiftId: selectedShift,
             targetShiftId,
             checkIn: formatTime(),

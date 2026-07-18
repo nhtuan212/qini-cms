@@ -6,7 +6,7 @@ import { Select, SelectItem } from "@/components/Select";
 import { useModalStore } from "@/stores/useModalStore";
 import { useWorkTypeStore } from "@/stores/useWorkTypeStore";
 import { useWorkAssignmentStore, WorkAssignmentProps } from "@/stores/useWorkAssignmentStore";
-import { useShift, useStaff } from "@/hooks";
+import { useShift, useEmployee } from "@/hooks";
 import { Controller, useForm } from "react-hook-form";
 import { TEXT } from "@/constants";
 import { formatDate, getDayName, isEmpty } from "@/utils";
@@ -25,7 +25,7 @@ export default function WorkAssignmentForm({
 
     //** Queries */
     const { shifts } = useShift();
-    const { staffs } = useStaff();
+    const { employees } = useEmployee();
 
     //** Variables */
     const ASSIGNMENT_FORM = [
@@ -48,10 +48,10 @@ export default function WorkAssignmentForm({
             },
         },
         {
-            label: TEXT.STAFF_NAME,
+            label: TEXT.EMPLOYEE_NAME,
             name: "userId",
             field: "select",
-            options: staffs.map(staff => ({ ...staff, id: staff.userId })),
+            options: employees.map(employee => ({ ...employee, id: employee.userId })),
             validate: {
                 required: TEXT.IS_REQUIRED,
             },

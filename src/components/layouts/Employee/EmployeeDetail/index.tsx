@@ -1,12 +1,12 @@
 import { useState } from "react";
-import useStaffDetailColumns from "./useStaffDetailColumns";
-import StaffDetailTopContent from "./StaffDetailTopContent";
+import useEmployeeDetailColumns from "./useEmployeeDetailColumns";
+import EmployeeDetailTopContent from "./EmployeeDetailTopContent";
 import Table from "@/components/Table";
 import { useTimeSheet } from "@/hooks";
 import { getDateTime } from "@/utils";
-import { StaffProps } from "@/types";
+import { EmployeeProps } from "@/types";
 
-export default function StaffModalDetail({ staff }: { staff: StaffProps }) {
+export default function EmployeeModalDetail({ employee }: { employee: EmployeeProps }) {
     //** States */
     const [dateValue, setDateValue] = useState({
         start: getDateTime().firstDayOfMonth,
@@ -14,7 +14,7 @@ export default function StaffModalDetail({ staff }: { staff: StaffProps }) {
     });
 
     //** Queries */
-    const { isLoading, timeSheetRecords } = useTimeSheet(staff.id, {
+    const { isLoading, timeSheetRecords } = useTimeSheet(employee.id, {
         startDate: dateValue.start,
         endDate: dateValue.end,
     });
@@ -22,11 +22,11 @@ export default function StaffModalDetail({ staff }: { staff: StaffProps }) {
     //** Render */
     return (
         <Table
-            columns={useStaffDetailColumns()}
+            columns={useEmployeeDetailColumns()}
             rows={timeSheetRecords.data}
             loading={isLoading}
             topContent={
-                <StaffDetailTopContent
+                <EmployeeDetailTopContent
                     timeSheetRecords={timeSheetRecords}
                     dateRange={dateValue}
                     onChangeDateRange={setDateValue}
