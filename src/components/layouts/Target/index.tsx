@@ -1,14 +1,12 @@
 import { Key, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import NotFound from "@/app/not-found";
 import TargetList from "./TargetList";
 import TargetFilter from "./TargetFilter";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useTarget } from "@/hooks";
-import { useLocationCheck } from "@/hooks/useLocationCheck";
 import { getDateTime } from "@/utils";
-import { REVENUE_STATUS, ROLE, TEXT } from "@/constants";
+import { REVENUE_STATUS, TEXT } from "@/constants";
 
 export default function Target() {
     const searchParams = useSearchParams();
@@ -25,9 +23,6 @@ export default function Target() {
         endDate: searchParams.get("endDate") || getDateTime().lastDayOfMonth,
     });
 
-    //** Custom Hooks */
-    const { isLocationValid } = useLocationCheck();
-
     //** Variables */
     const currentTargets = useMemo(() => {
         if (targetFilterTab === REVENUE_STATUS.UN_COLLECTED) {
@@ -40,10 +35,6 @@ export default function Target() {
     }, [targets, targetFilterTab]);
 
     //** Render */
-    if (isLocationValid !== null && !isLocationValid && profile?.role !== ROLE.ADMIN) {
-        return <NotFound />;
-    }
-
     return (
         <div className="flex flex-col gap-y-4 rounded-xl">
             <h2 className="flex items-center gap-x-2 py-4">
