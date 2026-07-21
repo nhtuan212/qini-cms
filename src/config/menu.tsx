@@ -40,3 +40,7 @@ export const MENU: MenuItem[] = [
         roles: [ROLE.ADMIN],
     },
 ];
+
+/** Menu items visible to the given role (no `roles` means visible to everyone). */
+export const getMenusForRole = (role?: string) =>
+    MENU.filter(menu => !menu.roles || menu.roles.includes(role || ""));

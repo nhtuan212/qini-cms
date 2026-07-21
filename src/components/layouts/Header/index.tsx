@@ -11,6 +11,8 @@ import { Drawer, DrawerHeader, DrawerBody } from "@/components/Drawer";
 import { Navbar as NavbarNextUI, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/react";
 import { useMenuStore } from "@/stores/useMenuStore";
 import { useModalStore } from "@/stores/useModalStore";
+import { useProfileStore } from "@/stores/useProfileStore";
+import { getMenusForRole } from "@/config/menu";
 import { Bars3Icon, ClockIcon, MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import { ROUTE, TEXT } from "@/constants";
 
@@ -18,7 +20,11 @@ export default function Header() {
     //** Store */
     const { isMenuOpen, setIsMenuOpen } = useMenuStore();
     const { getModal } = useModalStore();
+    const { profile } = useProfileStore();
     const { theme, setTheme } = useTheme();
+
+    //** Variables */
+    const hasNav = getMenusForRole(profile?.role).length > 1;
 
     //** States */
     const [themeMode, setThemeMode] = useState<string | undefined>("");
@@ -43,23 +49,25 @@ export default function Header() {
     }, [theme, setThemeMode]);
 
     return (
-        <>
+        <div className="border shadow-sm">
             <NavbarNextUI
                 classNames={{
                     wrapper: "container max-w-[auto]",
                 }}
             >
                 <NavbarContent>
-                    <Button
-                        isIconOnly
-                        variant="light"
-                        color="default"
-                        aria-label="Open menu"
-                        className="lg:hidden"
-                        onPress={() => setIsMenuOpen(true)}
-                    >
-                        <Bars3Icon className="w-6 h-6" />
-                    </Button>
+                    {hasNav && (
+                        <Button
+                            isIconOnly
+                            variant="light"
+                            color="default"
+                            aria-label="Open menu"
+                            className="lg:hidden"
+                            onPress={() => setIsMenuOpen(true)}
+                        >
+                            <Bars3Icon className="w-6 h-6" />
+                        </Button>
+                    )}
                     <NavbarBrand>
                         <Link href={ROUTE.HOME} className="flex items-center ml-2 lg:ml-0">
                             <Logo className="w-16 h-16" />
@@ -100,7 +108,7 @@ export default function Header() {
                 placement="left"
                 size="xs"
                 className="lg:hidden"
-                isOpen={isMenuOpen}
+                isOpen={hasNav && isMenuOpen}
                 onOpenChange={setIsMenuOpen}
             >
                 <DrawerHeader>
@@ -117,6 +125,6 @@ export default function Header() {
                     <NavMenu onNavigate={() => setIsMenuOpen(false)} />
                 </DrawerBody>
             </Drawer>
-        </>
+        </div>
     );
 }

@@ -37,7 +37,7 @@ export default function Target() {
     //** Render */
     return (
         <div className="flex flex-col gap-y-4 rounded-xl">
-            <h2 className="flex items-center gap-x-2 py-4">
+            <h2 className="flex items-center gap-x-2">
                 <CalendarIcon className="w-6 h-6" />
                 {TEXT.LIST_TARGET}
             </h2>

@@ -11,6 +11,7 @@ import { useModalStore } from "@/stores/useModalStore";
 import { useAlertStore } from "@/stores/useAlertStore";
 import { useDrawerStore } from "@/stores/useDrawerStore";
 import { useShift } from "@/hooks";
+import { getMenusForRole } from "@/config/menu";
 import { Session } from "next-auth";
 
 export default function MainLayout({
@@ -21,10 +22,13 @@ export default function MainLayout({
     session: Session;
 }) {
     //** Store */
-    const { getProfile } = useProfileStore();
+    const { profile, getProfile } = useProfileStore();
     const { modal, getModal } = useModalStore();
     const { drawer, getDrawer } = useDrawerStore();
     const { alert, getAlert } = useAlertStore();
+
+    //** Variables */
+    const hasNav = getMenusForRole(profile?.role).length > 1;
 
     //** Queries */
     useShift();
@@ -41,11 +45,13 @@ export default function MainLayout({
 
             <div className="flex flex-1 min-h-0">
                 {/* Persistent sidebar on lg+ screens, pushes content to the right */}
-                <aside className="hidden lg:block w-64 shrink-0 overflow-y-auto border-r border-default-200 px-3 py-4">
-                    <NavMenu />
-                </aside>
+                {hasNav && (
+                    <aside className="hidden lg:block w-64 shrink-0 overflow-y-auto border-r border-default-200 px-3 py-4">
+                        <NavMenu />
+                    </aside>
+                )}
 
-                <section className="container flex-1 min-h-0 overflow-y-auto py-4">
+                <section className="flex-1 min-h-0 w-full overflow-y-auto px-4 py-4">
                     {children}
                 </section>
             </div>

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import clsx from "clsx";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { MENU } from "@/config/menu";
+import { getMenusForRole } from "@/config/menu";
 
 export default function NavMenu({ onNavigate }: { onNavigate?: () => void }) {
     const pathname = usePathname();
@@ -17,7 +17,7 @@ export default function NavMenu({ onNavigate }: { onNavigate?: () => void }) {
     const [activeRoute, setActiveRoute] = useState("");
 
     //** Variables */
-    const menus = MENU.filter(menu => !menu.roles || menu.roles.includes(profile?.role || ""));
+    const menus = getMenusForRole(profile?.role);
 
     //** Effects */
     useEffect(() => {
