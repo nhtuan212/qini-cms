@@ -19,7 +19,7 @@ export const MENU: MenuItem[] = [
         url: ROUTE.TARGET,
         label: TEXT.TARGET,
         icon: <DocumentTextIcon className="w-5" />,
-        roles: [ROLE.ADMIN, ROLE.REPORT],
+        roles: [ROLE.ADMIN, ROLE.STAFF],
     },
     {
         url: ROUTE.WORK,

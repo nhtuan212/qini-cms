@@ -47,15 +47,16 @@ export default function TargetTotal({
         // overlapping the content below. Grid stretch + flex-1 gives the same look.
         <div
             className={twMerge(
-                "flex flex-col justify-between space-y-2 p-4 text-white rounded-md shadow-xl",
+                "flex flex-col justify-between space-y-2 p-3 sm:p-4 text-white rounded-md shadow-xl",
                 className,
             )}
         >
-            <div className="flex-1 flex items-center gap-x-2 font-semibold uppercase">
-                {icon} {title}
+            <div className="flex-1 flex items-center gap-x-2 text-xs sm:text-sm font-semibold uppercase">
+                <span className="shrink-0">{icon}</span>
+                <span className="min-w-0 break-words">{title}</span>
             </div>
 
-            <h3 className="font-bold sm:text-xl">{formatCurrency(value)}</h3>
+            <h3 className="text-base sm:text-xl font-bold break-words">{formatCurrency(value)}</h3>
         </div>
     );
 
@@ -66,7 +67,7 @@ export default function TargetTotal({
                 <Tab key={REVENUE_STATUS.UN_COLLECTED} title={TEXT.UNCOLLECTED}></Tab>
             </Tabs>
 
-            <div className="grid md:grid-cols-4 grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-4 grid-cols-2 gap-2">
                 {role === ROLE.ADMIN &&
                     renderTotal({
                         title: TEXT.REVENUE,
@@ -85,10 +86,10 @@ export default function TargetTotal({
                     title: TEXT.CASH,
                     icon: <BanknotesIcon className="w-5 h-5" />,
                     value: total.cash,
-                    className: "bg-success-600",
+                    className: twMerge("bg-success-600", role !== ROLE.ADMIN && "md:col-start-3"),
                 })}
                 {renderTotal({
-                    title: `${TEXT.CASH} ${TEXT.UNCOLLECTED}`,
+                    title: TEXT.UNCOLLECTED,
                     icon: <MinusCircleIcon className="w-5 h-5" />,
                     value: total.uncollectedCash,
                     className: "bg-danger",
