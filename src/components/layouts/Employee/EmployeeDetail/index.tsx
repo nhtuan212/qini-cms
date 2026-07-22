@@ -14,7 +14,7 @@ export default function EmployeeModalDetail({ employee }: { employee: EmployeePr
     });
 
     //** Queries */
-    const { isLoading, timeSheetRecords } = useTimeSheet(employee.id, {
+    const { isLoading, timeSheetRecords } = useTimeSheet(employee.userId, {
         startDate: dateValue.start,
         endDate: dateValue.end,
     });

@@ -52,7 +52,7 @@ export default function Header() {
         <div className="border shadow-sm">
             <NavbarNextUI
                 classNames={{
-                    wrapper: "container max-w-[auto]",
+                    wrapper: "max-w-[auto]",
                 }}
             >
                 <NavbarContent>
