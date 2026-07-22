@@ -5,25 +5,24 @@ import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
 import {
     ArrowPathRoundedSquareIcon,
-    PauseCircleIcon,
     PencilSquareIcon,
     TrashIcon,
+    XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
-import { useEmployee, useUser } from "@/hooks";
+import { useUser } from "@/hooks";
 import { TEXT } from "@/constants";
 import { EmployeeProps } from "@/types";
 
 export default function EmployeeActions({ employee }: { employee: EmployeeProps }) {
     //** Destructuring */
-    const { id, userId } = employee;
+    const { userId } = employee;
 
     //** Stores */
     const { getModal } = useModalStore();
 
     //** Queries */
-    const { deleteEmployee } = useEmployee();
-    const { resetPassword, inActiveUser } = useUser();
+    const { resetPassword, inActiveUser, deleteUser } = useUser();
 
     //** Functions */
     const handleUpdateEmployee = () => {
@@ -67,21 +66,6 @@ export default function EmployeeActions({ employee }: { employee: EmployeeProps 
                 <PencilSquareIcon className="w-5 h-5" />
             </Button>
 
-            {employee.isActive && (
-                <Button
-                    isIconOnly
-                    size="sm"
-                    variant="light"
-                    aria-label={TEXT.IN_ACTIVE}
-                    title={TEXT.IN_ACTIVE}
-                    onPress={() =>
-                        confirmAction(TEXT.CONFIRM_IN_ACTIVE, () => inActiveUser(userId))
-                    }
-                >
-                    <PauseCircleIcon className="w-5 h-5" />
-                </Button>
-            )}
-
             <Button
                 isIconOnly
                 size="sm"
@@ -96,17 +80,34 @@ export default function EmployeeActions({ employee }: { employee: EmployeeProps 
                 <ArrowPathRoundedSquareIcon className="w-5 h-5" />
             </Button>
 
-            <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                color="danger"
-                aria-label={TEXT.DELETE}
-                title={TEXT.DELETE}
-                onPress={() => confirmAction(TEXT.CONFIRM_DELETE, () => deleteEmployee(id))}
-            >
-                <TrashIcon className="w-5 h-5" />
-            </Button>
+            {employee.isActive && (
+                <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    aria-label={TEXT.IN_ACTIVE}
+                    title={TEXT.IN_ACTIVE}
+                    onPress={() =>
+                        confirmAction(TEXT.CONFIRM_IN_ACTIVE, () => inActiveUser(userId))
+                    }
+                >
+                    <XCircleIcon className="w-5 h-5" />
+                </Button>
+            )}
+
+            {!employee.isActive && (
+                <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    color="danger"
+                    aria-label={TEXT.DELETE}
+                    title={TEXT.DELETE}
+                    onPress={() => confirmAction(TEXT.CONFIRM_DELETE, () => deleteUser(userId))}
+                >
+                    <TrashIcon className="w-5 h-5" />
+                </Button>
+            )}
         </div>
     );
 }

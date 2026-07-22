@@ -18,6 +18,13 @@ export const useUser = () => {
         });
     };
 
+    // Soft delete user (BE sets deletedAt) → drop the matching employee from the list
+    const removeDeletedEmployee = (users?: UserProps[]) => {
+        queryClient.setQueriesData({ queryKey: employeeQueryKey }, (prev: EmployeeProps[]) => {
+            return prev?.filter(employee => !users?.some(user => user.id === employee.userId));
+        });
+    };
+
     // Deactivate user (set isActive = false; keeps employee visible)
     const { isPending: isInactive, mutateAsync: inActiveUser } = useMutation<
         UserProps[],
@@ -32,6 +39,22 @@ export const useUser = () => {
                 },
             }).then(res => convertKeysToCamelCase(res.data)),
         onSuccess: syncEmployeeActive,
+    });
+
+    // Delete User
+    const { isPending: isDeleting, mutateAsync: deleteUser } = useMutation<
+        UserProps[],
+        Error,
+        UserProps["id"]
+    >({
+        mutationFn: id =>
+            fetchData({
+                endpoint: `${endpoint}/${id}`,
+                options: {
+                    method: "DELETE",
+                },
+            }).then(res => convertKeysToCamelCase(res.data)),
+        onSuccess: removeDeletedEmployee,
     });
 
     // Reset password to default (handled by BE)
@@ -53,9 +76,12 @@ export const useUser = () => {
         isInactive,
         inActiveUser,
 
+        isDeleting,
+        deleteUser,
+
         isResetting,
         resetPassword,
 
-        isLoading: isInactive || isResetting,
+        isLoading: isInactive || isDeleting || isResetting,
     };
 };
