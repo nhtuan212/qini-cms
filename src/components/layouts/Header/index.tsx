@@ -14,7 +14,7 @@ import { useModalStore } from "@/stores/useModalStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { getMenusForRole } from "@/config/menu";
 import { Bars3Icon, ClockIcon, MoonIcon, SunIcon } from "@heroicons/react/24/outline";
-import { ROUTE, TEXT } from "@/constants";
+import { ROLE, ROUTE, TEXT } from "@/constants";
 
 export default function Header() {
     //** Store */
@@ -76,17 +76,19 @@ export default function Header() {
                     </NavbarBrand>
                 </NavbarContent>
                 <NavbarContent justify="end">
-                    <NavbarItem>
-                        <Button
-                            color="primary"
-                            variant="flat"
-                            size="sm"
-                            startContent={<ClockIcon className="w-5 h-5" />}
-                            onPress={openTimeSheet}
-                        >
-                            <span className="hidden sm:inline">{TEXT.TIME_SHEET}</span>
-                        </Button>
-                    </NavbarItem>
+                    {profile?.role !== ROLE.ADMIN && (
+                        <NavbarItem>
+                            <Button
+                                color="primary"
+                                variant="flat"
+                                size="sm"
+                                startContent={<ClockIcon className="w-5 h-5" />}
+                                onPress={openTimeSheet}
+                            >
+                                <span className="hidden sm:inline">{TEXT.TIME_SHEET}</span>
+                            </Button>
+                        </NavbarItem>
+                    )}
                     <NavbarItem hidden>
                         <Switch
                             defaultSelected

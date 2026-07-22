@@ -1,6 +1,6 @@
 "use client";
 
-import EmployeeDetail from "./EmployeeDetail";
+import TimeSheet from "../TimeSheet";
 import Button from "@/components/Button";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
 import { useModalStore } from "@/stores/useModalStore";
@@ -22,8 +22,12 @@ export default function EmployeeTarget({ employee }: { employee: EmployeeProps }
                 getModal({
                     isOpen: true,
                     size: "3xl",
-                    modalHeader: employee.name,
-                    modalBody: <EmployeeDetail employee={employee} />,
+                    modalHeader: (
+                        <h3 className="sm:text-2xl text-lg font-bold text-gray-800">
+                            {employee.name}
+                        </h3>
+                    ),
+                    modalBody: <TimeSheet employee={employee} />,
                 })
             }
         >
