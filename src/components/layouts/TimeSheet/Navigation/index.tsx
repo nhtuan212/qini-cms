@@ -2,10 +2,9 @@ import { useState } from "react";
 import EmployeeDetail from "../../Employee/EmployeeDetail";
 import RecordTimeSheet from "./RecordTimeSheet";
 import Salary from "../../Salary";
-import WorkAssignment from "../../Work/WorkAssignment";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
-import { CalendarIcon, ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, CurrencyDollarIcon, GiftIcon } from "@heroicons/react/24/outline";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { ROLE, TEXT } from "@/constants";
 import { EmployeeProps } from "@/types";
@@ -41,13 +40,6 @@ export default function AttendanceNavigation({ employee }: { employee: EmployeeP
             visible: isAdmin || isSelf,
             component: <Salary employee={employee} />,
         },
-        {
-            label: TEXT.WORK_ASSIGNMENT,
-            icon: CalendarIcon,
-            value: "work",
-            visible: isAdmin,
-            component: <WorkAssignment employee={employee} />,
-        },
     ].filter(tab => tab.visible);
 
     //** States */
@@ -61,7 +53,7 @@ export default function AttendanceNavigation({ employee }: { employee: EmployeeP
         <div className="flex flex-col sm:gap-y-4 gap-y-2">
             {tabs.length > 1 && (
                 <Card className="sm:p-4 p-2">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-3 gap-2">
                         {tabs.map(tab => (
                             <Button
                                 key={tab.value}

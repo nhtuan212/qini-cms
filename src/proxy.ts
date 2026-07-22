@@ -5,7 +5,6 @@ import { ROLE, ROUTE } from "./constants";
 const ROUTE_PERMISSIONS = {
     [ROUTE.EMPLOYEE]: [ROLE.ADMIN, ROLE.MANAGER],
     [ROUTE.SALARY]: [ROLE.ADMIN],
-    [ROUTE.WORK]: [ROLE.ADMIN],
 };
 
 const hasRequiredRole = (userRole: string | undefined, requiredRoles: string[]): boolean => {

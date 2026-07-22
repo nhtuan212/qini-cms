@@ -40,8 +40,6 @@ export const URL = {
     SHIFT: "/shift",
     SALARY: "/salary",
     INVOICE: "/invoice",
-    WORK_TYPE: "/work-type",
-    WORK_ASSIGNMENT: "/work-assignment",
 };
 
 export const ROUTE = {
@@ -49,7 +47,6 @@ export const ROUTE = {
     LOGIN: "/login",
     SET_PASSWORD: "/user/set-password",
     TARGET: "/target",
-    WORK: "/work",
     TARGET_SHIFT: "/target-shift",
     TIME_SHEET: "/time-sheet",
     EMPLOYEE: "/employee",
