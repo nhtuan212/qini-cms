@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import EmployeeModal from "./EmployeeModal";
 import EmployeeData from "./EmployeeData";
 import Button from "@/components/Button";
@@ -20,13 +20,13 @@ export default function Employee() {
     //** Queries */
     const { isLoading, employees } = useEmployee();
 
-    //** States */
-    const [active, setActive] = useState(false);
-
     //** Variables */
-    const employeeActive = useMemo(() => {
-        return employees.filter(employee => employee.isActive === active);
-    }, [employees, active]);
+    const { activeEmployees, inactiveEmployees } = useMemo(() => {
+        return {
+            activeEmployees: employees.filter(employee => employee.isActive),
+            inactiveEmployees: employees.filter(employee => !employee.isActive),
+        };
+    }, [employees]);
 
     const disabledKeys = useMemo(() => {
         if (profile.role !== ROLE.ADMIN) {
@@ -43,32 +43,29 @@ export default function Employee() {
 
             <div className="flex justify-between items-center">
                 <div className="title">{TEXT.EMPLOYEE}</div>
-                <Button
-                    onPress={() =>
-                        getModal({
-                            isOpen: true,
-                            size: "3xl",
-                            modalHeader: TEXT.ADD_EMPLOYEE,
-                            modalBody: <EmployeeModal />,
-                        })
-                    }
-                >
-                    {TEXT.ADD_NEW}
-                    <PlusIcon className="w-5 ml-2" />
-                </Button>
+                {profile.role === ROLE.ADMIN && (
+                    <Button
+                        onPress={() =>
+                            getModal({
+                                isOpen: true,
+                                size: "3xl",
+                                modalHeader: TEXT.ADD_EMPLOYEE,
+                                modalBody: <EmployeeModal />,
+                            })
+                        }
+                    >
+                        {TEXT.ADD_NEW}
+                        <PlusIcon className="w-5 ml-2" />
+                    </Button>
+                )}
             </div>
 
-            <Tabs
-                className="mt-4"
-                color="primary"
-                disabledKeys={disabledKeys}
-                onSelectionChange={key => setActive(key === "active")}
-            >
+            <Tabs className="mt-4" color="primary" disabledKeys={disabledKeys}>
                 <Tab key="active" title={TEXT.ACTIVE}>
-                    <EmployeeData data={employeeActive} />
+                    <EmployeeData data={activeEmployees} />
                 </Tab>
                 <Tab key="in-active" title={TEXT.IN_ACTIVE}>
-                    <EmployeeData data={employeeActive} />
+                    <EmployeeData data={inactiveEmployees} />
                 </Tab>
             </Tabs>
         </>
