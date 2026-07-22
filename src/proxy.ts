@@ -3,7 +3,7 @@ import { ROLE, ROUTE } from "./constants";
 
 // Define route permissions based on menu configuration
 const ROUTE_PERMISSIONS = {
-    [ROUTE.EMPLOYEE]: [ROLE.ADMIN],
+    [ROUTE.EMPLOYEE]: [ROLE.ADMIN, ROLE.MANAGER],
     [ROUTE.SALARY]: [ROLE.ADMIN],
     [ROUTE.WORK]: [ROLE.ADMIN],
 };

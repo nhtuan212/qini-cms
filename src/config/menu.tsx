@@ -19,7 +19,7 @@ export const MENU: MenuItem[] = [
         url: ROUTE.TARGET,
         label: TEXT.TARGET,
         icon: <DocumentTextIcon className="w-5" />,
-        roles: [ROLE.ADMIN, ROLE.STAFF],
+        roles: [ROLE.ADMIN, ROLE.MANAGER, ROLE.STAFF],
     },
     {
         url: ROUTE.WORK,
@@ -30,8 +30,8 @@ export const MENU: MenuItem[] = [
     {
         url: ROUTE.EMPLOYEE,
         label: TEXT.EMPLOYEE,
-        roles: [ROLE.ADMIN],
         icon: <UserCircleIcon className="w-5" />,
+        roles: [ROLE.ADMIN, ROLE.MANAGER],
     },
     {
         url: ROUTE.SALARY,
