@@ -3,42 +3,27 @@
 import EmployeeModal from "./EmployeeModal";
 import Button from "@/components/Button";
 import ConfirmModal from "@/components/ConfirmModal";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/Dropdown";
 import {
     ArrowPathRoundedSquareIcon,
-    EllipsisVerticalIcon,
     PauseCircleIcon,
     PencilSquareIcon,
     TrashIcon,
 } from "@heroicons/react/24/outline";
-import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { useEmployee } from "@/hooks";
-import { ROLE, TEXT } from "@/constants";
+import { useEmployee, useUser } from "@/hooks";
+import { TEXT } from "@/constants";
 import { EmployeeProps } from "@/types";
 
 export default function EmployeeActions({ employee }: { employee: EmployeeProps }) {
     //** Destructuring */
-    const { id } = employee;
+    const { id, userId } = employee;
 
     //** Stores */
-    const { profile } = useProfileStore();
     const { getModal } = useModalStore();
 
     //** Queries */
-    const { inActiveEmployee, deleteEmployee } = useEmployee();
-
-    //** Variables */
-    const disabledKeys: string[] = [];
-
-    switch (profile.role) {
-        case ROLE.REPORT:
-        case ROLE.MANAGER:
-            disabledKeys.push("edit", "inActive", "delete", "resetPassword");
-            break;
-        default:
-            break;
-    }
+    const { deleteEmployee } = useEmployee();
+    const { resetPassword, inActiveUser } = useUser();
 
     //** Functions */
     const handleUpdateEmployee = () => {
@@ -51,29 +36,15 @@ export default function EmployeeActions({ employee }: { employee: EmployeeProps 
         });
     };
 
-    const handleInActiveEmployee = (id: EmployeeProps["id"]) => {
+    const confirmAction = (content: string, action: () => Promise<unknown>) => {
         getModal({
             isOpen: true,
-            modalHeader: TEXT.CONFIRM_IN_ACTIVE,
+            modalHeader: TEXT.SUBMIT,
             modalBody: (
                 <ConfirmModal
+                    content={content}
                     onConfirm={async () => {
-                        await inActiveEmployee(id);
-                        getModal({ isOpen: false });
-                    }}
-                />
-            ),
-        });
-    };
-
-    const handleDeleteEmployee = (id: EmployeeProps["id"]) => {
-        getModal({
-            isOpen: true,
-            modalHeader: TEXT.CONFIRM_DELETE,
-            modalBody: (
-                <ConfirmModal
-                    onConfirm={async () => {
-                        await deleteEmployee(id);
+                        await action();
                         getModal({ isOpen: false });
                     }}
                 />
@@ -83,46 +54,59 @@ export default function EmployeeActions({ employee }: { employee: EmployeeProps 
 
     //** Render */
     return (
-        <Dropdown>
-            <DropdownTrigger>
-                <Button className="min-w-0 h-auto bg-transparent p-0 text-black">
-                    <EllipsisVerticalIcon className="w-6" />
+        <div className="flex items-center justify-end gap-1">
+            <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                color="warning"
+                aria-label={TEXT.EDIT}
+                title={TEXT.EDIT}
+                onPress={handleUpdateEmployee}
+            >
+                <PencilSquareIcon className="w-5 h-5" />
+            </Button>
+
+            {employee.isActive && (
+                <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    aria-label={TEXT.IN_ACTIVE}
+                    title={TEXT.IN_ACTIVE}
+                    onPress={() =>
+                        confirmAction(TEXT.CONFIRM_IN_ACTIVE, () => inActiveUser(userId))
+                    }
+                >
+                    <PauseCircleIcon className="w-5 h-5" />
                 </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Employee actions" disabledKeys={disabledKeys}>
-                <DropdownItem
-                    key="edit"
-                    startContent={<PencilSquareIcon className="w-5" />}
-                    textValue={TEXT.EDIT}
-                    onPress={() => handleUpdateEmployee()}
-                >
-                    {TEXT.EDIT}
-                </DropdownItem>
-                <DropdownItem
-                    key="inActive"
-                    startContent={<PauseCircleIcon className="w-5" />}
-                    textValue={TEXT.IN_ACTIVE}
-                    onPress={() => handleInActiveEmployee(id)}
-                >
-                    {TEXT.IN_ACTIVE}
-                </DropdownItem>
-                <DropdownItem
-                    key="resetPassword"
-                    startContent={<ArrowPathRoundedSquareIcon className="w-5" />}
-                    textValue={TEXT.RESET_PASSWORD}
-                    onPress={() => {}}
-                >
-                    {TEXT.RESET_PASSWORD}
-                </DropdownItem>
-                <DropdownItem
-                    key="delete"
-                    startContent={<TrashIcon className="w-5" />}
-                    textValue={TEXT.DELETE}
-                    onPress={() => handleDeleteEmployee(id)}
-                >
-                    {TEXT.DELETE}
-                </DropdownItem>
-            </DropdownMenu>
-        </Dropdown>
+            )}
+
+            <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                color="secondary"
+                aria-label={TEXT.RESET_PASSWORD}
+                title={TEXT.RESET_PASSWORD}
+                onPress={() =>
+                    confirmAction(TEXT.CONFIRM_RESET_PASSWORD, () => resetPassword(userId))
+                }
+            >
+                <ArrowPathRoundedSquareIcon className="w-5 h-5" />
+            </Button>
+
+            <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                color="danger"
+                aria-label={TEXT.DELETE}
+                title={TEXT.DELETE}
+                onPress={() => confirmAction(TEXT.CONFIRM_DELETE, () => deleteEmployee(id))}
+            >
+                <TrashIcon className="w-5 h-5" />
+            </Button>
+        </div>
     );
 }

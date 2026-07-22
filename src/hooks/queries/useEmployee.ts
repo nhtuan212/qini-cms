@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchData } from "@/hooks";
 import { convertKeysToCamelCase } from "@/utils";
 import { URL } from "@/constants";
-import { EmployeeProps } from "@/types/employee";
+import { EmployeeProps } from "@/types";
 
 type UpdateEmployeeProps = { id: EmployeeProps["id"]; params: Partial<EmployeeProps> };
 
@@ -27,7 +27,7 @@ export const useEmployee = () => {
     const { isPending: isCreating, mutateAsync: createEmployee } = useMutation<
         EmployeeProps[],
         Error,
-        Pick<EmployeeProps, "name" | "salary" | "password" | "salaryType" | "isTarget" | "isActive">
+        Pick<EmployeeProps, "name" | "salary" | "salaryType" | "isTarget" | "isActive">
     >({
         mutationFn: params =>
             fetchData({
@@ -63,33 +63,6 @@ export const useEmployee = () => {
         },
     });
 
-    // In-active employee
-    const { isPending: isInactive, mutateAsync: inActiveEmployee } = useMutation<
-        EmployeeProps,
-        Error,
-        EmployeeProps["id"]
-    >({
-        mutationFn: id =>
-            fetchData({
-                endpoint: `${endpoint}/${id}/in-active`,
-                options: {
-                    method: "PUT",
-                },
-            }).then(res => convertKeysToCamelCase(res.data)),
-        onSuccess: res => {
-            queryClient.setQueriesData({ queryKey }, (prev: EmployeeProps[]) => {
-                return prev?.map(employee =>
-                    employee.id === res.id
-                        ? {
-                              ...employee,
-                              isActive: false,
-                          }
-                        : employee,
-                );
-            });
-        },
-    });
-
     // Delete employee
     const { isPending: isDeleting, mutateAsync: deleteEmployee } = useMutation<
         EmployeeProps,
@@ -122,12 +95,9 @@ export const useEmployee = () => {
         isUpdating,
         updateEmployee,
 
-        isInactive,
-        inActiveEmployee,
-
         isDeleting,
         deleteEmployee,
 
-        isLoading: isPending || isFetching || isCreating || isUpdating || isInactive || isDeleting,
+        isLoading: isPending || isFetching || isCreating || isUpdating || isDeleting,
     };
 };

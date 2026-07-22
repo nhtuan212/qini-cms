@@ -109,6 +109,7 @@ export const TEXT = {
     DATE_PICKER: "Chọn ngày",
     CONFIRM_DELETE: "Bạn có chắc chắn muốn xoá ?",
     CONFIRM_IN_ACTIVE: "Bạn có chắc chắn muốn ngưng hoạt động ?",
+    CONFIRM_RESET_PASSWORD: "Bạn có chắc chắn muốn đặt lại mật khẩu ?",
     SUBMIT: "Xác nhận",
     AMOUNT: "Số tiền",
     PAID: "Đã thu tiền",

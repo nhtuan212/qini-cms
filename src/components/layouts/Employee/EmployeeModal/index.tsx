@@ -7,8 +7,7 @@ import Button from "@/components/Button";
 import { useForm } from "react-hook-form";
 import { useModalStore } from "@/stores/useModalStore";
 import { useEmployee } from "@/hooks";
-import { encryptPasswordRSA } from "@/utils";
-import { DEFAULT_PASSWORD, TEXT } from "@/constants";
+import { TEXT } from "@/constants";
 import { EmployeeProps } from "@/types";
 
 export type FormEmployeeProps = Pick<EmployeeProps, "name" | "salary" | "salaryType" | "isTarget">;
@@ -57,12 +56,9 @@ export default function EmployeeModal({ employee }: { employee?: EmployeeProps }
             });
         }
 
-        // Nhân viên mới: active + password mặc định (RSA-encrypt). BE tự tạo user
-        // với isFirstLogin=true → đăng nhập lần đầu rồi qua trang set-password.
         return createEmployee({
             ...result,
             isActive: true,
-            password: encryptPasswordRSA(DEFAULT_PASSWORD),
         }).then(() => {
             handleCloseModal();
         });

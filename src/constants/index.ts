@@ -3,7 +3,6 @@ import { TEXT } from "./text";
 export { TEXT };
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-export const DEFAULT_PASSWORD = "123456";
 
 export const STATUS_CODE = {
     OK: 200,
