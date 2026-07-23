@@ -1,3 +1,5 @@
+"use client";
+
 import { Key, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import TargetList from "./TargetList";

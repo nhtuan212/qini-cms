@@ -1,7 +1,4 @@
-"use client";
-
-import React from "react";
-import Target from "@/components/layouts/Target";
+import Target from "@/layouts/Target";
 
 export default function TargetPage() {
     return <Target />;

@@ -1,5 +1,4 @@
-import React from "react";
-import Employee from "@/components/layouts/Employee";
+import Employee from "@/layouts/Employee";
 
 export default function EmployeePage() {
     return <Employee />;

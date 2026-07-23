@@ -1,5 +1,4 @@
-import React from "react";
-import SetPassword from "@/components/layouts/SetPassword";
+import SetPassword from "@/layouts/SetPassword";
 
 export default function page() {
     return <SetPassword />;

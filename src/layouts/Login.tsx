@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import Logo from "../Icons/Logo";
-import Input from "../Input";
-import Button from "../Button";
+import Logo from "@/components/Icons/Logo";
+import Input from "@/components/Input";
+import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";

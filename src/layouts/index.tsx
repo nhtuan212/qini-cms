@@ -3,9 +3,9 @@
 import React, { useEffect } from "react";
 import Header from "./Header";
 import NavMenu from "./NavMenu";
-import Alert from "../Alert";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "../Modal";
-import { Drawer, DrawerHeader, DrawerBody, DrawerFooter } from "../Drawer";
+import Alert from "@/components/Alert";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "@/components/Modal";
+import { Drawer, DrawerHeader, DrawerBody, DrawerFooter } from "@/components/Drawer";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useAlertStore } from "@/stores/useAlertStore";

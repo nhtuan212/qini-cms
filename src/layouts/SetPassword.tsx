@@ -3,9 +3,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
-import Logo from "../Icons/Logo";
-import Button from "../Button";
-import PasswordInput from "../PasswordInput";
+import Logo from "@/components/Icons/Logo";
+import Button from "@/components/Button";
+import PasswordInput from "@/components/PasswordInput";
 import { fetchData } from "@/hooks";
 import { ROUTE, STATUS_CODE, TEXT, URL } from "@/constants";
 
