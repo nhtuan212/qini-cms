@@ -19,7 +19,7 @@ export default function useEmployeeColumns() {
         {
             key: "name",
             name: TEXT.NAME,
-            className: "min-w-48",
+            className: "min-w-32",
             content: (params: { row: EmployeeProps }) => (
                 <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-2">
@@ -41,7 +41,7 @@ export default function useEmployeeColumns() {
                   {
                       key: "target",
                       name: TEXT.TARGET,
-                      className: "min-w-40",
+                      className: "min-w-28",
                       content: (params: { row: EmployeeProps }) => (
                           <EmployeeTarget employee={params.row} />
                       ),
@@ -53,7 +53,7 @@ export default function useEmployeeColumns() {
                   {
                       key: "actions",
                       name: "",
-                      className: "min-w-40 justify-end",
+                      className: "min-w-32 justify-end",
                       content: (params: { row: EmployeeProps }) => (
                           <EmployeeActions employee={params.row} />
                       ),

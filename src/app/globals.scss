@@ -27,6 +27,10 @@
     @apply sticky left-0 min-h-14 flex items-center self-stretch bg-gray-100 border-r-2 z-50;
 }
 
+.cellStickyRight {
+    @apply sticky right-0 min-h-14 flex items-center self-stretch bg-gray-100 border-l-2 z-50;
+}
+
 // Input
 .input {
     @apply flex flex-wrap gap-2;

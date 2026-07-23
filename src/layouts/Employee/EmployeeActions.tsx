@@ -53,7 +53,7 @@ export default function EmployeeActions({ employee }: { employee: EmployeeProps 
 
     //** Render */
     return (
-        <div className="flex items-center justify-end gap-1">
+        <div className="flex items-center justify-end">
             <Button
                 isIconOnly
                 size="sm"
