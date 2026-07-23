@@ -103,6 +103,7 @@ export const TEXT = {
     COPY: "Copy",
     NUMBER_IS_REQUIRED: "Chỉ được nhập số",
     NO_PERMISSION: "Bạn không có quyền truy cập",
+    NO_DATA: "Không có dữ liệu",
     NOTE: "Ghi chú",
     DESCRIPTION: "Mô tả",
     DATE_PICKER: "Chọn ngày",

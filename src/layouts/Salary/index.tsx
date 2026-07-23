@@ -39,6 +39,14 @@ export default function Salary({ employee }: { employee?: EmployeeProps }) {
 
     //** Render */
     if (pathname !== ROUTE.SALARY) {
+        if (!isLoading && !salaries.length) {
+            return (
+                <div className="flex items-center justify-center min-h-24 text-gray-400">
+                    {TEXT.NO_DATA}
+                </div>
+            );
+        }
+
         return (
             <Accordion>
                 {salaries.map(salary => (
