@@ -5,8 +5,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import { NumberInput } from "@/components/Input";
 import Switch from "@/components/Switch";
 import { Control, Controller, UseFormWatch } from "react-hook-form";
-import { SALARY_TYPE } from "@/apis";
-import { TEXT } from "@/constants";
+import { SALARY_TYPE, TEXT } from "@/constants";
 import { FormEmployeeProps } from ".";
 import { SalaryTypeProps } from "@/types";
 

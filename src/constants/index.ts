@@ -1,8 +1,20 @@
+import { SalaryTypeProps } from "@/types";
 import { TEXT } from "./text";
 
 export { TEXT };
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+export const SALARY_TYPE = [
+    {
+        label: "Lương giờ",
+        value: SalaryTypeProps.HOURLY,
+    },
+    {
+        label: "Lương tháng",
+        value: SalaryTypeProps.MONTHLY,
+    },
+];
 
 export const STATUS_CODE = {
     OK: 200,
