@@ -7,6 +7,7 @@ const config: Config = {
     content: [
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+        "./src/layouts/**/*.{js,ts,jsx,tsx,mdx}",
         "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
         "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
     ],

@@ -52,7 +52,7 @@ export default function SalaryTopContent({
         end.date() === end.daysInMonth();
 
     const periodLabel = isFullMonth
-        ? `${TEXT.MONTH} ${start.format("MM/YYYY")}`
+        ? start.format("MM/YYYY")
         : `${formatDate(periodStart || null)} - ${formatDate(periodEnd || null)}`;
 
     //** Functions */
@@ -75,26 +75,43 @@ export default function SalaryTopContent({
         <>
             <div className="flex justify-between items-center">
                 <h3 className="title text-black">{TEXT.SALARY}</h3>
-            </div>
 
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-x-2">
-                    <DateRangePicker
-                        className="w-sm"
-                        value={dateValue}
-                        onChange={newValue => {
-                            setDateValue({
-                                start: newValue?.start as CalendarDate,
-                                end: newValue?.end as CalendarDate,
+                {profile.role === ROLE.ADMIN && (
+                    <Button
+                        startContent={<PlusIcon className="w-5 h-5" />}
+                        onPress={() => {
+                            getModal({
+                                isOpen: true,
+                                size: "5xl",
+                                modalHeader: TEXT.CALCULATE_SALARY,
+                                modalBody: <SalaryForm />,
                             });
                         }}
-                    />
+                    >
+                        <span className="hidden sm:inline">{TEXT.ADD_NEW}</span>
+                    </Button>
+                )}
+            </div>
 
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <DateRangePicker
+                    className="w-full sm:w-72"
+                    value={dateValue}
+                    onChange={newValue => {
+                        setDateValue({
+                            start: newValue?.start as CalendarDate,
+                            end: newValue?.end as CalendarDate,
+                        });
+                    }}
+                />
+
+                <div className="flex items-center justify-end gap-2">
                     {searchParams.get("startDate") && searchParams.get("endDate") && (
                         <Button
                             isIconOnly
                             variant="light"
                             color="default"
+                            className="shrink-0"
                             onPress={() => {
                                 router.push(ROUTE.SALARY);
                                 setDateValue(null);
@@ -104,6 +121,7 @@ export default function SalaryTopContent({
                     )}
 
                     <Button
+                        className="shrink-0"
                         onPress={() => {
                             if (!dateValue) return;
 
@@ -118,39 +136,29 @@ export default function SalaryTopContent({
                         {TEXT.SUBMIT}
                     </Button>
                 </div>
-
-                {profile.role === ROLE.ADMIN && (
-                    <Button
-                        startContent={<PlusIcon className="w-5 h-5" />}
-                        onPress={() => {
-                            getModal({
-                                isOpen: true,
-                                size: "5xl",
-                                modalHeader: TEXT.CALCULATE_SALARY,
-                                modalBody: <SalaryForm />,
-                            });
-                        }}
-                    >
-                        {TEXT.ADD_NEW}
-                    </Button>
-                )}
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between gap-1 sm:gap-2">
                 {periodStart && periodEnd && (
-                    <div className="flex items-center gap-x-1">
+                    <div className="flex items-center gap-x-0.5 sm:gap-x-1 min-w-0">
                         <Button
                             isIconOnly
+                            size="sm"
                             variant="light"
                             color="default"
+                            className="shrink-0"
                             onPress={() => goToMonth(-1)}
                             startContent={<ChevronLeftIcon className="w-4 h-4" />}
                         />
-                        <span className="min-w-32 text-center font-semibold">{periodLabel}</span>
+                        <span className="min-w-0 sm:min-w-32 text-center text-sm sm:text-base font-semibold truncate">
+                            {periodLabel}
+                        </span>
                         <Button
                             isIconOnly
+                            size="sm"
                             variant="light"
                             color="default"
+                            className="shrink-0"
                             onPress={() => goToMonth(1)}
                             startContent={<ChevronRightIcon className="w-4 h-4" />}
                         />
@@ -158,9 +166,11 @@ export default function SalaryTopContent({
                 )}
 
                 {totalAmount > 0 && (
-                    <p className="text-gray-500">
+                    <p className="ml-auto shrink-0 whitespace-nowrap text-sm sm:text-base text-gray-500">
                         {`${TEXT.TOTAL}: `}
-                        <b className="text-lg text-primary">{formatCurrency(totalAmount)}</b>
+                        <b className="text-base sm:text-lg text-primary">
+                            {formatCurrency(totalAmount)}
+                        </b>
                     </p>
                 )}
             </div>

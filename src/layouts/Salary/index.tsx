@@ -59,7 +59,7 @@ export default function Salary({ employee }: { employee?: EmployeeProps }) {
             rows={salaries}
             columns={columns}
             loading={isLoading}
-            className="[&>.tableContainer]:min-h-[45rem]"
+            pinnedColumns={{ left: [TEXT.EMPLOYEE] }}
             topContent={<SalaryTopContent totalAmount={totalAmount} period={period} />}
         />
     );

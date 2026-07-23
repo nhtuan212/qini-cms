@@ -51,7 +51,6 @@ export const TEXT = {
     WORK_SHIFT_SELECT: "Chọn ca làm việc",
     SUBMIT_SHIFT: "Chốt ca",
     DATE: "Ngày",
-    MONTH: "Tháng",
     ADD_DATE: "Ngày tạo",
     TIME_SHEET: "Chấm công",
     ADD_TIME_SHEET: "Thêm chấm công",

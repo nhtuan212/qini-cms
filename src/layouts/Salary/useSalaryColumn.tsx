@@ -41,12 +41,12 @@ export default function useSalaryColumn() {
             className: "min-w-24",
             content: (params: { row: SalaryProps }) => params.row.workingHours,
         },
-        {
-            key: TEXT.PAID_LEAVE,
-            name: TEXT.PAID_LEAVE,
-            className: "min-w-24",
-            content: (params: { row: SalaryProps }) => params.row.paidLeave,
-        },
+        // {
+        //     key: TEXT.PAID_LEAVE,
+        //     name: TEXT.PAID_LEAVE,
+        //     className: "min-w-24",
+        //     content: (params: { row: SalaryProps }) => params.row.paidLeave,
+        // },
         {
             key: TEXT.TARGET,
             name: TEXT.TARGET,
