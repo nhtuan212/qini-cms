@@ -1,5 +1,10 @@
 import { ReactNode } from "react";
-import { BanknotesIcon, DocumentTextIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import {
+    BanknotesIcon,
+    DocumentTextIcon,
+    MapPinIcon,
+    UserCircleIcon,
+} from "@heroicons/react/24/outline";
 import { ROLE, ROUTE, TEXT } from "@/constants";
 
 export interface MenuItem {
@@ -28,6 +33,12 @@ export const MENU: MenuItem[] = [
         url: ROUTE.SALARY,
         label: TEXT.SALARY,
         icon: <BanknotesIcon className="w-5" />,
+        roles: [ROLE.ADMIN],
+    },
+    {
+        url: ROUTE.LOCATION,
+        label: TEXT.LOCATION,
+        icon: <MapPinIcon className="w-5" />,
         roles: [ROLE.ADMIN],
     },
 ];

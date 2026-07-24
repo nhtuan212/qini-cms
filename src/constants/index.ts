@@ -52,6 +52,7 @@ export const URL = {
     SHIFT: "/shift",
     SALARY: "/salary",
     INVOICE: "/invoice",
+    LOCATION: "/location",
 };
 
 export const ROUTE = {
@@ -63,6 +64,7 @@ export const ROUTE = {
     TIME_SHEET: "/time-sheet",
     EMPLOYEE: "/employee",
     SALARY: "/salary",
+    LOCATION: "/location",
 };
 
 export const REVENUE_STATUS = {

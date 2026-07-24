@@ -61,4 +61,5 @@ export * from "./queries/useTarget";
 export * from "./queries/useTargetShift";
 export * from "./queries/useTimeSheet";
 export * from "./queries/useInvoice";
+export * from "./queries/useLocation";
 export * from "./useDebounce";

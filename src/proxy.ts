@@ -5,6 +5,7 @@ import { ROLE, ROUTE } from "./constants";
 const ROUTE_PERMISSIONS = {
     [ROUTE.EMPLOYEE]: [ROLE.ADMIN, ROLE.MANAGER],
     [ROUTE.SALARY]: [ROLE.ADMIN],
+    [ROUTE.LOCATION]: [ROLE.ADMIN],
 };
 
 const hasRequiredRole = (userRole: string | undefined, requiredRoles: string[]): boolean => {
@@ -41,11 +42,6 @@ export default auth(req => {
         case ROUTE.LOGIN:
         case ROUTE.SET_PASSWORD:
             return Response.redirect(new URL(ROUTE.TARGET, req.url));
-        // case ROUTE.TARGET:
-        //     if (user?.role === ROLE.STAFF) {
-        //         return Response.redirect(new URL(ROUTE.EMPLOYEE, req.url));
-        //     }
-        //     break;
         default:
             break;
     }

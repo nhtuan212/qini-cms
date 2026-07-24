@@ -12,3 +12,4 @@ export * from "./user";
 export * from "./salary";
 export * from "./shift";
 export * from "./invoice";
+export * from "./location";
