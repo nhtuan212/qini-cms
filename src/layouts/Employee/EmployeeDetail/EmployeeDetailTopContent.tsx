@@ -9,10 +9,12 @@ export default function TargetTopContent({
     timeSheetRecords,
     dateRange,
     onChangeDateRange,
+    isTarget = true,
 }: {
     timeSheetRecords: TimesheetRecordProps;
     dateRange: RangeValue<CalendarDate>;
     onChangeDateRange: (dateRange: RangeValue<CalendarDate>) => void;
+    isTarget?: boolean;
 }) {
     return (
         <div className="flex flex-col gap-4">
@@ -35,10 +37,12 @@ export default function TargetTopContent({
                 <b>{timeSheetRecords.totalWorkingHours}</b>
             </div>
 
-            <div className="flex-1 flex justify-between items-center">
-                <div>{TEXT.TOTAL_TARGET}:</div>
-                <b>{formatCurrency(timeSheetRecords.totalTarget)}</b>
-            </div>
+            {isTarget && (
+                <div className="flex-1 flex justify-between items-center">
+                    <div>{TEXT.TOTAL_TARGET}:</div>
+                    <b>{formatCurrency(timeSheetRecords.totalTarget)}</b>
+                </div>
+            )}
         </div>
     );
 }

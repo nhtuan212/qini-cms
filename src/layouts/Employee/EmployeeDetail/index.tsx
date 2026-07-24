@@ -22,7 +22,8 @@ export default function EmployeeModalDetail({ employee }: { employee: EmployeePr
     //** Render */
     return (
         <Table
-            columns={useEmployeeDetailColumns()}
+            className="[&>.tableContainer]:h-[40vh]"
+            columns={useEmployeeDetailColumns(employee.isTarget)}
             rows={timeSheetRecords.data}
             loading={isLoading}
             topContent={
@@ -30,6 +31,7 @@ export default function EmployeeModalDetail({ employee }: { employee: EmployeePr
                     timeSheetRecords={timeSheetRecords}
                     dateRange={dateValue}
                     onChangeDateRange={setDateValue}
+                    isTarget={employee.isTarget}
                 />
             }
         />

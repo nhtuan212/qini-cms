@@ -17,7 +17,7 @@ export default function NavMenu({ onNavigate }: { onNavigate?: () => void }) {
     const [activeRoute, setActiveRoute] = useState("");
 
     //** Variables */
-    const menus = getMenusForRole(profile?.role);
+    const menus = getMenusForRole(profile?.role, profile?.isTarget);
 
     //** Effects */
     useEffect(() => {

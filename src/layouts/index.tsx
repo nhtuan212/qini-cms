@@ -28,7 +28,7 @@ export default function MainLayout({
     const { alert, getAlert } = useAlertStore();
 
     //** Variables */
-    const hasNav = getMenusForRole(profile?.role).length > 1;
+    const hasNav = getMenusForRole(profile?.role, profile?.isTarget).length > 1;
 
     //** Queries */
     useShift();

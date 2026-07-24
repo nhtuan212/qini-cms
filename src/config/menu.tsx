@@ -7,6 +7,7 @@ export interface MenuItem {
     label: string;
     icon?: ReactNode;
     roles?: string[];
+    requiresTarget?: boolean;
 }
 
 export const MENU: MenuItem[] = [
@@ -15,6 +16,7 @@ export const MENU: MenuItem[] = [
         label: TEXT.TARGET,
         icon: <DocumentTextIcon className="w-5" />,
         roles: [ROLE.ADMIN, ROLE.MANAGER, ROLE.STAFF],
+        requiresTarget: true,
     },
     {
         url: ROUTE.EMPLOYEE,
@@ -30,6 +32,15 @@ export const MENU: MenuItem[] = [
     },
 ];
 
-/** Menu items visible to the given role (no `roles` means visible to everyone). */
-export const getMenusForRole = (role?: string) =>
-    MENU.filter(menu => !menu.roles || menu.roles.includes(role || ""));
+/**
+ * Menu items visible to the given profile.
+ * - `roles` gates by role (no `roles` means visible to everyone).
+ * - `requiresTarget` additionally hides the item from STAFF who lack `isTarget`;
+ *   ADMIN and MANAGER are never gated by `isTarget`.
+ */
+export const getMenusForRole = (role?: string, isTarget?: boolean) =>
+    MENU.filter(menu => {
+        if (menu.roles && !menu.roles.includes(role || "")) return false;
+        if (menu.requiresTarget && role === ROLE.STAFF && !isTarget) return false;
+        return true;
+    });
