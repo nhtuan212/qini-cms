@@ -60,7 +60,7 @@ export default function Employee() {
                 )}
             </div>
 
-            <Tabs className="mt-4" color="primary" disabledKeys={disabledKeys}>
+            <Tabs className="mt-2" color="primary" disabledKeys={disabledKeys}>
                 <Tab key="active" title={TEXT.ACTIVE}>
                     <EmployeeData data={activeEmployees} />
                 </Tab>

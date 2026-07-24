@@ -51,7 +51,7 @@ export default function MainLayout({
                     </aside>
                 )}
 
-                <section className="flex-1 min-h-0 w-full overflow-y-auto px-4 py-4">
+                <section className="flex-1 min-h-0 w-full overflow-y-auto p-2 sm:p-4">
                     {children}
                 </section>
             </div>
