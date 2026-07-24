@@ -10,14 +10,14 @@ interface useTimeSheetProps {
     endDate?: string | CalendarDate;
 }
 
-type CreateTimeSheet = Pick<TimesheetData, "staffId" | "shiftId" | "targetShiftId" | "checkIn">;
+type CreateTimeSheet = Pick<TimesheetData, "userId" | "shiftId" | "targetShiftId" | "checkIn">;
 
 interface updateTimeSheetProps {
     id: TimesheetData["id"];
-    params: Pick<TimesheetData, "checkOut" | "workingHours">;
+    params: Pick<TimesheetData, "checkOut">;
 }
 
-export const useTimeSheet = (staffId?: TimesheetData["staffId"], params?: useTimeSheetProps) => {
+export const useTimeSheet = (userId?: TimesheetData["userId"], params?: useTimeSheetProps) => {
     const queryClient = useQueryClient();
     const queryKey = ["timeSheet"];
     const endpoint = URL.TIME_SHEET;
@@ -42,20 +42,20 @@ export const useTimeSheet = (staffId?: TimesheetData["staffId"], params?: useTim
             }));
         });
 
-    // Get timeSheets by staff
+    // Get timeSheets by employee
     const {
         isPending,
         isFetching,
         data: timeSheetRecords = {} as TimesheetRecordProps,
     } = useQuery<TimesheetRecordProps, Error, TimesheetRecordProps>({
-        queryKey: [...queryKey, staffId, params],
+        queryKey: [...queryKey, userId, params],
         queryFn: () =>
             fetchData({
-                endpoint: `${endpoint}/staff/${staffId}${queryString}`,
+                endpoint: `${endpoint}/user/${userId}${queryString}`,
             }).then(res => convertKeysToCamelCase(res)),
-        enabled: !!staffId, // fetch when has staffId
-        select: ({ staffName, salary, totalTarget, totalWorkingHours, data }) => ({
-            staffName,
+        enabled: !!userId, // fetch when has userId
+        select: ({ name, salary, totalTarget, totalWorkingHours, data }) => ({
+            name,
             salary,
             totalTarget,
             totalWorkingHours,
@@ -63,7 +63,7 @@ export const useTimeSheet = (staffId?: TimesheetData["staffId"], params?: useTim
         }),
     });
 
-    // Create timeSheet by staff
+    // Create timeSheet by employee
     const { isPending: isCreating, mutateAsync: createTimeSheet } = useMutation<
         TimesheetData,
         Error,
@@ -87,7 +87,7 @@ export const useTimeSheet = (staffId?: TimesheetData["staffId"], params?: useTim
         },
     });
 
-    // Update timeSheet by staff
+    // Update timeSheet by employee
     const { isPending: isUpdating, mutateAsync: updateTimeSheet } = useMutation<
         TimesheetData,
         Error,
@@ -116,7 +116,7 @@ export const useTimeSheet = (staffId?: TimesheetData["staffId"], params?: useTim
         },
     });
 
-    // Delete timeSheet by staff
+    // Delete timeSheet by employee
     const { isPending: isDeleting, mutateAsync: deleteTimeSheet } = useMutation({
         mutationFn: (id: TimesheetData["id"]) =>
             fetchData({

@@ -120,6 +120,7 @@ export default function TableBody({ ...props }: TableBodyProps) {
             </div>
         );
     };
+
     const renderLoading = () => {
         return (
             <div
@@ -143,7 +144,7 @@ export default function TableBody({ ...props }: TableBodyProps) {
     }
 
     return (
-        <div className="min-w-full w-fit min-h-fit">
+        <div className="min-w-full h-full">
             {loading && renderLoading()}
             {rowsData?.map((row: any, index: number) => {
                 return (
@@ -152,7 +153,7 @@ export default function TableBody({ ...props }: TableBodyProps) {
                         key={`${row.id}-${index}`}
                         className={twMerge(
                             "bodyCell",
-                            "flex items-center rounded-md",
+                            "min-w-full w-fit flex items-center rounded-md",
                             "even:bg-gray-50",
                         )}
                     >

@@ -2,7 +2,7 @@ import { SalaryTypeProps } from ".";
 
 export interface SalaryProps {
     id: string;
-    staffName: string;
+    employeeName: string;
     name: string;
     salary: number;
     salaryType: SalaryTypeProps;
@@ -33,9 +33,14 @@ export interface SalaryPeriodProps {
 }
 
 export interface SalaryParams {
-    staffId?: string;
+    userId?: string;
     startDate?: string | null;
     endDate?: string | null;
 }
 
-export type CreateSalaryProps = Omit<SalaryProps, "id" | "staffName" | "salaryType" | "total">;
+export type CreateSalaryProps = Omit<
+    SalaryProps,
+    "id" | "employeeName" | "salaryType" | "total"
+> & {
+    userId: string;
+};

@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import { auth } from "@/auth";
 import QueryProvider from "@/components/Provider/QueryProvider";
 import Provider from "@/components/Provider";
-import MainLayout from "@/components/layouts";
+import MainLayout from "@/layouts";
 import "./globals.scss";
 
 const geistSans = localFont({
@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
     //** Render */
     const RenderMainLayout = () => {
-        if (session) {
+        if (session && !session.user?.isFirstLogin) {
             return <MainLayout session={session}>{children}</MainLayout>;
         }
 
@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <html suppressHydrationWarning lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <QueryProvider>
-                    <Provider>{RenderMainLayout()}</Provider>
+                    <Provider session={session}>{RenderMainLayout()}</Provider>
                 </QueryProvider>
             </body>
         </html>

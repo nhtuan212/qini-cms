@@ -1,8 +1,20 @@
+import { SalaryTypeProps } from "@/types";
 import { TEXT } from "./text";
 
 export { TEXT };
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+export const SALARY_TYPE = [
+    {
+        label: "Lương giờ",
+        value: SalaryTypeProps.HOURLY,
+    },
+    {
+        label: "Lương tháng",
+        value: SalaryTypeProps.MONTHLY,
+    },
+];
 
 export const STATUS_CODE = {
     OK: 200,
@@ -31,27 +43,28 @@ export const STAFF = {
 export const URL = {
     HOME: "/",
     LOGIN: "/login",
+    LOGIN_CREATE_PASSWORD: "/login/create-password",
     TARGET: "/target",
     TARGET_SHIFT: "/target-shift",
     TIME_SHEET: "/time-sheet",
     USER: "/user",
-    STAFF: "/staff",
+    EMPLOYEE: "/employee",
     SHIFT: "/shift",
     SALARY: "/salary",
     INVOICE: "/invoice",
-    WORK_TYPE: "/work-type",
-    WORK_ASSIGNMENT: "/work-assignment",
+    LOCATION: "/location",
 };
 
 export const ROUTE = {
     HOME: "/",
     LOGIN: "/login",
+    SET_PASSWORD: "/user/set-password",
     TARGET: "/target",
-    WORK: "/work",
     TARGET_SHIFT: "/target-shift",
     TIME_SHEET: "/time-sheet",
-    STAFF: "/staff",
+    EMPLOYEE: "/employee",
     SALARY: "/salary",
+    LOCATION: "/location",
 };
 
 export const REVENUE_STATUS = {

@@ -1,0 +1,74 @@
+"use client";
+
+import { useMemo } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import SalaryTopContent from "./SalaryTopContent";
+import useSalaryColumn from "./useSalaryColumn";
+import SalaryTotal from "./SalaryTotal";
+import Table from "@/components/Table";
+import { Accordion, AccordionItem } from "@/components/Accordion";
+import { useSalary } from "@/hooks";
+import { formatCurrency, formatDate } from "@/utils";
+import { ROUTE, TEXT } from "@/constants";
+import { SalaryParams, EmployeeProps } from "@/types";
+
+export default function Salary({ employee }: { employee?: EmployeeProps }) {
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    //** Variables */
+    const columns = useSalaryColumn();
+
+    const salaryParams = useMemo((): SalaryParams | undefined => {
+        if (employee?.userId) {
+            return { userId: employee.userId };
+        }
+
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
+
+        if (startDate && endDate) {
+            return { startDate, endDate };
+        }
+
+        return undefined; // fetch all
+    }, [employee, searchParams]);
+
+    //** Queries */
+    const { isLoading, salaries, totalAmount, period } = useSalary(salaryParams);
+
+    //** Render */
+    if (pathname !== ROUTE.SALARY) {
+        if (!isLoading && !salaries.length) {
+            return (
+                <div className="flex items-center justify-center min-h-24 text-gray-400">
+                    {TEXT.NO_DATA}
+                </div>
+            );
+        }
+
+        return (
+            <Accordion>
+                {salaries.map(salary => (
+                    <AccordionItem
+                        key={salary.id}
+                        title={`${TEXT.SALARY_PERIOD}: ${formatDate(salary.startDate)} - ${formatDate(salary.endDate)}`}
+                        subtitle={<b>{formatCurrency(salary.total)}</b>}
+                    >
+                        <SalaryTotal {...salary} target={salary.target * 100} />
+                    </AccordionItem>
+                ))}
+            </Accordion>
+        );
+    }
+
+    return (
+        <Table
+            rows={salaries}
+            columns={columns}
+            loading={isLoading}
+            pinnedColumns={{ left: [TEXT.EMPLOYEE] }}
+            topContent={<SalaryTopContent totalAmount={totalAmount} period={period} />}
+        />
+    );
+}

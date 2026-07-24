@@ -7,7 +7,9 @@ export enum SalaryTypeProps {
 export * from "./target";
 export * from "./targetShift";
 export * from "./timeSheet";
-export * from "./staff";
+export * from "./employee";
+export * from "./user";
 export * from "./salary";
 export * from "./shift";
 export * from "./invoice";
+export * from "./location";

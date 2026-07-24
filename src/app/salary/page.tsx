@@ -1,4 +1,4 @@
-import Salary from "@/components/layouts/Salary";
+import Salary from "@/layouts/Salary";
 
 export default function SalaryPage() {
     return <Salary />;

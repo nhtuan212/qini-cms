@@ -29,14 +29,11 @@ export const authCredentials = [
                     }),
                 },
             }).then(res => {
-                switch (res.status) {
-                    case STATUS_CODE.UNAUTHORIZED:
-                        throw new InvalidLogin401();
-                    default:
-                        break;
+                if (res.status === STATUS_CODE.UNAUTHORIZED || !res.data) {
+                    throw new InvalidLogin401();
                 }
 
-                return res.data;
+                return { ...res.data, username: credentials?.username };
             });
         },
     }),

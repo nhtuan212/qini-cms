@@ -23,12 +23,12 @@
 }
 
 // Table
-.table {
-    @apply min-h-80 rounded-md p-3 border shadow-lg;
+.cellStickyLeft {
+    @apply sticky left-0 min-h-14 flex items-center self-stretch bg-gray-100 border-r-2 z-50;
+}
 
-    &Container {
-        @apply w-full h-80 flex flex-col;
-    }
+.cellStickyRight {
+    @apply sticky right-0 min-h-14 flex items-center self-stretch bg-gray-100 border-l-2 z-50;
 }
 
 // Input
@@ -66,19 +66,9 @@
     }
 }
 
-// Table
-.cellStickyLeft {
-    @apply sticky left-0 min-h-14 flex bg-gray-100 border-r-2 z-50;
-}
-
 // Error Message
 .errorMessage {
     @apply p-1 text-tiny text-danger;
 }
 
 @tailwind utilities;
-
-// Table
-.table {
-    @apply flex flex-col w-full gap-2;
-}

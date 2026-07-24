@@ -1,8 +1,13 @@
-"use client";
+import { auth } from "@/auth";
+import { ROLE } from "@/constants";
+import Target from "@/layouts/Target";
+import TimeSheet from "@/layouts/TimeSheet";
 
-import React from "react";
-import Target from "@/components/layouts/Target";
+export default async function TargetPage() {
+    const session = await auth();
+    const { role, isTarget } = session?.user ?? {};
 
-export default function TargetPage() {
+    if (role === ROLE.STAFF && !isTarget) return <TimeSheet />;
+
     return <Target />;
 }

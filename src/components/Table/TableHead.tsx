@@ -1,14 +1,17 @@
 "use client";
-import React, { useContext, useMemo, useState } from "react";
+
+import { useContext, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Checkbox from "../Checkbox";
 import Button from "../Button";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { TableContext } from "./TableProvider";
+
 type TableHeadProps = {
     sortingMode?: boolean;
     onRowSelection?: (e: readonly string[] | readonly number[]) => void;
 };
+
 export default function TableHead({ ...props }: TableHeadProps) {
     //** Context */
     const {
